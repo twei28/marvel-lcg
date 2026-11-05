@@ -7352,4 +7352,16 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   'dm023': "1 max par deck.",
   'dm024': "1 max par deck.",
   // FIN three_d_man
+
+  // silver_surfer_power_cosmic — * Silver Surfer (Hero)
+  'pc001a': "Les personnages à une PLANÈTE ne peuvent ni attaquer ni manigancer, et perdent Garde et Patrouille.\n<i>Surf</i> — <b>Action</b> : je pars d'une PLANÈTE.\n<i>« Mon destin se trouve encore devant moi ! Et là où il m'appelle, le Surfer d'Argent s'y envolera ! »</i>",
+  // silver_surfer_power_cosmic — * Silver Surfer (AlterEgo)
+  'pc001b': "Les personnages à une PLANÈTE ne peuvent ni attaquer ni manigancer, et perdent Garde et Patrouille.\n<b>Action</b> : inclinez Cosmic Surfboard → mettez en jeu la carte du dessus du planet deck. <i>(Limite d'une fois par phase.)</i>",
+  // silver_surfer_power_cosmic — Cosmic Surfboard (Upgrade)
+  'pc002': "Permanent. Mise en place.\n<b>Interruption forcée</b> : à la fin du round, chaque ennemi à une PLANÈTE en part.\n<b>Action</b> : inclinez cette carte et choisissez une PLANÈTE → Silver Surfer arrive à cette PLANÈTE.",
+  // silver_surfer_power_cosmic — Zenn-La (Support, PLANET, planet deck 1/5)
+  'pc003': "<b>Arrivée</b> : soignez 2 dégâts du personnage arrivant.\n<b>Départ</b> : ajoutez +1 au prochain pouvoir de base du personnage partant.",
+  // silver_surfer_power_cosmic — * Nova Frankie Raye (Ally)
+  'pc004': "Action : choisissez une planète. J'arrive à cette PLANÈTE, puis j'en pars. À la fin de la phase, je subis 1 dégât. <i>(Limite d'une fois par phase.)</i>\n<i>« Vous n'êtes pas le seul à avoir été Héraut de Galactus. »</i>",
+  // FIN silver_surfer_power_cosmic (en cours)
 }

@@ -348,6 +348,13 @@ export type ContexteCarte = {
   herosArt?: string
   /** Force la pastille de hauteur de pile (voir toPileCard). */
   pileCount?: number
+  /**
+   * Resout `info.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`) vers
+   * la carte visee : nom + image, pour l'infobulle « lié à » (pastille,
+   * `ScanCard.tsx`). `undefined` = aucune carte ne connait cet object_id (pas
+   * encore en jeu, hors du champ de visibilité de ce joueur).
+   */
+  planetesParId?: ReadonlyMap<number, { nom: string; picId: string }>
 }
 
 /**
@@ -587,7 +594,26 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     lisereHeros: card.card_type === 'Hero' || card.card_type === 'AlterEgo' ? degradeDeHeros(couleursDeHeros(card.card_id)) : undefined,
     pileCount: contexte.pileCount,
     highlight: contexte.actives.has(card.id),
+    environnementMarque: environnementMarqueDe(card, contexte),
   }
+}
+
+/**
+ * Personnage marque « a une planete » (pack maison Silver Surfer « Power
+ * Cosmic ») : `info.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`,
+ * PAS un champ specifique a ce pack) donne l'object_id de la carte PLANET.
+ * Resolu ICI, au SEUL point par lequel toute carte visible passe, pour ne
+ * pas repeter la resolution a chaque zone (allies, sbires engages,
+ * identite...). `undefined` = pas marque, ou carte visee hors de portee de
+ * `contexte.planetesParId` (jamais vu : pas d'infobulle plutot qu'une
+ * infobulle fausse).
+ */
+function environnementMarqueDe(card: WorldCard, contexte: ContexteCarte): { nom: string; imageUrl: string } | undefined {
+  const idPlanete = card.info.ui_marker_object_id
+  if (!idPlanete) return undefined
+  const planete = contexte.planetesParId?.get(idPlanete)
+  if (!planete) return undefined
+  return { nom: planete.nom, imageUrl: scanUrl(planete.picId) }
 }
 
 /**

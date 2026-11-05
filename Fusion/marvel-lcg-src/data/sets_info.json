@@ -2447,5 +2447,14 @@
   "encounters": [],
   "max_id": "dm024"
  },
- "checksum": "5ec50826aa07c1da0fdaa327b8098a0efae405be0c761f15b28983124bfc517c"
+ "253. Custom (Silver Surfer - Power Cosmic)": {
+  "name": "silver_surfer_power_cosmic",
+  "scenarios": [],
+  "heroes": [
+   "silver_surfer_power_cosmic"
+  ],
+  "encounters": [],
+  "max_id": "pc003"
+ },
+ "checksum": "7be2552dba7e7f90cf4583121cfbf38c21b3d6fbfee1e71d57d98967297ff63b"
 }

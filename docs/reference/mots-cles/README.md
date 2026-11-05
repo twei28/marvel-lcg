@@ -361,6 +361,16 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] captive.md
 - [x] deck-hellfire.md (maison, scénario 4 « Torn » de Hellfire Hunt : deck de TABLE avec défausse propre, `DeckHellfire`, `bind_discard_pile`, remélange sans pénalité, piles de la table)
 
+## Pack Silver Surfer (3ᵉ version, planet deck), prefixe pc, depuis le 04/11/2026
+
+- [x] environnement-joueur.md (type de carte maison PLAYER ENVIRONMENT →
+      reutilise `Support` + trait PLANET, pas de nouveau type de carte ;
+      « être à une planète » = simple marqueur Python sur la carte, posé/retiré
+      par les helpers `ArriverA`/`Departir` ; AUCUNE carte ne change jamais de
+      zone. pc001a/b, pc002 Cosmic Surfboard, pc003 Zenn-La écrits et prouvés
+      en jeu (10 cas `test_capacites` verts, preuve par substitution faite).
+      Pack en cours, ~26 cartes restantes)
+
 ## Ajoutés le 03/11/2026 (pack Sentry)
 
 - [x] stun.md

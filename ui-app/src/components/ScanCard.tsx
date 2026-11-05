@@ -404,6 +404,14 @@ export type ScanCardProps = {
    * maximum n'est pas connu de facon fiable).
    */
   jauge?: CardGauge
+  /**
+   * Personnage marque « a une planete » (pack maison Silver Surfer « Power
+   * Cosmic », PLAYER ENVIRONMENT) : pastille au survol/focus montrant le nom
+   * ET l'image de la carte PLANET (decision utilisateur du 04/11/2026— pas de
+   * jeton, une infobulle). Aucune carte ne bouge jamais de zone : c'est le
+   * SEUL signal visuel de ce marqueur.
+   */
+  environnementMarque?: { nom: string; imageUrl: string }
 }
 
 // Etiquettes courtes : les cartes sont petites. Ce sont les termes du jeu,
@@ -565,6 +573,7 @@ export function ScanCard({
   etiquetteInactif,
   estActif = false,
   crise,
+  environnementMarque,
   deckSpecial = false,
   aspect,
   lisereHeros,
@@ -775,6 +784,15 @@ export function ScanCard({
             </span>
           ) : null}
           {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}
+          {environnementMarque && !facedown ? (
+            <span className="pastille-planete" tabIndex={0} role="note" aria-label={`${t('À la planète')} ${environnementMarque.nom}`}>
+              <span className="pastille-planete-mot">{t('Planète')}</span>
+              <span className="pastille-planete-bulle" role="tooltip">
+                <img src={environnementMarque.imageUrl} alt="" draggable="false" />
+                <b>{environnementMarque.nom}</b>
+              </span>
+            </span>
+          ) : null}
         </div>
 
         <div className={`scan-frame${retournement ? ` retourne-${retournement.phase}` : ''}`}>

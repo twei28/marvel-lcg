@@ -126260,7 +126260,7 @@
     "COSMIC",
     "ELITE"
    ],
-   "set_name": "Silver Surfer Nemesis",
+   "set_name": "Silver Surfer (Power Cosmic)",
    "text": "Villainous.\n<b>When Revealed</b>: Reveal The World Eater and put it into play engaged with you.\n<b>When Defeated</b>: Remove Galactus from the game.\n<i>(Silver Surfer's nemesis minion.)</i>",
    "custom": "DesignHacker"
   },
@@ -126278,7 +126278,7 @@
     "COSMIC",
     "ELITE"
    ],
-   "set_name": "Silver Surfer Nemesis",
+   "set_name": "Silver Surfer (Power Cosmic)",
    "text": "Galactus cannot take damage and his attacks gain overkill.\n<b>When Defeated</b>: Remove The World Eater from the game.\n<i>\"You will claim no victory here today, Norrin Radd. True, you may delay me for a time, but you cannot possibly stop me.\"</i>",
    "custom": "DesignHacker"
   },
@@ -126292,7 +126292,7 @@
     "Boost": "2"
    },
    "traits": [],
-   "set_name": "Silver Surfer Nemesis",
+   "set_name": "Silver Surfer (Power Cosmic)",
    "text": "All friendly characters get -1 ATK.\n<b>When Revealed</b>: Place 1 additional threat here for each friendly character in play.\n<i>Galactus is using The Power Cosmic to steal the heroes' life force!</i>",
    "custom": "DesignHacker"
   },
@@ -126306,7 +126306,7 @@
     "ATK+": "0*"
    },
    "traits": [],
-   "set_name": "Silver Surfer Nemesis",
+   "set_name": "Silver Surfer (Power Cosmic)",
    "text": "Attach to Galactus. If you cannot, attach to the villain.\n[star] Attached enemy's attacks gain overkill.\n<b>Hero Action</b>: Take 3 damage → remove Cosmic Power from the game.\n<i>\"The only power you possess, is the power I bestowed upon you.\"</i>",
    "custom": "DesignHacker"
   }
@@ -136907,7 +136907,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "91be09a301ab8f04ed61ed9b3f92855ba8b41849addcb9a19e0b0a30b6c106cc",
+ "checksum": "dfcb7140a19e53797c18e398a1c1f115fb0a0b5f88d49f159dc64a684047c23d",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
@@ -145002,6 +145002,435 @@
    "set_name": "",
    "text": "Max 1 per deck.",
    "custom": "R. Tim Morris"
+  }
+ ],
+ "silver_surfer_power_cosmic": [
+  {
+   "card_id": "pc001a",
+   "type": "Hero",
+   "name": "* Silver Surfer",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "1",
+    "THW": "1",
+    "DEF": "2",
+    "HS": "5"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "COSMIC",
+    "AERIAL"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Characters at a <b>PLANET</b> cannot attack or scheme and lose guard and patrol.\n<i>Surf</i> — <b>Action</b>: I depart a <b>PLANET</b>.\n<i>\"My destiny still lies before me! And where it beckons — there shall soar the Silver Surfer!\"</i>",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc001b",
+   "type": "AlterEgo",
+   "name": "* Silver Surfer",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "COSMIC",
+    "AERIAL"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Characters at a <b>PLANET</b> cannot attack or scheme and lose guard and patrol.\n<b>Action</b>: Exhaust Cosmic Surfboard → put the top card of the planet deck into play. (Limit once per phase.)",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc002",
+   "type": "Upgrade",
+   "name": "Cosmic Surfboard",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Permanent": "1",
+    "Setup": "1"
+   },
+   "traits": [
+    "ITEM",
+    "SURFBOARD"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Permanent. Setup.\n<b>Forced Interrupt</b>: At the end of the round, all enemies at a <b>PLANET</b> depart.\n<b>Action</b>: Exhaust this card and choose a <b>PLANET</b> → Silver Surfer arrives at that <b>PLANET</b>.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc003",
+   "type": "Support",
+   "name": "Zenn-La",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Setup": "1"
+   },
+   "traits": [
+    "PLANET"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Arrive</b>: Heal the arriving character 2.\n<b>Depart</b>: Add +1 to the departing character's next basic power.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc004",
+   "type": "Ally",
+   "name": "* Nova Frankie Raye",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "3",
+    "ATK": "1",
+    "THW": "1",
+    "HP": "5"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Action: Choose a planet. I arrive at that <b>PLANET</b>, then depart. At the end of the phase, deal 1 damage to me. (Limit once per phase.)",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc005",
+   "type": "Support",
+   "name": "Sakaar",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero"
+   },
+   "traits": [
+    "PLANET"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Arrive</b>: The arriving character gains +2 ATK until the end of the round.\n<b>Depart</b>: Deal 2 damage to an enemy.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc006",
+   "type": "Support",
+   "name": "Newhaven",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero"
+   },
+   "traits": [
+    "PLANET"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Arrive</b>: The arriving character gains +2 THW until the end of the round.\n<b>Depart</b>: Remove 2 threat from a scheme.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc007",
+   "type": "Support",
+   "name": "Xandar",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero"
+   },
+   "traits": [
+    "PLANET"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Arrive</b>: The arriving character gains +2 DEF until the end of the round.\n<b>Depart</b>: Ready the departing character.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc008",
+   "type": "Event",
+   "name": "Cosmic Blast",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "2",
+    "RES": "Y"
+   },
+   "traits": [
+    "ATTACK",
+    "POWER COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Hero Response</b> <i>(attack)</i>: After Silver Surfer departs a <b>PLANET</b>, deal 5 damage to an enemy. If that <b>PLANET</b> was Sakaar, this attack gains piercing and you may spend a resource to ready Silver Surfer.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc009",
+   "type": "Event",
+   "name": "Lightspeed Entrance",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "0",
+    "RES": "B"
+   },
+   "traits": [
+    "THWART",
+    "POWER COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Hero Response</b> <i>(thwart)</i>: After Silver Surfer departs a <b>PLANET</b>, remove 2 threat from a scheme. If that <b>PLANET</b> was Newhaven, you may spend a resource to ready Silver Surfer.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc010",
+   "type": "Event",
+   "name": "Surfin'",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "1",
+    "RES": "R"
+   },
+   "traits": [
+    "ATTACK",
+    "POWER COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Exhaust Cosmic Surfboard → deal 9 damage to an enemy. You may spend a resource to give this attack overkill.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc011",
+   "type": "Upgrade",
+   "name": "Ride Along",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "1",
+    "RES": "Y",
+    "Temporary": "1"
+   },
+   "traits": [
+    "POWER COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Temporary.\n<b>Action</b>: Choose a <b>PLANET</b> and a friendly character → that character arrives at that <b>PLANET</b>, then they depart. Discard this card.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc012",
+   "type": "Upgrade",
+   "name": "Psionic Bond",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "2",
+    "RES": "G"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "PSIONIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Action</b>: Exhaust this card and spend a resource of any type → ready Cosmic Surfboard.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc013",
+   "type": "Upgrade",
+   "name": "Cosmic Awareness",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "0",
+    "RES": "G"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "PREPARATION"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Interrupt</b>: When a minion engages a player, choose a <b>PLANET</b> → that minion arrives at that <b>PLANET</b> and is confused. Shuffle this card into your deck. <i>(The minion is still engaged with that player while at the planet and after departing.)</i>",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc014",
+   "type": "Resource",
+   "name": "The Power Cosmic",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "RES": "G"
+   },
+   "traits": [],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Response</b>: After you spend this card, shuffle it into your deck. Then, if you spent it on a <b>POWER COSMIC</b> or <b>COSMIC</b> card, draw 1.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc015",
+   "type": "Event",
+   "name": "Tactical Navigation",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "1",
+    "RES": "B"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "TACTIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>Hero Interrupt</b>: When an enemy attacks, choose a <b>PLANET</b>. Silver Surfer arrives at that planet, then departs. Declare Silver Surfer the defender of that attack without exhausting him.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc016",
+   "type": "Support",
+   "name": "Black Hole",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "3"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "PLANET",
+    "SINGULARITY"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "When this card enters play, choose a player. The villain and each minion engaged with that player arrive here and take 3 damage. At the start of the next player phase, remove this card from the game.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc017",
+   "type": "Minion",
+   "name": "* Ego",
+   "subtitle": "",
+   "desc": {
+    "HP": "12",
+    "ATK": "2",
+    "SCH": "2"
+   },
+   "traits": [
+    "ELITE",
+    "LIVING",
+    "PLANET",
+    "COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Ego engages Silver Surfer.\n<b>Arrive</b>: Deal 6 damage to Ego.\n<b>When Defeated</b>: Put the set aside Ego The Living Planet ally into play under your control. Remove this card from the game.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc018",
+   "type": "Ally",
+   "name": "* Ego The Living Planet",
+   "subtitle": "",
+   "desc": {
+    "Class": "Hero",
+    "Cost": "4",
+    "RES": "G",
+    "THW": "2",
+    "ATK": "3",
+    "HP": "7",
+    "Linked": "pc017"
+   },
+   "traits": [
+    "LIVING",
+    "PLANET",
+    "COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Linked (Ego). This card does not count against your ally limit.\nAt the end of the round, each character here takes damage equal to my ATK, then departs.\n<b>Action</b>: Choose a minion → that minion arrives here and I take damage equal to that minion's ATK.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc019",
+   "type": "Minion",
+   "name": "* Terrax",
+   "subtitle": "",
+   "desc": {
+    "HP": "7",
+    "ATK": "2",
+    "SCH": "2",
+    "Villainous": "1",
+    "Toughness": "1",
+    "Nemesis": "Silver Surfer"
+   },
+   "traits": [
+    "ELITE",
+    "HERALD",
+    "POWER COSMIC"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Terrax cannot arrive at or depart a PLANET.\n<b>When Revealed</b>: Find Terrax's Axe and attach it to Terrax. If the Herald of Galactus side scheme is not in play, find it and reveal it.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc020",
+   "type": "SideScheme",
+   "name": "Herald of Galactus",
+   "subtitle": "",
+   "desc": {
+    "StartingThreat": "1",
+    "Acceleration": "1"
+   },
+   "traits": [],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Threat cannot be removed from this scheme while Terrax is in play.\n<b>Forced Response</b>: After Terrax attacks, add threat here equal to the amount of damage dealt by that attack. Then, if there is 5 or more threat here, remove a random PLANET from the game.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc021",
+   "type": "Attachment",
+   "name": "Terrax's Axe",
+   "subtitle": "",
+   "desc": {
+    "ATK+": "1"
+   },
+   "traits": [
+    "POWER COSMIC",
+    "WEAPON"
+   ],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "Attach to Terrax, if Terrax is not in play attach to the villain instead.\n[star] <b>Forced Response</b>: After the attached character attacks, if that attack dealt damage, stun the attacked character.\n<b>Hero Action</b>: Spend [energy][energy] resources → discard this card.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc022",
+   "type": "Treachery",
+   "name": "Cleave The Way",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>When Revealed</b>: Find and reveal Terrax's Axe. Then, the character that Terrax's Axe is attached to attacks you.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc023",
+   "type": "Treachery",
+   "name": "Hungry Master",
+   "subtitle": "",
+   "desc": {},
+   "traits": [],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<b>When Revealed</b>: add 1 threat to the Herald of Galactus side scheme, then Terrax attacks you. If no attack was made this way, this card gains surge.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
+  },
+  {
+   "card_id": "pc024",
+   "type": "Obligation",
+   "name": "Hunger of Galactus",
+   "subtitle": "",
+   "desc": {
+    "GiveTo": "Silver Surfer"
+   },
+   "traits": [],
+   "set_name": "Silver Surfer (Power Cosmic)",
+   "text": "<i>Give to the Silver Surfer player.</i>\nTreat the text box of each PLANET environment as blank.\n<b>Alter-Ego Action</b>: Exhaust Cosmic Surfboard and choose a PLANET → remove that PLANET from the game. Discard this card.",
+   "custom": "Daring Lime (marvelchampionslivingtierlist.streamlit.app)"
   }
  ]
 }

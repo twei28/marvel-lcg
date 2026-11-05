@@ -13,6 +13,13 @@
   "Migration du 12/08/2026 : voir .planning/todos/2026-08-12-nommage-contenu-fanmade.md"
  ],
  "prefixes": {
+  "pc": {
+   "pack": "silver_surfer_power_cosmic",
+   "libelle": "253. Custom (Silver Surfer - Power Cosmic / planet deck)",
+   "cartes": 30,
+   "depuis": "2026-11-04",
+   "note": "Cree le 04/11/2026 depuis des images (marvelchampionslivingtierlist.streamlit.app), pas un zip. 3e version de Silver Surfer du depot (distincte du `sv` officiel ET du « Silver Surfer (Neptune) » deja en file d'attente, zip Galactus/Thanos). Mecanique maison inedite : type de carte PLAYER ENVIRONMENT, trait PLANET, deplacement de personnage (arrive/depart) vers une carte-zone annexe. Voir docs/reference/mots-cles/environnement-joueur.md. pc001a/b identite (Silver Surfer / alter-ego) ; pc002-pc017 deck de heros (Cosmic Surfboard, Nova Frankie Raye, Black Hole, Cosmic Blast x2, Lightspeed Entrance x2, Surfin' x2, Ride Along x2, Psionic Bond, Cosmic Awareness, The Power Cosmic, Tactical Navigation x2, Ego The Living Planet) ; obligation Hunger of Galactus ; set nemesis Terrax (Terrax, Herald of Galactus, Terrax's Axe, Cleave The Way, Hungry Master) ; planet deck personnel (Zenn-La, Sakaar, Newhaven, Xandar, Ego). Cartes d'aspect maison (Armed for Combat, Cosmic Hawk, Cudgel, Agression) laissees de cote sur decision utilisateur du 04/11/2026 : player_deck vide."
+  },
   "bs": {
    "pack": "beast_proust",
    "libelle": "247. Custom (Beast Proust)",

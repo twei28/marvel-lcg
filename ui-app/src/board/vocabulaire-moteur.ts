@@ -40,6 +40,13 @@ const MOTEUR_FR: Record<string, string> = {
   'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
   'The Kraken was not found: Cultist is not discarded.': 'Le Kraken est introuvable : Cultist n’est pas défaussé.',
   'No Web-Warrior ally in your discard pile: no player is chosen.': 'Aucun allié Web-Warrior dans votre défausse : aucun joueur n’est choisi.',
+  // — pack blade (scans FR déposés 04/11/2026, signalement mobile 05/11/2026) —
+  'Heal 2 damage from Blade': 'Soigner 2 dégâts de Blade',
+  'Place 1 blood counter on Blade': 'Placer 1 jeton Sang sur Blade',
+  'Exhaust a WEAPON upgrade you control to stun that enemy': 'Incliner une amélioration ARME que vous contrôlez pour sonner cet ennemi',
+  // — pack silver_surfer_power_cosmic (prefixe pc, mecanique PLANET, 05/11/2026) —
+  'Character Arrive Planet': 'Le personnage arrive à la planète',
+  'Character Depart Planet': 'Le personnage part de la planète',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',

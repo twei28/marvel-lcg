@@ -226,6 +226,61 @@ class AbilityFactorySetup:
         )
 
     @staticmethod
+    def AfterCharacterArrivePlanet(ability_type: 'AbilityType',
+                               which_character: 'Literal["This"]|CardFace',
+                               operation: OperationType[Message.AfterCharacterArrivePlanet],
+                               *,
+                               conditions: ConditionsType[Message.AfterCharacterArrivePlanet]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom silver_surfer_power_cosmic, 04/11/2026) : « After <X> arrives at a PLANET ».
+
+        `which_character` = "This" pour une carte qui reagit a sa PROPRE arrivee (ex. Silver Surfer
+        lui-meme), ou une CardFace precise pour une carte qui reagit a l'arrivee d'un AUTRE personnage.
+        Filtre toujours la carte qui ARRIVE, jamais celle qui l'envoie. Fiche
+        docs/reference/mots-cles/environnement-joueur.md.
+        """
+        def check_who(effect: 'Effect', message: 'Message.AfterCharacterArrivePlanet') -> bool:
+            if which_character == "This":
+                return effect.this == message.character_face
+            return which_character == message.character_face
+
+        return Ability(
+            ability_type,
+            Message.AfterCharacterArrivePlanet,
+            [
+                check_who,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
+    def AfterCharacterDepartPlanet(ability_type: 'AbilityType',
+                               which_character: 'Literal["This"]|CardFace',
+                               operation: OperationType[Message.AfterCharacterDepartPlanet],
+                               *,
+                               conditions: ConditionsType[Message.AfterCharacterDepartPlanet]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom silver_surfer_power_cosmic, 04/11/2026) : « After <X> departs a PLANET ».
+
+        Symetrique de `AfterCharacterArrivePlanet` ci-dessus.
+        """
+        def check_who(effect: 'Effect', message: 'Message.AfterCharacterDepartPlanet') -> bool:
+            if which_character == "This":
+                return effect.this == message.character_face
+            return which_character == message.character_face
+
+        return Ability(
+            ability_type,
+            Message.AfterCharacterDepartPlanet,
+            [
+                check_who,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
     def WhenCardSetup(which_card: 'Literal["This"]|CardFace',
                       operation: OperationType[Message.WhenCardSetup]) -> 'Ability':
 

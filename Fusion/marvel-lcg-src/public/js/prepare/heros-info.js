@@ -1422,6 +1422,19 @@ export const HEROS_INFO = {
         apparition: "Fantastic Four #48 (1966)",
     },
 
+    "pc001a": {
+        bio: "Norrin Radd a échangé sa liberté contre la survie de Zenn-La : Galactus en a fait son Héraut, armé de la Puissance Cosmique et d'une planche capable de franchir les étoiles. Dans cette version, son lien avec les mondes qu'il a visités ne s'est jamais rompu : il garde le pouvoir de s'y rendre à nouveau, et d'en revenir changé.",
+        bioEn: "Norrin Radd traded his freedom for Zenn-La's survival: Galactus made him his Herald, armed with the Power Cosmic and a board that crosses the stars. In this version, his bond with the worlds he has visited never broke: he still holds the power to return to them, and to come back changed.",
+        civil: "Norrin Radd",
+        base: "Zenn-La, puis la Terre",
+        baseEn: "Zenn-La, then Earth",
+        equipes: "Héraut de Galactus, Défenseurs",
+        equipesEn: "Herald of Galactus, Defenders",
+        ennemis: "Galactus, Terrax, Thanos",
+        ennemisEn: "Galactus, Terrax, Thanos",
+        apparition: "Fantastic Four #48 (1966)",
+    },
+
     "nt001a": {
         bio: "Dwayne Taylor a vu ses parents abattus sous ses yeux quand il etait enfant, et il a hérité d'un empire industriel avant d'avoir l'âge de le comprendre. Il a mis cette fortune au service d'une obsession : traquer le meurtrier. Sans super-pouvoirs, il compense par un entraînement d'arts martiaux, une armure de sa propre conception et une planche de combat blindée qui lui sert tour à tour de véhicule et d'arme. Fondateur et chef des New Warriors, il porte mal la responsabilité d'une équipe d'adolescents : dur avec eux, plus dur encore avec lui-même.",
         bioEn: "Dwayne Taylor watched his parents gunned down in front of him as a child, and inherited an industrial empire before he was old enough to understand it. He turned that fortune toward one obsession: hunting the killer. With no superpowers, he compensates with martial arts training, a suit of his own design and an armoured battle board that serves in turn as vehicle and weapon. Founder and leader of the New Warriors, he wears the responsibility for a team of teenagers badly: hard on them, harder still on himself.",

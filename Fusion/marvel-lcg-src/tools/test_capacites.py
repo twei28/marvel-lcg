@@ -55309,6 +55309,639 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["sk111", 4], ["sk082b", 0]]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « pc » : Silver Surfer (Power Cosmic), mecanique PLANET
+    # ------------------------------------------------------------------------
+    {
+        "nom": "pc001a Silver Surfer — marque « a une planete » : l'attaque de base est BLOQUEE (0 degat)",
+        "pourquoi": ("preuve du blocage impose par le texte imprime de pc001a (« Characters at a PLANET cannot "
+                     "attack or scheme ») : Puzzle.ArriveAtPlanet pose le marqueur `pc_planete_actuelle` (outil de "
+                     "test, voir puzzle.py), puis Puzzle.Attack('pc001a') doit infliger 0 degats a 01094 (Rhino). "
+                     "L'identite finit EPUISEE malgre tout (verifie par diagnostic : le Stunned OFFICIEL laisse "
+                     "aussi l'attaquant epuise apres une attaque empechee — ForcedInterrupt+SetBeInstead intervient "
+                     "APRES que le cout de l'attaque, l'inclinaison, est deja paye ; comportement attendu du moteur, "
+                     "pas un defaut de ce pack)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "pc001a Silver Surfer — TEMOIN, sans marqueur : l'attaque de base part normalement (1 degat), identite EPUISEE",
+        "pourquoi": ("contre-cas du precedent, memes conditions SAUF le marqueur : sans lui l'attaque de base "
+                     "(ATK imprime 1) doit bien toucher Rhino et epuiser l'identite. Sans ce temoin, le cas "
+                     "precedent pourrait passer au vert pour une tout autre raison (Puzzle.Attack cassé, "
+                     "Rhino invulnerable...) sans que le blocage soit reellement en cause"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]], "exhausted": ["pc001a"]},
+    },
+    {
+        "nom": "pc003 Zenn-La — entre en jeu automatiquement au Setup",
+        "pourquoi": ("texte hors-carte de l'auteur (« start with Zenn-La ... in play »), code sur pc001b "
+                     "(AbilityFactory.SetupPutIntoPlay) : Zenn-La ne vit jamais dans player_deck, le scan "
+                     "natif des cartes Setup (world.py) ne la trouverait jamais sans cet appel explicite"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc003"]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Arrive : soigne 2 degats du personnage arrivant",
+        "pourquoi": "texte imprime « Arrive: Heal the arriving character 2. » ; preuve directe sur les degats de l'identite",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Damage('pc001a', 2)", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 0]]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Depart : +1 au PROCHAIN pouvoir de base du personnage partant",
+        "pourquoi": ("texte imprime « Depart: Add +1 to the departing character's next basic power. » : "
+                     "Silver Surfer part de Zenn-La puis attaque (ATK imprime 1) -> 2 degats a Rhino (1+1), "
+                     "preuve que le bonus s'est bien applique a CETTE attaque"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Depart : le bonus ne vaut qu'UNE fois (temoin d'epuisement)",
+        "pourquoi": ("« NEXT basic power », pas tous : une 2e attaque APRES celle qui a consomme le bonus "
+                     "doit revenir a l'ATK imprime (1), sans quoi le bonus serait permanent par erreur"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')", "Puzzle.DepartFromPlanet('pc001a')",
+        ],
+        "declencher": ["Puzzle.Attack('pc001a')", "Puzzle.Ready('pc001a')", "Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "pc001a a une planete — AFFICHAGE PLATEAU (etape 8 bis) : le marqueur traverse jusqu'au JSON envoye au client",
+        "pourquoi": ("PROCESSUS-CARTE.md etape 8 bis : `pc_planete_actuelle` ne deplace AUCUNE carte (decision "
+                     "utilisateur du 04/11/2026), donc rien ne garantit que le client sache qu'un personnage est "
+                     "marque sans un canal explicite vers le JSON. `ArriverA`/`Departir` posent aussi "
+                     "`card.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`), lu par `Render()` dans "
+                     "`info['ui_marker_object_id']` -- c'est CE canal, pas `pc_planete_actuelle`, que lit "
+                     "`ui-app/src/board/zones.ts` pour l'infobulle nom+image. Verifie directement sur le "
+                     "`CardDescriptor` rendu, pas seulement sur l'attribut Python interne : c'est exactement le "
+                     "piege de `su001b` Master Planner cite par PROCESSUS-CARTE (moteur juste, rien a l'ecran)."),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "declencher": [],
+        "verifier": "pc_marqueur_ui_planete",
+    },
+    {
+        "nom": "pc004 Nova Frankie Raye — Action : arrive puis part aussitot, le bonus de depart de la PLANETE profite a SON prochain contre",
+        "pourquoi": ("« I arrive... then depart » (pc004) declenche le Depart de la planete choisie (pc003 Zenn-La, "
+                     "deja en jeu par le Setup) : +1 au prochain pouvoir de base DE FRANKIE RAYE (pas de Silver Surfer). "
+                     "THW imprime 1 + 1 = 2 menaces retirees par son contre. Menace de depart fixee a 5 (PAS 10, modele "
+                     "beast_proust bs004) : le seuil de 01097b (Rhino) est 7 a un joueur -- 10 ACCOMPLIT la manigance "
+                     "AVANT le contre (diagnostic du 05/11/2026, le vrai bug etait dans CE cas de test, pas le moteur)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc004', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Action('pc004', 'Action')", "Puzzle.Thwart('pc004')"],
+        "cibles": ["pc003", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "pc004 Nova Frankie Raye — fin de phase : 1 degat a elle-meme apres avoir utilise son Action",
+        "pourquoi": ("« At the end of the phase, deal 1 damage to me » : declencheur WhenPhaseEnd, hors de portee de "
+                     "l'API Puzzle (modele kb_bow_fin_de_phase) — le verificateur envoie Message.WhenPhaseEnd lui-meme"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc004', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc004', 'Action')"],
+        "cibles": ["pc003"],
+        "verifier": "pc_nova_fin_de_phase",
+    },
+    {
+        "nom": "pc005 Sakaar — Arrive : +2 ATK jusqu'a la fin du round",
+        "pourquoi": ("ATK imprime 1 + 2 = 3 degats a Rhino PAR L'ATTAQUE ; Silver Surfer doit D'ABORD partir de "
+                     "Sakaar (sinon sa propre capacite « Characters at a PLANET cannot attack » bloquerait "
+                     "l'attaque). Ce depart declenche AUSSI le texte « Depart: Deal 2 damage to an enemy » de "
+                     "Sakaar lui-meme (seul ennemi en jeu : Rhino, choisi sans ambiguite) -> 2 + 3 = 5 au total. "
+                     "Le bonus +2 ATK doit donc encore tenir apres le depart pour atteindre ce chiffre"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "pc005 Sakaar — Depart : 2 degats a un ennemi choisi",
+        "pourquoi": "texte imprime « Depart: Deal 2 damage to an enemy »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')"],
+        "cibles": ["01094"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "pc006 Newhaven — Arrive : +2 CTR jusqu'a la fin du round",
+        "pourquoi": ("texte imprime « gains +2 THW until the end of the round » ; verifie DIRECTEMENT la valeur de "
+                     "pouvoir (THW imprime 1 + 2 = 3), pas via Puzzle.Thwart"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "declencher": [],
+        "verifier": "pc_valeur_thw",
+        "attendu": {"thw": 3},
+    },
+    {
+        "nom": "pc006 Newhaven — Depart : retire 2 menaces d'une manigance choisie",
+        "pourquoi": ("texte imprime « Depart: Remove 2 threat from a scheme ». Menace de depart fixee a 5 (PAS 10, "
+                     "modele beast_proust bs004) : le seuil de 01097b (Rhino) est 7 a un joueur -- 10 ACCOMPLIT la "
+                     "manigance AVANT le contre (diagnostic du 05/11/2026 : le vrai bug etait dans l'ANCIEN cas de "
+                     "test lui-meme, pas le moteur ni `Puzzle.Thwart` ni `ChooseAbilities+SetTarget(Scheme2)`)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "cibles": ["01097b"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "DIAGNOSTIC pc007 — Exhaust puis ReadyAll direct, sans planete",
+        "pourquoi": "isoler si le probleme vient de Puzzle.Exhaust/Ready ou du script pc007",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.Ready('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc007 Xandar — Depart : redresse le personnage partant",
+        "pourquoi": "texte imprime « Depart: Ready the departing character » ; Silver Surfer incline (attaque) puis arrive+part de Xandar -> redresse",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')",
+                          "Puzzle.PutIntoPlay('pc007', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc007')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc008 Cosmic Blast — jouee depuis la main (cout 2 energy) en reponse au Depart de Xandar : 5 degats, sans piercing",
+        "pourquoi": ("Hero Response (attack), carte EN MAIN, declenche par `AfterCharacterDepartPlanet` -- modele "
+                     "cr008 Riposte (`main_exclusive`+`payer_avec`+`accepter_choix`, carte offerte automatiquement "
+                     "par le moteur des que le declencheur imprime arrive). PLANET = Xandar (pas Sakaar) : pas de "
+                     "piercing, pas d'option de redressement"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc007', under_control=True)",
+                          "Puzzle.ArriveAtPlanet('pc001a', 'pc007')"],
+        "main_exclusive": ["pc008", "01088"],
+        "payer_avec": ["01088"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "pc008 Cosmic Blast — depart de SAKARA : piercing + redressement facultatif accepte",
+        "pourquoi": "« If that PLANET was Sakaar, this attack gains piercing and you may spend a [energy] resource to ready Silver Surfer »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')",
+                          "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')"],
+        "main_exclusive": ["pc008", "01088", "01088"],
+        "payer_avec": ["01088"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc009 Lightspeed Entrance — jouee depuis la main (cout 0) en reponse au Depart de Xandar : 2 menaces retirees",
+        "pourquoi": "Hero Response (thwart), meme modele que pc008 ; PLANET = Xandar (pas Newhaven) : pas d'option de redressement",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc007', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc007')"],
+        "main_exclusive": ["pc009"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "pc009 Lightspeed Entrance — depart de NEWHAVEN : redressement facultatif accepte",
+        "pourquoi": "« If that PLANET was Newhaven, you may spend a [mental] resource to ready Silver Surfer »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "main_exclusive": ["pc009", "01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc010 Surfin' — jouee (cout REELLEMENT paye : 1 physical) : Exhaust Cosmic Surfboard, 9 degats, overkill accepte",
+        "pourquoi": ("carte jouee par le vrai chemin (`jouer`, modele `jouer_carte` du harnais, PAS "
+                     "`Puzzle.PutIntoPlay` qui ne resout jamais l'effet d'un evenement -- piege documente "
+                     "le 05/11/2026). 9 degats + overkill facultatif accepte (Rhino 7 PV)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)"],
+        "main_exclusive": ["pc010", "01090"],
+        "jouer": ["pc010"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 9]], "exhausted": ["pc002"], "defausse": ["pc010", "01090"]},
+    },
+    {
+        "nom": "pc011 Ride Along — jouee (cout REELLEMENT paye : 1 energy) puis Action : arrive puis part aussitot, se defausse",
+        "pourquoi": ("Amelioration jouee par le vrai chemin (`jouer`), puis son Action declenchee separement "
+                     "(`Puzzle.Action`) -- PAS `Puzzle.PutIntoPlay` qui pose la carte sans jamais offrir son Action "
+                     "(piege documente le 05/11/2026). pc001a (Hero) arrive a Zenn-La (pc003) puis en repart aussitot "
+                     "-> soigne 2 degats (texte pc003 Arrive), carte toujours defaussee"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.Damage('pc001a', 2)"],
+        "main_exclusive": ["pc011", "01088"],
+        "jouer": ["pc011"],
+        "declencher": [],
+        "declencher_apres": ["Puzzle.Action('pc011', 'Action')"],
+        "cibles": ["pc003", "pc001a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 0]], "hors_jeu": ["pc011"]},
+    },
+    {
+        "nom": "pc012 Psionic Bond — incline cette carte et une ressource, redresse Cosmic Surfboard",
+        "pourquoi": "texte imprime : Cosmic Surfboard incline -> redresse via Psionic Bond",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.Exhaust('pc002')", "Puzzle.PutIntoPlay('pc012', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc012', 'Action')"],
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc002"], "exhausted": ["pc012"]},
+    },
+    {
+        "nom": "pc014 The Power Cosmic — depensee pour JOUER une carte POWER COSMIC : repiochee (seule carte du deck) puis 1 carte tiree",
+        "pourquoi": ("modele dy012/mt006 (`AfterYouSpendThisCard`). Deck VIDE avant resolution : apres que pc014 se "
+                     "soit elle-meme melangee dans le deck (texte imprime, toujours), c'est la SEULE carte qui s'y "
+                     "trouve -> la pioche qui suit (puisque pc010 Surfin' porte POWER COSMIC) la ramene forcement en "
+                     "main, resultat deterministe malgre le melange"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.EmptyPlayerDeck()"],
+        "main_exclusive": ["pc010", "pc014"],
+        "jouer": ["pc010"],
+        "payer_avec": ["pc014"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "preferer_option": "Cancel",
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pc014"]},
+    },
+    {
+        "nom": "pc014 The Power Cosmic — depensee pour un COUT DE CAPACITE (pas une carte jouee) : repiochee, AUCUNE carte tiree",
+        "pourquoi": "« if you spent it on a POWER COSMIC or COSMIC card » : `pay_for_card` est None pour un cout de capacite (Action de Psionic Bond, pas une carte JOUEE) -- pas de pioche",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.Exhaust('pc002')", "Puzzle.PutIntoPlay('pc012', under_control=True)",
+                          "Puzzle.EmptyPlayerDeck()"],
+        "main_exclusive": ["pc014"],
+        "declencher": ["Puzzle.Action('pc012', 'Action')"],
+        "payer_avec": ["pc014"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc002"], "absent_main": ["pc014"], "dans_deck_joueur": ["pc014"]},
+    },
+    {
+        "nom": "pc013 Cosmic Awareness — jouee (cout 0), un sbire qui s'engage arrive a la planete choisie et est Confused",
+        "pourquoi": ("Amelioration jouee par le vrai chemin (`jouer`, cout imprime 0 -- modele `jouer_carte` du "
+                     "harnais) -- PAS `Puzzle.PutIntoPlay`. Engagement reel via `Puzzle.PutIntoPlay('01101')` "
+                     "SANS `under_control` (modele sr001a « Just Like Flies », seul declencheur confirme "
+                     "`WhenMinionEngagePlayer` du harnais -- `Puzzle.Engage` ne l'envoie jamais, piege documente "
+                     "le 05/11/2026) ; 17011 (Adam Warlock, un ALLIE) etait une mauvaise cible, corrige en 01101 "
+                     "Hydra Mercenary (minion core)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.Gain('pc013')"],
+        "main": ["pc013"],
+        "jouer": ["pc013"],
+        "declencher": [],
+        "declencher_apres": ["Puzzle.PutIntoPlay('01101')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01101", "Confused"]], "hors_jeu": ["pc013"]},
+    },
+    {
+        "nom": "pc015 Tactical Navigation — declare Silver Surfer defenseur sans l'incliner",
+        "pourquoi": "texte imprime : Silver Surfer devient defenseur d'une attaque ennemie, SANS s'incliner",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)", "Puzzle.Gain('pc015')"],
+        "main": ["pc015"],
+        "declencher": ["Puzzle.Activate('01094')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc016 Black Hole — entre en jeu : le mechant arrive ici (3 degats) et ne peut plus attaquer",
+        "pourquoi": ("texte imprime : « choose a player -> the villain ... arrive here and take 3 damage ». Le "
+                     "blocage imprime de Silver Surfer lui-meme (« Characters at a PLANET cannot attack ») s'applique "
+                     "a N'IMPORTE QUEL personnage, y compris le mechant envoye ici -- preuve indirecte que l'arrivee "
+                     "a bien pose le marqueur : la tentative d'attaque qui suit est annulee (0 degat a l'identite)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('pc016', under_control=True)", "Puzzle.Attack('01094')"],
+        "cibles": ["pc001a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3], ["pc001a", 0]]},
+    },
+    {
+        "nom": "pc016 Black Hole — retiree de la partie au debut de la PROCHAINE phase joueur, le mechant repart (peut de nouveau attaquer)",
+        "pourquoi": ("« At the start of the next player phase, remove this card from the game ». Decision "
+                     "utilisateur du 05/11/2026 (QUESTIONS-AUTEUR.md Q2) : le mechant encore marque ici en repart "
+                     "explicitement a ce moment -- verifie DIRECTEMENT que le marqueur « a une planete » du mechant "
+                     "est efface (pas via une nouvelle attaque : ATK imprime 2 de Rhino contre DEF imprime 2 de "
+                     "Silver Surfer donne 0 degat de toute facon une fois defendue, ce qui aurait masque la preuve -- "
+                     "piege trouve le 05/11/2026)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc016', under_control=True)"],
+        "cibles": ["pc001a"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.BeginPlayerPhase()"],
+        "verifier": "pc_black_hole_reparti",
+    },
+    {
+        "nom": "pc017 Ego — Arrive : 6 degats a lui-meme",
+        "pourquoi": "texte imprime « Arrive: Deal 6 damage to Ego »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('pc017', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc017", 6]]},
+    },
+    {
+        "nom": "pc017 Ego — vaincu (6 degats d'Arrive + 6 de plus) : pc018 Ego The Living Planet entre en jeu, pc017 retire de la partie",
+        "pourquoi": "« When Defeated: Put the set aside Ego The Living Planet ally into play under your control. Remove this card from the game »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc017', under_control=True)"],
+        "declencher": ["Puzzle.Damage('pc017', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pc017"], "en_jeu": ["pc018"]},
+    },
+    {
+        "nom": "pc018 Ego The Living Planet — Action : accueille un sbire choisi, subit des degats egaux a SON ATK a lui",
+        "pourquoi": ("« Action: Choose a minion -> that minion arrives here and I take damage equal to that minion's "
+                     "ATK » (01101 Hydra Mercenary, ATK IMPRIME 1, pas 2 -- verifie sur cards.json)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc018', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Action('pc018', 'Action')"],
+        "cibles": ["01101"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc018", 1]]},
+    },
+    {
+        "nom": "pc018 Ego The Living Planet — fin du ROUND : le sbire accueilli subit des degats egaux a l'ATK de pc018, puis repart",
+        "pourquoi": ("« At the end of the round, each character here takes damage equal to my ATK, then departs » "
+                     "(ATK imprime 3 de pc018). Cosmic Surfboard (pc002) RETIREE de la main avant le cas -- son "
+                     "propre « Forced Interrupt: at the end of the round, all enemies at a PLANET depart » (deja "
+                     "prouvee) passe AVANT cette Response et recupere le sbire SANS degat en premier, masquant la "
+                     "preuve de CETTE carte : interaction reelle entre deux cartes du pack, pas un bug, mais qui "
+                     "doit etre isolee pour prouver pc018 seule. 02023 Goblin Soldier (5 PV, ni Tough ni Elite) : "
+                     "01101 Hydra Mercenary n'a que 3 PV (mourrait exactement sous les 3 degats, masquant le "
+                     "« puis repart ») et 01102 Sandman porte Tough (absorbe le degat en entier) -- pieges trouves "
+                     "le 05/11/2026"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Remove('pc002')",
+                          "Puzzle.PutIntoPlay('pc018', under_control=True)", "Puzzle.PutIntoPlay('02023')"],
+        "declencher": ["Puzzle.Action('pc018', 'Action')", "Puzzle.SendRoundEnd()"],
+        "cibles": ["02023"],
+        "accepter_choix": True,
+        "verifier": "pc_ego_fin_de_round",
+    },
+    {
+        "nom": "pc001b — Setup : le planet deck personnel est peuple de Sakaar/Newhaven/Xandar/Ego, melange",
+        "pourquoi": ("regle hors carte (QUESTIONS-AUTEUR.md) : « Shuffle the planet deck and set it aside "
+                     "facedown ». Correctif du 05/11/2026 (matin) : rien ne le remplissait jamais avant -- le "
+                     "deck restait TOUJOURS VIDE, invisible aux cas qui posent Sakaar/Newhaven/Xandar/Ego "
+                     "directement par `Puzzle.PutIntoPlay`"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "pc_planet_deck_peuple",
+    },
+    {
+        "nom": "pc001b — Action « put the top card of the planet deck into play » : tire reellement une carte DU DECK",
+        "pourquoi": ("meme regle hors carte, cote tirage cette fois : avant le correctif, `PlanetDeck(joueur)."
+                     "GetTop()` rendait toujours None (deck vide), donc cette Action ne faisait jamais rien en "
+                     "vraie partie"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('pc001b', 'Action')"],
+        "verifier": "pc_planet_deck_action_tire",
+    },
+    {
+        "nom": "pc019 Terrax — When Revealed : trouve et attache Terrax's Axe a lui-meme, revele Herald of Galactus",
+        "pourquoi": "texte imprime : les deux effets du reveal",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('pc019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc019", "pc021", "pc020"]},
+    },
+    {
+        "nom": "pc019 Terrax — ne peut jamais arriver a une planete (immunite posee a l'entree en jeu)",
+        "pourquoi": "« Terrax cannot arrive at or depart a PLANET » -- tente de l'y envoyer via le meme chemin que Black Hole",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)"],
+        "declencher": ["Puzzle.ArriveAtPlanet('pc019', 'pc003')"],
+        "verifier": "pc_terrax_immunise",
+    },
+    {
+        "nom": "pc020 Herald of Galactus — la menace ne peut pas etre retiree tant que Terrax est en jeu",
+        "pourquoi": "« Threat cannot be removed from this scheme while Terrax is in play »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)", "Puzzle.SetThreat('pc020', 2)"],
+        "cibles": ["pc020"],
+        "declencher": ["Puzzle.Thwart('pc001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["pc020", 2]]},
+    },
+    {
+        "nom": "pc020 Herald of Galactus — apres une attaque de Terrax, menace += degats infliges ; 5+ retire une PLANETE au hasard",
+        "pourquoi": ("« add threat here equal to the amount of damage dealt. Then, if 5 or more, remove a random "
+                     "PLANET ». Terrax attaque pc004 Nova Frankie Raye (DEF 0 imprimee, PAS pc001a dont DEF 2 "
+                     "annulerait entierement l'ATK 2 de Terrax et masquerait la preuve) ; pc001a EXHAUST pour ne "
+                     "PAS pouvoir voler la defense a pc004 (n'importe quel heros pret peut defendre n'importe "
+                     "quelle cible engagee, pas seulement la cible attaquee) ; AUCUN `SetThreat` -- un complot "
+                     "annexe REDUIT a 0 menace est VAINCU/retire (regle generale des complots annexes), donc "
+                     "`SetThreat('pc020', 0)` AVANT Terrax l'aurait fait disparaitre instantanement (menace "
+                     "imprimee 1), et APRES Terrax (ou sa propre regle bloque le retrait) l'aurait rendu sans "
+                     "effet -- piege trouve en pratiquant les deux ordres. On garde la menace imprimee (1) comme "
+                     "point de depart ; main et deck rencontre neutralises pour eviter toute carte/boost parasite"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc004', under_control=True)",
+                          "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.EnemyAttacks('pc019', 'pc004')"],
+        "verifier": "pc_herald_apres_attaque",
+    },
+    {
+        "nom": "pc021 Terrax's Axe — Terrax ABSENT : s'attache au mechant actif au lieu de Terrax",
+        "pourquoi": "« if Terrax is not in play attach to the villain instead »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('pc021', under_control=True)"],
+        "verifier": "pc_axe_attachee_au_mechant",
+    },
+    {
+        "nom": "pc021 Terrax's Axe — Forced Response : apres que le porteur attaque et inflige des degats, la cible est etourdie",
+        "pourquoi": ("« After the attached character attacks, if that attack dealt damage, stun the attacked "
+                     "character ». Meme choix de cible que pc020 (pc004, DEF 0) pour la meme raison ; pc001a "
+                     "EXHAUST pour ne pas pouvoir voler la defense a pc004 (n'importe quel heros pret peut "
+                     "defendre n'importe quelle cible engagee, pas seulement la cible attaquee)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc021', under_control=True)", "Puzzle.Attach('pc021', 'pc019')",
+                          "Puzzle.PutIntoPlay('pc004', under_control=True)",
+                          "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.EnemyAttacks('pc019', 'pc004')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["pc004", "Stunned"]]},
+    },
+    {
+        "nom": "pc022 Cleave The Way — trouve/revele Terrax's Axe puis son porteur attaque le joueur",
+        "pourquoi": ("« Find and reveal Terrax's Axe. Then, the character that Terrax's Axe is attached to attacks "
+                     "you ». « Attacks YOU » cible toujours le JOUEUR (pas une ally) : la seule carte defendante "
+                     "disponible est l'identite elle-meme (pc001a, DEF 2) -- main et deck rencontre neutralises "
+                     "pour que ce DEF imprime soit la seule variable, MAIS Terrax's Axe donne +1 ATK IMPRIME a son "
+                     "porteur (pc021.py, bas de carte) : ATK 2+1=3 contre DEF 2 -> 1 degat net, PAS 0 (chiffre "
+                     "trouve surprenant au premier passage, confirme par relecture du texte imprime de pc021, pas "
+                     "un bug) ; verifie aussi via l'INCLINAISON de pc001a -- preuve que la defense a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pc022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc021"], "exhausted": ["pc001a"], "degats": [["pc001a", 1]]},
+    },
+    {
+        "nom": "pc023 Hungry Master — Terrax en jeu : menace sur Herald +1 puis Terrax attaque le joueur",
+        "pourquoi": ("« add 1 threat to the Herald of Galactus side scheme, then Terrax attacks you ». Meme preuve "
+                     "indirecte que pc022 (« attacks you » ne peut pas etre redirige vers une ally a DEF plus "
+                     "faible) : l'INCLINAISON de pc001a prouve que la defense a eu lieu. AUCUN `SetThreat` -- un "
+                     "complot annexe a 0 menace est VAINCU/retire (voir pc020) : on garde la menace imprimee (1), "
+                     "+1 de Hungry Master = 2 attendu."),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pc023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["pc020", 2]], "exhausted": ["pc001a"]},
+    },
+    {
+        "nom": "pc023 Hungry Master — TEMOIN, Terrax absent : aucune attaque, la carte gagne surge",
+        "pourquoi": "« If no attack was made this way, this card gains surge »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.Reveal('pc023')"],
+        "verifier": "pc_hungry_master_surge",
+    },
+    {
+        "nom": "pc024 Hunger of Galactus — le texte de chaque environnement PLANET est traite comme vierge",
+        "pourquoi": "« Treat the text box of each PLANET environment as blank » : Zenn-La (Arrive: heal 2) n'a plus d'effet",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc024', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)", "Puzzle.Damage('pc001a', 2)"],
+        "declencher": ["Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 2]]},
+    },
+    {
+        "nom": "pc024 Hunger of Galactus — Alter-Ego Action : Exhaust Cosmic Surfboard, choisit une PLANETE -> la retire de la partie, se defausse",
+        "pourquoi": "texte imprime, action et cout",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc024', under_control=True)", "Puzzle.PutIntoPlay('pc003', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc024', 'AlterEgoAction')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pc003", "pc024"]},
+    },
 ]
 # ----------------------------------------------------- cas par bloc, hors fichier --
 # AJOUT (15/10/2026, coffret Skrull Menace) : plusieurs agents ecrivent leurs cas
@@ -60415,6 +61048,206 @@ def kb_bow_fin_de_phase(monde, aides):
         return False, (f"compteurs arrow sur Kate's Bow = {apres} apres WhenPhaseEnd "
                        f"(attendu {avant + 1} : {avant} avant + 1 place en fin de phase)")
     return True, f"1 compteur fleche pose en fin de phase joueur ({avant} -> {apres})"
+
+def pc_diagnostic_en_jeu(monde, aides):
+    """DIAGNOSTIC temporaire : liste tout ce qui est en jeu, pour trouver le
+    vrai card_id du complot principal sur ce deck."""
+    ids = []
+    for objet in monde.object_manager.card_dict.values():
+        face = getattr(objet, "face", None)
+        if face is not None and face.IsInPlay():
+            ids.append(getattr(face.paper, "card_id", "?"))
+    return False, f"en jeu : {sorted(ids)}"
+
+def pc_valeur_thw(monde, aides):
+    """pc006 Newhaven (et toute carte « gains +N THW until the end of the
+    round ») : verifie `identite.thwart` DIRECTEMENT plutot que via
+    `Puzzle.Thwart`, inutilisable sur ce deck (voir le commentaire du cas :
+    souci preexistant du harnais, independant de cette carte, isole par
+    diagnostic le 05/11/2026 — meme SANS blocage pc001a/b ni carte pc, un
+    Thwart minimal ne retire aucune menace alors que `identite.thwart` vaut
+    bien la valeur attendue)."""
+    attendu = aides["cas"].get("attendu") or {}
+    identite = aides["par_id"](monde, "pc001a")
+    if identite is None:
+        return False, "pc001a introuvable"
+    if identite.thwart != attendu.get("thw"):
+        return False, f"thwart={identite.thwart} (attendu {attendu.get('thw')})"
+    return True, f"thwart={identite.thwart}"
+
+def pc_black_hole_reparti(monde, aides):
+    """pc016 Black Hole : au debut de la PROCHAINE phase joueur, la carte est
+    retiree de la partie ET le mechant encore marque la-bas en repart
+    (decision utilisateur du 05/11/2026, QUESTIONS-AUTEUR.md Q2). Verifie le
+    marqueur `pc_planete_actuelle` DIRECTEMENT (pas via une nouvelle attaque :
+    ATK 2 de Rhino contre DEF 2 de Silver Surfer donnerait 0 degat de toute
+    facon une fois defendue, meme sans blocage -- preuve ambigue)."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "01094 Rhino introuvable"
+    if EstÀUnePlanète(rhino) is not None:
+        return False, "Rhino est encore marque « a une planete » apres le retrait de Black Hole"
+    pc016 = aides["par_id"](monde, "pc016")
+    if pc016 is not None and pc016.IsInPlay():
+        return False, "pc016 Black Hole est encore en jeu"
+    return True, "Black Hole retiree, Rhino reparti"
+
+def pc_ego_fin_de_round(monde, aides):
+    """pc018 Ego The Living Planet : « At the end of the round, each
+    character here takes damage equal to my ATK, then departs. » Verifie
+    que 02023 Goblin Soldier (5 PV, arrive via l'Action du cas) a subi 3
+    degats (ATK imprime de pc018, survit) ET que son marqueur « a une
+    planete » est efface (le « then departs » n'est pas qu'un degat)."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    sbire = aides["par_id"](monde, "02023")
+    if sbire is None:
+        return False, "02023 introuvable"
+    degats = sbire.max_health - sbire.health
+    if degats != 3:
+        return False, f"degats sur 02023 = {degats} (attendu 3, ATK imprime de pc018)"
+    if EstÀUnePlanète(sbire) is not None:
+        return False, "02023 est encore marque « a Ego The Living Planet » apres la fin du round"
+    return True, f"3 degats infliges a 02023 (ATK de pc018), puis reparti"
+
+def pc_planet_deck_peuple(monde, aides):
+    """pc001b : « Shuffle the planet deck and set it aside facedown » (regle
+    hors carte). Le planet deck personnel doit contenir Sakaar/Newhaven/
+    Xandar/Ego des le Setup -- avant le correctif du 05/11/2026, rien ne le
+    remplissait jamais (toujours vide, l'Action « put the top card... » ne
+    faisait donc jamais rien en vraie partie)."""
+    joueur = monde.players[0]
+    deck = getattr(joueur, 'pc_planet_deck', None)
+    if deck is None:
+        return False, "pc_planet_deck jamais cree"
+    ids = sorted(getattr(c.paper, 'card_id', '?') for c in deck.Get(True))
+    attendu = ["pc005", "pc006", "pc007", "pc017"]
+    if ids != attendu:
+        return False, f"planet deck = {ids} (attendu {attendu})"
+    return True, f"planet deck peuple : {ids}"
+
+def pc_planet_deck_action_tire(monde, aides):
+    """pc001b : « Action: Exhaust Cosmic Surfboard -> put the top card of
+    the planet deck into play. » Verifie qu'UNE des 4 cartes du planet deck
+    est bien entree en jeu (n'importe laquelle, l'ordre est melange) ET que
+    le deck en contient une de moins."""
+    joueur = monde.players[0]
+    deck = getattr(joueur, 'pc_planet_deck', None)
+    if deck is None:
+        return False, "pc_planet_deck jamais cree"
+    restantes = len(deck.Get(True))
+    if restantes != 3:
+        return False, f"{restantes} cartes restantes dans le planet deck (attendu 3)"
+    candidats = ["pc005", "pc006", "pc007", "pc017"]
+    en_jeu = [cid for cid in candidats if aides["par_id"](monde, cid) is not None]
+    if len(en_jeu) != 1:
+        return False, f"cartes du planet deck en jeu = {en_jeu} (attendu exactement 1)"
+    return True, f"{en_jeu[0]} tiree du planet deck et mise en jeu, {restantes} restantes"
+
+def pc_terrax_immunise(monde, aides):
+    """pc019 Terrax : « Terrax cannot arrive at or depart a PLANET » --
+    verifie que la tentative d'arrivee n'a pose AUCUN marqueur."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    terrax = aides["par_id"](monde, "pc019")
+    if terrax is None:
+        return False, "pc019 introuvable"
+    if EstÀUnePlanète(terrax) is not None:
+        return False, "Terrax est marque « a une planete » malgre son immunite imprimee"
+    return True, "Terrax n'a jamais ete marque a une planete"
+
+def pc_marqueur_ui_planete(monde, aides):
+    """Etape 8 bis PROCESSUS-CARTE : pc001a marque « a la planete » pc003 doit
+    porter `info['ui_marker_object_id'] == <object_id de pc003>` sur son
+    `CardDescriptor` RENDU (`card.Render()`), pas seulement sur l'attribut
+    Python interne `pc_planete_actuelle` (qui ne traverse jamais vers le
+    client)."""
+    surfer = aides["par_id"](monde, "pc001a")
+    zenn_la = aides["par_id"](monde, "pc003")
+    if surfer is None:
+        return False, "pc001a introuvable"
+    if zenn_la is None:
+        return False, "pc003 introuvable"
+    descripteur = surfer.card.Render()
+    marqueur = descripteur.info.get("ui_marker_object_id")
+    if marqueur != zenn_la.card.object_id:
+        return False, (f"info['ui_marker_object_id'] = {marqueur!r} "
+                        f"(attendu l'object_id de pc003, {zenn_la.card.object_id})")
+    return True, f"info['ui_marker_object_id'] = {marqueur} : le client peut retrouver pc003"
+
+def pc_herald_apres_attaque(monde, aides):
+    """pc020 Herald of Galactus : « add threat here equal to the amount of
+    damage dealt by that attack. Then, if 5 or more, remove a random
+    PLANET from the game. » Terrax (ATK 2) attaque pc004 (DEF 0, pc001a
+    exhaust pour ne pas voler la defense) -> 2 degats, menace imprimee 1 +
+    2 = 3 (< 5, aucune planete retiree ; pc003 doit rester)."""
+    herald = aides["par_id"](monde, "pc020")
+    if herald is None:
+        return False, "pc020 introuvable"
+    if herald.threat != 3:
+        return False, f"menace sur pc020 = {herald.threat} (attendu 3, 1 imprimee + 2 degats de l'attaque de Terrax)"
+    zenn_la = aides["par_id"](monde, "pc003")
+    if zenn_la is None:
+        return False, "pc003 Zenn-La a disparu alors que la menace est < 5 (aucune planete ne doit etre retiree)"
+    return True, f"menace sur pc020 = {herald.threat}, pc003 toujours en jeu"
+
+def pc_axe_attachee_au_mechant(monde, aides):
+    """pc021 Terrax's Axe : « if Terrax is not in play attach to the
+    villain instead ». Terrax absent -> doit s'attacher a Rhino (01094)."""
+    hache = aides["par_id"](monde, "pc021")
+    if hache is None:
+        return False, "pc021 introuvable"
+    porteur = hache.GetBindFace()
+    porteur_id = getattr(getattr(porteur, "paper", None), "card_id", None)
+    if porteur_id != "01094":
+        return False, f"pc021 est attachee a {porteur_id} (attendu 01094 Rhino, Terrax absent)"
+    return True, "pc021 attachee au mechant (Terrax absent)"
+
+def pc_hungry_master_surge(monde, aides):
+    """pc023 Hungry Master, TEMOIN Terrax absent : « If no attack was made
+    this way, this card gains surge. » `this.GainSurge(1, effect)`
+    (`ThisCardGainSurge`) se lit sur la propriete `surge` (`CanSurge`,
+    can_surge.py:25) -- doit valoir au moins 1 (surge imprime 0 + 1 gagne).
+
+    ⚠ `aides["par_id"]` filtre sur `IsInPlay()` : une Treachery se defausse
+    AUTOMATIQUEMENT juste apres la resolution de son `WhenRevealed` (meme
+    tick), donc introuvable par ce chemin au moment ou le verificateur
+    tourne. L'objet Python (et son attribut `surge`) survit au discard --
+    seul `IsInPlay()` devient faux -- donc on cherche ici SANS ce filtre."""
+    carte = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and getattr(getattr(face, "paper", None), "card_id", None) == "pc023":
+            carte = face
+            break
+    if carte is None:
+        return False, "pc023 introuvable (meme hors jeu)"
+    if carte.surge < 1:
+        return False, f"surge = {carte.surge} (attendu >= 1, ThisCardGainSurge aurait du l'ajouter)"
+    return True, f"surge = {carte.surge} : aucune attaque n'a eu lieu (Terrax absent), gagne bien surge"
+
+def pc_nova_fin_de_phase(monde, aides):
+    """pc004 Nova Frankie Raye : « At the end of the phase, deal 1 damage to
+    me. » Meme principe que `kb_bow_fin_de_phase` : `WhenPhaseEnd` n'est pas
+    atteignable par l'API Puzzle, le verificateur envoie le message lui-meme.
+    """
+    from game.message import Message
+
+    frankie = aides["par_id"](monde, "pc004")
+    if frankie is None:
+        return False, "pc004 Nova Frankie Raye n'est pas en jeu"
+    avant = frankie.max_health - frankie.health
+
+    message = Message.WhenPhaseEnd(monde.phase_id, "Player", monde)
+    message.Send()
+
+    apres = frankie.max_health - frankie.health
+    if apres != avant + 1:
+        return False, (f"degats sur pc004 = {apres} apres WhenPhaseEnd "
+                       f"(attendu {avant + 1} : {avant} avant + 1 inflige en fin de phase)")
+    return True, f"1 degat inflige a Nova Frankie Raye en fin de phase ({avant} -> {apres})"
 
 def kb_madame_masque_stats(monde, aides):
     """kb017 : ATK/SCH de Madame Masque = ATK/THW IMPRIMES de la face HEROS de

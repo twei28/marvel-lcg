@@ -1643,6 +1643,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Crise : la menace ne peut pas être retirée d’ici tant que':
     'Crisis: threat cannot be removed from here while',
   'est en jeu.': 'is in play.',
+  'À la planète': 'At the planet',
+  'Planète': 'Planet',
   // Le plateau portrait en bandes (12/09/2026)
   'Manigances': 'Schemes',
   'Aucun méchant': 'No villain',

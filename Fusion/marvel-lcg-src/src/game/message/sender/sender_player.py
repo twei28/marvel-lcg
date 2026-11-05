@@ -93,6 +93,54 @@ class SenderPlayer:
             text = TransText("{player} resolves the Flow of {card}", player=player, card=flow_face)
             self.Present(text, "", flow_face)
 
+    class AfterCharacterArrivePlanet(TriggerNonePlayerMessage):
+        """MOT-CLE MAISON PLANET / PLAYER ENVIRONMENT (pack custom silver_surfer_power_cosmic, prefixe pc, 04/11/2026).
+
+        `character_face` vient d'ARRIVER (helper `ArriverA`, pack __init__.py) a la carte PLANET
+        `planet_face`. Aucune carte ne change de zone (revirement du 04/11/2026) : `ArriverA` pose
+        un simple marqueur (`personnage.card.pc_planete_actuelle`) et envoie ce message.
+        `player` est le JOUEUR de `character_face` (celui qui controle le personnage arrivant, pas
+        forcement le proprietaire de la carte PLANET : Black Hole peut y faire arriver le mechant/un
+        sbire, auquel cas `player` est None — les cartes du pack qui recompensent une arrivee ne
+        reagissent qu'aux PERSONNAGES DU JOUEUR, jamais a un ennemi envoye la, d'ou le filtre de la
+        fabrique `AfterCharacterArrivePlanet` (factory/setup.py). Fiche
+        docs/reference/mots-cles/environnement-joueur.md.
+
+        ⚠ CORRECTIF (05/11/2026, pc013 Cosmic Awareness) : herite de
+        `TriggerNonePlayerMessage` (qui accepte reellement `player=None`), PAS
+        `TriggerPlayerMessage` (son `__init__` deref `player.world`
+        inconditionnellement -> `AttributeError: 'NoneType' object has no
+        attribute 'world'` des qu'un ENNEMI sans joueur arrive a une
+        planete -- exactement le cas que ce message pretendait deja gerer).
+        `world` doit donc etre fourni explicitement, pris sur la carte qui
+        arrive (toujours presente, joueur ou non).
+        """
+        def __init__(self, player: 'Player|None', character_face: 'CardFace', planet_face: 'CardFace') -> None:
+            self.character_face: Final = character_face
+            self.planet_face: Final = planet_face
+            super().__init__(player=player, world=character_face.card.world)
+            text = TransText("{character} arrives at {planet}", character=character_face, planet=planet_face)
+            self.Present(text, "", character_face, planet_face)
+
+    class AfterCharacterDepartPlanet(TriggerNonePlayerMessage):
+        """MOT-CLE MAISON PLANET / PLAYER ENVIRONMENT (pack custom silver_surfer_power_cosmic, prefixe pc, 04/11/2026).
+
+        Symetrique de `AfterCharacterArrivePlanet` : `character_face` vient de QUITTER la carte PLANET
+        `planet_face` (Departir). Les cartes « Hero Response (attack/thwart) : After Silver Surfer
+        departs a PLANET » (Cosmic Blast, Lightspeed Entrance) et « Hero Interrupt : ... Silver Surfer
+        arrives at that planet, then departs » (Tactical Navigation) y reagissent, et testent
+        `planet_face` pour « if that PLANET was Sakaar/Newhaven ».
+
+        ⚠ Meme correctif que `AfterCharacterArrivePlanet` ci-dessus (05/11/2026) :
+        `TriggerNonePlayerMessage`, pas `TriggerPlayerMessage`, `world` fourni explicitement.
+        """
+        def __init__(self, player: 'Player|None', character_face: 'CardFace', planet_face: 'CardFace') -> None:
+            self.character_face: Final = character_face
+            self.planet_face: Final = planet_face
+            super().__init__(player=player, world=character_face.card.world)
+            text = TransText("{character} departs {planet}", character=character_face, planet=planet_face)
+            self.Present(text, "", character_face, planet_face)
+
     class WhenPlayerWouldDrawCard(TriggerPlayerMessage, TriggerFaceMessage, CanBeInstead):
         def __init__(self, player: 'Player', face: 'CardFace', by_effect: 'Effect') -> None:
             self.by_effect: Final = by_effect

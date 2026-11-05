@@ -29,6 +29,14 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Discard it and deal another')).toBe('La défausser et en distribuer une autre')
   })
 
+  it('traduit les boutons de choix du pack Blade (signalement mobile 05/11/2026)', () => {
+    enFrancais()
+    expect(traduireMoteur('Heal 2 damage from Blade')).toBe('Soigner 2 dégâts de Blade')
+    expect(traduireMoteur('Place 1 blood counter on Blade')).toBe('Placer 1 jeton Sang sur Blade')
+    expect(traduireMoteur('Exhaust a WEAPON upgrade you control to stun that enemy'))
+      .toBe('Incliner une amélioration ARME que vous contrôlez pour sonner cet ennemi')
+  })
+
   it('traduit le choix du mot-clé Starting (signalement Yarro n°70)', () => {
     enFrancais()
     expect(traduireMoteur('Add this card to your starting hand')).toBe('Ajouter cette carte à ta main de départ')

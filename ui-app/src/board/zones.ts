@@ -602,6 +602,26 @@ function pileFondue(
  * effet, et rien sur la table ne le disait. Le joueur a rejoue le meme coup
  * trois fois.
  */
+/**
+ * Index id -> {nom, pic_id} de toutes les cartes PLAYER ENVIRONMENT en jeu
+ * (pack maison Silver Surfer « Power Cosmic »), pour resoudre
+ * `info.ui_marker_object_id` (voir `environnementMarqueDe` dans
+ * `card-model.ts`) sans repeter ce balayage a chaque carte rendue.
+ *
+ * Une carte PLANET vit dans `world.area_environment` (partagee) ou dans
+ * `joueur.environment_area` (personnelle, le cas de ce pack) : les deux sont
+ * balayes, aucune hypothese sur laquelle des deux heberge une carte donnee.
+ */
+function planetesParId(world: World): ReadonlyMap<number, { nom: string; picId: string }> {
+  const index = new Map<number, { nom: string; picId: string }>()
+  const ajouter = (cartes: readonly WorldCard[] | undefined) => {
+    for (const carte of cartes ?? []) index.set(carte.id, { nom: carte.name, picId: carte.pic_id })
+  }
+  ajouter(world.area_environment)
+  for (const joueur of world.players ?? []) ajouter(joueur.environment_area)
+  return index
+}
+
 function avecCrise(unites: UniteAffichee[], world: World): UniteAffichee[] {
   const annexes = Array.isArray(world.area_schemes_side) ? world.area_schemes_side : []
   const crise = annexes.find((carte) => Number(carte?.info?.crisis ?? 0) > 0)
@@ -808,6 +828,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
       playerId: options.playerId,
       actives: new Set(world.active_card_ids ?? []),
       catalogue: options.catalogue,
+      planetesParId: planetesParId(world),
     },
     ecartes: { total: 0 },
     representantsDePile: new Map(),

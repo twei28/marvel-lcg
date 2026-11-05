@@ -615,6 +615,24 @@ class RunPuzzle:
         for _ in range(n):
             Faces.GiveStatus([unit], "Intensified", DebugRule(unit))
 
+    def ArriveAtPlanet(self, card: CardName, planet_card: CardName):
+        """Pose le marqueur « a une planete » du pack `silver_surfer_power_cosmic`
+        (prefixe pc) sur `card`, comme si elle venait d'arriver a `planet_card`.
+        Outil de test uniquement (ArriverA n'est normalement appele que par les
+        cartes du pack elles-memes). `planet_card` n'a pas besoin d'etre une
+        vraie carte PLANET pour ce harnais : seule sa reference est stockee."""
+        from cards.pack.silver_surfer_power_cosmic import ArriverA
+        personnage = self.FindOrCreateFace(card)
+        planete = self.FindOrCreateFace(planet_card)
+        ArriverA(DebugRule(personnage), personnage, planete)
+
+    def DepartFromPlanet(self, card: CardName):
+        """Symetrique de `ArriveAtPlanet` : retire le marqueur « a une planete »
+        de `card`, comme si elle en partait (`Departir`). Outil de test uniquement."""
+        from cards.pack.silver_surfer_power_cosmic import Departir
+        personnage = self.FindOrCreateFace(card)
+        Departir(DebugRule(personnage), personnage)
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 

@@ -1089,10 +1089,14 @@ function feuilleTel(classe, ...contenu) {
     return overlay;
 }
 
-/** Une carte en grand, dans une feuille basse (toucher sur une vignette). */
+/** Une carte en grand, dans une feuille basse (toucher sur une vignette).
+ *  `cardImageUrl` (pas `cardImageUrlHd`, correctif du 05/11/2026) : ici le
+ *  joueur veut LIRE la carte, donc respecter la langue (le scan FR si actif).
+ *  `cardImageUrlHd` est réservée aux grands visuels d'ambiance toujours en
+ *  anglais (héros/méchant de l'assistant), voir sa doc dans api.js. */
 function ouvrirCarteGrande(id) {
     const overlay = feuilleTel("carte-grande",
-        el("img", { class: "cg-image", src: cardImageUrlHd(id), alt: "", onclick: () => fermerModale(overlay) }));
+        el("img", { class: "cg-image", src: cardImageUrl(id), alt: "", onclick: () => fermerModale(overlay) }));
 }
 
 /** Le bandeau du héros (étape 1). `h` : le héros montré, `choisi` : s'il est posé. */
