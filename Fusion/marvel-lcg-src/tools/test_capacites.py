@@ -55649,6 +55649,18 @@ CAS = [
         "attendu": {"pret": ["pc002"], "absent_main": ["pc014"], "dans_deck_joueur": ["pc014"]},
     },
     {
+        "nom": "pc014 The Power Cosmic — deux icones [wild] IMPRIMEES (RES=GG), pas une seule",
+        "pourquoi": ("desc.RES valait \"G\" (UNE icone), corrige en \"GG\" le 05/11/2026 apres rapport de partie "
+                     "reelle (« je selectionne pc014 pour payer, il ne m'indique qu'UNE ressource ») -- le scan "
+                     "(assets/pics/pc014.jpg) montre bien DEUX pastilles [wild] vertes empilees en bas a gauche"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "main_exclusive": ["pc014"],
+        "declencher": [],
+        "verifier": "pc_power_cosmic_deux_icones",
+    },
+    {
         "nom": "pc013 Cosmic Awareness — jouee (cout 0), un sbire qui s'engage arrive a la planete choisie et est Confused",
         "pourquoi": ("Amelioration jouee par le vrai chemin (`jouer`, cout imprime 0 -- modele `jouer_carte` du "
                      "harnais) -- PAS `Puzzle.PutIntoPlay`. Engagement reel via `Puzzle.PutIntoPlay('01101')` "
@@ -61115,13 +61127,17 @@ def pc_ego_fin_de_round(monde, aides):
 def pc_planet_deck_peuple(monde, aides):
     """pc001b : « Shuffle the planet deck and set it aside facedown » (regle
     hors carte). Le planet deck personnel doit contenir Sakaar/Newhaven/
-    Xandar/Ego des le Setup -- avant le correctif du 05/11/2026, rien ne le
-    remplissait jamais (toujours vide, l'Action « put the top card... » ne
-    faisait donc jamais rien en vraie partie)."""
+    Xandar/Ego des le Setup -- avant le premier correctif du 05/11/2026, rien
+    ne le remplissait jamais (toujours vide, l'Action « put the top card... »
+    ne faisait donc jamais rien en vraie partie). REVIREMENT, meme jour :
+    `PlanetDeck` reutilise desormais le slot natif `joueur.additional_deck`
+    (plus `joueur.pc_planet_deck`, invisible du plateau) -- voir le
+    commentaire de `PlanetDeck` dans `cards/pack/silver_surfer_power_cosmic/
+    __init__.py`."""
     joueur = monde.players[0]
-    deck = getattr(joueur, 'pc_planet_deck', None)
+    deck = getattr(joueur, 'additional_deck', None)
     if deck is None:
-        return False, "pc_planet_deck jamais cree"
+        return False, "additional_deck absent du joueur"
     ids = sorted(getattr(c.paper, 'card_id', '?') for c in deck.Get(True))
     attendu = ["pc005", "pc006", "pc007", "pc017"]
     if ids != attendu:
@@ -61132,11 +61148,12 @@ def pc_planet_deck_action_tire(monde, aides):
     """pc001b : « Action: Exhaust Cosmic Surfboard -> put the top card of
     the planet deck into play. » Verifie qu'UNE des 4 cartes du planet deck
     est bien entree en jeu (n'importe laquelle, l'ordre est melange) ET que
-    le deck en contient une de moins."""
+    le deck en contient une de moins. Lit `additional_deck` (voir
+    `pc_planet_deck_peuple` ci-dessus)."""
     joueur = monde.players[0]
-    deck = getattr(joueur, 'pc_planet_deck', None)
+    deck = getattr(joueur, 'additional_deck', None)
     if deck is None:
-        return False, "pc_planet_deck jamais cree"
+        return False, "additional_deck absent du joueur"
     restantes = len(deck.Get(True))
     if restantes != 3:
         return False, f"{restantes} cartes restantes dans le planet deck (attendu 3)"
@@ -61176,6 +61193,23 @@ def pc_marqueur_ui_planete(monde, aides):
         return False, (f"info['ui_marker_object_id'] = {marqueur!r} "
                         f"(attendu l'object_id de pc003, {zenn_la.card.object_id})")
     return True, f"info['ui_marker_object_id'] = {marqueur} : le client peut retrouver pc003"
+
+def pc_power_cosmic_deux_icones(monde, aides):
+    """pc014 The Power Cosmic : desc.RES doit valoir 2 icones [wild] (« GG »),
+    pas une seule -- lu directement sur la carte EN MAIN (pas en jeu, `par_id`
+    filtre sur IsInPlay() -- une Resource ne vit jamais en jeu)."""
+    carte = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and getattr(getattr(face, "paper", None), "card_id", None) == "pc014":
+            carte = face
+            break
+    if carte is None:
+        return False, "pc014 introuvable"
+    valeur = carte.printed_resource.val
+    if valeur != 2:
+        return False, f"printed_resource.val = {valeur} (attendu 2, desc.RES devrait valoir \"GG\")"
+    return True, f"printed_resource.val = {valeur} : deux icones [wild] bien imprimees"
 
 def pc_herald_apres_attaque(monde, aides):
     """pc020 Herald of Galactus : « add threat here equal to the amount of

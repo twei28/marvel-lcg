@@ -6,6 +6,16 @@ from cards.pack import *
 # Lime (identifie le 05/11/2026 ; longtemps note "inconnu" dans ce fichier
 # et data/cards.json, corrige partout le meme jour), 04-05/11/2026. Prefixe
 # `pc` (tools/prefixes_fanmade.json), set 253.
+#
+# ⚠ `desc.custom`/`"custom"` (cards.json) NE DOIT CONTENIR QUE LE NOM DU
+# CREATEUR, jamais l'URL de la source : `public/js/prepare/auteur.js`
+# (`nomAvecAuteur`) colle TOUT le contenu de ce champ entre parentheses a
+# cote du nom du heros deja suffixe de son set_name (homonyme avec
+# `silver_surfer` de DesignHacker, present dans le meme depot -- ce
+# suffixe-la, lui, est automatique et necessaire, pas une erreur).
+# "Daring Lime (url)" dans `custom` a donc produit un triple parenthesage
+# a l'ecran, corrige le 05/11/2026 (garder la source en commentaire ici
+# seulement, jamais dans `custom`).
 # 3e Silver Surfer du depot : distinct du `sv` officiel ET du « Silver
 # Surfer (Neptune) » (zip Galactus/Thanos, non commence).
 #
@@ -44,18 +54,23 @@ def JoueurDeCetteCarte(effect: 'Effect') -> 'Player|None':
 def PlanetDeck(joueur: 'Player') -> 'Deck2':
     """Le « planet deck » personnel de `joueur » : mélangé et mis de côté au
     Setup (desc.Setup de la carte alter-ego), révélé par Cosmic Surfboard
-    (pc001b) et pc002. Modèle `HordeDeck` (the_hunger_core/commun.py) : un
-    `Deck2(DeckType.AdditionalDeck, ...)` propre, PAS `joueur.additional_deck`
-    (deja le slot natif du joueur, reserve a un autre usage eventuel),
-    attache paresseusement au joueur lui-meme pour eviter toute collision."""
-    deck = getattr(joueur, 'pc_planet_deck', None)
-    if deck is None:
-        discard = Deck2(joueur, DeckType.AdditionalDiscardPile, CardFace)
-        deck = Deck2(joueur, DeckType.AdditionalDeck, CardFace)
-        deck.BindDiscardPile(discard, lambda d, e: None)
-        joueur.pc_planet_deck = deck
-        joueur.pc_planet_discard = discard
-    return deck
+    (pc001b) et pc002.
+
+    ⚠ REVIREMENT (05/11/2026, rapport de partie reelle) : la version
+    d'origine fabriquait un `Deck2(DeckType.AdditionalDeck, ...)` MAISON,
+    distinct de `joueur.additional_deck`, par excès de prudence (« le slot
+    natif est réservé à un autre usage éventuel »). Resultat concret :
+    AUCUN affichage plateau ne connait cet attribut Python ad hoc
+    (`joueur.pc_planet_deck`) — `ui-app/src/board/zones.ts` ne lit QUE
+    `notre?.additional_deck` pour dessiner un « deck spécial » façon
+    Doctor Strange/Daredevil (badge, zone, titre). Le planet deck restait
+    donc fonctionnel mais INVISIBLE, le piège même que PROCESSUS-CARTE §8
+    bis decrit pour `su001b` Master Planner. Aucun autre mecanisme de ce
+    pack ne touche `additional_deck` : reutiliser le slot natif (deja cree
+    par `Player.__init__`, deja relie a `additional_discard_pile`) est
+    sans risque de collision ET rend le deck visible gratuitement, sans
+    code plateau specifique a ecrire."""
+    return joueur.additional_deck
 
 
 def EstSilverSurfer(personnage: 'CardFace|None') -> bool:
