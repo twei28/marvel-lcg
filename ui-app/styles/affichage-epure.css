@@ -1374,17 +1374,17 @@ html[data-epure] .fin-partie .fin-partie-onglet.est-actif {
   color: #ffffff;
 }
 
-/* Le bandeau « sur la table » (questions, ordre des sbires, ciblage) : bleu au lieu de jaune,
-   boutons à coins coupés comme le reste (17/10/2026). */
+/* Le bandeau « sur la table » (narration, questions, ordre des sbires, ciblage, bilan...) :
+   fond bleu nuit et boutons à coins coupés comme le reste du style Normal (17/10/2026), mais
+   bordure dorée et ombre marquée MEME en Normal sur TOUTE la famille, pas seulement la question
+   à choix (05/11/2026, decision explicite de l'utilisateur apres capture d'ecran montrant une
+   narration encore fondue dans l'ecran : il joue toujours en Normal, jamais en Coloré). */
 html[data-epure] .tsm-bandeau {
   background: linear-gradient(160deg, rgba(43, 58, 88, 0.96), rgba(23, 30, 46, 0.96));
-  border: 2px solid #3d5a8c;
-  border-top-color: #7fa9e6;
+  border: 2px solid #f3c623;
   border-left: 4px solid #3f86e0;
   border-radius: 0;
-}
-html[data-epure] .tsm-bandeau.est-question {
-  border-left-color: #5a9bf0;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75), 0 0 18px rgba(243, 198, 35, 0.4);
 }
 html[data-epure] .tsm-bouton {
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);

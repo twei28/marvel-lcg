@@ -12,7 +12,7 @@
 // ARRÊTE de bouger sous elle (même modèle que `.main-visible-forcee`, voir `main-visible.ts`).
 import { cleanup, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { QuestionSurTable, type ChoixSurTable } from './TableSansModale'
+import { CiblageSurTable, QuestionSurTable, type ChoixSurTable, type CibleSurTable } from './TableSansModale'
 
 class ResizeObserverBouchon {
   observe() {}
@@ -70,5 +70,68 @@ describe('la main reste ancrée tant qu’une de ses cartes est une option sur l
     document.body.appendChild(carteEnJeu)
     render(<QuestionSurTable phrase="…" choix={[{ ...choixJouable(), carteId: 99 }]} />)
     expect(zoneMain.classList.contains('main-ancree-par-choix')).toBe(false)
+  })
+})
+
+// Le trait pointillé du bandeau vers chaque carte cliquable (05/11/2026, demande de l'utilisateur).
+// Les deux boîtes (bandeau, carte) doivent avoir des rectangles DIFFÉRENTS : `traitEntre` rend
+// `undefined` (donc aucun trait) quand les deux se confondent — piège déjà documenté sur
+// `trait-phase.ts`.
+describe('le trait vers les cartes cliquables depuis le bandeau', () => {
+  const rect = (b: { left: number; top: number; width: number; height: number }) =>
+    ({ ...b, right: b.left + b.width, bottom: b.top + b.height, x: b.left, y: b.top, toJSON() {} }) as DOMRect
+
+  let cadre: HTMLElement
+  /** Où monter le composant : `render(ui, { container: cadre })` reconstruit TOUT `cadre` et
+      effacerait la carte posée dessous — on lui donne donc un enfant à part, la carte restant sa
+      sœur, toutes deux dans `.plateau-cadre` pour les sélecteurs scopés (`boiteDeLImage` et
+      `useBoiteDuBandeau` cherchent dans `cadre.element`, jamais tout le document). */
+  let monteIci: HTMLElement
+  beforeEach(() => {
+    cadre = document.createElement('div')
+    cadre.className = 'plateau-cadre'
+    document.body.appendChild(cadre)
+    cadre.innerHTML = '<div class="scan-card" data-card-id="50"><div class="scan-frame"></div></div>'
+    monteIci = document.createElement('div')
+    cadre.appendChild(monteIci)
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      if (this.classList.contains('plateau-cadre')) return rect({ left: 0, top: 0, width: 1000, height: 800 })
+      if (this.classList.contains('tsm-bandeau')) return rect({ left: 0, top: 0, width: 300, height: 60 })
+      if (this.classList.contains('scan-frame')) return rect({ left: 500, top: 400, width: 100, height: 140 })
+      return rect({ left: 0, top: 0, width: 0, height: 0 })
+    })
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    cadre.remove()
+  })
+
+  it('un trait VERT relie le bandeau à une carte jouable (QuestionSurTable)', () => {
+    render(<QuestionSurTable phrase="…" choix={[{ ...choixJouable(), carteId: 50 }]} />, { container: monteIci })
+    const trait = cadre.querySelector('.tsm-trait')
+    expect(trait).toBeTruthy()
+    expect(trait?.classList.contains('est-rouge')).toBe(false)
+  })
+
+  it('un trait ROUGE relie le bandeau à une cible attaquée (CiblageSurTable, hors défense)', () => {
+    const cible: CibleSurTable = { id: 50, choisie: false, agir: vi.fn() }
+    render(
+      <CiblageSurTable titre="Attaquer" choisies={0} maximum={1} cibles={[cible]} prete={false} raison="" valider={vi.fn()} />,
+      { container: monteIci }
+    )
+    const trait = cadre.querySelector('.tsm-trait')
+    expect(trait).toBeTruthy()
+    expect(trait?.classList.contains('est-rouge')).toBe(true)
+  })
+
+  it('un trait VERT relie le bandeau à un défenseur possible (CiblageSurTable, « Défendre »)', () => {
+    const cible: CibleSurTable = { id: 50, choisie: false, agir: vi.fn() }
+    render(
+      <CiblageSurTable titre="Défendre" choisies={0} maximum={1} cibles={[cible]} prete={false} raison="" valider={vi.fn()} />,
+      { container: monteIci }
+    )
+    const trait = cadre.querySelector('.tsm-trait')
+    expect(trait).toBeTruthy()
+    expect(trait?.classList.contains('est-rouge')).toBe(false)
   })
 })

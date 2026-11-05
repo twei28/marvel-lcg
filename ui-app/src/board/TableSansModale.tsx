@@ -15,6 +15,7 @@ import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
 import { tonaliteAction } from './action-style'
+import { traitEntre } from './trait-phase'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
 /**
@@ -92,6 +93,65 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
     }
   }, [carteId, cle])
   return boite
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// LES TRAITS VERS LES CARTES CLIQUABLES (05/11/2026, demande de l'utilisateur) : un trait en pointilles relie le
+// bandeau (deplacable) a CHAQUE carte qu'on peut cliquer depuis lui -- defendre, viser une cible, repondre... La
+// couleur suit celle du halo de la carte (vert jouable/defendre, rouge cible, voir `tonaliteAction`). Le bandeau
+// est mesure comme une carte (meme polling 120ms que `useBoiteDeCarte`), pour que le trait suive quand on le
+// glisse. Reutilise `traitEntre` de `trait-phase.ts` (meme calcul de bord a bord que les traits de coup).
+// ---------------------------------------------------------------------------------------------------------------
+
+/** Le rectangle du bandeau deplacable, remesure tant qu'on le glisse ou qu'il bouge. */
+function useBoiteDuBandeau(cle: string): Boite | undefined {
+  const [boite, setBoite] = useState<Boite | undefined>(undefined)
+  useEffect(() => {
+    const mesurer = () => {
+      const cadre = cadreDuPlateau()
+      const el = cadre?.element.querySelector<HTMLElement>('.tsm-bandeau')
+      if (!cadre || !el) { setBoite(undefined); return }
+      const r = el.getBoundingClientRect()
+      const b: Boite = { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+      setBoite((avant) => (avant && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h ? avant : b))
+    }
+    mesurer()
+    const minuteur = window.setInterval(mesurer, 120)
+    window.addEventListener('resize', mesurer)
+    return () => {
+      window.clearInterval(minuteur)
+      window.removeEventListener('resize', mesurer)
+    }
+  }, [cle])
+  return boite
+}
+
+/** Un trait, du bandeau vers UNE carte cliquable. Composant a part : `useBoiteDeCarte` est un crochet. */
+function TraitVersCarte({ carteId, cle, rouge, origine }: { carteId: number; cle: string; rouge: boolean; origine: Boite }) {
+  const boite = useBoiteDeCarte(carteId, cle)
+  if (!boite) return null
+  const trait = traitEntre(origine, boite)
+  if (!trait) return null
+  return (
+    <line
+      className={`tsm-trait${rouge ? ' est-rouge' : ''}`}
+      x1={trait.x1} y1={trait.y1} x2={trait.x2} y2={trait.y2}
+    />
+  )
+}
+
+/** Un trait par carte cliquable depuis le bandeau, superpose a la table (pointer-events: none). */
+function TraitsVersCartes({ cartes }: { cartes: ReadonlyArray<{ id: number; cle: string; rouge: boolean }> }) {
+  const origine = useBoiteDuBandeau('bandeau')
+  const cadre = cadreDuPlateau()
+  if (!origine || !cadre || cartes.length === 0) return null
+  return (
+    <svg className="tsm-traits" viewBox={`0 0 ${cadre.boite.w} ${cadre.boite.h}`} width={cadre.boite.w} height={cadre.boite.h} aria-hidden="true">
+      {cartes.map((c) => (
+        <TraitVersCarte key={c.id} carteId={c.id} cle={c.cle} rouge={c.rouge} origine={origine} />
+      ))}
+    </svg>
+  )
 }
 
 
@@ -497,6 +557,10 @@ export function QuestionSurTable({
       {surCarte.map((c) => (
         <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
       ))}
+      {/* Un trait pointille du bandeau vers chaque carte cliquable (05/11/2026, demande de
+          l'utilisateur) : toujours vert ici, ce sont des choix (defendre, repondre...), jamais des
+          cibles subies. */}
+      <TraitsVersCartes cartes={surCarte.filter((c) => c.carteId !== undefined).map((c) => ({ id: c.carteId!, cle: String(c.id), rouge: false }))} />
       {enEventail.length > 0 ? <EventailAmeliorations choix={enEventail} survoler={survoler} signaler={signaler} unique={uniqueId} /> : null}
     </>
   )
@@ -911,6 +975,8 @@ export function CiblageSurTable({
       {cibles.map((c) => (
         <CarteCiblable key={c.id} cible={c} rouge={tonaliteAction(titre) !== 'defense'} />
       ))}
+      {/* Meme trait que QuestionSurTable, meme couleur que le halo de chaque cible. */}
+      <TraitsVersCartes cartes={cibles.map((c) => ({ id: c.id, cle: `cible-${c.id}`, rouge: tonaliteAction(titre) !== 'defense' }))} />
     </>
   )
 }

@@ -1,4 +1,8 @@
-/* « Sur la table », sans modale : la carte qui agit, et une ligne fine. */
+/* « Sur la table », sans modale : la carte qui agit, et une ligne fine.
+   Bordure doree et ombre forte sur TOUTE la famille (narration, question, bilan...), pas
+   seulement la question a choix -- correctif du 05/11/2026 apres capture d'ecran de
+   l'utilisateur montrant une boite de narration ("Klaw va attaquer Black Widow") toujours
+   fondue dans l'ecran malgre le premier correctif, qui ne visait que `.est-question`. */
 .tsm-bandeau {
   position: absolute;
   left: 50%;
@@ -11,10 +15,10 @@
   max-width: min(760px, 92%);
   padding: 6px 14px;
   background: rgba(17, 19, 24, 0.92);
-  border: 1px solid rgba(243, 198, 35, 0.55);
+  border: 2px solid #f3c623;
   border-left: 4px solid var(--rouge, #e62429);
   border-radius: 4px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75), 0 0 18px rgba(243, 198, 35, 0.4);
   color: #f4f6fa;
   font-size: 15px;
   line-height: 1.25;
@@ -87,6 +91,31 @@
 .tsm-acteur:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 3px;
+}
+
+/* Les traits vers les cartes cliquables depuis le bandeau (05/11/2026, demande de l'utilisateur) :
+   un pointille du bandeau vers CHAQUE carte qu'on peut cliquer, couleur assortie a son halo (vert
+   jouable/defendre, rouge cible -- meme logique que le point 5 du plan mode-sur-la-table-ux-plan).
+   Sous les cartes et le bandeau (z-index 138 < 139/140/150), au-dessus du plateau. */
+.tsm-traits {
+  position: absolute;
+  inset: 0;
+  z-index: 138;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.tsm-trait {
+  fill: none;
+  stroke: #4fd17b;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 2 7;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+.tsm-trait.est-rouge {
+  stroke: #e62429;
 }
 
 /* La carte qui subit : un anneau rouge, qui respire doucement comme l'acteur (05/11/2026). */
@@ -618,12 +647,16 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
    taille. Sur un ecran etroit (mobile portrait) la colonne mangerait la moitie de la table : le bandeau reste
    une ligne en haut, a la largeur de l'ecran. */
 @media (min-width: 641px) {
+  /* Colonne de 200px a l'origine, portee a 300px (x1.5) le 05/11/2026 pour TOUTE la famille
+     (narration, question, bilan...), apres capture d'ecran de l'utilisateur montrant qu'une
+     narration simple ("Klaw va attaquer...") restait a 200px malgre le premier correctif, qui
+     ne visait que `.est-question`. */
   .tsm-bandeau {
     left: 6px;
     top: 40px;
     transform: none;
-    width: 200px;
-    max-width: 200px;
+    width: 300px;
+    max-width: 300px;
     box-sizing: border-box;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -633,14 +666,6 @@ html:has(.tsm-bandeau) .trait-phase-etiquette text {
     max-height: calc(100% - 52px);
     overflow-y: auto;
     overscroll-behavior: contain;
-  }
-  .tsm-bandeau.est-question,
-  .tsm-bandeau.est-bilan,
-  .tsm-bandeau:has(.tsm-calcul),
-  .tsm-bandeau:has(.tsm-attente) {
-    max-width: 200px;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
   }
   .tsm-bandeau .tsm-calcul { flex-basis: auto; }
   .tsm-bandeau .tsm-bouton { width: 100%; box-sizing: border-box; }
