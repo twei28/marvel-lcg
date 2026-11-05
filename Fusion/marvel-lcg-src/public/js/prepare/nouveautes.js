@@ -47,6 +47,36 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-05",
+        genre: "jeu",
+        fr: "Le mode « sur la table » s'habille : halo qui respire sur les cartes jouables (vert) et les cibles (rouge), bandeau de question plus large et doré, et une annonce brève quand une carte de Renfort apparaît.",
+        en: "The “on the table” mode gets dressed up: a breathing halo on playable cards (green) and targets (red), a wider, gold-bordered question banner, and a brief announcement when a Surge card appears.",
+    },
+    {
+        date: "2026-11-05",
+        genre: "jeu",
+        fr: "Nouveau réglage : la taille de l'aperçu agrandi (survol d'une carte) se règle au curseur, de 70 % à 150 %.",
+        en: "New setting: the size of the enlarged card preview (on hover) is now adjustable, from 70% to 150%.",
+    },
+    {
+        date: "2026-11-05",
+        genre: "coulisses",
+        fr: "Le panneau de réglages est réorganisé : ordre des onglets, intitulés et regroupements revus pour être plus clairs.",
+        en: "The settings panel has been reorganised: tab order, labels and groupings revised to be clearer.",
+    },
+    {
+        date: "2026-11-05",
+        genre: "correction",
+        fr: "Sur téléphone, dans la boîte de question, un bouton pouvait rester inatteignable à cause de deux défilements imbriqués : corrigé.",
+        en: "On phone, in the question box, a button could become unreachable due to two nested scroll areas: fixed.",
+    },
+    {
+        date: "2026-11-05",
+        genre: "correction",
+        fr: "Silver Surfer (Power Cosmic) : l'attribution de l'auteur s'affichait mal, le deck des planètes restait invisible à l'écran bien que fonctionnel, et The Power Cosmic n'indiquait qu'une ressource [wild] au lieu de deux.",
+        en: "Silver Surfer (Power Cosmic): the author credit displayed incorrectly, the planet deck stayed invisible on screen despite working, and The Power Cosmic only showed one [wild] resource instead of two.",
+    },
+    {
         date: "2026-11-04",
         genre: "heros",
         fr: "Multiple Man (Jamie Madrox) rejoint le roster, avec ses alliés Dupe, ses complots annexes à récompense et sa némésis Emperor Madrox.",
