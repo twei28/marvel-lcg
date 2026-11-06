@@ -4191,6 +4191,13 @@ export function PagePartie({
   useHaloStatut(etat.monde, animations)
 
   const annulerGesteManuel = triche.annulerDernierGeste
+  // UN SEUL « /debug?/undo ... » A LA FOIS (06/11/2026, bug remonte par un
+  // joueur) : plusieurs clics rapproches sur Annuler (touche U tenue, double
+  // clic, bandeau telephone) envoyaient autant de requetes concurrentes, et le
+  // moteur a deja montre une desynchronisation de ce genre apres un Undo
+  // (e75e4f7f). Le ref est partage entre `annulerCoup` et `annulerAction` :
+  // les deux tapent le meme `/debug?/undo ...`, jamais deux a la fois.
+  const annulationEnCours = useRef(false)
   const annulerCoup = useCallback(() => {
     // En manuel, on défait le dernier GESTE, comme Ctrl+Z (lot 1, 06/10/2026) :
     // « /undo auto » rejouerait la partie jusqu'au dernier coup du moteur.
@@ -4198,9 +4205,13 @@ export function PagePartie({
       annulerGesteManuel()
       return
     }
+    if (annulationEnCours.current) return
+    annulationEnCours.current = true
     // « /undo auto » remonte au dernier point de decision, comme le bouton Undo
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
-    fetch('/debug?/undo auto').catch(() => undefined)
+    fetch('/debug?/undo auto')
+      .catch(() => undefined)
+      .finally(() => { annulationEnCours.current = false })
   }, [manuel, annulerGesteManuel])
   // LE BOUTON DE LA BARRE ET LA TOUCHE U expliquent d'abord (ModaleAnnuler), tant que le joueur n'a pas coche « ne plus
   // me montrer ça ». Le bandeau du telephone et le menu « … » gardent l'annulation directe : le bandeau est lui-meme
@@ -4220,7 +4231,11 @@ export function PagePartie({
   // quel que soit le nombre de sous-questions deja repondues ; U, lui, ne
   // remonte que d'une decision.
   const annulerAction = useCallback(() => {
-    fetch('/debug?/undo action').catch(() => undefined)
+    if (annulationEnCours.current) return
+    annulationEnCours.current = true
+    fetch('/debug?/undo action')
+      .catch(() => undefined)
+      .finally(() => { annulationEnCours.current = false })
   }, [])
   echapClavier.current = () => {
     if (manuel || spectateur || telephone) return

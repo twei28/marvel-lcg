@@ -875,6 +875,39 @@ function surveillerGrilles() {
     });
 }
 
+/**
+ * Hauteur REELLE du bloc de remerciements de l'accueil (06/11/2026, bug
+ * remonte par un joueur) : au-dela de 830px de hauteur de fenetre, `.acc-merci`
+ * passe en `position:fixed` (prepare.css) et `.accueil-stage` reserve sa place
+ * avec un `padding-bottom` qui doit suivre cette hauteur, sinon elle est
+ * fausse des que le bloc est plus haut que prevu (texte plus long en anglais,
+ * police agrandie...) et la grille, centree dans `100dvh`, passe dessous —
+ * exactement ce qui se produit en passant en plein ecran (F11), qui franchit
+ * ce seuil de 830px et declenche le `position:fixed`.
+ */
+function ajusterReserveMerci() {
+    const bloc = document.querySelector(".acc-merci");
+    if (!bloc) return;
+    const hauteur = Math.ceil(bloc.getBoundingClientRect().height) + "px";
+    if (document.documentElement.style.getPropertyValue("--acc-merci-h") !== hauteur) {
+        document.documentElement.style.setProperty("--acc-merci-h", hauteur);
+    }
+}
+
+window.addEventListener("resize", ajusterReserveMerci);
+
+const observateurMerci = typeof ResizeObserver === "function"
+    ? new ResizeObserver(ajusterReserveMerci)
+    : null;
+
+function surveillerMerci() {
+    if (!observateurMerci) return;
+    observateurMerci.disconnect();
+    const bloc = document.querySelector(".acc-merci");
+    if (bloc) observateurMerci.observe(bloc);
+    ajusterReserveMerci();
+}
+
 /* ======================= MODE TÉLÉPHONE (< 768 px) ==========================
    Refonte du 09/10/2026 (.planning/todos/2026-10-09-mode-telephone-refonte.md).
    Au-dessus de 768 px, RIEN de ce bloc ne s'exécute : le PC reste identique.
@@ -1311,6 +1344,8 @@ function render() {
     fixMarvelText();
     ajusterGrilles();
     surveillerGrilles();
+    ajusterReserveMerci();
+    surveillerMerci();
     publierEquipeHote();
 }
 
@@ -1346,7 +1381,7 @@ function progressBar() {
     document.title = t("Préparation de mission") + " — Marvel Champions";
     const entete = el("header", { class: "progress" },
         el("a", { class: "brand", href: "main" },
-            el("span", { class: "brand-back" }, "<"),
+            el("span", { class: "brand-back" }, t("Retour")),
             el("span", { class: "brand-lockup logo" },
                 // Le narval, mascotte du site (image de l'utilisateur, 13/09/2026),
                 // a cote du logo officiel. Le meme sert d'icone d'onglet et
@@ -2611,7 +2646,10 @@ function accueilView() {
         const idAide = "acc-aide-" + tuile.cle;
         grille.append(el("div", { class: "acc-tuile", "data-cle": tuile.cle },
             el("button", {
-                class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
+                class: "acc-mode cut" + (nombres.length ? " avec-nombres" : "")
+                    // Bac a sable et Puzzle : pas des modes de jeu a proprement parler,
+                    // meme accent que les tuiles outils (06/11/2026, demande de l'utilisateur).
+                    + (["sandbox", "puzzle"].includes(tuile.cle) ? " acc-outil-tuile" : ""),
                 onclick: () => partir(tuile, null),
                 ...(tuile.aide ? { "aria-describedby": idAide } : {}),
             },
@@ -2636,7 +2674,7 @@ function accueilView() {
     // L'éditeur de deck, sur l'accueil (demande du 16/10/2026) : on ne le trouvait
     // qu'en passant par un héros, puis un bouton de l'étape Decks.
     grille.append(el("div", { class: "acc-tuile", "data-cle": "editeur" },
-        el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
+        el("button", { class: "acc-mode cut acc-editeur-tuile acc-outil-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Éditeur de deck")),
                 el("small", {}, t("Construire un deck")),
@@ -2653,7 +2691,7 @@ function accueilView() {
     // derriere, classe par famille.
     grille.append(el("div", { class: "acc-tuile", "data-cle": "nouveautes" },
         el("button", {
-            class: "acc-mode cut acc-nouv-tuile",
+            class: "acc-mode cut acc-nouv-tuile acc-outil-tuile",
             // PC : une page à part (nouveautes.html). Le téléphone garde la modale.
             onclick: () => { if (estTel()) ouvrirNouveautes(); else window.location.href = "/nouveautes.html"; },
             "aria-describedby": "acc-aide-nouveautes",
@@ -2672,7 +2710,7 @@ function accueilView() {
     // l'affichage).
     grille.append(el("div", { class: "acc-tuile", "data-cle": "options" },
         el("button", {
-            class: "acc-mode cut acc-options-tuile",
+            class: "acc-mode cut acc-options-tuile acc-outil-tuile",
             onclick: () => ouvrirReglagesEnJeu(),
             "aria-describedby": "acc-aide-options",
         },
@@ -3288,9 +3326,14 @@ function cartesDuHeros(h) {
             for (const face of String(entree).split(",")) if (face) identites.push(face);
         }
     }
+    // `set_aside` : le petit side-deck pose a part au setup (le deck Invocation
+    // de Doctor Strange, les 5 cartes mises de cote de Daredevil...), une carte
+    // du heros comme les autres (06/11/2026, demande de l'utilisateur).
     const signatures = [
         ...((h.deck && h.deck.hero_deck) || []),
         ...((h.lie && h.lie.deck && h.lie.deck.hero_deck) || []),
+        ...((h.deck && h.deck.set_aside) || []),
+        ...((h.lie && h.lie.deck && h.lie.deck.set_aside) || []),
     ];
     // Ce que le héros apporte AUSSI, et qui se retourne contre lui : son
     // obligation et son set némésis. Ils font partie du paquet, on les montre.
@@ -4750,8 +4793,28 @@ function proposerArts(p) {
     });
 }
 
+/** Les cartes du héros, alter ego compris, SES cartes seulement : pas les
+ *  cartes d'aspect ni les cartes de base neutre de `deck.player_deck` (06/11/2026,
+ *  demande de l'utilisateur). `deck.set_aside` est inclus : c'est le petit
+ *  side-deck posé à part au setup (le deck Invocation de Doctor Strange, les
+ *  5 cartes mises de côté de Daredevil...), une carte du héros comme les
+ *  autres. `deck.linked_identity` ajoute, pour les heros a deux identites
+ *  (Cloak & Dagger), son propre heros/alter ego, son mini-deck signature, son
+ *  side-deck, son obligation et son set nemesis. */
 function showDeckCards(deck, hero, deckId) {
-    const ids = [...(deck.hero || []).flatMap((x) => String(x).split(",")), ...(deck.hero_deck || []), ...(deck.player_deck || [])];
+    const lie = deck.linked_identity;
+    const ids = [
+        ...(deck.hero || []).flatMap((x) => String(x).split(",")),
+        ...(lie ? (lie.hero || []).flatMap((x) => String(x).split(",")) : []),
+        ...(deck.hero_deck || []),
+        ...(lie ? lie.hero_deck || [] : []),
+        ...(deck.set_aside || []),
+        ...(lie ? lie.set_aside || [] : []),
+        ...(deck.obligations || []),
+        ...(lie ? lie.obligations || [] : []),
+        ...(deck.nemesis_set || []),
+        ...(lie ? lie.nemesis_set || [] : []),
+    ];
     const counts = {};
     for (const id of ids) counts[id] = (counts[id] || 0) + 1;
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },

@@ -30,6 +30,14 @@
   src:url("/public/fonts/Bangers-Regular.ttf") format("truetype");
   font-display:swap;
 }
+/* Titre « Narwhal Champions » de l'accueil (06/11/2026, demande de
+   l'utilisateur) : Heroes Assemble (Condensed Italic), licence freeware
+   (don souhaite pour un usage commercial) — https://www.fontspace.com/heroes-assemble-font-f32811 */
+@font-face{
+  font-family:"HeroesAssemble";
+  src:url("/public/fonts/HeroesAssemble-CondensedItalic.ttf") format("truetype");
+  font-display:swap;
+}
 
 /* ===== REFONTE DU 7 SEPTEMBRE 2026 : LES RÉGLAGES SONT ICI =================
    Une couleur et une règle. Le ROUGE Marvel, celui du logo, dit « tu peux
@@ -164,7 +172,8 @@ body::before{
   inset:0;
   z-index:0;
   pointer-events:none;
-  opacity:.18;
+  /* 0.18 se voyait trop peu en affichage normal (demande du 06/11/2026). */
+  opacity:.25;
   background:
     radial-gradient(circle,rgba(255,255,255,.8) 0 1px,transparent 1.4px) 0 0/10px 10px,
     repeating-linear-gradient(135deg,transparent 0 18px,rgba(255,255,255,.14) 18px 19px,transparent 19px 36px);
@@ -1805,7 +1814,18 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 .acc-titre-seul{margin-bottom:28px}
 .acc-titre .recitatif{margin-bottom:16px}
-.acc-titre h1.affiche{font-size:var(--titre-accueil,120px)}
+.acc-titre h1.affiche{
+  font-size:var(--titre-accueil,120px);
+  /* Police + couleur + ombre douce (06/11/2026, demande de l'utilisateur) :
+     Heroes Assemble, bleu, pas de contour BD. Redeclare en mode epure,
+     affichage-epure-pages.css, meme choix. */
+  font-family:"HeroesAssemble",sans-serif;
+  font-style:normal;
+  text-transform:none;
+  color:#3f86e0;
+  -webkit-text-stroke:0;
+  text-shadow:0 6px 18px rgba(63,134,224,.55),0 2px 0 #05070b;
+}
 .acc-titre p{margin-top:12px;color:var(--dim);font-size:16px}
 .acc-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(var(--tuile-accueil-min,300px),1fr));gap:14px}
 .acc-mode{
@@ -1823,6 +1843,15 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 }
 .acc-mode{border:3px solid #1e1e1e;box-shadow:6px 6px 0 #1e1e1e}
 .acc-mode:hover{transform:translateY(-3px);border-color:var(--affiche-jaune);box-shadow:6px 6px 0 var(--affiche-jaune)}
+/* Les tuiles OUTILS (Bac a sable, Editeur de deck, Puzzle, Options, Mises a
+   jour) : pas des modes de jeu, un accent vert irise au lieu du bleu des modes
+   (06/11/2026, demande de l'utilisateur). Degrade statique, pas d'animation. */
+.acc-mode.acc-outil-tuile::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#4bf2a8,#2fd1c5,#6ee7b7,#22c97d);
+}
 .acc-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
 .acc-copy b{font-size:32px;line-height:.9;text-transform:uppercase;white-space:nowrap}
 .acc-copy small{color:var(--dim);font-size:12px}
@@ -2891,8 +2920,13 @@ html.tel .acc-merci{margin-top:20px;font-size:13px}
   /* Les remerciements sont ANCRES AU BAS de la fenetre (demande du 16/10/2026) :
      la derniere phrase juste au-dessus du bord, quelle que soit la hauteur. */
   .acc-merci{width:min(calc(100vw - 60px),1760px);position:fixed;left:50%;bottom:10px;margin:0;transform:translateX(-50%);z-index:1}
-  /* La place du bloc, pour que la grille ne passe jamais dessous. */
-  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-bottom:120px!important}
+  /* La place du bloc, pour que la grille ne passe jamais dessous. 120px est
+     un repli avant la premiere mesure ; `--acc-merci-h` (posee par app.js,
+     ResizeObserver sur .acc-merci) suit sa VRAIE hauteur, qui change avec la
+     langue, la taille de police ou le nombre de lignes. Sans ça, un bloc plus
+     haut que 120px (plein ecran F11, qui fait justement franchir ce seuil de
+     830px) passe par-dessus la grille au lieu de se reserver sa place. */
+  .accueil-stage,html[data-ui-version="v2"] .accueil-stage{padding-bottom:calc(var(--acc-merci-h,120px) + 20px)!important}
 }
 /* Fenetre peu haute : pas la place d'ancrer, le bloc suit la grille comme avant. */
 @media (min-width:821px) and (max-height:829px){

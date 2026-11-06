@@ -425,7 +425,7 @@ function rendreEnTete() {
             el("span", { class: "db-hero-changer" }, (h ? t("Changer") : t("Choisir")) + " ›"));
     }
     const retour = el("a", { class: "brand", href: "/prepare.html", title: t("Préparation"), "aria-label": t("Préparation") },
-        el("span", { class: "brand-back" }, "<"),
+        el("span", { class: "brand-back" }, t("Retour")),
         el("span", { class: "brand-lockup logo" }, el("img", { class: "brand-narwhal", src: urlNarval(), alt: "" })));
     // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin à burger,
     // le héros sur sa propre ligne, pleine largeur. L'en-tête du PC reste dans
