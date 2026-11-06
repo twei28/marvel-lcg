@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-06",
+        genre: "correction",
+        fr: "Sur la table, les boutons qui demandent de dépenser des ressources affichent enfin les icônes au lieu du texte brut entre crochets. Le voile de traduction mal placé sur Spider-Man (allié) est aussi corrigé.",
+        en: "On the table, buttons asking you to spend resources now show the proper icons instead of raw bracketed text. The misplaced translation overlay on Spider-Man (ally) is also fixed.",
+    },
+    {
         date: "2026-11-05",
         genre: "jeu",
         fr: "Le mode « sur la table » s'habille : halo qui respire sur les cartes jouables (vert) et les cibles (rouge), bandeau de question plus large et doré, et une annonce brève quand une carte de Renfort apparaît.",
