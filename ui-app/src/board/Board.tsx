@@ -692,6 +692,7 @@ function ApercuAutreFace({
         onSelect={undefined}
         highlight={false}
         surcouche={surcouche}
+        taille="grande"
       />
     </div>
   )
@@ -713,12 +714,17 @@ function FaceCarteApercu({
   statuts,
   raisons,
   panorama,
+  avecLabel,
 }: {
   carte: ScanCardProps
   statuts?: ScanCardProps[]
   raisons?: string[]
   /** Moitié d'une paire jumelle : le scan se raccorde à son voisin (mêmes classes que sur la table). */
   panorama?: 'gauche' | 'droite'
+  /** Carte recto-verso (ApercuAutreFace à côté) : un label de même hauteur que
+   * le sien, sinon son « Autre face » pousse SA carte plus bas et les deux
+   * cadres ne s'alignent plus (signale en jeu, 06/11/2026). */
+  avecLabel?: boolean
 }) {
   // Un complot s'agrandit TOUJOURS en paysage, meme si en main il etait montre
   // en portrait pour tenir dans l'eventail (voir card-model : isLandscape).
@@ -760,6 +766,7 @@ function FaceCarteApercu({
 
   return (
       <div className={`apercu-face${carteAgrandie.isLandscape ? ' est-paysage' : ''}`}>
+        {avecLabel ? <span className="apercu-face-label">{t('Face en jeu')}</span> : null}
         {/* En GRAND, les jetons quittent l'illustration : ils cachaient le
             texte de la carte, qui est justement ce qu'on vient y lire. Ils se
             rangent sous la carte, avec les cartes de statut. Demande de
@@ -979,7 +986,7 @@ export function CarteApercu({
           ))}
         </>
       ) : (
-        <FaceCarteApercu carte={carte} statuts={statuts} raisons={raisons} />
+        <FaceCarteApercu carte={carte} statuts={statuts} raisons={raisons} avecLabel={autresFaces.length > 0} />
       )}
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
