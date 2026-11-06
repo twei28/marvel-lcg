@@ -73,6 +73,19 @@ describe('la main reste ancrée tant qu’une de ses cartes est une option sur l
   })
 })
 
+// Rapport de bug (06/11/2026, Klaw / Boom Sonique) : le bandeau affichait le jeton brut du moteur
+// « [[energy]] » au lieu de l'icône de ressource — seul le bouton de `DemandeCentrale` passait par
+// `avecIcones`/`marquerRessources`, pas celui de `QuestionSurTable`.
+describe('les jetons de ressource du bandeau deviennent des icônes', () => {
+  it('rend une icône par ressource au lieu du jeton brut « [[...]] »', () => {
+    const choix: ChoixSurTable = { id: 1, nom: 'Dépenser [[energy]][[mental]][[physical]]', choisir: vi.fn(), survoler: vi.fn() }
+    const { container } = render(<QuestionSurTable phrase="…" choix={[choix]} />)
+    const bouton = container.querySelector('.tsm-bouton')!
+    expect(bouton.textContent).not.toContain('[[')
+    expect(container.querySelectorAll('.icone-res')).toHaveLength(3)
+  })
+})
+
 // Le trait pointillé du bandeau vers chaque carte cliquable (05/11/2026, demande de l'utilisateur).
 // Les deux boîtes (bandeau, carte) doivent avoir des rectangles DIFFÉRENTS : `traitEntre` rend
 // `undefined` (donc aucun trait) quand les deux se confondent — piège déjà documenté sur

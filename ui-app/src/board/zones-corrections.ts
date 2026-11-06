@@ -207,6 +207,9 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   // sy042 (Kalyx, Starjammers Aspects) : « play, » et « play. » (début des lignes 2 et 3 du premier paragraphe) restaient en anglais sous le
   // français, quelle que soit la zone : zone relevée + voile uni (VOILE_UNI).
   sy042: { x0: 0.045, y0: 0.595, x1: 0.955, y1: 0.915, fond: [249, 254, 247] },
+  // Spider-Man (04045, allié) : cadre de texte teinté crème, non gris clair — la détection posait le voile
+  // SUR L'ILLUSTRATION, au milieu de la carte, sans texte lisible (signalé en jeu, 06/11/2026). Zone relevée sur le scan.
+  '04045': { x0: 0.05, y0: 0.598, x1: 0.94, y1: 0.915, fond: [244, 246, 236] },
 }
 
 /**

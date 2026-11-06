@@ -16,6 +16,7 @@ import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
 import { tonaliteAction } from './action-style'
 import { traitEntre } from './trait-phase'
+import { avecIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
 /**
@@ -430,11 +431,13 @@ function styleEtiquette(b: Boite, auDessus: boolean): CSSProperties {
 /** « Défendre avec Spider-Man » : le verbe en petit sur une ligne, le nom dessous (deux lignes au plus, puis « … »). */
 function TexteEtiquette({ nom }: { nom: string }) {
   const verbe = `${t('Défendre avec')} `
-  if (!nom.startsWith(verbe) || nom.length === verbe.length) return <span className="tsm-etiquette-texte">{nom}</span>
+  if (!nom.startsWith(verbe) || nom.length === verbe.length) {
+    return <span className="tsm-etiquette-texte">{avecIcones(marquerRessources(nom))}</span>
+  }
   return (
     <>
       <span className="tsm-etiquette-verbe">{verbe.trim()}</span>
-      <span className="tsm-etiquette-texte">{nom.slice(verbe.length)}</span>
+      <span className="tsm-etiquette-texte">{avecIcones(marquerRessources(nom.slice(verbe.length)))}</span>
     </>
   )
 }
@@ -530,7 +533,7 @@ export function QuestionSurTable({
             onBlur={() => survoler(c, false)}
             data-choix-unique={uniqueId === c.id ? '' : undefined}
           >
-            {c.nom}
+            {avecIcones(marquerRessources(c.nom))}
             {uniqueId === c.id ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ))}
@@ -624,8 +627,8 @@ function PuceSurCarte({
         className={`tsm-utilisable${bloque ? ' est-inactif' : ''}`}
         style={boiteStyle(boite)}
         disabled={bloque}
-        aria-label={choix.nom}
-        title={choix.indisponible ?? choix.nom}
+        aria-label={ressourcesEnMots(choix.nom)}
+        title={choix.indisponible ?? ressourcesEnMots(choix.nom)}
         onClick={choix.choisir}
         onMouseEnter={() => choix.survoler?.(true)}
         onMouseLeave={() => choix.survoler?.(false)}
@@ -635,7 +638,7 @@ function PuceSurCarte({
         className={`tsm-etiquette${bloque ? ' est-inactif' : ''}`}
         style={styleEtiquette(boite, enBas)}
         disabled={bloque}
-        title={choix.nom}
+        title={ressourcesEnMots(choix.nom)}
         onClick={choix.choisir}
         data-choix-unique={unique ? '' : undefined}
       >
@@ -792,8 +795,8 @@ function EventailAmeliorations({
             className={`tsm-eventail-carte${bloque ? ' est-inactif' : ''}`}
             style={{ '--rang': i } as CSSProperties}
             disabled={bloque}
-            aria-label={c.nom}
-            title={c.indisponible ?? c.nom}
+            aria-label={ressourcesEnMots(c.nom)}
+            title={c.indisponible ?? ressourcesEnMots(c.nom)}
             onClick={c.choisir}
             onMouseEnter={() => survoler(c, true)}
             onMouseLeave={() => survoler(c, false)}
