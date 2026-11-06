@@ -868,6 +868,10 @@ export const DICO_EN_BASE: Record<string, string> = {
   'La phase s\'arrête ici.': 'The phase stops here.',
   // Tchat sur la table (PanneauSalon).
   'Tchat': 'Chat',
+  'Fermer cette conversation': 'Close this conversation',
+  'Choisis un pseudo pour le tchat (visible des autres joueurs) :': 'Pick a name for chat (visible to other players):',
+  'Pseudo…': 'Name…',
+  'Rejoindre': 'Join',
   'Créer une table': 'Create a table',
   'Choisis les personnes à inviter (clique sur un pseudo).': 'Pick the people to invite (click a name).',
   'Parler aux autres joueurs': 'Talk to the other players',

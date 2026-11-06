@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { VoletTchat } from './VoletTchat'
 import type { TransportTchat, VueTchat } from './tchat'
 
@@ -146,6 +146,133 @@ describe('VoletTchat — creer une table depuis le tchat', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Valider/ }))
     expect(window.location.href).toBe('/prepare.html?inviter=bob')
     Object.defineProperty(window, 'location', { value: original, writable: true })
+  })
+})
+
+describe('VoletTchat — Général toujours en premier, jamais fermable', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('reste le premier onglet et n\'a pas de croix, meme avec des conversations privees', async () => {
+    window.history.pushState({}, '', '/board.html?spectateur')
+    const transport = transportSimule({
+      lire: vi.fn(async (): Promise<VueTchat> => ({
+        actif: true,
+        pseudo: 'moi',
+        messages: [{ id: 1, pseudo: 'bob', texte: 'salut', quand: '21:30' }],
+        dernier: 1,
+        prives: { bob: 1, alice: 2 },
+      })),
+    })
+    const { container } = render(<VoletTchat ouvert ouvrir={rien} fermer={rien} tableId="t1" spectateur transport={transport} />)
+    const onglets = () => container.querySelector('.volet-tchat-onglets') as HTMLElement
+    await waitFor(() => expect(within(onglets()).getByRole('button', { name: 'bob' })).toBeTruthy())
+    const boutons = within(onglets()).getAllByRole('button')
+    expect(boutons[0].textContent).toContain('Général')
+    const boutonGeneral = within(onglets()).getByRole('button', { name: /^Général/ })
+    // Général n'est jamais enveloppe dans `.volet-tchat-onglet-mp` (la paire
+    // nom+croix des conversations privees) : pas de croix a cote de lui.
+    expect(boutonGeneral.parentElement?.className).not.toContain('volet-tchat-onglet-mp')
+    expect(within(onglets()).getAllByTitle('Fermer cette conversation')).toHaveLength(2)
+  })
+})
+
+describe('VoletTchat — fermer une conversation privee', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  function transportAvecPrive(): TransportTchat {
+    return transportSimule({
+      lire: vi.fn(async (): Promise<VueTchat> => ({
+        actif: true,
+        pseudo: 'moi',
+        messages: [{ id: 1, pseudo: 'bob', texte: 'salut', quand: '21:30' }],
+        dernier: 1,
+        prives: { bob: 1 },
+      })),
+    })
+  }
+
+  it('la croix ferme l\'onglet MP et revient au fil Général', async () => {
+    const { container } = render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportAvecPrive()} />)
+    const onglets = () => container.querySelector('.volet-tchat-onglets') as HTMLElement
+    await waitFor(() => expect(within(onglets()).getByRole('button', { name: 'bob' })).toBeTruthy())
+    fireEvent.click(within(onglets()).getByRole('button', { name: 'bob' }))
+    expect(within(onglets()).getByRole('button', { name: 'bob', hidden: false })).toHaveClass('est-actif')
+    fireEvent.click(screen.getByTitle('Fermer cette conversation'))
+    expect(within(onglets()).queryByRole('button', { name: 'bob' })).toBeNull()
+    expect(within(onglets()).getByRole('button', { name: 'Général' })).toHaveClass('est-actif')
+  })
+
+  it('reste fermee apres un remontage tant qu\'aucun nouveau message n\'arrive', async () => {
+    const transport = transportAvecPrive()
+    const { container, unmount } = render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transport} />)
+    const onglets = () => container.querySelector('.volet-tchat-onglets') as HTMLElement
+    await waitFor(() => expect(within(onglets()).getByRole('button', { name: 'bob' })).toBeTruthy())
+    fireEvent.click(within(onglets()).getByRole('button', { name: 'bob' }))
+    fireEvent.click(screen.getByTitle('Fermer cette conversation'))
+    unmount()
+    const { container: container2 } = render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportAvecPrive()} />)
+    await waitFor(() => expect(screen.getByText('salut')).toBeTruthy())
+    expect(container2.querySelector('.volet-tchat-onglets')?.textContent).not.toContain('bob')
+  })
+
+  it('reapparait quand un message plus recent arrive', async () => {
+    window.localStorage.setItem('marvel-tchat-fermees', JSON.stringify({ bob: 1 }))
+    const transport = transportSimule({
+      lire: vi.fn(async (): Promise<VueTchat> => ({
+        actif: true,
+        pseudo: 'moi',
+        messages: [],
+        dernier: 0,
+        prives: { bob: 2 },
+      })),
+    })
+    render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transport} />)
+    await waitFor(() => expect(screen.getByRole('button', { name: 'bob' })).toBeTruthy())
+  })
+})
+
+describe('VoletTchat — pseudo Play (formulaire, pas window.prompt)', () => {
+  it('affiche le formulaire tant que pseudoPlay.valeur est vide, rien d’autre', () => {
+    render(
+      <VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} pseudoPlay={{ valeur: '', definir: vi.fn() }} />
+    )
+    expect(screen.getByText('Choisis un pseudo pour le tchat (visible des autres joueurs) :')).toBeTruthy()
+    expect(screen.queryByPlaceholderText('Écrire un message…')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Créer une table' })).toBeNull()
+  })
+
+  it('le bouton Rejoindre est desactive tant que le champ est vide', () => {
+    render(
+      <VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} pseudoPlay={{ valeur: '', definir: vi.fn() }} />
+    )
+    expect(screen.getByRole('button', { name: 'Rejoindre' })).toBeDisabled()
+  })
+
+  it('valider le formulaire appelle definir() avec le pseudo nettoye', () => {
+    const definir = vi.fn()
+    render(
+      <VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} pseudoPlay={{ valeur: '', definir }} />
+    )
+    fireEvent.change(screen.getByPlaceholderText('Pseudo…'), { target: { value: '  zellichon  ' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Rejoindre' }))
+    expect(definir).toHaveBeenCalledWith('zellichon')
+  })
+
+  it('une fois pseudoPlay.valeur rempli, le formulaire disparait et le fil normal s’affiche', () => {
+    render(
+      <VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} pseudoPlay={{ valeur: 'zellichon', definir: vi.fn() }} />
+    )
+    expect(screen.queryByText('Choisis un pseudo pour le tchat (visible des autres joueurs) :')).toBeNull()
+    expect(screen.getByPlaceholderText('Écrire un message…')).toBeTruthy()
+  })
+
+  it('sans pseudoPlay (plateau normal), le formulaire n’apparait jamais', () => {
+    render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} />)
+    expect(screen.queryByText('Choisis un pseudo pour le tchat (visible des autres joueurs) :')).toBeNull()
   })
 })
 

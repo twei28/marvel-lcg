@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { heureLocale, transportMoteur, type MessageTchat } from './tchat'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  ecrirePseudoPlay,
+  heureLocale,
+  lirePseudoPlay,
+  transportMoteur,
+  transportSiteDirect,
+  type MessageTchat,
+} from './tchat'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -95,5 +102,96 @@ describe('transportMoteur — dire', () => {
     })
     vi.stubGlobal('fetch', fetchSimule)
     await transportMoteur().dire('prive', 'coucou', 'bob')
+  })
+})
+
+describe('pseudo Play (localStorage)', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('vide tant que rien n’a ete choisi', () => {
+    expect(lirePseudoPlay()).toBe('')
+  })
+
+  it('garde le pseudo choisi', () => {
+    ecrirePseudoPlay('nico')
+    expect(lirePseudoPlay()).toBe('nico')
+  })
+})
+
+describe('transportSiteDirect (Play, sans moteur) — lire', () => {
+  it('sans pseudo : muet, aucun appel reseau', async () => {
+    const fetchSimule = vi.fn()
+    vi.stubGlobal('fetch', fetchSimule)
+    const vue = await transportSiteDirect('https://narwhalchampions.com', () => '').lire('general', 0)
+    expect(vue).toEqual({ actif: false, messages: [], dernier: 0 })
+    expect(fetchSimule).not.toHaveBeenCalled()
+  })
+
+  it('fil table : jamais appele, meme avec un pseudo', async () => {
+    const fetchSimule = vi.fn()
+    vi.stubGlobal('fetch', fetchSimule)
+    const vue = await transportSiteDirect('https://narwhalchampions.com', () => 'nico').lire('table', 0)
+    expect(vue.actif).toBe(false)
+    expect(fetchSimule).not.toHaveBeenCalled()
+  })
+
+  it('fil general avec pseudo : appelle /tchat/vue sur l’ORIGINE DU SITE, sans credentials', async () => {
+    const fetchSimule = vi.fn(async (url: string, init: RequestInit) => {
+      expect(url).toBe('https://narwhalchampions.com/tchat/vue?depuis=0&pseudo=nico')
+      expect(init.credentials).toBe('omit')
+      return reponseJson({
+        actif: true,
+        pseudo: 'nico',
+        messages: [{ id: 1, pseudo: 'bob', texte: 'salut', quand: '21:30' }],
+        dernier: 1,
+      })
+    })
+    vi.stubGlobal('fetch', fetchSimule)
+    const vue = await transportSiteDirect('https://narwhalchampions.com', () => 'nico').lire('general', 0)
+    expect(vue.actif).toBe(true)
+    expect(vue.messages).toHaveLength(1)
+  })
+
+  it('reponse non ok ou fetch qui leve : muet, jamais d’exception', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => reponseJson({}, false)))
+    const muet1 = await transportSiteDirect('https://narwhalchampions.com', () => 'nico').lire('general', 4)
+    expect(muet1).toEqual({ actif: false, messages: [], dernier: 4 })
+    vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('reseau coupe') }))
+    const muet2 = await transportSiteDirect('https://narwhalchampions.com', () => 'nico').lire('general', 4)
+    expect(muet2.actif).toBe(false)
+  })
+})
+
+describe('transportSiteDirect (Play, sans moteur) — dire', () => {
+  it('sans pseudo ou texte vide : rien envoye', async () => {
+    const fetchSimule = vi.fn()
+    vi.stubGlobal('fetch', fetchSimule)
+    expect(await transportSiteDirect('https://narwhalchampions.com', () => '').dire('general', 'salut')).toBe(false)
+    expect(await transportSiteDirect('https://narwhalchampions.com', () => 'nico').dire('general', '  ')).toBe(false)
+    expect(fetchSimule).not.toHaveBeenCalled()
+  })
+
+  it('jamais de fil table ou de message prive', async () => {
+    const fetchSimule = vi.fn()
+    vi.stubGlobal('fetch', fetchSimule)
+    await transportSiteDirect('https://narwhalchampions.com', () => 'nico').dire('table', 'coucou')
+    await transportSiteDirect('https://narwhalchampions.com', () => 'nico').dire('general', 'coucou', 'bob')
+    expect(fetchSimule).not.toHaveBeenCalled()
+  })
+
+  it('poste en formulaire, sur l’origine du site, avec le pseudo', async () => {
+    const fetchSimule = vi.fn(async (url: string, init: RequestInit) => {
+      expect(url).toBe('https://narwhalchampions.com/tchat/dire')
+      expect(init.credentials).toBe('omit')
+      const corps = new URLSearchParams(init.body as string)
+      expect(corps.get('texte')).toBe('salut tout le monde')
+      expect(corps.get('pseudo')).toBe('nico')
+      return reponseJson({ ok: true })
+    })
+    vi.stubGlobal('fetch', fetchSimule)
+    const ok = await transportSiteDirect('https://narwhalchampions.com', () => 'nico').dire('general', 'salut tout le monde')
+    expect(ok).toBe(true)
   })
 })

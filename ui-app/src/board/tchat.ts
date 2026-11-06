@@ -191,6 +191,84 @@ export function transportMoteur(): TransportTchat {
   }
 }
 
+/**
+ * Le transport depuis PLAY (chantier du 06/11/2026) : Play n'a pas de moteur
+ * derriere lui (le moteur tourne dans le navigateur, Pyodide) donc pas de
+ * relais possible vers `/get_salon_joueurs` — on appelle directement le SITE
+ * PRINCIPAL (`/tchat/vue`, `/tchat/dire`), avec un pseudo tape une seule fois
+ * par le visiteur (Play n'a pas de compte) et garde par l'appelant — voir
+ * `lirePseudoPlay`/`ecrirePseudoPlay` ci-dessous. Cote serveur, ces deux
+ * routes acceptent deja un visiteur sans compte (`pseudo_anonyme_valide`) et
+ * portent les en-tetes CORS/CORP necessaires pour une autre origine
+ * (`_entetes_tchat_play`, orchestrateur.py).
+ *
+ * ⚠ NI FIL DE TABLE NI MESSAGES PRIVES ICI. Un visiteur anonyme n'a pas de
+ * table partagee par ce chemin (« Coop en ligne » passe par le site, pas par
+ * ce transport), et le serveur refuse deja les MP sans compte — inutile de
+ * tenter l'appel pour echouer a chaque fois.
+ */
+export function transportSiteDirect(origine: string, pseudo: () => string): TransportTchat {
+  return {
+    async lire(fil, depuis) {
+      if (fil !== 'general') return MUET(depuis)
+      const moi = pseudo()
+      if (!moi) return MUET(depuis)
+      try {
+        const params = new URLSearchParams({ depuis: String(depuis), pseudo: moi })
+        const reponse = await fetch(`${origine}/tchat/vue?${params}`, { cache: 'no-store', credentials: 'omit' })
+        if (!reponse.ok) return MUET(depuis)
+        const brut: unknown = await reponse.json()
+        if (typeof brut !== 'object' || brut === null) return MUET(depuis)
+        const o = brut as Record<string, unknown>
+        return {
+          actif: true,
+          pseudo: typeof o.pseudo === 'string' ? o.pseudo : moi,
+          messages: messagesDepuisBrut(o.messages),
+          dernier: typeof o.dernier === 'number' ? o.dernier : depuis,
+        }
+      } catch {
+        return MUET(depuis)
+      }
+    },
+    async dire(fil, texte, a = '', langues = '') {
+      if (fil !== 'general' || a || !texte.trim()) return false
+      const moi = pseudo()
+      if (!moi) return false
+      try {
+        const corps = new URLSearchParams({ texte, langues, pseudo: moi })
+        const reponse = await fetch(`${origine}/tchat/dire`, {
+          method: 'POST',
+          credentials: 'omit',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: corps,
+        })
+        return reponse.ok
+      } catch {
+        return false
+      }
+    },
+  }
+}
+
+const CLE_PSEUDO_PLAY = 'marvel-tchat-pseudo-play'
+
+/** Le pseudo choisi par CE visiteur de Play, "" si jamais demande/stockage indisponible. */
+export function lirePseudoPlay(): string {
+  try {
+    return window.localStorage.getItem(CLE_PSEUDO_PLAY) || ''
+  } catch {
+    return ''
+  }
+}
+
+export function ecrirePseudoPlay(pseudo: string): void {
+  try {
+    window.localStorage.setItem(CLE_PSEUDO_PLAY, pseudo)
+  } catch {
+    // stockage indisponible : la demande reapparaitra au prochain essai, rien de plus grave.
+  }
+}
+
 const CLE_LANGUES_CHOISIES = 'marvel-tchat-langues'
 
 /** Les drapeaux choisis par CE navigateur, "" si aucun/stockage indisponible. */
@@ -208,5 +286,37 @@ export function ecrireLanguesChoisies(langues: string): void {
   } catch {
     // stockage indisponible (navigation privee...) : le choix ne survivra
     // pas au rechargement, rien de plus grave.
+  }
+}
+
+const CLE_CONVERSATIONS_FERMEES = 'marvel-tchat-fermees'
+
+/**
+ * Conversations privees fermees par CE navigateur (demande du 06/11/2026) :
+ * pseudo -> identifiant du dernier message connu au moment de la fermeture.
+ * Rien n'est efface cote serveur, seul l'onglet disparait ICI tant qu'aucun
+ * message plus recent que cet identifiant n'arrive (voir VoletTchat.tsx).
+ */
+export function lireConversationsFermees(): Record<string, number> {
+  try {
+    const brut = window.localStorage.getItem(CLE_CONVERSATIONS_FERMEES)
+    if (!brut) return {}
+    const o: unknown = JSON.parse(brut)
+    if (typeof o !== 'object' || o === null) return {}
+    const net: Record<string, number> = {}
+    for (const [pseudo, id] of Object.entries(o as Record<string, unknown>)) {
+      if (typeof id === 'number') net[pseudo] = id
+    }
+    return net
+  } catch {
+    return {}
+  }
+}
+
+export function ecrireConversationsFermees(fermees: Record<string, number>): void {
+  try {
+    window.localStorage.setItem(CLE_CONVERSATIONS_FERMEES, JSON.stringify(fermees))
+  } catch {
+    // stockage indisponible : la fermeture ne survivra pas au rechargement.
   }
 }

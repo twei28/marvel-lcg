@@ -280,6 +280,7 @@ import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivre
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
 import { VoletTchat } from './board/VoletTchat'
+import { ecrirePseudoPlay, lirePseudoPlay, transportSiteDirect } from './board/tchat'
 import { VoletVille } from './board/VoletVille'
 import { VoletAssemblee } from './board/VoletAssemblee'
 import { useAssembleeEnDirect } from './board/use-assemblee-en-direct'
@@ -3771,6 +3772,34 @@ export function PagePartie({
   // Le tchat (chantier du 06/11/2026) : pas encore synchronise au spectateur
   // (menusDuJoueur), chaque client decide seul s'il l'a ouvert.
   const [tchatOuverteLocale, setTchatOuverte] = useState(false)
+  // Sur Play (chantier du 06/11/2026) : pas de moteur derriere, donc pas de
+  // relais possible vers le tchat normal (`transportMoteur`, voir tchat.ts).
+  // `window.__playInvite` est pose par `navigateur/src/shim.js`, UNIQUEMENT
+  // sur Play, avec l'origine du site principal. On y parle en DIRECT
+  // (`transportSiteDirect`), avec un pseudo demande une seule fois (Play n'a
+  // pas de compte). Le pseudo se demande dans un petit formulaire DANS le
+  // volet (`pseudoPlay`, voir VoletTchat.tsx) — PAS `window.prompt()` : la
+  // vraie boite native du navigateur n'est stylable par rien, « hyper
+  // moche » (retour direct de l'utilisateur apres l'avoir vue en apercu).
+  const origineSitePlay = typeof window !== 'undefined' ? window.__playInvite?.origine : undefined
+  const [pseudoPlayEtat, setPseudoPlayEtat] = useState(() => lirePseudoPlay())
+  const transportPlay = useMemo(
+    () => (origineSitePlay ? transportSiteDirect(origineSitePlay, () => pseudoPlayEtat) : undefined),
+    [origineSitePlay, pseudoPlayEtat]
+  )
+  const pseudoPlayProp = useMemo(
+    () =>
+      origineSitePlay
+        ? {
+            valeur: pseudoPlayEtat,
+            definir: (pseudo: string) => {
+              ecrirePseudoPlay(pseudo)
+              setPseudoPlayEtat(pseudo)
+            },
+          }
+        : undefined,
+    [origineSitePlay, pseudoPlayEtat]
+  )
   const ouvrirTchat = useCallback(() => setTchatOuverte(true), [])
   const fermerTchat = useCallback(() => setTchatOuverte(false), [])
   // SES MENUS (08/10/2026) : Reglages, Menu, journal, volets d'aide, ouverts
@@ -5913,6 +5942,8 @@ export function PagePartie({
         fermer={fermerTchat}
         tableId={estMultijoueur() ? 'table' : undefined}
         spectateur={spectateur}
+        transport={transportPlay}
+        pseudoPlay={pseudoPlayProp}
       />
       <BandeauConnexion
         etat={etat}
@@ -6160,6 +6191,9 @@ function Page() {
 declare global {
   interface Window {
     racinePlateau?: Root
+    // Pose par navigateur/src/shim.js, UNIQUEMENT sur Play : l'origine du
+    // site principal, pour parler au tchat en direct (voir transportSiteDirect).
+    __playInvite?: { origine: string }
   }
 }
 

@@ -1449,6 +1449,97 @@ with o._cx() as cx:
     cx.execute("DELETE FROM rapports")
 
 
+# --- Le tchat garde 30 jours, pas juste les N derniers messages -------------
+# ⚠ `PRIVES_GARDES` (500) est un filet par NOMBRE, PARTAGE entre TOUTES les
+# conversations privees : une conversation tres active pouvait faire perdre
+# l'historique d'une autre, restee calme. Demande de l'utilisateur
+# (06/11/2026) : rouvrir une conversation doit retrouver les derniers jours,
+# pas repartir de zero. `purger_messages_anciens` est le filet par AGE, et ne
+# doit toucher ni un message recent, general ou prive, ni un message prive
+# d'une conversation calme simplement vieille de moins de 30 jours.
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+o.dire("chloe", "message general recent")
+o.dire("chloe", "message prive recent pour hugo", "hugo")
+with o._cx() as cx:
+    _vieux_general = cx.execute(
+        "INSERT INTO messages (pseudo, texte, quand, destinataire) VALUES (?,?,?,?)",
+        ("chloe", "message general tres vieux",
+         (datetime.now() - timedelta(days=40)).strftime("%Y-%m-%d %H:%M"), None)).lastrowid
+    _vieux_prive = cx.execute(
+        "INSERT INTO messages (pseudo, texte, quand, destinataire) VALUES (?,?,?,?)",
+        ("chloe", "message prive tres vieux",
+         (datetime.now() - timedelta(days=40)).strftime("%Y-%m-%d %H:%M"), "hugo")).lastrowid
+
+_efface = o.purger_messages_anciens(30)
+verifier("les deux messages de plus de 30 jours sont effaces", _efface == 2, str(_efface))
+with o._cx() as cx:
+    _ids_restants = {r["id"] for r in cx.execute("SELECT id FROM messages")}
+verifier("⚠ le vieux message general est bien parti", _vieux_general not in _ids_restants)
+verifier("⚠ le vieux message prive est bien parti", _vieux_prive not in _ids_restants)
+with o._cx() as cx:
+    _textes_restants = {r["texte"] for r in cx.execute("SELECT texte FROM messages")}
+verifier("le message general recent reste", "message general recent" in _textes_restants, str(_textes_restants))
+verifier("le message prive recent reste", "message prive recent pour hugo" in _textes_restants, str(_textes_restants))
+
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+
+# --- Le tchat general, en direct depuis Play (sans compte, sans moteur) -----
+# ⚠ PLAY N'A PAS DE MOTEUR DERRIERE LUI (il tourne dans le navigateur) : ces
+# deux routes sont le SEUL chemin pour que Play ait un tchat (chantier du
+# 06/11/2026, demande de l'utilisateur : un pseudo tape une fois a l'ouverture).
+# Un visiteur SANS COMPTE (donc sans cookie de session) doit pouvoir lire et
+# ecrire dans le general avec juste un pseudo, et JAMAIS dans un prive. Et la
+# reponse doit porter les en-tetes CORS/CORP, sans quoi le navigateur de Play
+# (une autre origine) refuserait de la lire.
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+_origine_play_test = "http://127.0.0.1"
+_code, _entetes_play, _corps_play = appel(
+    "POST", "/tchat/dire",
+    b"texte=salut+depuis+play&pseudo=invite-play",
+    {"Origin": _origine_play_test})
+verifier("un visiteur sans compte peut ecrire dans le general avec un pseudo",
+         _code == 200, str((_code, _corps_play)))
+verifier("la reponse porte le CORS pour l'origine de Play",
+         _entetes_play.get("Access-Control-Allow-Origin") == _origine_play_test, str(_entetes_play.items()))
+verifier("et le CORP pour le COEP de Play (Safari)",
+         _entetes_play.get("Cross-Origin-Resource-Policy") == "same-site", str(_entetes_play.items()))
+
+_code, _entetes_play, _corps_play = appel(
+    "GET", "/tchat/vue?depuis=0&pseudo=invite-play",
+    entetes={"Origin": _origine_play_test})
+_vue_play = json.loads(_corps_play)
+verifier("il relit bien son propre message",
+         any(m["texte"] == "salut depuis play" for m in _vue_play["messages"]), str(_vue_play))
+verifier("la lecture porte aussi le CORS pour Play",
+         _entetes_play.get("Access-Control-Allow-Origin") == _origine_play_test, str(_entetes_play.items()))
+
+_code, _, _corps_play = appel(
+    "GET", "/tchat/vue?depuis=0&avec=hote&pseudo=invite-play",
+    entetes={"Origin": _origine_play_test})
+verifier("⚠ un visiteur sans compte ne lit jamais un prive, meme sur Play",
+         _code == 403, str((_code, _corps_play)))
+
+_code, _, _corps_play = appel(
+    "POST", "/tchat/dire", b"texte=coucou&a=hote&pseudo=invite-play",
+    {"Origin": _origine_play_test})
+verifier("⚠ et n'en ecrit jamais non plus", _code == 403, str((_code, _corps_play)))
+
+_code, _entetes_sans_play, _ = appel("POST", "/tchat/dire", b"texte=bonjour&pseudo=autre-invite")
+verifier("sans Origin de Play, pas de CORS (requete normale, meme site)",
+         "Access-Control-Allow-Origin" not in _entetes_sans_play, str(_entetes_sans_play.items()))
+verifier("⚠ mais le CORP reste pose (inoffensif, toujours la pour Safari)",
+         _entetes_sans_play.get("Cross-Origin-Resource-Policy") == "same-site")
+
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+
 # --- Le journal d'un moteur survit au rallumage de sa table -----------------
 # ⚠ Le cas qui compte est le RALLUMAGE : `.site/moteur-N.log` etait ouvert en
 # "w", et le journal de la partie d'avant, seule piece a conviction d'un

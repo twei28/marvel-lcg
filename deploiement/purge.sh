@@ -65,6 +65,22 @@ else
     || echo "  ⚠ la purge des rapports a échoué, rien n'a été supprimé"
 fi
 
+# --- Tchat (général + privé), au-delà de JOURS ---------------------------------
+# ⚠ FILET PAR ÂGE, EN PLUS DU FILET PAR NOMBRE DEJA EN PLACE (MESSAGES_GARDES,
+# PRIVES_GARDES dans orchestrateur.py) : sans lui, rouvrir une conversation
+# privée calme pouvait perdre son historique parce qu'une AUTRE conversation
+# privée avait été très active entre-temps (demande de l'utilisateur, 06/11/2026).
+echo
+echo "Messages du tchat (général + privé) vieux de plus de $JOURS jours :"
+if [ ! -f "$ORCHESTRATEUR" ]; then
+  echo "  (orchestrateur absent, ignoré) $ORCHESTRATEUR"
+elif [ ! -x "$PYTHON" ]; then
+  echo "  (python introuvable, ignoré) $PYTHON"
+else
+  "$PYTHON" "$ORCHESTRATEUR" purger-messages "$JOURS" \
+    || echo "  ⚠ la purge des messages a échoué, rien n'a été supprimé"
+fi
+
 echo
 echo "État du disque :"
 df -h / | tail -n +1

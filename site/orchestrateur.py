@@ -2973,6 +2973,13 @@ MESSAGES_GARDES = 200
 # Les conversations privees sont plus nombreuses et plus lentes a defiler :
 # une seule generale se partage entre tous, les privees se multiplient.
 PRIVES_GARDES = 500
+# Filet par AGE, en plus du filet par NOMBRE ci-dessus (06/11/2026, demande de
+# l'utilisateur : rouvrir une conversation privee doit retrouver les derniers
+# jours, pas repartir de zero). `PRIVES_GARDES` protege le disque d'un pic de
+# messages ; celui-ci protege une conversation calme contre un AUTRE pic
+# ailleurs (les deux partagent la meme table `messages`, voir `dire()`).
+# Purge hebdomadaire, voir `purger_messages_anciens` et `deploiement/purge.sh`.
+JOURS_MESSAGES_GARDES = int(os.environ.get("JOURS_MESSAGES_GARDES", "30"))
 TAILLE_MESSAGE = 500
 # Le fil d'UNE table reste court : une partie dure quelques heures, pas des
 # semaines.
@@ -3458,6 +3465,32 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
             print("purge : capture non effacee %s (%s)" % (chemin, erreur),
                   file=sys.stderr)
     return len(lignes)
+
+
+def purger_messages_anciens(jours: int = JOURS_MESSAGES_GARDES) -> int:
+    """Efface les messages du tchat (general ET prives, table `messages`)
+    vieux de plus de `jours` jours — demande de l'utilisateur du 06/11/2026 :
+    rouvrir une conversation privee doit retrouver les derniers jours, pas
+    repartir de zero, et une conversation calme ne doit pas perdre son
+    histoire parce qu'une AUTRE conversation a ete tres active (c'est la
+    limite de `PRIVES_GARDES`, par NOMBRE total et partagee entre toutes les
+    conversations privees -- ce filet-ci est par AGE et laisse chaque
+    conversation tranquille tant qu'elle a moins de `jours` jours).
+
+    Le fil de TABLE (`messages_table`) est deja ephemere par un autre chemin
+    (`effacer_messages_table`, `TABLE_MESSAGES_AGE_MAX_S`) : rien a faire ici.
+
+    Rend le nombre de messages effaces.
+    """
+    from datetime import datetime, timedelta
+    if jours < 0:
+        return 0
+    # Meme format que `_maintenant()`, meme raison qu'au-dessus : comparaison
+    # de chaines, fuseau UTC explicite.
+    limite = (datetime.utcnow() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
+    with _cx() as cx:
+        cur = cx.execute("DELETE FROM messages WHERE quand < ?", (limite,))
+        return cur.rowcount
 
 
 def supprimer_rapport(numero: int) -> None:
@@ -6224,6 +6257,26 @@ class Handler(BaseHTTPRequestHandler):
             return origine if origine == "https://play." + DOMAINE else ""
         return origine if re.match(r"^http://(localhost|127\.0\.0\.1)(:\d+)?$", origine) else ""
 
+    def _entetes_tchat_play(self) -> list[tuple[str, str]]:
+        """En-tetes pour une reponse de `/tchat/vue` ou `/tchat/dire` lisible
+        depuis Play (autre origine, chantier du 06/11/2026 : premiere visite
+        sur Play, un pseudo demande une fois, le tchat general devient
+        accessible sans compte).
+
+        ⚠ IL EN FAUT DEUX, PAS UN SEUL. `Access-Control-Allow-Origin` autorise
+        le SCRIPT a LIRE la reponse (CORS) ; `Cross-Origin-Resource-Policy`
+        autorise le NAVIGATEUR a la laisser passer du tout (COEP require-corp,
+        pose sur play. pour Safari le 12/10/2026 -- voir le commentaire de
+        `/compteur_play`). Sans le second, Safari refuse la reponse avant meme
+        que le JS la voie ; sans le premier, `fetch()` la voit « opaque » et ne
+        peut pas lire le JSON.
+        """
+        entetes: list[tuple[str, str]] = [("Cross-Origin-Resource-Policy", "same-site")]
+        origine = self._origine_play()
+        if origine:
+            entetes += [("Access-Control-Allow-Origin", origine), ("Vary", "Origin")]
+        return entetes
+
     def _places_invite(self) -> None:
         """`/places_invite` : combien de tables invite sont prises. Lu par la tuile
         « Online co-op » de Play (autre origine : d'ou le CORS)."""
@@ -7573,13 +7626,13 @@ class Handler(BaseHTTPRequestHandler):
                 moi = pseudo
             elif avec:
                 self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
-                               "application/json; charset=utf-8")
+                               "application/json; charset=utf-8", self._entetes_tchat_play())
                 return
             else:
                 moi = pseudo_anonyme_valide((self.parametres.get("pseudo") or [""])[0])
                 if not moi:
                     self._repondre(400, b'{"error":"pseudo invalide"}',
-                                   "application/json; charset=utf-8")
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
                     return
             messages = messages_depuis(depuis, moi, avec)
             corps = {"pseudo": moi, "messages": messages,
@@ -7590,7 +7643,7 @@ class Handler(BaseHTTPRequestHandler):
                      # `localStorage` cote client (06/11/2026).
                      "mes_langues": langues_du_compte(moi) if pseudo else ""}
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
-                           "application/json; charset=utf-8")
+                           "application/json; charset=utf-8", self._entetes_tchat_play())
         else:
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
@@ -7916,19 +7969,19 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 if champs.get("a"):
                     self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
-                                   "application/json; charset=utf-8")
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
                     return
                 if not debit_anonyme_ok(self._adresse_client()):
                     self._repondre(429, b'{"error":"trop de messages, reessaie plus tard"}',
-                                   "application/json; charset=utf-8")
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
                     return
                 moi = pseudo_anonyme_valide(champs.get("pseudo", ""))
                 if not moi:
                     self._repondre(400, b'{"error":"pseudo invalide"}',
-                                   "application/json; charset=utf-8")
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
                     return
             dire(moi, champs.get("texte", ""), champs.get("a", ""), champs.get("langues", ""))
-            self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8")
+            self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8", self._entetes_tchat_play())
             return
 
         if self.chemin == "/tchat/langues":
@@ -8589,7 +8642,30 @@ def purge_en_ligne_de_commande(arguments: list) -> int:
     return 0
 
 
+def purge_messages_en_ligne_de_commande(arguments: list) -> int:
+    """`orchestrateur.py purger-messages [jours]`, pour `deploiement/purge.sh`.
+
+    Voir `purger_messages_anciens` : filet par AGE sur le tchat (general et
+    prive), en plus du filet par NOMBRE deja en place (`MESSAGES_GARDES`,
+    `PRIVES_GARDES`).
+    """
+    try:
+        jours = int(arguments[0]) if arguments else JOURS_MESSAGES_GARDES
+    except ValueError:
+        print(f"Nombre de jours invalide : {arguments[0]}", file=sys.stderr)
+        return 2
+    if not os.path.isfile(BASE):
+        print(f"  (base absente, rien a purger) {BASE}")
+        return 0
+    effaces = purger_messages_anciens(jours)
+    print(f"  messages (general + prives) vieux de plus de {jours} jours : "
+          f"{effaces} efface(s)")
+    return 0
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "purger-rapports":
         sys.exit(purge_en_ligne_de_commande(sys.argv[2:]))
+    if len(sys.argv) > 1 and sys.argv[1] == "purger-messages":
+        sys.exit(purge_messages_en_ligne_de_commande(sys.argv[2:]))
     sys.exit(main())

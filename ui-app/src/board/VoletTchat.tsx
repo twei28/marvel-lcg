@@ -18,8 +18,10 @@ import { t } from './langue'
 import {
   DRAPEAUX_LANGUES,
   drapeauxDuMessage,
+  ecrireConversationsFermees,
   ecrireLanguesChoisies,
   heureLocale,
+  lireConversationsFermees,
   lireLanguesChoisies,
   listerConnectes,
   transportMoteur,
@@ -63,6 +65,7 @@ export function VoletTchat({
   tableId,
   spectateur = false,
   transport,
+  pseudoPlay,
 }: {
   ouvert: boolean
   ouvrir: () => void
@@ -71,6 +74,15 @@ export function VoletTchat({
   tableId?: string
   spectateur?: boolean
   transport?: TransportTchat
+  /**
+   * Present SEULEMENT sur Play (06/11/2026) : Play n'a pas de compte, donc
+   * pas de pseudo tant que la personne n'en a pas choisi un ici-meme. Avant,
+   * cette etape passait par `window.prompt()` -- la vraie boite native du
+   * navigateur, jamais stylable, « hyper moche » (retour direct de
+   * l'utilisateur apres avoir vu l'apercu). Un petit formulaire DANS le
+   * volet, aux couleurs du tchat, la remplace.
+   */
+  pseudoPlay?: { valeur: string; definir: (pseudo: string) => void }
 }) {
   const reseau = useMemo(() => transport ?? transportMoteur(), [transport])
   const tableVisible = Boolean(tableId) && !enRelecture()
@@ -78,6 +90,7 @@ export function VoletTchat({
   const [onglet, setOnglet] = useState<CleFil>('general')
   const [fils, setFils] = useState<Record<CleFil, EtatFil>>(() => ({ general: filVide(), table: filVide() }))
   const [brouillon, setBrouillon] = useState('')
+  const [brouillonPseudoPlay, setBrouillonPseudoPlay] = useState('')
   const [muet, setMuet] = useState(false)
   const futActif = useRef(false)
   const [detache, setDetache] = useState(false)
@@ -90,6 +103,10 @@ export function VoletTchat({
   const [creationTable, setCreationTable] = useState(false)
   const [invitesChoisis, setInvitesChoisis] = useState<Set<string>>(new Set())
   const [connectesDisponibles, setConnectesDisponibles] = useState<string[]>([])
+
+  // Fermer une conversation privee (demande du 06/11/2026) : l'onglet
+  // disparait tant qu'aucun message plus recent n'arrive. Voir tchat.ts.
+  const [fermees, setFermees] = useState<Record<string, number>>(() => lireConversationsFermees())
 
   // Drapeaux de langues parlees (chantier du 06/11/2026) : reglage dans le
   // tchat lui-meme, garde dans CE navigateur (le profil du compte, s'il y en
@@ -214,7 +231,30 @@ export function VoletTchat({
   const ouvrirMp = (pseudo: string) => {
     const cle: CleFil = `mp:${pseudo}`
     setFils((precedent) => (precedent[cle] ? precedent : { ...precedent, [cle]: filVide() }))
+    if (fermees[pseudo] !== undefined) {
+      setFermees((precedent) => {
+        const { [pseudo]: _retire, ...reste } = precedent
+        ecrireConversationsFermees(reste)
+        return reste
+      })
+    }
     setOnglet(cle)
+  }
+
+  /** Fermer un onglet MP : reste ferme tant qu'aucun message plus recent n'arrive (fermees). */
+  const fermerMp = (pseudo: string) => {
+    const cle: CleFil = `mp:${pseudo}`
+    const dernierConnu = Math.max(fils[cle]?.curseur ?? 0, privesConnus[pseudo] ?? 0)
+    setFermees((precedent) => {
+      const suivant = { ...precedent, [pseudo]: dernierConnu }
+      ecrireConversationsFermees(suivant)
+      return suivant
+    })
+    setFils((precedent) => {
+      const { [cle]: _retire, ...reste } = precedent
+      return reste as Record<CleFil, EtatFil>
+    })
+    setOnglet((courant) => (courant === cle ? 'general' : courant))
   }
 
   const basculerInvite = (pseudo: string) => {
@@ -315,116 +355,167 @@ export function VoletTchat({
                 {fils.table?.nonLus ? <em>{fils.table.nonLus}</em> : null}
               </button>
             ) : null}
-            {[...new Set([...Object.keys(fils).filter((cle) => cle.startsWith('mp:')), ...Object.keys(privesConnus).map((p) => `mp:${p}`)])].map(
-              (cle) => (
-                <button type="button" key={cle} className={onglet === cle ? 'est-actif' : ''} onClick={() => ouvrirMp(cle.slice(3))}>
-                  {cle.slice(3)}
-                  {fils[cle as CleFil]?.nonLus ? <em>{fils[cle as CleFil].nonLus}</em> : null}
-                </button>
-              )
-            )}
-          </div>
-          <div className="volet-tchat-contenu">
-            {onglet === 'general' ? (
-              <div className="volet-tchat-creer-table">
-                {creationTable ? (
-                  <>
-                    <p className="volet-tchat-creer-table-aide">{t('Choisis les personnes à inviter (clique sur un pseudo).')}</p>
-                    {connectesDisponibles.length > 0 ? (
-                      <div className="volet-tchat-connectes">
-                        {connectesDisponibles
-                          .filter((p) => p !== etatOnglet.moi)
-                          .map((p) => (
-                            <button
-                              type="button"
-                              key={p}
-                              className={invitesChoisis.has(p) ? 'est-choisi' : ''}
-                              onClick={() => basculerInvite(p)}
-                            >
-                              {p}
-                            </button>
-                          ))}
-                      </div>
-                    ) : null}
-                    <div className="volet-tchat-creer-table-actions">
-                      <button type="button" onClick={() => setCreationTable(false)}>
-                        {t('Annuler')}
+            {/* Rangee a part, qui defile horizontalement (06/11/2026, demande de l'utilisateur) :
+                Général/Table restent toujours visibles, quel que soit le nombre de conversations
+                privees ouvertes — elles ne doivent jamais pousser le reste du volet vers le bas. */}
+            <div className="volet-tchat-onglets-mp">
+              {[...new Set([...Object.keys(fils).filter((cle) => cle.startsWith('mp:')), ...Object.keys(privesConnus).map((p) => `mp:${p}`)])]
+                .filter((cle) => {
+                  const pseudo = cle.slice(3)
+                  const ferme = fermees[pseudo]
+                  if (ferme === undefined) return true
+                  return (privesConnus[pseudo] ?? 0) > ferme
+                })
+                .map((cle) => {
+                  const pseudo = cle.slice(3)
+                  return (
+                    <span className="volet-tchat-onglet-mp" key={cle}>
+                      <button type="button" className={onglet === cle ? 'est-actif' : ''} onClick={() => ouvrirMp(pseudo)}>
+                        {pseudo}
+                        {fils[cle as CleFil]?.nonLus ? <em>{fils[cle as CleFil].nonLus}</em> : null}
                       </button>
-                      <button type="button" disabled={invitesChoisis.size === 0} onClick={validerCreationTable}>
-                        {t('Valider')} {invitesChoisis.size > 0 ? `(${invitesChoisis.size})` : ''}
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <button type="button" className="volet-tchat-creer-table-bouton" onClick={ouvrirCreationTable}>
-                    {t('Créer une table')}
-                  </button>
-                )}
-              </div>
-            ) : null}
-            {muet ? (
-              <p className="volet-tchat-muet">
-                {t('Pas de tchat ici.')}{' '}
-                <button type="button" onClick={() => setMuet(false)}>
-                  {t('Réessayer')}
-                </button>
-              </p>
-            ) : (
-              <>
-                <div className="volet-tchat-fil" ref={filRef}>
-                  {etatOnglet.messages.map((m) => (
-                    <p key={m.id} className={`volet-tchat-message${m.pseudo === etatOnglet.moi ? ' est-moi' : ''}`}>
                       <button
                         type="button"
-                        className="volet-tchat-pseudo"
-                        disabled={m.pseudo === etatOnglet.moi}
-                        onClick={() => surClicPseudo(m.pseudo)}
+                        className="volet-tchat-onglet-fermer"
+                        title={t('Fermer cette conversation')}
+                        onClick={() => fermerMp(pseudo)}
                       >
-                        {m.pseudo}
-                      </button>{' '}
-                      {drapeauxDuMessage(m) ? <span className="volet-tchat-drapeaux">{drapeauxDuMessage(m)}</span> : null}{' '}
-                      <span className="volet-tchat-heure">{heureLocale(m)}</span>
-                      <br />
-                      {m.texte}
-                    </p>
-                  ))}
-                </div>
-                <form
-                  className="volet-tchat-saisie"
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    void envoyer()
-                  }}
-                >
-                  <div className="volet-tchat-langues">
-                    <button
-                      type="button"
-                      className="volet-tchat-langues-bouton"
-                      onClick={() => setMenuLanguesOuvert((o) => !o)}
-                      title={t('Langues parlées')}
-                    >
-                      {langues.length > 0 ? langues.map((c) => DRAPEAUX_LANGUES[c]).join('') : '🏳️'}
-                    </button>
-                    {menuLanguesOuvert ? (
-                      <div className="volet-tchat-langues-menu">
-                        {Object.entries(DRAPEAUX_LANGUES).map(([code, drapeau]) => (
-                          <label key={code}>
-                            <input type="checkbox" checked={langues.includes(code)} onChange={() => basculerLangue(code)} />
-                            {drapeau} {code}
-                          </label>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
+                        ×
+                      </button>
+                    </span>
+                  )
+                })}
+            </div>
+          </div>
+          <div className="volet-tchat-contenu">
+            {pseudoPlay && !pseudoPlay.valeur ? (
+              <form
+                className="volet-tchat-pseudo-play"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  const propre = brouillonPseudoPlay.trim().slice(0, 24)
+                  if (propre) pseudoPlay.definir(propre)
+                }}
+              >
+                <p className="volet-tchat-pseudo-play-aide">{t('Choisis un pseudo pour le tchat (visible des autres joueurs) :')}</p>
+                <div className="volet-tchat-pseudo-play-champ">
                   <input
                     type="text"
-                    value={brouillon}
-                    onChange={(e) => setBrouillon(e.target.value)}
-                    placeholder={t('Écrire un message…')}
-                    maxLength={500}
+                    value={brouillonPseudoPlay}
+                    onChange={(e) => setBrouillonPseudoPlay(e.target.value)}
+                    placeholder={t('Pseudo…')}
+                    maxLength={24}
+                    autoFocus
                   />
-                  <button type="submit">{t('Envoyer')}</button>
-                </form>
+                  <button type="submit" disabled={!brouillonPseudoPlay.trim()}>
+                    {t('Rejoindre')}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <>
+                {onglet === 'general' && !pseudoPlay ? (
+                <div className="volet-tchat-creer-table">
+                  {creationTable ? (
+                    <>
+                      <p className="volet-tchat-creer-table-aide">{t('Choisis les personnes à inviter (clique sur un pseudo).')}</p>
+                      {connectesDisponibles.length > 0 ? (
+                        <div className="volet-tchat-connectes">
+                          {connectesDisponibles
+                            .filter((p) => p !== etatOnglet.moi)
+                            .map((p) => (
+                              <button
+                                type="button"
+                                key={p}
+                                className={invitesChoisis.has(p) ? 'est-choisi' : ''}
+                                onClick={() => basculerInvite(p)}
+                              >
+                                {p}
+                              </button>
+                            ))}
+                        </div>
+                      ) : null}
+                      <div className="volet-tchat-creer-table-actions">
+                        <button type="button" onClick={() => setCreationTable(false)}>
+                          {t('Annuler')}
+                        </button>
+                        <button type="button" disabled={invitesChoisis.size === 0} onClick={validerCreationTable}>
+                          {t('Valider')} {invitesChoisis.size > 0 ? `(${invitesChoisis.size})` : ''}
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <button type="button" className="volet-tchat-creer-table-bouton" onClick={ouvrirCreationTable}>
+                      {t('Créer une table')}
+                    </button>
+                  )}
+                </div>
+                ) : null}
+                {muet ? (
+                <p className="volet-tchat-muet">
+                  {t('Pas de tchat ici.')}{' '}
+                  <button type="button" onClick={() => setMuet(false)}>
+                    {t('Réessayer')}
+                  </button>
+                </p>
+              ) : (
+                <>
+                  <div className="volet-tchat-fil" ref={filRef}>
+                    {etatOnglet.messages.map((m) => (
+                      <p key={m.id} className={`volet-tchat-message${m.pseudo === etatOnglet.moi ? ' est-moi' : ''}`}>
+                        <button
+                          type="button"
+                          className="volet-tchat-pseudo"
+                          disabled={m.pseudo === etatOnglet.moi}
+                          onClick={() => surClicPseudo(m.pseudo)}
+                        >
+                          {m.pseudo}
+                        </button>{' '}
+                        {drapeauxDuMessage(m) ? <span className="volet-tchat-drapeaux">{drapeauxDuMessage(m)}</span> : null}{' '}
+                        <span className="volet-tchat-heure">{heureLocale(m)}</span>
+                        <br />
+                        {m.texte}
+                      </p>
+                    ))}
+                  </div>
+                  <form
+                    className="volet-tchat-saisie"
+                    onSubmit={(e) => {
+                      e.preventDefault()
+                      void envoyer()
+                    }}
+                  >
+                    <div className="volet-tchat-langues">
+                      <button
+                        type="button"
+                        className="volet-tchat-langues-bouton"
+                        onClick={() => setMenuLanguesOuvert((o) => !o)}
+                        title={t('Langues parlées')}
+                      >
+                        {langues.length > 0 ? langues.map((c) => DRAPEAUX_LANGUES[c]).join('') : '🏳️'}
+                      </button>
+                      {menuLanguesOuvert ? (
+                        <div className="volet-tchat-langues-menu">
+                          {Object.entries(DRAPEAUX_LANGUES).map(([code, drapeau]) => (
+                            <label key={code}>
+                              <input type="checkbox" checked={langues.includes(code)} onChange={() => basculerLangue(code)} />
+                              {drapeau} {code}
+                            </label>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                    <input
+                      type="text"
+                      value={brouillon}
+                      onChange={(e) => setBrouillon(e.target.value)}
+                      placeholder={t('Écrire un message…')}
+                      maxLength={500}
+                    />
+                    <button type="submit">{t('Envoyer')}</button>
+                  </form>
+                </>
+                )}
               </>
             )}
           </div>
