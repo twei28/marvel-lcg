@@ -1712,11 +1712,15 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   align-content:start;
 }
 /* 29/10/2026 : avec le panneau d'arts sous la liste, la colonne ne tient plus
-   dans l'ecran : c'est elle qui defile, et la liste garde sa hauteur naturelle
-   (sinon elle s'ecrasait et le bouton « Proposition de deck » disparaissait). */
-.arsenal .tb-droite{overflow-y:auto;overflow-x:hidden}
+   dans l'ecran. 06/11/2026 (demande de l'utilisateur) : « Ton equipe » ne doit
+   plus jamais sortir de l'ecran pour autant — c'est donc seulement le contenu
+   du milieu qui defile desormais (.tb-droite-scroll), pas toute la colonne :
+   la liste garde sa hauteur naturelle (sinon elle s'ecrasait et le bouton
+   « Proposition de deck » disparaissait), et la rangee des sieges reste fixe
+   en bas. */
+.arsenal .tb-droite-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:12px}
 .arsenal .tb-roster-deck{flex:0 0 auto;overflow:visible}
-.arsenal .tb-droite > *{flex-shrink:0}
+.arsenal .tb-droite-scroll > *{flex-shrink:0}
 .tb-deck{
   padding:12px 14px;
   color:var(--txt);text-align:left;

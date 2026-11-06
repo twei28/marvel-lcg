@@ -4978,16 +4978,22 @@ function stepDecks() {
     const wrap = el("section", { class: "step team-b arsenal" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
     );
+    // « Ton équipe » reste TOUJOURS visible sans scroller (06/11/2026, demande
+    // de l'utilisateur) : seul le contenu du milieu (liste de decks, outils,
+    // arts alternatifs) défile, dans son propre conteneur ; la rangée des
+    // sièges, elle, ne quitte plus jamais le bas de l'écran.
     const droite = el("div", { class: "tb-droite" },
-        el("div", { class: "tb-entete" },
-            el("b", { class: "mvl" }, t("Decks")),
-            el("span", { class: "tb-compte", id: "tb-compte" }, ""),
-            el("span", { class: "tb-mode" }, navStatus()),
+        el("div", { class: "tb-droite-scroll" },
+            el("div", { class: "tb-entete" },
+                el("b", { class: "mvl" }, t("Decks")),
+                el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+                el("span", { class: "tb-mode" }, navStatus()),
+            ),
+            el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
+                el("div", { class: "loading" }, t("Chargement des decks..."))),
+            el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
+            el("div", { class: "tb-arsenal-arts", id: "deck-arts" }),
         ),
-        el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
-            el("div", { class: "loading" }, t("Chargement des decks..."))),
-        el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
-        el("div", { class: "tb-arsenal-arts", id: "deck-arts" }),
         estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
