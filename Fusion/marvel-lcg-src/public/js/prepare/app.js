@@ -45,13 +45,13 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
-import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
+import { boutonAffichage, appliquerAffichage, synchroniserAffichage } from "/public/js/prepare/affichage.js";
 import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES as MODES_PHASE, normaliser as normaliserModePhase,
          doitProposerLeChoix as doitProposerLaPhase, doitProposerLeChoixSurAppareil as doitProposerLaPhaseSurAppareil, modeAEcrire as modePhaseAEcrire,
          CLE_JEU_AU_DOIGT, REQUETE_TABLETTE as REQUETE_TABLETTE_PHASE, estTablette as estTablettePhase, choixInitial as choixInitialPhase,
          migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
-import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
+import { teinteActuelle, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
 // adresse chargerait le module une seconde fois.
 import { appliquerTeintePage } from "/public/js/teinte-page.js?v=1";
@@ -2040,76 +2040,36 @@ function demanderLaLangue() {
     });
 }
 
-/** « Choisis ton affichage » : la fenêtre d'Options (Normal, Coloré, Sobre, et la couleur du fond).
+/** La tuile « Options » de l'accueil ouvre le MEME panneau Réglages que le
+ *  plateau (icône ⚙ en partie), pas une resucée : demande de l'utilisateur,
+ *  06/11/2026 (« je veux exactement la même chose qu'en partie »). Le panneau
+ *  est React, câblé dans le bundle du plateau (ui-app) ; l'accueil est une
+ *  page classique, bundle différent — on le charge donc dans une iframe
+ *  isolée (`/app/reglages.html`, nouvelle entrée Vite) plutôt que de
+ *  dupliquer son CSS ou son code. Les réglages qu'on y bascule lisent/
+ *  écrivent les MÊMES clés localStorage que le plateau (reglages.tsx), donc
+ *  ils valent déjà pour la prochaine partie.
  *
- *  ⚠ ELLE NE S'IMPOSE PLUS À LA PREMIÈRE VISITE (18/10/2026, demande de l'utilisateur : « vire le choix au
- *  début, les gens sont en Normal et peuvent à la limite changer dans les options ») et SANS IMAGES d'aperçu
- *  (retirées le même jour). Elle ne s'ouvre que par la tuile « Options ».
- *
- *  ⚠ On ne la ferme pas en cliquant à côté : un clic distrait vaudrait réponse.
+ *  ⚠ On ne la ferme pas en cliquant à côté : un clic distrait vaudrait
+ *  fermeture, comme pour les autres feuilles de ce fichier.
  */
-async function demanderLAffichage({ rouvert = false } = {}) {
-    // L'épuré n'est proposé qu'à l'administrateur (16/10/2026) : on attend la réponse du serveur.
-    await verifierEpurePermis();
-    return new Promise((resolve) => {
-        // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
-        // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
-        // 04/10/2026), et c'est « Valider » qui ferme le tout.
-        let choixAffichage = rouvert ? affichageActuel() : "epure";
-        let choixTeinte = teinteActuelle();
-        const cartes = [];
-        const carte = (valeur, titre, sous) => {
-            const bouton = el("button", {
-                class: "af-choix" + (valeur === choixAffichage ? " on" : ""),
-                "aria-pressed": valeur === choixAffichage ? "true" : "false",
-                onclick: () => {
-                    choixAffichage = valeur;
-                    for (const c of cartes) {
-                        const on = c.dataset.valeur === valeur;
-                        c.classList.toggle("on", on);
-                        c.setAttribute("aria-pressed", on ? "true" : "false");
-                    }
-                },
-            },
-                el("b", {}, titre),
-                el("small", {}, sous));
-            bouton.dataset.valeur = valeur;
-            cartes.push(bouton);
-            return bouton;
-        };
-        const valider = () => {
-            choisirAffichage(choixAffichage);
-            if (choixTeinte) choisirTeinte(choixTeinte);
-            // La page elle-meme prend la teinte tout de suite (« partout »).
-            appliquerTeintePage(teinteActuelle());
-            fermerModale(overlay);
-            resolve();
-        };
-        const overlay = el("div", { class: "deck-modal affichage-modal" },
-            el("div", { class: "deck-modal-panel vh-panel" },
-                el("div", { class: "dm-head" },
-                    el("b", { class: "mvl" }, t("Choisis ton affichage")),
-                ),
-                el("div", { class: "af-choix-grille" },
-                    // Normal (valeur epure, celui de départ), Coloré (valeur normal), Sobre (18/10/2026).
-                    epurePermis() ? carte("epure", t("Normal"), t("Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.")) : null,
-                    carte("normal", t("Coloré"), t("Couleurs du héros, animations.")),
-                    carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                ),
-                el("div", { class: "af-teinte" },
-                    el("b", {}, t("Couleur du fond")),
-                    el("small", {}, t("Des teintes douces pour la table, les bandeaux et les panneaux.")),
-                    roueTeinte(choixTeinte, (teinte) => { choixTeinte = teinte; }),
-                ),
-                el("div", { class: "vh-note" },
-                    t("Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.")),
-                el("div", { class: "af-valider" },
-                    rouvert ? el("button", { class: "btn ghost", onclick: () => { fermerModale(overlay); resolve(); } }, t("Annuler")) : null,
-                    el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
-            ),
-        );
-        ouvrirModale(overlay);
+function ouvrirReglagesEnJeu() {
+    const iframe = el("iframe", {
+        class: "reglages-iframe",
+        src: "/app/reglages.html",
+        title: t("Réglages"),
     });
+    const overlay = el("div", { class: "reglages-iframe-voile" }, iframe);
+    // Un seul message attendu, une seule fois : pas besoin de retirer l'écoute
+    // ailleurs qu'ici, `fermerModale` est le seul effet de bord qui en dépend.
+    const surMessage = (evenement) => {
+        if (evenement.source !== iframe.contentWindow) return;
+        if (evenement.data?.marvelReglages !== "fermer") return;
+        window.removeEventListener("message", surMessage);
+        fermerModale(overlay);
+    };
+    window.addEventListener("message", surMessage);
+    ouvrirModale(overlay);
 }
 
 /** « Choisis ta phase du méchant », posée une seule fois (05/10/2026).
@@ -2497,7 +2457,7 @@ function accueilTel(tuiles, partir) {
             vignette(t("Galerie"), t("Toutes les cartes"), "fa-th", "/galerie.html"),
             vignette(t("Éditeur de deck"), t("Construire un deck"), "fa-pencil", "/deck-builder.html"),
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
-            vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => demanderLAffichage({ rouvert: true })),
+            vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => ouvrirReglagesEnJeu()),
         ),
         blocRemerciements(),
     );
@@ -2674,12 +2634,13 @@ function accueilView() {
            t("Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.")),
     ));
 
-    // Les options, comme en partie (demande du 15/10/2026) : la fenêtre
-    // d'affichage (Normal / Sobre / Épuré, couleur du fond), rouverte à volonté.
+    // Les options, EXACTEMENT comme en partie (demande du 15/10/2026, puis du
+    // 06/11/2026 : le panneau Réglages du plateau en entier, plus seulement
+    // l'affichage).
     grille.append(el("div", { class: "acc-tuile", "data-cle": "options" },
         el("button", {
             class: "acc-mode cut acc-options-tuile",
-            onclick: () => demanderLAffichage({ rouvert: true }),
+            onclick: () => ouvrirReglagesEnJeu(),
             "aria-describedby": "acc-aide-options",
         },
             el("span", { class: "acc-copy" },
@@ -6001,6 +5962,9 @@ async function loadExtTabs() {
     if (barre) {
         barre.replaceChildren(...GROUPES_EXTENSIONS.map((g) => el("button", {
             class: "ext-groupe" + (g.id === groupe ? " on" : ""),
+            // Repere fan-made (06/11/2026) : la seule facon pour le CSS de distinguer
+            // cet onglet des deux autres, qui partagent la meme classe « ext-groupe ».
+            "data-id": g.id,
             role: "tab",
             "aria-selected": g.id === groupe ? "true" : "false",
             onclick: () => {
@@ -6522,7 +6486,7 @@ installerHistorique(appliquerCleTel);
     synchroniserTeinte(reponsePreferences);
     appliquerTeintePage(teinteActuelle());
     // Plus de fenetre « Choisis ton affichage » a la premiere visite (18/10/2026) : tout le monde commence en
-    // Normal et peut en changer dans Options (`demanderLAffichage({ rouvert: true })`) ou par le bouton de l'en-tete.
+    // Normal et peut en changer dans Options (`ouvrirReglagesEnJeu()`) ou par le bouton de l'en-tete.
     // Apres l'affichage : une seule fenetre a la fois, et la langue est deja
     // choisie. Chaque joueur la voit une fois, nouveau comme ancien.
     // Le passage unique aux trois choix se fait aussi pour qui n'a plus la fenêtre à voir (19/10/2026).

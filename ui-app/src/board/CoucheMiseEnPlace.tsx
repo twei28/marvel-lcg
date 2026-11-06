@@ -181,11 +181,11 @@ export function PlacesEnAttente({ ids }: { ids: ReadonlySet<number> }) {
       {[
         `${cartesVisees.join(',\n')} { outline: 2px dashed rgba(240, 185, 95, 0.75); outline-offset: -2px; background: transparent !important; box-shadow: none !important; filter: none !important; animation: none !important; }`,
         `${cartesVisees.map((c) => `${c} > *`).join(',\n')} { visibility: hidden !important; }`,
-        // Les stades à venir empilés derrière la carte, et leur loupe (Board.tsx,
-        // `stagesArriere`) : à côté de la carte, pas dedans. Sur Tower Defense,
-        // Proxima Midnight II et 2A restaient visibles au-dessus des pointillés.
+        // La loupe des stades à venir (Board.tsx, `stagesArriere`) : à côté de
+        // la carte, pas dedans. Sur Tower Defense, Proxima Midnight II et 2A
+        // restaient visibles au-dessus des pointillés.
         `${[...ids]
-          .map((id) => `.plateau-unite:has(> .scan-card[data-card-id="${id}"]) > :is(.stage-arriere, .stages-bouton)`)
+          .map((id) => `.plateau-unite:has(> .scan-card[data-card-id="${id}"]) > .stages-bouton`)
           .join(',\n')} { visibility: hidden !important; }`,
       ].join('\n')}
     </style>

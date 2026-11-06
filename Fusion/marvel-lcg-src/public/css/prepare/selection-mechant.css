@@ -164,24 +164,32 @@
     color: var(--m-texte);
   }
 
-  /* Le bouton « Fan-made (7) », en tête du panneau des boîtes (filtre). */
+  /* Le bouton « Fan-made (7) », en tête du panneau des boîtes (filtre). Contour
+     dore --fan-made, fond inchange MEME selectionne (06/11/2026, meme repere
+     que le filtre heros et le bouton des createurs -- prepare.css). Avant,
+     seul l'etat « on » prenait --m-jaune (lui-meme detourne en bleu par
+     l'epure via --ep-jaune) : rien ne distinguait ce bouton au repos, et plus
+     rien ne le distinguait du tout en mode Normal une fois clique. */
+  /* !important sur la bordure et le texte : l'epure pose un degrade et une
+     bordure bleu-gris sur TOUT .ext-fanmade, elle aussi en !important
+     (affichage-epure-pages.css) -- sans ca, elle gagnerait sur ces deux
+     proprietes malgre la specificite plus grande d'ici. */
   .team-b.eux .ext-fanmade {
     display: block;
     margin: 0 0 0 auto;
     padding: 6px 14px;
-    border: 0;
+    border: 1px solid var(--fan-made) !important;
     border-radius: 8px;
     background: var(--m-champ);
-    color: var(--m-texte);
-    box-shadow: 0 0 0 1px var(--m-bord);
+    color: var(--fan-made) !important;
     font: 600 13px var(--m-police);
     cursor: pointer;
   }
-  .team-b.eux .ext-fanmade:hover { box-shadow: 0 0 0 1px var(--m-doux); }
+  .team-b.eux .ext-fanmade:hover { box-shadow: 0 0 0 1px var(--fan-made) !important; }
   .team-b.eux .ext-fanmade.on {
-    background: var(--m-jaune);
-    color: #14161a;
-    box-shadow: 0 0 0 1px #b88f00;
+    background: var(--m-champ);
+    color: var(--fan-made) !important;
+    box-shadow: 0 0 0 2px var(--fan-made) !important;
   }
 
   /* Les pochettes : de la place pour un nom sur trois lignes. */

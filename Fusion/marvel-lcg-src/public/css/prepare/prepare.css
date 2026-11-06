@@ -61,6 +61,12 @@
      rouge des noms géants, la part de l'écran prise par la scène, la pente
      de la coupe, le cadrage vertical de l'art, la taille des portraits. */
   --affiche-jaune:#f0b95f;
+  /* Le fan-made (06/11/2026) : un dore FIXE, jamais redefini par un mode
+     d'affichage (contrairement a --affiche-jaune, detourne vers du bleu par
+     l'epure -- affichage-epure-pages.css, --ep-jaune). Les trois reperes
+     fan-made (filtre heros, onglet du choix du mechant, bouton des
+     createurs) doivent rester reconnaissables QUEL QUE SOIT le mode choisi. */
+  --fan-made:#f0b95f;
   --affiche-ombre:8px 8px 0 #e62429;
   --affiche-scene-w:32%;
   /* Le zoom de l'art en scene, rapporte a la HAUTEUR : a 58 % de largeur,
@@ -877,6 +883,12 @@ button{cursor:pointer}
 .ext-section:first-child{margin-top:0}
 @media (max-width:899px){.ext-section{display:none}}
 .ext-groupe.on{background:#2f78e0;border-color:#8fbcf5;color:#fff;box-shadow:inset 0 -4px 0 #9fd0ff}
+/* Le troisieme onglet (Fan-made) : meme repere dore que le filtre heros et le bouton des
+   createurs (06/11/2026), au repos ET selectionne -- fond inchange, jamais le bleu generique
+   des deux autres onglets ni des !important de l'epure plus bas. */
+.ext-groupe[data-id="fan"]{border-color:var(--fan-made);color:var(--fan-made)}
+.ext-groupe[data-id="fan"]:hover{background:#26365a;color:var(--fan-made)}
+.ext-groupe[data-id="fan"].on{background:#1c2740;border-color:var(--fan-made);color:var(--fan-made);box-shadow:inset 0 -4px 0 var(--fan-made)}
 .ext-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
 .ext-tab{
   position:relative;
@@ -1206,6 +1218,13 @@ button{cursor:pointer}
   scrollbar-gutter:stable;
   /* La molette ne poursuit pas sur la page derriere une fois le panneau au bout. */
   overscroll-behavior:contain}
+/* Le panneau Reglages du plateau, ouvert depuis la tuile Options de l'accueil
+   (06/11/2026) : une iframe plein ecran vers /app/reglages.html. Pas de fond
+   ici (contrairement a .deck-modal) : le document de l'iframe pose deja le
+   sien (.reglages-fond, board.css), au-dessus duquel la vraie fenetre
+   Reglages se dessine -- un second fond ferait doublon. */
+.reglages-iframe-voile{position:fixed;inset:0;z-index:200}
+.reglages-iframe{width:100%;height:100%;border:0;display:block}
 .dm-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
 /* MAJUSCULES partout dans l'en-tete. MarvelFan dessine ses minuscules en
    petites capitales : « Ant-Man (Scott Lang) — Prebuilt » sortait avec deux
@@ -1532,7 +1551,15 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
 /* Demande du 04/11/2026 : la recherche ne prend plus que la moitie de la barre, les trois
    filtres (Favoris, vague, Fan-made) grandissent dans l'espace libere a la place. */
 .tb-filtres > .tampon{flex:1 1 0}
-.tampon.fan-made:not(.on){border-color:var(--affiche-jaune);color:var(--affiche-jaune)}
+/* Les trois reperes fan-made (06/11/2026, demande de l'utilisateur : « une couleur a part, la
+   meme pour les trois ») : contour dore --fan-made, fond inchange, MEME selectionne -- a la
+   difference du contour jaune d'avant, qui se remplissait comme n'importe quel tampon.on des
+   qu'on cliquait dessus (plus de distinction possible a ce moment-la). Voir aussi
+   selection-mechant.css (.ext-fanmade) et affichage-epure-pages.css (l'epure remplit .tampon.on
+   de bleu en !important, il faut l'y re-corriger explicitement). */
+.tampon.fan-made,
+.tampon.createurs-bouton{border-color:var(--fan-made);color:var(--fan-made)}
+.tampon.fan-made.on{background:transparent;color:var(--fan-made);border-color:var(--fan-made)}
 .tb-roster{
   flex:1 1 auto;min-height:0;max-height:none;
   display:grid;grid-template-columns:repeat(auto-fill,var(--affiche-portrait,104px));grid-auto-rows:var(--affiche-portrait-h,148px);justify-content:space-between;gap:8px;

@@ -86,7 +86,7 @@ export function lireValidationCourte(): boolean {
 export type ChoixPaiementAuto = 'pas-demande' | 'on' | 'off'
 export const CLE_PAIEMENT_AUTO = 'marvel-board-paiement-auto'
 
-function lirePaiementAuto(): ChoixPaiementAuto {
+export function lirePaiementAuto(): ChoixPaiementAuto {
   try {
     const brut = window.localStorage.getItem(CLE_PAIEMENT_AUTO)
     return brut === 'on' || brut === 'off' ? brut : 'pas-demande'
@@ -95,7 +95,7 @@ function lirePaiementAuto(): ChoixPaiementAuto {
   }
 }
 
-function ecrirePaiementAuto(choix: 'on' | 'off'): void {
+export function ecrirePaiementAuto(choix: 'on' | 'off'): void {
   try {
     window.localStorage.setItem(CLE_PAIEMENT_AUTO, choix)
   } catch {

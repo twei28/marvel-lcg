@@ -262,6 +262,17 @@ import {
   type ModeRevelation,
   type ReponseAmbiance,
 } from './board/moteur'
+import {
+  CLE_ANIMATIONS,
+  CLE_MODE_ACTIONS,
+  CLE_REVELATION,
+  CLE_SONS,
+  DUREES_REVELATION,
+  lireAnimations,
+  lireModeActions,
+  lireRevelation,
+  lireSons,
+} from './board/reglages-divers'
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
@@ -319,51 +330,6 @@ migrerReglagesPhase()
 
 /** Table pas encore decoupee : aucune carte dessinee. */
 const AUCUN_ID: Set<number> = new Set()
-const CLE_MODE_ACTIONS = 'marvel-board-action-mode'
-const CLE_ANIMATIONS = 'marvel-board-animations'
-
-// `ModeActions` et `ModeRevelation` vivent dans board/moteur.ts (14/09/2026) :
-// la fenetre des reglages en a besoin et ne peut pas importer ce fichier.
-
-function lireModeActions(): ModeActions {
-  try {
-    return window.localStorage.getItem(CLE_MODE_ACTIONS) === 'detailed' ? 'detailed' : 'simple'
-  } catch {
-    return 'simple'
-  }
-}
-
-/** Animations de deplacement activees ? Par defaut oui, sauf choix contraire. */
-function lireAnimations(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_ANIMATIONS) !== 'off'
-  } catch {
-    return true
-  }
-}
-
-const CLE_SONS = 'marvel-board-sons'
-const CLE_REVELATION = 'marvel-board-revelation'
-
-/** Sons du moteur actifs ? Par defaut oui, comme le client d'origine. */
-function lireSons(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_SONS) !== 'off'
-  } catch {
-    return true
-  }
-}
-
-const DUREES_REVELATION: Record<ModeRevelation, number> = { off: 0, court: 2600, long: 5000 }
-
-function lireRevelation(): ModeRevelation {
-  try {
-    const valeur = window.localStorage.getItem(CLE_REVELATION)
-    return valeur === 'off' || valeur === 'long' ? valeur : 'court'
-  } catch {
-    return 'court'
-  }
-}
 
 function parametres() {
   const url = new URLSearchParams(window.location.search)

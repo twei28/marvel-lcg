@@ -1488,6 +1488,27 @@ html[data-epure] .mod-chip.on {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
+/* Le filtre « Fan-made » du choix du héros garde son contour doré --fan-made
+   MEME selectionne (06/11/2026) : sans cette regle, il retombait dans le bleu
+   relief ci-dessus comme n'importe quel autre tampon selectionne. Plus de
+   classes que « .tampon.on », donc plus specifique malgre le meme
+   !important. */
+html[data-epure] .tampon.fan-made.on {
+  background: var(--ep-champ) !important;
+  color: var(--fan-made) !important;
+  border: 1px solid var(--fan-made) !important;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+/* Meme repere au REPOS (filtre heros ET bouton des createurs) : sans ceci, la
+   bordure generique de « html[data-epure] .tampon » plus haut (#4a5a7c,
+   un type-selecteur « html » en plus que prepare.css) la recouvrait malgre
+   la specificite plus grande de .tampon.fan-made/.createurs-bouton. */
+html[data-epure] .tampon.fan-made,
+html[data-epure] .tampon.createurs-bouton {
+  border-color: var(--fan-made);
+  color: var(--fan-made);
+}
 
 /* --- 24. Boutons : coins coupés petits, Bangers majuscules (choix du 17/10/2026) -- */
 html[data-epure] .btn,

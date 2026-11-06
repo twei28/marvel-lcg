@@ -300,8 +300,8 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
   it('dessine les pointillés des seules cartes en attente', () => {
     const vue = render(<PlacesEnAttente ids={new Set([20])} />)
     expect(vue.container.innerHTML).toContain('data-card-id="20"')
-    // La pile des stades derrière la carte attend avec elle.
-    expect(vue.container.innerHTML).toContain('.stage-arriere')
+    // La loupe des stades à venir attend avec la carte.
+    expect(vue.container.innerHTML).toContain('.stages-bouton')
     cleanup()
     expect(render(<PlacesEnAttente ids={new Set()} />).container.innerHTML).toBe('')
   })

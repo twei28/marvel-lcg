@@ -552,6 +552,7 @@ export const DICO_EN_BASE = {
     "unités": "units",
     "unités non dépensées": "unspent units",
     "Solde insuffisant pour cette carte.": "Not enough to buy this card.",
+    "Réglages": "Settings",
     "Réglages de la campagne": "Campaign settings",
     "Choisis avant le premier scénario : ils ne changent plus.": "Chosen before the first scenario: they no longer change.",
     "À choisir avant le premier scénario.": "To choose before the first scenario.",

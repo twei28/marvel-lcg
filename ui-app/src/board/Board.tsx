@@ -388,26 +388,15 @@ export function Unite({
       data-pile={unite.pile}
       data-pile-accueille={pileAccueille ? '' : undefined}
     >
-      {/* Phases A VENIR (vilain/complot) : un petit tas DERRIERE la carte, plus
-          un bouton loupe qui ouvre la vue de toutes les phases. Purement visuel :
-          le clic/survol passe a la carte dessous. */}
+      {/* Phases A VENIR (vilain/complot) : un bouton loupe qui ouvre la vue de
+          toutes les phases. Avant le 06/11/2026, un petit tas de cartes
+          s'empilait aussi DERRIERE la carte active (purement visuel) ; retire
+          a la demande de l'utilisateur, illisible des qu'un scenario a
+          beaucoup de stades (la manigance principale, en particulier). La
+          loupe + son compteur suffisent a savoir qu'il y a d'autres phases
+          dessous. */}
       {unite.stagesArriere && unite.stagesArriere.length > 0 ? (
         <>
-          {unite.stagesArriere.map((stage, i) => (
-            <span
-              className="stage-arriere"
-              key={stage.id}
-              style={{ '--i': i + 1 } as CSSProperties}
-              aria-hidden="true"
-            >
-              <ScanCard
-                {...taire(stage)}
-                effectDelta={effets.get(Number(stage.id))}
-                onSelect={undefined}
-                highlight={false}
-              />
-            </span>
-          ))}
           <button
             type="button"
             className="stages-bouton"

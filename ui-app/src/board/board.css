@@ -2331,18 +2331,9 @@
   }
 
   /* --- Phases A VENIR (vilain / complot) -----------------------------------
-     Un petit tas DERRIERE la carte actuelle (decalage haut-droite), en retrait,
-     purement decoratif. Le bouton loupe ouvre la vue de toutes les phases. */
-  .stage-arriere {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: calc(28 - var(--i, 1));
-    transform: translate(calc(var(--i, 1) * 9px), calc(var(--i, 1) * -9px));
-    pointer-events: none;
-    filter: brightness(0.72) saturate(0.85);
-  }
-
+     Le bouton loupe ouvre la vue de toutes les phases (le tas de cartes
+     empilees derriere la carte active a ete retire le 06/11/2026, illisible
+     des qu'un scenario a beaucoup de stades). */
   .stages-bouton {
     position: absolute;
     bottom: 7px;

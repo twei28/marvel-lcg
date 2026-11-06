@@ -49,6 +49,7 @@ export default defineConfig({
       input: {
         vitrine: resolve(import.meta.dirname, 'vitrine.html'),
         board: resolve(import.meta.dirname, 'board.html'),
+        reglages: resolve(import.meta.dirname, 'reglages.html'),
       },
     },
   },
