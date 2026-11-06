@@ -11,8 +11,17 @@ const PENDANT_LA_PARTIE: Raccourci[] = [
   { touches: 'Entrée  Espace', effet: 'Étape suivante pendant le déroulé d’une phase' },
   { touches: 'U', effet: 'Annuler' },
   { touches: 'B', effet: 'Copier le rapport de bug (les 20 dernières entrées du journal), sans ouvrir de panneau' },
-  { touches: '1 à 9', effet: 'Choisir l’option portant ce numéro dans le cartouche du bas' },
   { touches: 'Échap  ×', effet: 'Annuler l’action en cours : la partie revient avant le choix de la carte' },
+]
+
+// MODE SUR LA TABLE (06/11/2026) : repris de l'entree du journal des nouveautes du 05/11/2026,
+// ecrite pour un joueur. S'affiche uniquement en mode d'affichage « Plateau anime » (Reglages ›
+// Jeu › Mode d'affichage), pas en « Guidee » ni « Accelere ».
+const MODE_SUR_LA_TABLE: Raccourci[] = [
+  { touches: 'Halo vert qui respire', effet: 'Une carte jouable en ce moment' },
+  { touches: 'Halo rouge qui respire', effet: 'Une cible possible pour l’action en cours' },
+  { touches: 'Bandeau doré', effet: 'La question du moment, plus large et mieux visible' },
+  { touches: 'Annonce brève', effet: 'Une carte de Renfort vient d’apparaître' },
 ]
 
 const RANGER_SES_CARTES: Raccourci[] = [
@@ -41,6 +50,7 @@ const LA_TABLE: Raccourci[] = [
   { touches: 'Réglages › Apparence', effet: '« Modifier la table » : glisse une zone pour la déplacer, ses poignées règlent sa place et la taille de ses cartes' },
   { touches: 'Double-clic sur le titre', effet: 'Dans « Modifier la table » : renommer la zone (laisse vide pour reprendre le titre d’origine)' },
   { touches: 'Réglages › Jeu', effet: '« Côté des améliorations » : à gauche ou à droite de la carte qui les porte' },
+  { touches: 'Réglages › Jeu', effet: '« Taille de l’aperçu agrandi » : règle au curseur la taille de la carte qui s’ouvre au survol, de 70 % à 150 %' },
 ]
 
 // LE TELEPHONE (10/10/2026) : les touches et le glisser-Alt n'existent pas au
@@ -144,6 +154,7 @@ export function VoletAideAuto({
             ) : (
               <>
                 <Tableau titre="Pendant la partie" lignes={PENDANT_LA_PARTIE} />
+                <Tableau titre="Mode sur la table" lignes={MODE_SUR_LA_TABLE} />
                 <Tableau titre="Cartes empilées" lignes={CARTES_EMPILEES_PC} />
                 <Tableau titre="Ranger tes cartes" lignes={RANGER_SES_CARTES} />
                 <Tableau titre="La table" lignes={LA_TABLE} />
