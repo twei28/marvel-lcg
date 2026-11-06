@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-06",
+        genre: "correction",
+        fr: "Le tchat détaché en fenêtre flottante pouvait apparaître hors écran et refusait de bouger. Sur l'écran de préparation, fermer le tchat pouvait aussi bloquer tous les clics jusqu'au rechargement de la page. Les deux sont corrigés.",
+        en: "The chat window, when detached, could appear off-screen and refuse to move. On the preparation screen, closing chat could also block every click until the page was reloaded. Both are fixed.",
+    },
+    {
+        date: "2026-11-06",
         genre: "jeu",
         fr: "Le tchat change de look (bleu, petits onglets) et chaque conversation privée peut se fermer. Il est aussi maintenant disponible sur Play, avec un pseudo choisi une seule fois.",
         en: "Chat gets a new look (blue, small tabs) and each private conversation can now be closed. It's also available on Play now, with a name chosen just once.",
