@@ -40,8 +40,20 @@
   animation: volet-tchat-entre 180ms ease-out;
 }
 
+/* ⚠ `left`/`top` DOIVENT AVOIR UNE VRAIE VALEUR ICI, PAS `auto` (06/11/2026,
+   bug remonte par l'utilisateur : « on devait pouvoir bouger la fenetre
+   partout, et en fait je ne peux pas »). `VoletTchat.tsx` passe au volet
+   detache un style de base `{ position: 'fixed' }`, SANS `left`/`top` :
+   `styleAvecDecalage` (useGlisserPanneau.ts) n'AJOUTE le decalage du glisser
+   que par-dessus un `left`/`top` deja present dans le style — s'il est
+   absent (donc `undefined`, jamais `auto`), la fonction le laisse absent
+   MEME APRES avoir glisse la fenetre : rien ne bougeait jamais a l'ecran,
+   et sans valeur de depart la fenetre atterrissait hors de l'ecran (position
+   statique dans le flux, mesuree au bas du plateau). Ces deux valeurs sont
+   donc la position de depart ET le point d'ancrage de tout glisser ulterieur. */
 .volet-tchat.est-detache {
-  left: auto;
+  left: 24px;
+  top: 96px;
   right: auto;
   bottom: auto;
   border-radius: 10px;

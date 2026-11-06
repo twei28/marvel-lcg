@@ -30,10 +30,24 @@ import './board/VoletTchat.css'
 // vraie page : on mesure l'union des elements reellement interactifs
 // (`.volet-tchat-languette`, `.volet-tchat`) et on previent le parent a
 // chaque changement.
+// ⚠ L'IMPASSE CORRIGEE ICI (06/11/2026, bug remonte par l'utilisateur : « je
+// reste coince dans le chat, je ne peux plus cliquer sur rien »). Le parent
+// ne bascule `pointer-events` a 'none' que sur SON PROPRE `mousemove` — or
+// l'iframe couvre tout le viewport : des que `pointer-events:auto` est pose,
+// TOUT mouvement de souris, meme loin du widget visible, est capture par le
+// DOCUMENT DE CETTE IFRAME (les evenements ne traversent jamais une frontiere
+// d'iframe). Le `mousemove` du parent ne reçoit donc plus RIEN, et ne peut
+// plus jamais repasser l'iframe a 'none' : blocage definitif tant que la
+// page n'est pas rechargee. On ferme la boucle ici : CETTE page ecoute aussi
+// son propre `mousemove`, et des que le curseur sort du rectangle du widget
+// (meme encore « dans » l'iframe), elle previent le parent directement.
+const MARGE_PX = 4
+
 function useSignalerEmprise() {
   useEffect(() => {
     if (window.parent === window) return
     let dernier = ''
+    let rectCourant: { left: number; top: number; width: number; height: number } | null = null
     const mesurer = () => {
       const elements = document.querySelectorAll('.volet-tchat-languette, .volet-tchat')
       let rect: { left: number; top: number; right: number; bottom: number } | undefined
@@ -49,15 +63,15 @@ function useSignalerEmprise() {
             }
           : { left: r.left, top: r.top, right: r.right, bottom: r.bottom }
       })
-      const marge = 4
       const donnees = rect
         ? {
-            left: Math.max(0, Math.floor(rect.left - marge)),
-            top: Math.max(0, Math.floor(rect.top - marge)),
-            width: Math.ceil(rect.right - rect.left + marge * 2),
-            height: Math.ceil(rect.bottom - rect.top + marge * 2),
+            left: Math.max(0, Math.floor(rect.left - MARGE_PX)),
+            top: Math.max(0, Math.floor(rect.top - MARGE_PX)),
+            width: Math.ceil(rect.right - rect.left + MARGE_PX * 2),
+            height: Math.ceil(rect.bottom - rect.top + MARGE_PX * 2),
           }
         : { left: 0, top: 0, width: 0, height: 0 }
+      rectCourant = donnees.width > 0 && donnees.height > 0 ? donnees : null
       const serialise = JSON.stringify(donnees)
       if (serialise === dernier) return
       dernier = serialise
@@ -80,11 +94,34 @@ function useSignalerEmprise() {
     observateurMutation.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] })
     window.addEventListener('resize', mesurer)
     window.addEventListener('scroll', mesurer, true)
+
+    const dansLeRectangle = (x: number, y: number) => {
+      if (!rectCourant) return false
+      return (
+        x >= rectCourant.left && x <= rectCourant.left + rectCourant.width &&
+        y >= rectCourant.top && y <= rectCourant.top + rectCourant.height
+      )
+    }
+    const surPosition = (x: number, y: number) => {
+      if (!dansLeRectangle(x, y)) {
+        window.parent.postMessage({ type: 'marvel-tchat-hors-widget' }, window.location.origin)
+      }
+    }
+    const surSouris = (e: MouseEvent) => surPosition(e.clientX, e.clientY)
+    const surToucher = (e: TouchEvent) => {
+      const point = e.touches[0]
+      if (point) surPosition(point.clientX, point.clientY)
+    }
+    document.addEventListener('mousemove', surSouris, { passive: true })
+    document.addEventListener('touchstart', surToucher, { passive: true })
+
     return () => {
       observateurTaille.disconnect()
       observateurMutation.disconnect()
       window.removeEventListener('resize', mesurer)
       window.removeEventListener('scroll', mesurer, true)
+      document.removeEventListener('mousemove', surSouris)
+      document.removeEventListener('touchstart', surToucher)
     }
   }, [])
 }

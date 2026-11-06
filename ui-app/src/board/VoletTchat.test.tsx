@@ -45,6 +45,20 @@ describe('VoletTchat — ouverture et fermeture', () => {
   })
 })
 
+describe('VoletTchat — detacher en fenetre flottante', () => {
+  it('pose une position de depart explicite (left/top), pas "auto" ni absente', () => {
+    render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} />)
+    fireEvent.click(screen.getByTitle('Détacher le tchat dans sa propre fenêtre'))
+    const panneau = screen.getByRole('dialog', { name: 'Tchat' })
+    expect(panneau).toHaveClass('est-detache')
+    // ⚠ Sans ces deux valeurs explicites dans le style INLINE (pas seulement le CSS),
+    // `styleAvecDecalage` n'a rien sur quoi ajouter le decalage d'un glisser ulterieur :
+    // la fenetre ne bougeait jamais, quoi qu'on fasse a la poignee (06/11/2026).
+    expect(panneau.style.left).toBe('24px')
+    expect(panneau.style.top).toBe('96px')
+  })
+})
+
 describe('VoletTchat — onglet Table', () => {
   it('absent sans tableId', () => {
     render(<VoletTchat ouvert ouvrir={rien} fermer={rien} transport={transportSimule()} />)

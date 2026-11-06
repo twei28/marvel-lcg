@@ -94,7 +94,20 @@
 
         window.addEventListener('message', function (evenement) {
           if (evenement.origin !== window.location.origin) return
-          if (!evenement.data || evenement.data.type !== 'marvel-tchat-rect') return
+          if (!evenement.data) return
+          // ⚠ CORRECTIF DE L'IMPASSE (06/11/2026). Ce document ne reçoit plus
+          // AUCUN `mousemove` tant que l'iframe est en `pointer-events:auto` :
+          // elle couvre tout le viewport, et un mouvement de souris au-dessus
+          // va a SON document a elle, jamais au notre (les evenements ne
+          // traversent pas une frontiere d'iframe). Sans ce message envoye
+          // PAR l'iframe elle-meme des que son propre `mousemove` la voit
+          // sortie du widget, plus aucun clic n'atteignait la vraie page tant
+          // qu'on n'avait pas recharge — voir prepare-chat.tsx.
+          if (evenement.data.type === 'marvel-tchat-hors-widget') {
+            iframe.style.pointerEvents = 'none'
+            return
+          }
+          if (evenement.data.type !== 'marvel-tchat-rect') return
           var rect = evenement.data.rect
           rectWidget = (rect && rect.width > 0 && rect.height > 0) ? rect : null
         })

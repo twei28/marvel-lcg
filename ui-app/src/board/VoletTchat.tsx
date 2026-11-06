@@ -284,7 +284,17 @@ export function VoletTchat({
     window.location.href = `/prepare.html?inviter=${liste}`
   }
 
-  const styleDetache = detache ? styleAvecTaille(styleAvecDecalage({ position: 'fixed' }, decalage), taille) : undefined
+  // ⚠ `left`/`top` DOIVENT ETRE ECRITS ICI, EN STRINGS, PAS LAISSES AU CSS
+  // SEUL (06/11/2026, bug remonte par l'utilisateur : « je ne peux pas
+  // bouger la fenetre »). `styleAvecDecalage` n'AJOUTE le decalage du
+  // glisser que par-dessus un `left`/`top` deja present dans CE style ; sans
+  // eux ici, un glisser ne produisait jamais aucun `calc()` et la fenetre ne
+  // bougeait jamais, quoi qu'on fasse a la poignee. Valeurs identiques a la
+  // position de depart posee par `.volet-tchat.est-detache` (VoletTchat.css) :
+  // les deux doivent rester synchronisees.
+  const styleDetache = detache
+    ? styleAvecTaille(styleAvecDecalage({ position: 'fixed', left: '24px', top: '96px' }, decalage), taille)
+    : undefined
 
   return (
     <>
