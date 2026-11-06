@@ -1287,4 +1287,11 @@ export const DICO_EN_BASE = {
     "Autres": "Other",
     "ta sélection": "your selection",
     "Ce héros n'a pas de deck de départ : choisis un deck de la communauté ou une proposition.": "This hero has no starter deck: pick a community deck or a suggestion.",
+    "Échanger de siège avec ce joueur": "Swap seats with this player",
+    "Demandé…": "Requested…",
+    "Un échange est déjà en cours.": "A swap is already in progress.",
+    "Échange impossible.": "Swap not possible.",
+    "propose d’échanger de siège avec toi.": "wants to swap seats with you.",
+    "Accepter": "Accept",
+    "Refuser": "Decline",
 };

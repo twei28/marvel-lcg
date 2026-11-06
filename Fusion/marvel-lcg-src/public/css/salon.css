@@ -52,6 +52,13 @@
 .salon-place.mechant .tb-siege{box-shadow:inset 0 0 0 3px var(--eux,var(--agir))}
 .salon-place.mechant .tb-siege .portrait{background-size:cover;background-position:center 18%}
 
+.salon-echanger{margin-top:2px;width:100%;font:700 9px "Segoe UI",system-ui,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:var(--mute);background:transparent;border:1px solid var(--mute);border-radius:4px;padding:2px 0;cursor:pointer}
+.salon-echanger:hover{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
+.salon-echanger.en-attente,.salon-echanger:disabled{opacity:.5;cursor:default}
+.salon-echange-recu{display:flex;align-items:center;flex-wrap:wrap;gap:8px;width:100%;margin-top:8px;padding:6px 10px;background:var(--panneau,#1b1b22);border:1px solid var(--affiche-jaune);border-radius:6px;font:600 11px "Segoe UI",system-ui,sans-serif;color:var(--mute)}
+.salon-echange-recu button{font:700 10px "Segoe UI",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.03em;border-radius:4px;border:1px solid var(--mute);background:transparent;color:var(--mute);padding:3px 8px;cursor:pointer}
+.salon-echange-recu button:hover{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
+
 /* Les decks : la grille de l'assistant, le retour en tête. */
 .salon-retour{
   flex:none;align-self:flex-start;font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;

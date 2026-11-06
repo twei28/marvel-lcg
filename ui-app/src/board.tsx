@@ -279,6 +279,7 @@ import { essaiPhaseMechant, essaisOuverts } from './board/essais'
 import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
+import { VoletTchat } from './board/VoletTchat'
 import { VoletVille } from './board/VoletVille'
 import { VoletAssemblee } from './board/VoletAssemblee'
 import { useAssembleeEnDirect } from './board/use-assemblee-en-direct'
@@ -3767,6 +3768,11 @@ export function PagePartie({
   // Lots 3 et 4 du 07/10/2026 : cibles, flèches et surlignages du manuel, vus de tous (spectateur compris).
   const marquesManuel = useMarques(manuel)
   const [aideAutoOuverteLocale, setAideAutoOuverte] = useState(false)
+  // Le tchat (chantier du 06/11/2026) : pas encore synchronise au spectateur
+  // (menusDuJoueur), chaque client decide seul s'il l'a ouvert.
+  const [tchatOuverteLocale, setTchatOuverte] = useState(false)
+  const ouvrirTchat = useCallback(() => setTchatOuverte(true), [])
+  const fermerTchat = useCallback(() => setTchatOuverte(false), [])
   // SES MENUS (08/10/2026) : Reglages, Menu, journal, volets d'aide, ouverts
   // chez le spectateur et en relecture comme chez lui (genre « menu »).
   const menusDuJoueur = useVuDuJoueur<MenusOuverts | null>('menu', spectateur ? joueurActif : undefined)
@@ -5886,6 +5892,13 @@ export function PagePartie({
         />
         </CartesDuJournal.Provider>
       </VoletJournal>
+      <VoletTchat
+        ouvert={tchatOuverteLocale}
+        ouvrir={ouvrirTchat}
+        fermer={fermerTchat}
+        tableId={estMultijoueur() ? 'table' : undefined}
+        spectateur={spectateur}
+      />
       <BandeauConnexion
         etat={etat}
         reconnecter={reconnecter}

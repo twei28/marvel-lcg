@@ -110,6 +110,17 @@ const BROUILLON_CAMPAGNE = new URLSearchParams(window.location.search).has("camp
     : null;
 const creationCampagne = () => !!BROUILLON_CAMPAGNE;
 
+// Pseudos pre-selectionnes depuis le bouton « Creer une table » du tchat
+// (chantier du 06/11/2026) : /prepare.html?inviter=pseudo1,pseudo2. On ne les
+// invite qu'une fois la table reellement vivante en Coop en ligne (meme
+// condition que l'invitation manuelle, voir inviterAuSiege) — voir
+// `declencherInvitesDuTchat` et `sonderInvitationsHote`.
+const A_INVITER_DES_LE_DEBUT = (new URLSearchParams(window.location.search).get("inviter") || "")
+    .split(",")
+    .map((p) => { try { return decodeURIComponent(p.trim()); } catch (e) { return p.trim(); } })
+    .filter(Boolean);
+let inviteDuTchatFaite = A_INVITER_DES_LE_DEBUT.length === 0;
+
 // Le deck que la campagne a deja enregistre, par siege. Garde a part de
 // state.players : re-cliquer son propre heros appelle assignHero, qui remet le
 // deck de base. Sans ce registre, un clic de curiosite ferait disparaitre le
@@ -1593,6 +1604,11 @@ function modeStrip() {
             onclick: () => {
                 jouerSon(SON.mode);
                 if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
+                // Des pseudos attendent une invitation depuis le tchat : la
+                // table doit s'ouvrir aux connectes des que l'hote choisit
+                // reellement le coop en ligne, sans qu'il ait a cliquer sur
+                // le bouton "Inviter quelqu'un de connecte" lui-meme.
+                if (tuile.distant === true && !inviteDuTchatFaite) void ouvrirInvitations();
                 // La campagne n'est plus un mode du wizard : elle a son écran,
                 // qui impose l'ordre des scénarios, les sets et la difficulté.
                 if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
@@ -1712,6 +1728,22 @@ const invitationsHote = {
     minuteur: null,
 };
 
+/**
+ * Invite automatiquement, sur les premiers sieges libres, les pseudos
+ * choisis dans le tchat avant d'arriver ici — une seule fois (`inviteDuTchatFaite`),
+ * et seulement une fois la table reellement vivante (`invitationsHote.actif`).
+ */
+async function declencherInvitesDuTchat() {
+    if (inviteDuTchatFaite || !invitationsHote.actif) return;
+    inviteDuTchatFaite = true;
+    // « Libre » comme dans ligneDuSiege/blocLiens : pas encore d'invitation
+    // envoyee a ce siege (l'hote reglera ensuite le nombre de joueurs/heros).
+    const siegesLibres = [1, 2, 3].filter((p) => !invitationsHote.envoyees[String(p)]);
+    for (let i = 0; i < A_INVITER_DES_LE_DEBUT.length && i < siegesLibres.length; i++) {
+        await inviterAuSiege(siegesLibres[i], A_INVITER_DES_LE_DEBUT[i]);
+    }
+}
+
 async function sonderInvitationsHote() {
     const avant = invitationsHote.empreinte;
     try {
@@ -1725,6 +1757,7 @@ async function sonderInvitationsHote() {
         const b = await r.json();
         invitationsHote.envoyees = (b && b.sieges) || {};
     } catch (e) { /* idem */ }
+    await declencherInvitesDuTchat();
     // ⚠ ON NE REPEINT QUE SI QUELQUE CHOSE A CHANGE : `render()` reconstruit
     // tout l'assistant, et une liste deroulante ouverte se refermerait sous les
     // doigts de l'hote toutes les trois secondes.

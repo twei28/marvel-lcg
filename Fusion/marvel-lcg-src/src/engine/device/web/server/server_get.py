@@ -1059,6 +1059,125 @@ class GameServerGet(GameServerBase):
             'scenario': hote.get('scenario', ''),
         })
 
+    # --- Echange de sieges avant le lancement (06/11/2026) -------------------
+    # Demande utilisateur : avant de demarrer, les joueurs doivent pouvoir
+    # choisir qui est joueur 1, 2, 3 ou 4 — ca n'existait pas du tout.
+    #
+    # ⚠ `seat_token_<p>` N'EST PAS UN JETON DE SESSION, C'EST
+    # `seat_hash(SEAT_PASSWORDS[p])` (voir `server_base.seat_hash`) : une
+    # empreinte DETERMINISTE du mot de passe du siege p. Le serveur peut donc
+    # la recalculer pour n'importe quel siege a tout moment — nul besoin d'un
+    # lien `claim_seat` ni d'une cle a usage unique pour « transferer » un
+    # siege : il suffit de poser le bon cookie sur le bon navigateur.
+    #
+    # Le vrai probleme est que CHAQUE navigateur ne peut recevoir un cookie
+    # que dans la reponse a SA PROPRE requete. Un echange est donc en deux
+    # temps : celui qui accepte (`repondre_echange_siege`) recoit son nouveau
+    # cookie immediatement dans la reponse de son clic ; celui qui a demande
+    # le recoit au prochain sondage (`get_echange_siege`), qui est deja le
+    # mecanisme de polling existant du salon. Aucun nouveau protocole de
+    # cookie : on reutilise `PoserCookie`/`seat_hash` tels quels.
+    #
+    # Une seule proposition a la fois (`self.echange_siege`), par table — il
+    # n'y a jamais qu'une table par processus moteur. Refusee d'office une
+    # fois la partie demarree (`self.game.world is not None`), verifie a
+    # CHAQUE etape (demande, reponse, application) : rien n'empeche une
+    # partie de demarrer entre deux sondages.
+
+    def _echange_possible(self) -> bool:
+        return self.game.world is None
+
+    def _siege_occupe(self, seat: int) -> bool:
+        """Un client est-il reellement present a ce siege, pas seulement
+        protege par un mot de passe configure (qui peut etre libre)."""
+        return not self.seat_orphelin(seat)
+
+    async def post_demander_echange_siege(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        if not self._echange_possible():
+            return web.json_response({'error': 'partie demarree'}, status=409)
+        try:
+            data = await request.json()
+            p_demande = int(data['p_demande'])
+            p_cible = int(data['p_cible'])
+        except Exception:
+            return web.json_response({'error': 'p_demande et p_cible requis'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'error': 'table sans sieges proteges'}, status=400)
+        if not (0 <= p_demande < len(passwords)) or not (0 <= p_cible < len(passwords)) \
+                or p_demande == p_cible:
+            return web.json_response({'error': 'sieges invalides'}, status=400)
+        if not self.tient_le_siege(request, p_demande):
+            return web.json_response({'error': 'pas votre siege'}, status=403)
+        if not self._siege_occupe(p_demande) or not self._siege_occupe(p_cible):
+            return web.json_response({'error': 'siege vide'}, status=400)
+        en_cours = getattr(self, 'echange_siege', None)
+        if en_cours and en_cours.get('statut') == 'attente':
+            return web.json_response({'error': 'echange deja en cours'}, status=409)
+        self.echange_siege = {
+            'demande': p_demande, 'cible': p_cible, 'statut': 'attente',
+            'applique_demande': False, 'applique_cible': False,
+        }
+        return web.json_response({'result': 'ok'})
+
+    def _appliquer_echange(self, response: web.Response, request: web.Request,
+                            siege_actuel: int, nouveau_siege: int) -> None:
+        """Donne a CE navigateur le cookie du nouveau siege et retire celui de
+        l'ancien — sans ca, un meme navigateur finirait par tenir les deux a
+        la fois."""
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        self.PoserCookie(response, request, f'seat_token_{nouveau_siege}',
+                         self.seat_hash(passwords[nouveau_siege]), max_age=31536000)
+        self.PoserCookie(response, request, f'seat_token_{siege_actuel}', '', max_age=0)
+
+    async def get_echange_siege(self, request: web.Request) -> web.Response:
+        echange = getattr(self, 'echange_siege', None)
+        if not echange:
+            return web.json_response({})
+        demande, cible = echange['demande'], echange['cible']
+        if self.tient_le_siege(request, cible) and echange['statut'] == 'attente':
+            return web.json_response({'proposition': {'de': demande, 'vers': cible},
+                                      'role': 'cible'})
+        if self.tient_le_siege(request, demande):
+            if echange['statut'] == 'accepte' and not echange['applique_demande'] \
+                    and self._echange_possible():
+                reponse = web.json_response({'resultat': 'echange', 'nouveau_siege': cible})
+                self._appliquer_echange(reponse, request, demande, cible)
+                echange['applique_demande'] = True
+                if echange['applique_cible']:
+                    self.echange_siege = None
+                return reponse
+            return web.json_response({'role': 'demande', 'statut': echange['statut']})
+        return web.json_response({})
+
+    async def post_repondre_echange_siege(self, request: web.Request) -> web.Response:
+        echange = getattr(self, 'echange_siege', None)
+        if not echange or echange['statut'] != 'attente':
+            return web.json_response({'error': 'aucune proposition'}, status=404)
+        demande, cible = echange['demande'], echange['cible']
+        if not self.tient_le_siege(request, cible):
+            return web.json_response({'error': 'pas votre siege'}, status=403)
+        try:
+            data = await request.json()
+            accepte = bool(data.get('accepte'))
+        except Exception:
+            accepte = False
+        if not accepte:
+            self.echange_siege = None
+            return web.json_response({'result': 'refuse'})
+        if not self._echange_possible():
+            self.echange_siege = None
+            return web.json_response({'error': 'partie demarree'}, status=409)
+        reponse = web.json_response({'result': 'accepte'})
+        self._appliquer_echange(reponse, request, cible, demande)
+        echange['statut'] = 'accepte'
+        echange['applique_cible'] = True
+        if echange['applique_demande']:
+            self.echange_siege = None
+        return reponse
+
     # --- L'equipe reste ensemble entre deux manches (13/10/2026) -------------
     # Demande de l'utilisateur : « en fin de partie, que les joueurs qu'on a
     # invites restent dans le meme lobby, et des qu'on cree une partie, qu'ils
@@ -1887,18 +2006,58 @@ class GameServerGet(GameServerBase):
             # continue. Rien ici ne doit pouvoir interrompre une partie.
             return rendre(0, None)
 
+    def _acces_salon_table(self, request: web.Request) -> bool:
+        """Le fil de TABLE (chantier du 06/11/2026) est ouvert a TOUT siege de
+        la table, spectateur compris — a la difference de general/prive,
+        reserves au siege 0 titulaire du compte.
+
+        ⚠ LA GARANTIE TIENT ICI, PAS CHEZ LE CLIENT. `est_spectateur` lit un
+        cookie pose par le serveur (`/spectateur`), jamais par le navigateur
+        de son propre chef ; `tient_le_siege` exige le jeton du siege,
+        cookie en main. Les deux se falsifient aussi peu que le reste de
+        l'authentification par siege.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        if self.est_spectateur(request):
+            return True
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return True
+        return any(self.tient_le_siege(request, s) for s in range(len(passwords)))
+
+    def _pseudo_table(self, request: web.Request, siege: int) -> str:
+        """Le nom a afficher dans le fil de table pour CE client.
+
+        Un titulaire de compte connecte (cookie `nc_session` relaye) garde
+        son pseudo ; sinon, un nom generique par siege ou par role, sans
+        jamais usurper un pseudo de compte.
+        """
+        if self.est_spectateur(request):
+            return 'Spectateur'
+        return f'Invité {siege}' if siege else 'Hôte'
+
     async def get_salon_joueurs(self, request: web.Request) -> web.Response:
         """Qui est connecte avec un compte, et les derniers messages.
 
-        ⚠ RESERVE AU SIEGE 0. Le tchat est celui des titulaires de compte ; un
-        invite arrive par un lien de siege n'en fait pas partie, et n'a pas a
-        lire ce qu'ils s'ecrivent.
+        `salon` choisit le fil : `general`/`prive` (defaut, inchange, reserve
+        au siege 0 titulaire de compte) ou `table` (ouvert a tout siege, y
+        compris un spectateur — voir `_acces_salon_table`).
         """
         from engine.device.web.server.server_base import SEAT_PASSWORDS
+        salon = request.rel_url.query.get('salon', 'general')
+        depuis = request.rel_url.query.get('depuis', '0')
+        if salon == 'table':
+            if not self._acces_salon_table(request):
+                return web.json_response({'actif': False})
+            donnees = await self._appeler_site('/api/vue',
+                                               {'salon': 'table', 'depuis': depuis})
+            if donnees is None:
+                return web.json_response({'actif': False})
+            donnees['actif'] = True
+            return web.json_response(donnees)
         passwords = SEAT_PASSWORDS.value
         if passwords and any(passwords) and not self.tient_le_siege(request, 0):
             return web.json_response({'actif': False})
-        depuis = request.rel_url.query.get('depuis', '0')
         # `avec` vide = tchat general ; un pseudo = conversation privee.
         avec = request.rel_url.query.get('avec', '')
         donnees = await self._appeler_site('/api/vue',
@@ -1910,16 +2069,31 @@ class GameServerGet(GameServerBase):
 
     async def post_salon_message(self, request: web.Request) -> web.Response:
         from engine.device.web.server.server_base import SEAT_PASSWORDS
-        passwords = SEAT_PASSWORDS.value
-        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
-            return web.json_response({'error': 'not the host'}, status=403)
         data = await request.json()
         texte = str(data.get('texte', '') or '')
         if not texte.strip():
             return web.json_response({'error': 'texte vide'}, status=400)
+        langues = str(data.get('langues', '') or '')
+        if data.get('salon') == 'table':
+            if not self._acces_salon_table(request):
+                return web.json_response({'error': 'pas a cette table'}, status=403)
+            try:
+                siege = int(data.get('siege', 0) or 0)
+            except (TypeError, ValueError):
+                siege = 0
+            donnees = await self._appeler_site(
+                '/api/dire', {'salon': 'table', 'texte': texte, 'langues': langues,
+                             'pseudo_table': self._pseudo_table(request, siege)})
+            if donnees is None:
+                return web.json_response({'error': 'site injoignable'}, status=503)
+            return web.json_response({'ok': True})
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
         donnees = await self._appeler_site('/api/dire',
                                            {'texte': texte,
-                                            'a': str(data.get('a', '') or '')})
+                                            'a': str(data.get('a', '') or ''),
+                                            'langues': langues})
         if donnees is None:
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
@@ -2762,6 +2936,9 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddPostSecurity('/set_equipe_hote', self.set_equipe_hote)
         self.AddAwaitGetSecurity('/get_equipe_salon', self.get_equipe_salon)
+        self.AddPostSecurity('/demander_echange_siege', self.post_demander_echange_siege)
+        self.AddAwaitGetSecurity('/get_echange_siege', self.get_echange_siege)
+        self.AddPostSecurity('/repondre_echange_siege', self.post_repondre_echange_siege)
         self.AddPostSecurity('/annoncer_preparation', self.annoncer_preparation)
         self.AddAwaitGetSecurity('/get_connectes', self.get_connectes)
         self.AddPostSecurity('/post_inviter', self.post_inviter)

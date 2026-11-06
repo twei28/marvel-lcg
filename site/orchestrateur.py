@@ -982,6 +982,14 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
             return False
         EMPLACEMENTS.pop(partie.emplacement, None)
         JETONS_SITE.pop(partie.jeton_site, None)
+    # ⚠ LE FIL DE TABLE NE SURVIT PAS A LA TABLE. `code` EST le table_id
+    # (voir `dire_table`, qui le recoit via le meme jeton que celui-ci) : on
+    # le vide ici, pas avant (le tchat de la fin de partie doit rester lisible
+    # jusqu'au tout dernier moment).
+    try:
+        effacer_messages_table(code)
+    except Exception as souci:
+        sys.stderr.write("purge du fil de table non faite : %r\n" % (souci,))
     # ⚠ ICI, ET NULLE PART AILLEURS : c'est la derniere seconde ou l'on peut
     # encore demander au moteur ce qui se jouait. Une ligne plus bas il est
     # mort, et la partie n'aura jamais existe pour personne.
@@ -1223,6 +1231,11 @@ CREATE TABLE IF NOT EXISTS comptes (
     -- dont la clause WHERE laisse coexister plusieurs comptes sans
     -- emplacement.
     emplacement         INTEGER,
+    -- Les drapeaux de langues parlees, choisis dans le tchat (chantier du
+    -- 06/11/2026), ex. "fr,en" — reglage de profil, reconduit d'une table a
+    -- l'autre et d'une partie a l'autre. Un visiteur sans compte garde le
+    -- sien dans son navigateur (`localStorage`), pas ici.
+    langues             TEXT,
     -- ⚠ MOT DE PASSE DU MOTEUR, ET IL DOIT RESTER STABLE.
     -- Il etait tire au hasard a chaque allumage. Consequence : tout
     -- redemarrage du moteur (mise a jour, plantage, extinction volontaire)
@@ -1250,8 +1263,29 @@ CREATE TABLE IF NOT EXISTS messages (
     quand  TEXT NOT NULL,
     -- NULL = tchat general, lisible par tous les comptes. Un pseudo = message
     -- prive, visible du seul couple expediteur/destinataire.
-    destinataire TEXT
+    destinataire TEXT,
+    -- Les drapeaux de langues de l'AUTEUR au moment de l'envoi (chantier du
+    -- 06/11/2026), ex. "fr,en". Garde sur le message lui-meme, pas relu sur
+    -- le compte : un anonyme n'en a pas, et les langues affichees a cote d'un
+    -- vieux message ne doivent pas changer si l'auteur les modifie depuis.
+    langues TEXT
 );
+-- Le fil de TABLE (reconstruction du tchat, chantier du 06/11/2026) : un fil
+-- par partie en cours, lisible et inscriptible par tout siege de la table, y
+-- compris un spectateur. Ephemere par construction : `effacer_messages_table`
+-- le vide a l'extinction de la partie (`eteindre_jeu`), et une purge par age
+-- (`TABLE_MESSAGES_AGE_MAX_S`) rattrape les tables qui ne s'eteignent jamais
+-- proprement (plantage, faucheur). Jamais expose en relecture : la relecture
+-- lit le journal de la partie, pas cette table.
+CREATE TABLE IF NOT EXISTS messages_table (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    table_id TEXT NOT NULL,
+    pseudo   TEXT NOT NULL,
+    texte    TEXT NOT NULL,
+    quand    TEXT NOT NULL,
+    langues  TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_messages_table_table ON messages_table(table_id);
 -- ⚠ LES SESSIONS SONT SUR DISQUE, ET C'EST TOUT L'INTERET.
 -- Elles vivaient dans un dictionnaire en memoire : le moindre redemarrage du
 -- service — donc chaque deploiement — deconnectait tout le monde, alors que le
@@ -1494,6 +1528,16 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE rapports ADD COLUMN compte_verifie TEXT")
             cx.execute("UPDATE rapports SET compte_verifie = hote"
                        " WHERE siege = 0 AND hote IS NOT NULL AND hote != ''")
+        # Drapeaux de langues (06/11/2026) : meme precaution pour les bases
+        # creees avant ce chantier.
+        if "langues" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN langues TEXT")
+        colonnes_msg = {r["name"] for r in cx.execute("PRAGMA table_info(messages)")}
+        if "langues" not in colonnes_msg:
+            cx.execute("ALTER TABLE messages ADD COLUMN langues TEXT")
+        colonnes_table = {r["name"] for r in cx.execute("PRAGMA table_info(messages_table)")}
+        if "langues" not in colonnes_table:
+            cx.execute("ALTER TABLE messages_table ADD COLUMN langues TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -2930,6 +2974,90 @@ MESSAGES_GARDES = 200
 # une seule generale se partage entre tous, les privees se multiplient.
 PRIVES_GARDES = 500
 TAILLE_MESSAGE = 500
+# Le fil d'UNE table reste court : une partie dure quelques heures, pas des
+# semaines.
+MESSAGES_TABLE_GARDEES = 300
+# Filet de securite pour les tables qui ne s'eteignent jamais proprement
+# (plantage, faucheur) : au-dela de ce temps, meme sans extinction notee, un
+# message de table n'a plus rien a dire a personne.
+TABLE_MESSAGES_AGE_MAX_S = 60 * 60 * 24 * 2
+
+# Un visiteur SANS COMPTE qui parle dans le tchat general, par adresse et par
+# heure. Memoire volontairement en memoire, comme `_ENVOIS_RAPPORTS` : la
+# limite protege d'une boucle, pas d'un adversaire patient, et un redemarrage
+# qui la remet a zero est sans consequence.
+ANONYMES_PAR_HEURE = int(os.environ.get("ANONYMES_PAR_HEURE", "30"))
+_ENVOIS_ANONYMES: dict[str, list[float]] = {}
+
+# Les drapeaux de langues parlees, affiches a cote du pseudo dans le tchat
+# (chantier du 06/11/2026). Liste COURTE ET FIXE (decision utilisateur) :
+# un menu a cocher, pas un selecteur de pays. Code ISO 639-1 -> drapeau.
+LANGUES_TCHAT = {
+    "fr": "🇫🇷", "en": "🇬🇧", "es": "🇪🇸",
+    "de": "🇩🇪", "it": "🇮🇹", "pt": "🇵🇹",
+}
+# Au-dela, ce n'est plus "les langues que je parle" mais une liste qu'on a
+# cochee par jeu — autant la plafonner a la taille de la liste elle-meme.
+LANGUES_TCHAT_MAX = len(LANGUES_TCHAT)
+
+
+def langues_tchat_valides(brut: str) -> str:
+    """Les codes de `brut` (separes par des virgules) qui sont dans
+    `LANGUES_TCHAT`, dans l'ordre, sans doublon, en "fr,en" propre.
+
+    Jamais d'exception : une entree inattendue rend simplement "" plutot que
+    de faire echouer l'envoi du message qui la porte.
+    """
+    vus: list[str] = []
+    for code in str(brut or "").lower().split(","):
+        code = code.strip()
+        if code in LANGUES_TCHAT and code not in vus:
+            vus.append(code)
+        if len(vus) >= LANGUES_TCHAT_MAX:
+            break
+    return ",".join(vus)
+
+
+def langues_du_compte(pseudo: str) -> str:
+    """Les langues enregistrees au profil de `pseudo`, "" si aucune/pas de compte."""
+    c = compte(pseudo)
+    return (c["langues"] or "") if c else ""
+
+
+def definir_langues_du_compte(pseudo: str, langues: str) -> str:
+    """Enregistre les langues au profil ; rend la valeur effectivement gardee."""
+    pseudo = (pseudo or "").strip().lower()
+    if not pseudo:
+        return ""
+    valides = langues_tchat_valides(langues)
+    with _cx() as cx:
+        cx.execute("UPDATE comptes SET langues = ? WHERE pseudo = ?", (valides or None, pseudo))
+    return valides
+
+
+def debit_anonyme_ok(adresse: str) -> bool:
+    """Vrai si `adresse` peut encore poster dans le tchat general cette heure."""
+    maintenant = time.time()
+    recents = [t for t in _ENVOIS_ANONYMES.get(adresse, []) if maintenant - t < 3600]
+    _ENVOIS_ANONYMES[adresse] = recents
+    if len(recents) >= ANONYMES_PAR_HEURE:
+        return False
+    recents.append(maintenant)
+    return True
+
+
+def pseudo_anonyme_valide(pseudo: str) -> str:
+    """Le pseudo d'un visiteur SANS COMPTE, nettoye, ou "" s'il ne convient pas.
+
+    ⚠ ON REFUSE UN PSEUDO QUI EST DEJA CELUI D'UN COMPTE. Sans ce controle,
+    n'importe quel visiteur pourrait se faire passer pour un titulaire de
+    compte dans le tchat general — un simple champ de texte, sans mot de
+    passe, lui suffirait.
+    """
+    pseudo = " ".join(str(pseudo or "").split())[:24]
+    if not pseudo or compte(pseudo) is not None:
+        return ""
+    return pseudo
 
 
 # --------------------------------------------------------------------------
@@ -3345,8 +3473,12 @@ def supprimer_rapport(numero: int) -> None:
         cx.execute("DELETE FROM rapports WHERE id = ?", (numero,))
 
 
-def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
-    """Ecrit un message. `destinataire` vide = tchat general."""
+def dire(pseudo: str, texte: str, destinataire: str = "", langues: str = "") -> None:
+    """Ecrit un message. `destinataire` vide = tchat general.
+
+    `langues` sont les drapeaux de CET envoi (chantier du 06/11/2026), gardes
+    sur le message lui-meme — voir le commentaire de la colonne.
+    """
     texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
     if not texte:
         return
@@ -3356,9 +3488,10 @@ def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
     # personne ne lira jamais, sans que l'expediteur s'en doute.
     if a is not None and compte(a) is None:
         return
+    langues = langues_tchat_valides(langues)
     with _cx() as cx:
-        cx.execute("INSERT INTO messages (pseudo, texte, quand, destinataire)"
-                   " VALUES (?,?,?,?)", (pseudo, texte, _maintenant(), a))
+        cx.execute("INSERT INTO messages (pseudo, texte, quand, destinataire, langues)"
+                   " VALUES (?,?,?,?,?)", (pseudo, texte, _maintenant(), a, langues or None))
         # ⚠ DEUX PURGES SEPAREES. Une seule, globale, aurait laisse une
         # conversation generale animee effacer les messages prives de tout le
         # monde : ils partagent la meme table, pas le meme usage.
@@ -3368,6 +3501,68 @@ def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
         cx.execute("DELETE FROM messages WHERE destinataire IS NOT NULL AND id NOT IN"
                    " (SELECT id FROM messages WHERE destinataire IS NOT NULL"
                    "  ORDER BY id DESC LIMIT ?)", (PRIVES_GARDES,))
+
+
+def dire_table(table_id: str, pseudo: str, texte: str, langues: str = "") -> None:
+    """Ecrit un message dans le fil de LA table `table_id` (ephemere).
+
+    ⚠ AUCUN CONTROLE DE COMPTE ICI. Un invite arrive par un lien de siege, ou
+    un spectateur, n'a pas de compte : c'est au moteur de decider qui a le
+    droit d'appeler cette fonction (tout siege de la table, spectateur
+    compris), pas a elle de le redemander.
+    """
+    table_id = (table_id or "").strip().lower()
+    texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
+    if not table_id or not texte:
+        return
+    langues = langues_tchat_valides(langues)
+    with _cx() as cx:
+        cx.execute("INSERT INTO messages_table (table_id, pseudo, texte, quand, langues)"
+                   " VALUES (?,?,?,?,?)", (table_id, pseudo, texte, _maintenant(), langues or None))
+        cx.execute("DELETE FROM messages_table WHERE table_id = ? AND id NOT IN"
+                   " (SELECT id FROM messages_table WHERE table_id = ?"
+                   "  ORDER BY id DESC LIMIT ?)", (table_id, table_id, MESSAGES_TABLE_GARDEES))
+        # Filet de securite : les tables abandonnees d'un autre `table_id` ne
+        # devraient normalement plus rien avoir a purger (deja fait a
+        # l'extinction), mais un plantage peut avoir saute cette etape.
+        cx.execute("DELETE FROM messages_table WHERE quand < ?",
+                   (_horodatage_avant(TABLE_MESSAGES_AGE_MAX_S),))
+
+
+def _horodatage_avant(secondes: int) -> str:
+    from datetime import datetime, timedelta, timezone
+    return (datetime.now(timezone.utc) - timedelta(seconds=secondes)).isoformat()
+
+
+def messages_table_depuis(table_id: str, depuis: int = 0) -> list:
+    """Les messages du fil de table `table_id`, apres `depuis`.
+
+    Jamais expose en relecture : la relecture lit le journal de la partie
+    (les actions), pas ce fil — voir `effacer_messages_table`, qui le vide de
+    toute facon a la fin de la partie.
+    """
+    table_id = (table_id or "").strip().lower()
+    if not table_id:
+        return []
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT id, pseudo, texte, quand, langues FROM messages_table"
+            " WHERE table_id = ? AND id > ?"
+            " ORDER BY id LIMIT ?", (table_id, depuis, MESSAGES_TABLE_GARDEES)).fetchall()
+    return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
+             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"]),
+             "langues": l["langues"] or ""}
+            for l in lignes]
+
+
+def effacer_messages_table(table_id: str) -> None:
+    """Vide le fil de table a l'extinction de la partie : il ne survit pas a
+    la partie qui l'a vu naitre (decision utilisateur, chantier du 06/11/2026)."""
+    table_id = (table_id or "").strip().lower()
+    if not table_id:
+        return
+    with _cx() as cx:
+        cx.execute("DELETE FROM messages_table WHERE table_id = ?", (table_id,))
 
 
 # --------------------------------------------------------------------------
@@ -3444,12 +3639,12 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
     with _cx() as cx:
         if not avec:
             lignes = cx.execute(
-                "SELECT id, pseudo, texte, quand FROM messages"
+                "SELECT id, pseudo, texte, quand, langues FROM messages"
                 " WHERE destinataire IS NULL AND id > ?"
                 " ORDER BY id LIMIT ?", (depuis, MESSAGES_GARDES)).fetchall()
         else:
             lignes = cx.execute(
-                "SELECT id, pseudo, texte, quand FROM messages WHERE id > ?"
+                "SELECT id, pseudo, texte, quand, langues FROM messages WHERE id > ?"
                 " AND ((pseudo=? AND destinataire=?) OR (pseudo=? AND destinataire=?))"
                 " ORDER BY id LIMIT ?",
                 (depuis, moi, avec, avec, moi, MESSAGES_GARDES)).fetchall()
@@ -3463,7 +3658,8 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
     # resultat legerement different a chaque appel. `_epoque_de` lit la date une
     # fois pour toutes, et la lit explicitement comme de l'UTC.
     return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
-             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"])}
+             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"]),
+             "langues": l["langues"] or ""}
             for l in lignes]
 
 
@@ -7356,6 +7552,45 @@ class Handler(BaseHTTPRequestHandler):
                     etat["jeux"] = []
             self._repondre(200, json.dumps(etat, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
+        elif self.chemin == "/tchat/vue":
+            # ⚠ ACCES DIRECT DEPUIS LE NAVIGATEUR (pas depuis le moteur) :
+            # reserve au tchat GENERAL et aux MP, consultes depuis une page du
+            # site (ex. la preparation) plutot que depuis le plateau. Le fil
+            # de TABLE, lui, ne passe que par le moteur (`/api/vue`
+            # salon=table, server_get.py) : le navigateur y est deja sur
+            # p<N>.<domaine> une fois la partie lancee.
+            #
+            # ⚠ UN VISITEUR SANS COMPTE NE LIT QUE LE GENERAL. Un pseudo
+            # anonyme ne prouve rien : lui laisser lire des MP reviendrait a
+            # les rendre publics.
+            avec = self.parametres.get("avec", [""])[0]
+            try:
+                depuis = int((self.parametres.get("depuis") or ["0"])[0])
+            except ValueError:
+                depuis = 0
+            if pseudo:
+                toucher_presence(pseudo)
+                moi = pseudo
+            elif avec:
+                self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
+                               "application/json; charset=utf-8")
+                return
+            else:
+                moi = pseudo_anonyme_valide((self.parametres.get("pseudo") or [""])[0])
+                if not moi:
+                    self._repondre(400, b'{"error":"pseudo invalide"}',
+                                   "application/json; charset=utf-8")
+                    return
+            messages = messages_depuis(depuis, moi, avec)
+            corps = {"pseudo": moi, "messages": messages,
+                     "dernier": messages[-1]["id"] if messages else depuis,
+                     "prives": derniers_prives(moi) if pseudo else {},
+                     # Drapeaux enregistres au PROFIL (compte uniquement) : un
+                     # anonyme n'en a pas ici, il garde les siens en
+                     # `localStorage` cote client (06/11/2026).
+                     "mes_langues": langues_du_compte(moi) if pseudo else ""}
+            self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
+                           "application/json; charset=utf-8")
         else:
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
@@ -7668,6 +7903,46 @@ class Handler(BaseHTTPRequestHandler):
             # CORP, le navigateur refuse cette reponse venue du site principal.
             self._repondre(204, b"", "text/plain; charset=utf-8",
                            [("Cross-Origin-Resource-Policy", "same-site")])
+            return
+
+        if self.chemin == "/tchat/dire":
+            # ⚠ ACCES DIRECT DEPUIS LE NAVIGATEUR, pas depuis le moteur — voir
+            # le commentaire symmetrique de `/tchat/vue` (GET). Table exclue :
+            # elle ne passe que par le moteur.
+            champs = self._champs()
+            pseudo = self._session()
+            if pseudo:
+                moi = pseudo
+            else:
+                if champs.get("a"):
+                    self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
+                                   "application/json; charset=utf-8")
+                    return
+                if not debit_anonyme_ok(self._adresse_client()):
+                    self._repondre(429, b'{"error":"trop de messages, reessaie plus tard"}',
+                                   "application/json; charset=utf-8")
+                    return
+                moi = pseudo_anonyme_valide(champs.get("pseudo", ""))
+                if not moi:
+                    self._repondre(400, b'{"error":"pseudo invalide"}',
+                                   "application/json; charset=utf-8")
+                    return
+            dire(moi, champs.get("texte", ""), champs.get("a", ""), champs.get("langues", ""))
+            self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8")
+            return
+
+        if self.chemin == "/tchat/langues":
+            # Enregistre les drapeaux au PROFIL — reserve aux comptes, un
+            # anonyme n'a pas de profil ou les garder (voir `/tchat/vue`).
+            pseudo = self._session()
+            if not pseudo:
+                self._repondre(403, b'{"error":"compte requis"}',
+                               "application/json; charset=utf-8")
+                return
+            champs = self._champs()
+            valides = definir_langues_du_compte(pseudo, champs.get("langues", ""))
+            self._repondre(200, json.dumps({"langues": valides}).encode("utf-8"),
+                           "application/json; charset=utf-8")
             return
 
         if self.chemin == "/contact-createurs":
@@ -8162,8 +8437,34 @@ class Handler(BaseHTTPRequestHandler):
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
+            # ⚠ LE FIL « TABLE » (chantier du 06/11/2026). `qui` est TOUJOURS
+            # le pseudo de l'HOTE (c'est ce que `jeton_site` designe depuis
+            # l'origine, voir `JETONS_SITE`), que l'appel vienne du siege 0,
+            # d'un invite ou d'un spectateur relayant par le MEME moteur :
+            # c'est exactement ce qu'il faut comme `table_id`, et c'est pour
+            # ca qu'aucun jeton supplementaire n'est necessaire ici. Qui a le
+            # droit d'appeler est decide par le MOTEUR (server_get.py), pas
+            # ici : siege 0 pour general/prive, n'importe quel siege ou un
+            # spectateur pour la table.
+            if self.chemin == "/api/dire" and champs.get("salon") == "table":
+                dire_table(qui, champs.get("pseudo_table", qui), champs.get("texte", ""),
+                          champs.get("langues", ""))
+                self._repondre(200, b'{"ok":true}',
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/vue" and champs.get("salon") == "table":
+                try:
+                    depuis = int(champs.get("depuis", "0") or "0")
+                except ValueError:
+                    depuis = 0
+                messages = messages_table_depuis(qui, depuis)
+                corps = {"messages": messages,
+                         "dernier": messages[-1]["id"] if messages else depuis}
+                self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
             if self.chemin == "/api/dire":
-                dire(qui, champs.get("texte", ""), champs.get("a", ""))
+                dire(qui, champs.get("texte", ""), champs.get("a", ""), champs.get("langues", ""))
                 self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
                 return
@@ -8185,6 +8486,7 @@ class Handler(BaseHTTPRequestHandler):
                 # signaler d'une pastille les conversations ou il s'est passe
                 # quelque chose, sans avoir a les ouvrir une par une.
                 "prives": derniers_prives(qui),
+                "mes_langues": langues_du_compte(qui),
             }
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")

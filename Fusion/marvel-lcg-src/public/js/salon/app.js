@@ -734,6 +734,79 @@ async function rendreHeros() {
 let equipeAffichee = "";
 let tousLesScenarios = null;
 
+/* ---------------- Échange de siège avant le lancement (06/11/2026) --------
+   Demande utilisateur : avant de démarrer, pouvoir choisir qui est joueur
+   1, 2, 3 ou 4. Une seule proposition à la fois, tenue par le moteur
+   (`demander_echange_siege`/`get_echange_siege`/`repondre_echange_siege`) ;
+   ce fichier ne fait que la proposer, l'afficher, et réagir quand le moteur
+   nous dit que notre cookie de siège a changé. */
+
+let echangeEnAttente = null;   // ma propre demande envoyée : numéro de siège visé, ou null
+let echangeRecu = null;        // une demande reçue : { de } ou null
+
+async function proposerEchangeSiege(pCible) {
+    if (echangeEnAttente != null || echangeRecu) return;
+    try {
+        const reponse = await fetch("/demander_echange_siege", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ p_demande: siege, p_cible: pCible }),
+        });
+        if (!reponse.ok) {
+            const erreur = await reponse.json().catch(() => ({}));
+            statut(erreur.error === "echange deja en cours"
+                ? t("Un échange est déjà en cours.") : t("Échange impossible."), true);
+            return;
+        }
+        echangeEnAttente = pCible;
+        equipeAffichee = "";
+        sonderEquipe();
+    } catch (e) { /* le prochain sondage réessaiera de voir l'état réel */ }
+}
+
+async function repondreEchangeSiege(accepte) {
+    if (!echangeRecu) return;
+    const demande = echangeRecu.de;
+    try {
+        const reponse = await fetch("/repondre_echange_siege", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accepte }),
+        });
+        if (accepte && reponse.ok) {
+            // Le cookie de CE navigateur vient de changer : l'URL `?p=` ne
+            // correspond plus à rien, direction le bon siège.
+            location.href = `salon.html?p=${demande}`;
+            return;
+        }
+    } catch (e) { /* la demande peut avoir expire cote serveur, le sondage corrige */ }
+    echangeRecu = null;
+    equipeAffichee = "";
+    sonderEquipe();
+}
+
+async function sonderEchangeSiege() {
+    if (document.hidden) return;
+    let brut = {};
+    try {
+        const reponse = await fetch(`get_echange_siege?p=${siege}`, { cache: "no-store" });
+        if (reponse.ok) brut = await reponse.json();
+    } catch (e) { return; }
+    if (brut.resultat === "echange") {
+        // C'est notre propre sondage qui vient de nous faire traverser au
+        // nouveau siège : le cookie est déjà posé, seule l'URL est en retard.
+        location.href = `salon.html?p=${brut.nouveau_siege}`;
+        return;
+    }
+    const nouveauRecu = brut.role === "cible" && brut.proposition ? { de: brut.proposition.de } : null;
+    const nouvelEnvoye = brut.role === "demande" ? echangeEnAttente : null;
+    const changement = JSON.stringify(nouveauRecu) !== JSON.stringify(echangeRecu)
+        || nouvelEnvoye !== echangeEnAttente;
+    echangeRecu = nouveauRecu;
+    echangeEnAttente = brut.role === "demande" ? echangeEnAttente : null;
+    if (changement) { equipeAffichee = ""; sonderEquipe(); }
+}
+
 async function scenarioPar(id) {
     if (!id) return null;
     if (!tousLesScenarios) {
@@ -759,16 +832,34 @@ async function sonderEquipe() {
     for (let p = 0; p < nombre; p++) {
         const id = p === siege ? mien : String((brut.sieges || {})[String(p)] || "");
         const hero = id ? heroes.find((h) => h.heroCardId === id) : null;
-        places.push(el("div", { class: "salon-place" + (hero ? "" : " attend") + (p === siege ? " moi" : "") },
+        const estMoi = p === siege;
+        const enfants = [
             el("div", { class: "tb-siege" }, hero ? portraitHeros(hero) : el("span", { class: "plus" }, "?")),
             el("small", {}, `${t("Joueur")} ${p + 1}`, el("i", {}, hero ? nomHeros(hero) : t("Choisit…"))),
-        ));
+        ];
+        if (!estMoi && !echangeRecu) {
+            const enAttente = echangeEnAttente === p;
+            enfants.push(el("button", {
+                type: "button", class: "salon-echanger" + (enAttente ? " en-attente" : ""),
+                disabled: echangeEnAttente != null || undefined,
+                title: t("Échanger de siège avec ce joueur"),
+                onclick: () => proposerEchangeSiege(p),
+            }, enAttente ? t("Demandé…") : "⇄"));
+        }
+        places.push(el("div", { class: "salon-place" + (hero ? "" : " attend") + (estMoi ? " moi" : "") }, ...enfants));
     }
     places.push(el("span", { class: "salon-contre", "aria-hidden": "true" }, "VS"));
     places.push(el("div", { class: "salon-place mechant" + (scenario ? "" : " attend") },
         el("div", { class: "tb-siege" }, scenario ? portraitScenario(scenario) : el("span", { class: "plus" }, "?")),
         el("small", {}, t("Méchant"), el("i", {}, scenario ? scenario.name : t("Pas encore choisi"))),
     ));
+    if (echangeRecu) {
+        places.push(el("div", { class: "salon-echange-recu" },
+            el("span", {}, t("Joueur") + ` ${echangeRecu.de + 1} ` + t("propose d’échanger de siège avec toi.")),
+            el("button", { type: "button", onclick: () => repondreEchangeSiege(true) }, t("Accepter")),
+            el("button", { type: "button", onclick: () => repondreEchangeSiege(false) }, t("Refuser")),
+        ));
+    }
     equipeAffichee = empreinte;
     $("#salon-equipe").replaceChildren(...places);
 }
@@ -1286,6 +1377,7 @@ async function demarrer() {
 
     surveillerLeLancement();
     setInterval(sonderEquipe, 2000);
+    setInterval(sonderEchangeSiege, 2000);
     boucleRoue();
 }
 

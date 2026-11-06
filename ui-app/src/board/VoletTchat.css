@@ -1,0 +1,311 @@
+/* Le volet du tchat et sa languette (VoletTchat.tsx) — jumeau de
+   VoletJournal.css. Hors couche, meme raison : l'ordre des @layer n'est pas
+   garanti en production.
+
+   En bas a gauche (le journal occupe deja le bas a droite), sous les
+   fenetres modales (900), au-dessus du cartouche du mechant (540). */
+
+.volet-tchat {
+  --volet-largeur: min(400px, 92vw);
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 620;
+  width: var(--volet-largeur);
+  height: min(64dvh, 560px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(18, 21, 30, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 12px 0 0;
+  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.55);
+  color: #e8eef6;
+  animation: volet-tchat-entre 180ms ease-out;
+}
+
+.volet-tchat.est-detache {
+  left: auto;
+  right: auto;
+  bottom: auto;
+  border-radius: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  animation: none;
+  resize: none;
+  min-width: 280px;
+  min-height: 280px;
+}
+
+@keyframes volet-tchat-entre {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.volet-tchat-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.volet-tchat.est-detache .volet-tchat-tete {
+  cursor: grab;
+  touch-action: none;
+}
+
+.volet-tchat-tete h2 {
+  margin: 0;
+  margin-right: auto;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.volet-tchat-detacher {
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.volet-tchat-onglets {
+  padding: 10px 12px 0;
+  margin-bottom: 0;
+}
+
+.volet-tchat-contenu {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
+}
+
+.volet-tchat-fil {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.volet-tchat-message {
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.86rem;
+}
+
+.volet-tchat-message.est-moi {
+  background: rgba(100, 150, 255, 0.14);
+}
+
+.volet-tchat-heure {
+  opacity: 0.6;
+  font-size: 0.74rem;
+}
+
+.volet-tchat-drapeaux {
+  font-size: 0.86rem;
+}
+
+.volet-tchat-saisie {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  position: relative;
+}
+
+.volet-tchat-saisie input {
+  flex: 1;
+  min-width: 0;
+}
+
+.volet-tchat-langues {
+  position: relative;
+}
+
+.volet-tchat-langues-bouton {
+  min-width: 2.2em;
+}
+
+.volet-tchat-langues-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #1b1b22;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.volet-tchat-langues-menu label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.volet-tchat-muet {
+  opacity: 0.8;
+}
+
+.volet-tchat-pseudo {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-weight: 900;
+  padding: 0;
+  cursor: pointer;
+}
+
+.volet-tchat-pseudo:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.volet-tchat-pseudo:disabled {
+  cursor: default;
+}
+
+.volet-tchat-creer-table {
+  margin-bottom: 8px;
+}
+
+.volet-tchat-creer-table-bouton {
+  width: 100%;
+}
+
+.volet-tchat-creer-table-aide {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.volet-tchat-connectes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.volet-tchat-connectes button.est-choisi {
+  background: rgba(100, 150, 255, 0.28);
+  border-color: rgba(100, 150, 255, 0.6);
+}
+
+.volet-tchat-creer-table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.volet-tchat-poignee-taille {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.volet-tchat-poignee-taille::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.volet-tchat-languette {
+  position: fixed;
+  left: 0;
+  bottom: 96px;
+  z-index: 615;
+  padding: 12px 5px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d9e1ea;
+  background: rgba(30, 34, 44, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  touch-action: none;
+  writing-mode: vertical-rl;
+}
+
+.volet-tchat-languette:hover,
+.volet-tchat-languette:focus-visible {
+  background: rgba(46, 52, 66, 0.98);
+  color: #fff;
+  outline: none;
+}
+
+.volet-tchat-languette.est-ouvert {
+  left: min(400px, 92vw);
+  z-index: 625;
+}
+
+.volet-tchat-pastille {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #e0432e;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+
+.volet-onglets .volet-tchat-pastille {
+  position: static;
+  margin-left: 4px;
+}
+
+@media (max-width: 760px), (max-height: 520px) {
+  .volet-tchat {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+  }
+
+  .volet-tchat-languette.est-ouvert {
+    display: none;
+  }
+
+  .volet-tchat button {
+    min-height: 44px;
+  }
+}
