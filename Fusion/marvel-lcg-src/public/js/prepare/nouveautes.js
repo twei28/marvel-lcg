@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-06",
+        genre: "jeu",
+        fr: "Le tchat change de look (bleu, petits onglets) et chaque conversation privée peut se fermer. Il est aussi maintenant disponible sur Play, avec un pseudo choisi une seule fois.",
+        en: "Chat gets a new look (blue, small tabs) and each private conversation can now be closed. It's also available on Play now, with a name chosen just once.",
+    },
+    {
+        date: "2026-11-06",
         genre: "correction",
         fr: "Sur la table, les boutons qui demandent de dépenser des ressources affichent enfin les icônes au lieu du texte brut entre crochets. Le voile de traduction mal placé sur Spider-Man (allié) est aussi corrigé.",
         en: "On the table, buttons asking you to spend resources now show the proper icons instead of raw bracketed text. The misplaced translation overlay on Spider-Man (ally) is also fixed.",
