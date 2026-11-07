@@ -58,6 +58,11 @@ describe('cleNomCarte', () => {
   it('ignore les guillemets, la casse et les espaces en trop', () => {
     expect(cleNomCarte('  "Beautiful   Dreamer" ')).toBe(cleNomCarte('beautiful dreamer'))
   })
+
+  it('les soulignes du moteur (GetDisplayName(remove_space=True)) valent des espaces', () => {
+    expect(cleNomCarte('Nick_Fury')).toBe(cleNomCarte('Nick Fury'))
+    expect(cleNomCarte('Song_of_Justice')).toBe(cleNomCarte('Song of Justice'))
+  })
 })
 
 describe('carteNommeeParOption', () => {

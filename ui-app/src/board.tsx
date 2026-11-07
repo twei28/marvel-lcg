@@ -2207,8 +2207,13 @@ export function PagePartie({
   // retrouvee). Les lots de role (`cartesDuLot` non vide) gardent l'ancien
   // menu : ce ne sont pas des choix "une carte parmi plusieurs", mais "un
   // lot de plusieurs cartes par option".
+  // ⚠ IL FAUT AU MOINS DEUX OPTIONS. `is_choose_ability` sert aussi a de
+  // simples CONFIRMATIONS a une seule option (« Resolve Mulligans ») qui ne
+  // nomment aucune carte : la grille y affichait une case grise bizarre,
+  // juste du texte, pour un cas qui n'est pas un choix entre plusieurs
+  // cartes (constate le 07/11/2026). Une seule option garde l'ancien bouton.
   const estChoixTexte =
-    interaction.options.length > 0 &&
+    interaction.options.length > 1 &&
     interaction.options.every((o) => o.is_text_choice && cartesDuLot(o) === undefined)
   // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
   // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
@@ -2353,6 +2358,26 @@ export function PagePartie({
     [etat.monde]
   )
   const estEnMain = useCallback((bindId: number) => idsEnMain.has(bindId), [idsEnMain])
+  // CHOIX PAR NOM resolu a une vraie carte DEJA VISIBLE EN MAIN (07/11/2026,
+  // retour utilisateur : « on tire trois cartes, on voit la main, pourquoi
+  // un carre a part ? »). Si CHAQUE option nomme une carte presente dans la
+  // main locale, pas besoin de la grille : on fait pulser les vraies cartes
+  // de la main et on clique dessus (voir `interactifsFinal` plus bas). Sinon
+  // (ex. Showtime de Dazzler, qui choisit dans la defausse — jamais visible
+  // carte par carte), `SelecteurChoixTexte` prend le relais.
+  const choixTexteParCarteId = useMemo(() => {
+    const carte = new Map<number, Option>()
+    if (!estChoixTexte) return carte
+    for (const option of interaction.options) {
+      const resolue = carteDeLOption(option)
+      const id = resolue ? Number(resolue.id) : undefined
+      if (id !== undefined && idsEnMain.has(id)) carte.set(id, option)
+    }
+    return carte
+  }, [estChoixTexte, interaction.options, carteDeLOption, idsEnMain])
+  const estChoixTexteEnMain = estChoixTexte && choixTexteParCarteId.size === interaction.options.length
+  // La grille ne s'affiche que si CE N'EST PAS entierement resolu en main.
+  const estChoixTexteGrille = estChoixTexte && !estChoixTexteEnMain
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -2487,6 +2512,19 @@ export function PagePartie({
     },
     [interaction, plateau]
   )
+
+  // Superpose, PAR-DESSUS les interactions normales, un halo pulsant + un
+  // clic direct sur les vraies cartes de main que `choixTexteParCarteId`
+  // vient de relier a une option de choix par nom (voir ce commentaire plus
+  // haut) : la carte de main EST le bouton, pas une case dans une grille.
+  const interactifsFinal = useMemo(() => {
+    if (choixTexteParCarteId.size === 0) return interactifsAvecPulse
+    const fusion = new Map(interactifsAvecPulse)
+    for (const [id, option] of choixTexteParCarteId) {
+      fusion.set(id, { role: 'cible', choisie: false, pulse: true, agir: () => choisirOptionDepuisMenu(option) })
+    }
+    return fusion
+  }, [interactifsAvecPulse, choixTexteParCarteId, choisirOptionDepuisMenu])
 
   const ouvrirCiblesHorsTable = useCallback(
     (option: Option | undefined) => {
@@ -4912,7 +4950,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {defenseHorsPhaseSurTable && etat.demande && !estChoixTexte ? (
+      {defenseHorsPhaseSurTable && etat.demande && !estChoixTexteGrille ? (
         <DansLeCadre>
           <EspaceDeLaQuestion />
           <DemandeCentrale
@@ -4937,7 +4975,7 @@ export function PagePartie({
         </DansLeCadre>
       ) : null}
 
-      {manuel ? null : estChoixTexte && etat.demande ? (
+      {manuel ? null : estChoixTexteGrille && etat.demande ? (
         <SelecteurChoixTexte
           titre={texteDemande(etat.demande) || t('Choisis une carte')}
           options={interaction.options}
@@ -4947,7 +4985,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene && !estChoixTexte ? (
+      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene && !estChoixTexteGrille ? (
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
@@ -5316,7 +5354,7 @@ export function PagePartie({
                   annuler={interaction.annuler}
                   ordreDeLaTable={interaction.option?.name === 'Minion_Activates_Order' || interaction.option?.name === 'Players_Activation_Order'}
                 />
-              ) : questionEnScene && etat.demande && !estChoixTexte ? (
+              ) : questionEnScene && etat.demande && !estChoixTexteGrille ? (
                 <DemandeCentrale
                   demande={etat.demande}
                   options={interaction.options}
@@ -5728,7 +5766,7 @@ export function PagePartie({
             )}
           </div>
         }
-        interactifs={interactifsAvecPulse}
+        interactifs={interactifsFinal}
         raisonsRefus={raisonsRefus}
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}

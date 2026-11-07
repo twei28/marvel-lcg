@@ -74,6 +74,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'cartes hors champ': 'cards out of view',
   'Valider': 'Confirm',
   'Choisis une carte': 'Choose a card',
+  'Clique une carte, puis « Valider »': 'Click a card, then “Confirm”',
+  'Carte choisie : clique « Valider », ou une autre carte pour changer': 'Card chosen: click “Confirm”, or another card to change',
   'Choisis jusqu’à': 'Choose up to',
   'Annuler': 'Cancel',
   'Confirmer': 'Confirm',

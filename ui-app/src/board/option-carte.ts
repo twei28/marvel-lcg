@@ -25,9 +25,17 @@ import type { WorldCard } from './world'
  * normalise malgre tout casse, guillemets et espaces, parce qu'un choix ecrit a
  * la main dans une carte fan-made n'a aucune raison de respecter la ponctuation
  * du scan au caractere pres.
+ *
+ * ⚠ LES ESPACES PEUVENT ETRE DES SOULIGNES (07/11/2026, constate en jeu reel,
+ * Dazzler "Too Good to be True" : "Nick_Fury", "Song_of_Justice"). Meme cause
+ * que "Role:_Brawler" deja documente dans `cartesDuLotParOption` ci-dessous :
+ * `effect.py` construit ce nom via `GetDisplayName(remove_space=True)`. Sans
+ * cette conversion, la carte ne se retrouvait jamais et le survol retombait
+ * sur l'identite du joueur (voir `SelecteurChoixTexte.tsx`).
  */
 export function cleNomCarte(nom: string): string {
   return nom
+    .replaceAll('_', ' ')
     .replace(/[«»"“”'’]/g, '')
     .replace(/\s+/g, ' ')
     .trim()
