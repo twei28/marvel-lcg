@@ -370,6 +370,33 @@
     }
   }
 
+  /* Carte utilisable pour PAYER un cout (main ou en jeu, defausse en
+     ressource ou capacite de generation type Redirect Chi) : contour bleu
+     cyan, en pulsation CONTINUE (contrairement au flash dore d'une seconde
+     de `.is-target-pulse` ci-dessus) tant que l'etape de paiement dure — un
+     joueur doit pouvoir reperer ces cartes sans se depecher. Demande du
+     07/11/2026. */
+  .scan-card.is-payment-pulse .scan-frame {
+    outline: 2px solid rgba(86, 214, 235, 0.95);
+    outline-offset: 5px;
+    animation: paiement-contour 2s ease-in-out infinite;
+  }
+
+  @keyframes paiement-contour {
+    0%, 100% {
+      outline-color: rgba(86, 214, 235, 0.45);
+    }
+    50% {
+      outline-color: rgba(86, 214, 235, 0.95);
+    }
+  }
+
+  body.plateau-sans-animations .scan-card.is-payment-pulse .scan-frame,
+  html[data-affichage='sobre'] .scan-card.is-payment-pulse .scan-frame {
+    animation: none;
+    outline-color: rgba(86, 214, 235, 0.95);
+  }
+
   /* Posee face cachee sur la table mais visible par nous : le cadre en
      pointilles le dit, sans rien poser sur le scan. */
   .scan-card.is-peeking .scan-frame {

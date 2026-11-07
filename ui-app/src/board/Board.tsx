@@ -240,7 +240,13 @@ export function avecInteraction(
     onOrdreAvancer: etat.ordreAvancer,
     onAssignerReste: etat.assignerReste,
     assignerResteQuantite: etat.assignerResteQuantite,
-    targetPulse: etat.pulse,
+    // Le paiement d'un cout (role 'ressource') a son propre halo bleu
+    // continu, distinct du flash dore d'1s qui designe une cible/un
+    // attaquant — sinon les cartes payeuses (main et capacites comme
+    // Redirect Chi) se fondaient dans tout le reste et passaient inapercues
+    // (demande utilisateur du 07/11/2026).
+    targetPulse: etat.role === 'ressource' ? false : etat.pulse,
+    paymentPulse: etat.role === 'ressource' ? etat.pulse : false,
     effectDelta: effets.get(Number(props.id)),
   }
 }

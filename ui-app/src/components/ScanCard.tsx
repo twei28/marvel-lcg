@@ -374,6 +374,14 @@ export type ScanCardProps = {
   assignerResteQuantite?: number
   /** Cible possible mise en avant depuis le menu d'action. */
   targetPulse?: boolean
+  /**
+   * Carte utilisable pour PAYER un cout en cours (main ou en jeu : defausse
+   * en ressource, ou capacite de generation comme Redirect Chi) — halo bleu
+   * distinct du flash dore de `targetPulse`, continu tant que le paiement
+   * n'est pas boucle. Demande utilisateur du 07/11/2026 : les joueurs ne
+   * reperaient pas ces cartes, faute de signal pendant l'etape de paiement.
+   */
+  paymentPulse?: boolean
   /** Mots-cles de la carte, affiches (avec definition) par l'apercu seulement. */
   keywords?: Array<{ nom: string; definition: string }>
   /** Identifiant catalogue (ex. 01001a) : liens et textes marvelcdb. */
@@ -611,6 +619,7 @@ export function ScanCard({
   onAssignerReste,
   assignerResteQuantite,
   targetPulse = false,
+  paymentPulse = false,
   effectDelta,
   jauge,
   masquerType,
@@ -720,6 +729,7 @@ export function ScanCard({
     peeking ? 'is-peeking' : '',
     highlight ? 'is-highlighted' : '',
     targetPulse ? 'is-target-pulse' : '',
+    paymentPulse ? 'is-payment-pulse' : '',
     // Secousse/flash a l'impact : la classe suit le badge +N/-N (meme cycle de
     // vie), le CSS ne s'anime que si les animations sont actives.
     effectDelta ? `a-delta-${effectDelta.kind}` : '',
