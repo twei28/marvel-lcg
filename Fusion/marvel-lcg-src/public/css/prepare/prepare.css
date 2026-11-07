@@ -1915,6 +1915,14 @@ h1.affiche{font-size:var(--affiche-titre,120px)}
   background:rgba(0,0,0,.78);text-align:left;white-space:normal;
 }
 .tb-port.est-verrou .tb-port-nom{opacity:.8}
+/* Pack officiel publié partiellement (ex. Iron Fist MC64EN sans Obligation ni
+   set Nemesis) : petit repère discret, pas un verrou — le héros reste jouable
+   tel quel, on signale juste qu'il manque des cartes à venir. */
+.tb-port-incomplet{
+  position:absolute;top:4px;right:4px;z-index:2;width:22px;height:22px;
+  display:grid;place-items:center;border-radius:50%;
+  background:rgba(30,30,30,.85);color:var(--affiche-jaune);font-size:13px;
+}
 /* Le bandeau Legacy en tete de l'etape : ou l'on en est, et combien de jetons. */
 .legacy-bande{
   display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;

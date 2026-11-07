@@ -7,6 +7,8 @@
 "use strict";
 
 export const DICO_EN_BASE = {
+    "pack incomplet": "incomplete pack",
+    "Pack officiel incomplet : Obligation et/ou set Nemesis pas encore publiés": "Incomplete official pack: Obligation and/or Nemesis set not released yet",
     "Solution de référence": "Reference solution",
     "Ta solution, étape par étape (facultatif).": "Your solution, step by step (optional).",
     "Montrée après la partie": "Shown after the game",

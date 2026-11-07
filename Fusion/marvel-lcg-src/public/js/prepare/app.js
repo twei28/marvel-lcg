@@ -3534,6 +3534,10 @@ function ouvrirFicheHeros(h, portraitEl) {
                 pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
                 h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
                 vague ? el("span", { class: "tampon" }, vague) : null,
+                h.incomplet ? el("span", {
+                    class: "tampon",
+                    title: t("Pack officiel incomplet : Obligation et/ou set Nemesis pas encore publiés"),
+                }, "⚠ " + t("pack incomplet")) : null,
             ),
             bioDepliee_(bioDuHeros(h)),
             el("div", { class: "vh-actions" },
@@ -3763,10 +3767,10 @@ async function refreshHeroGrid(pre) {
         const ferme = !!verrou && !verrou.ouvert;
         return el("button", {
             class: "tb-port" + (chosen ? " chosen" : "") + (ferme ? " est-verrou" : "")
-                + (ferme && verrou.achetable ? " est-achetable" : ""),
+                + (ferme && verrou.achetable ? " est-achetable" : "") + (h.incomplet ? " incomplet" : ""),
             "data-hero": h.id,
             "aria-disabled": ferme && !verrou.achetable ? "true" : null,
-            title: ferme ? verrou.condition : nomAffiche(h),
+            title: ferme ? verrou.condition : (h.incomplet ? nomAffiche(h) + " — " + t("pack incomplet") : nomAffiche(h)),
             onclick: (e) => {
                 // Téléphone : un toucher CHOISIT le héros (24/10/2026) ; on en touche un autre pour changer, puis « Continuer » en bas.
                 if (!ferme && estTel()) return recruterVraiment(h, e.currentTarget);
@@ -3782,6 +3786,7 @@ async function refreshHeroGrid(pre) {
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
+            h.incomplet ? el("span", { class: "tb-port-incomplet", title: t("Pack officiel incomplet : Obligation et/ou set Nemesis pas encore publiés") }, "⚠") : null,
             estTel() ? null : el("span", {
                 class: "hc-fav" + (prefs.isFavHero(h.id) ? " on" : ""),
                 title: t("Favori"),

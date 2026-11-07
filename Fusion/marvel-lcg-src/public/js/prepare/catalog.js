@@ -436,6 +436,11 @@ export const catalog = {
                 extension,
                 vague: vagueDeLExtension(extension),
                 homebrew: isHomebrew(extension),
+                // Pack officiel publié partiellement (ex. Iron Fist MC64EN,
+                // novembre 2026 : Obligation et set Nemesis pas encore sortis).
+                // Flag générique dans `metadata.incomplet` du deck de départ,
+                // réutilisable pour un futur héros dans le même cas.
+                incomplet: !!(d.metadata && d.metadata.incomplet),
                 // Créateur du pack fan-made (champ `custom` de la face héros,
                 // GUIDE §14) : affiché entre parenthèses derrière le nom.
                 auteur,
