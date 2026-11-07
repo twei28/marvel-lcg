@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-07",
+        genre: "correction",
+        fr: "Une barre de défilement apparaissait parfois sur l'écran d'accueil au chargement, sans raison visible. Corrigé.",
+        en: "A scrollbar could sometimes appear on the home screen on load, for no visible reason. Fixed.",
+    },
+    {
+        date: "2026-11-07",
+        genre: "heros",
+        fr: "Iron Fist porte désormais un petit repère (⚠) sur sa vignette : son Obligation et son set Nemesis ne sont pas encore sortis chez Fantasy Flight, le héros reste jouable tel quel en attendant.",
+        en: "Iron Fist now carries a small marker (⚠) on his tile: his Obligation and Nemesis set haven't been released by Fantasy Flight yet, the hero is still playable as is in the meantime.",
+    },
+    {
         date: "2026-11-06",
         genre: "correction",
         fr: "Le tchat détaché en fenêtre flottante pouvait apparaître hors écran et refusait de bouger. Sur l'écran de préparation, fermer le tchat pouvait aussi bloquer tous les clics jusqu'au rechargement de la page. Les deux sont corrigés.",
