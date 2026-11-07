@@ -2214,7 +2214,10 @@ export function PagePartie({
   // cartes (constate le 07/11/2026). Une seule option garde l'ancien bouton.
   const estChoixTexte =
     interaction.options.length > 1 &&
-    interaction.options.every((o) => o.is_text_choice && cartesDuLot(o) === undefined)
+    interaction.options.every((o) => o.is_text_choice && cartesDuLot(o) === undefined) &&
+    // Aucune option ne nomme une vraie carte (« Exhaust Greer Nelson », « Each minion
+    // engaged... ») : ce sont des EFFETS, pas des cartes -> menu de boutons (08/11/2026).
+    interaction.options.some((o) => carteDeLOption(o) !== undefined)
   // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
   // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
   // interruption). Face visible forcee : c'est notre carte, on doit la lire.
