@@ -896,16 +896,47 @@ function ajusterReserveMerci() {
 
 window.addEventListener("resize", ajusterReserveMerci);
 
+if (typeof document !== "undefined" && document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(ajusterReserveMerci);
+}
+
 const observateurMerci = typeof ResizeObserver === "function"
     ? new ResizeObserver(ajusterReserveMerci)
     : null;
 
+// CORRECTIF (07/11/2026, barre de scroll au chargement constatee par
+// l'utilisateur) : a sa toute premiere apparition, `.acc-merci` se mesure
+// une fraction de seconde trop tot (275px observes), PUIS se stabilise
+// quelques dizaines de ms plus tard sur sa vraie taille (153px) UNE FOIS
+// SEULEMENT, sans que le `ResizeObserver` ci-dessus livre cette seconde
+// mesure a temps (verifie en instrumentant la page : la bonne valeur existe
+// bien dans le DOM, mais la reserve CSS reste bloquee sur la premiere). La
+// reserve restait donc trop grande jusqu'au premier redimensionnement de
+// fenetre. Deux filets independants du `ResizeObserver`, qui ne dependent
+// que du temps ecoule (jamais d'un evenement qui peut se perdre) :
+//  - un rafraichissement sur DEUX frames (apres que la mise en page du
+//    rendu courant est posee) ;
+//  - un dernier sur un court delai, pour la mise en page qui se stabilise
+//    juste apres (webfont, image du bloc, etc.).
+// Reobserver seulement si le bloc a vraiment change evite aussi de
+// deconnecter/reconnecter le ResizeObserver a chaque rendu (tel.js,
+// survol...), ce qui semble avaler la notification du reglage naturel.
+let blocMerciObserve = null;
+
 function surveillerMerci() {
-    if (!observateurMerci) return;
-    observateurMerci.disconnect();
     const bloc = document.querySelector(".acc-merci");
-    if (bloc) observateurMerci.observe(bloc);
+    if (observateurMerci && bloc !== blocMerciObserve) {
+        observateurMerci.disconnect();
+        if (bloc) observateurMerci.observe(bloc);
+        blocMerciObserve = bloc;
+    }
     ajusterReserveMerci();
+    requestAnimationFrame(() => requestAnimationFrame(ajusterReserveMerci));
+    // Plusieurs delais etages : verifie en instrumentant la page que le
+    // reglage naturel peut arriver n'importe quand entre quelques dizaines
+    // de ms et plus d'une seconde apres la creation du bloc (lie au nombre
+    // de rendus successifs pendant le chargement initial, pas constant).
+    for (const delai of [300, 800, 1500, 3000]) setTimeout(ajusterReserveMerci, delai);
 }
 
 /* ======================= MODE TÉLÉPHONE (< 768 px) ==========================
