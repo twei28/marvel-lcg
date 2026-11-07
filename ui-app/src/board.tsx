@@ -98,7 +98,8 @@ import {
   type Site,
 } from './board/quitter-la-table'
 import { adresseApresPartie, estInviteDeTable, useRetourAuSalon } from './board/retour-salon'
-import { estFenetreDeReaction } from './board/DemandeCentrale'
+import { estFenetreDeReaction, texteDemande } from './board/DemandeCentrale'
+import { SelecteurChoixTexte } from './board/SelecteurChoixTexte'
 import {
   narrationAuCentre,
   questionDansLaScene,
@@ -2198,6 +2199,17 @@ export function PagePartie({
     (option: Option) => cartesDuLotParOption(option, joueurActif, catalogue),
     [joueurActif, catalogue]
   )
+  // CHOIX PAR NOM (AskChooseOneText cote moteur, ex. Dazzler "Too Good to be
+  // True" qui fait choisir une carte de sa defausse) : grille de vraies
+  // cartes (SelecteurChoixTexte) plutot que le menu de boutons generique
+  // (demande utilisateur du 07/11/2026, rapport nicodede62 — ce menu
+  // retombait sur l'identite du joueur quand la carte nommee n'etait pas
+  // retrouvee). Les lots de role (`cartesDuLot` non vide) gardent l'ancien
+  // menu : ce ne sont pas des choix "une carte parmi plusieurs", mais "un
+  // lot de plusieurs cartes par option".
+  const estChoixTexte =
+    interaction.options.length > 0 &&
+    interaction.options.every((o) => o.is_text_choice && cartesDuLot(o) === undefined)
   // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
   // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
   // interruption). Face visible forcee : c'est notre carte, on doit la lire.
@@ -4900,7 +4912,7 @@ export function PagePartie({
         />
       ) : null}
 
-      {defenseHorsPhaseSurTable && etat.demande ? (
+      {defenseHorsPhaseSurTable && etat.demande && !estChoixTexte ? (
         <DansLeCadre>
           <EspaceDeLaQuestion />
           <DemandeCentrale
@@ -4925,7 +4937,17 @@ export function PagePartie({
         </DansLeCadre>
       ) : null}
 
-      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene ? (
+      {manuel ? null : estChoixTexte && etat.demande ? (
+        <SelecteurChoixTexte
+          titre={texteDemande(etat.demande) || t('Choisis une carte')}
+          options={interaction.options}
+          carteDeLOption={carteDeLOption}
+          choisir={choisirOptionDepuisMenu}
+          annuler={etat.demande.show_cancel ? interaction.annuler : undefined}
+        />
+      ) : null}
+
+      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene && !estChoixTexte ? (
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
@@ -5294,7 +5316,7 @@ export function PagePartie({
                   annuler={interaction.annuler}
                   ordreDeLaTable={interaction.option?.name === 'Minion_Activates_Order' || interaction.option?.name === 'Players_Activation_Order'}
                 />
-              ) : questionEnScene && etat.demande ? (
+              ) : questionEnScene && etat.demande && !estChoixTexte ? (
                 <DemandeCentrale
                   demande={etat.demande}
                   options={interaction.options}

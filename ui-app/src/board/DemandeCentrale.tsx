@@ -99,7 +99,7 @@ function promptDemande(demande: Demande): string {
   return prompt ? traduireTitreRepetition(prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')) : ''
 }
 
-function texteDemande(demande: Demande): string {
+export function texteDemande(demande: Demande): string {
   const prompt = promptDemande(demande)
   if (prompt) return prompt
   if (demande.ability_type) return traduireMoteur(demande.ability_type)

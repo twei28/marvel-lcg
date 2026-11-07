@@ -68,6 +68,15 @@ export type Option = {
   is_search: boolean
   /** Aucune option d'une carte rencontre n'est faisable en entier : celle-ci, réduite au maximum payable, est à faire. */
   au_maximum?: boolean
+  /**
+   * Vient d'`AskChooseOneText`/`ForChoiceAbility` (moteur) : le nom DESIGNE la
+   * carte, `bind_id` vaut l'identité du joueur, jamais la carte choisie — le
+   * plateau doit la retrouver par son nom et l'afficher en grille de
+   * vignettes plutôt qu'en bouton de texte brut (07/11/2026, voir
+   * `option-carte.ts`/`SelecteurChoixTexte`). Absent (ancien fichier
+   * enregistré, test) : `false`, comme avant ce champ.
+   */
+  is_text_choice?: boolean
 }
 
 export type Demande = {
@@ -188,6 +197,7 @@ function lireOption(brut: unknown): Option | undefined {
     failure_reason: texte(o.failure_reason),
     is_search: o.is_search === true,
     au_maximum: o.au_maximum === true,
+    is_text_choice: o.is_text_choice === true,
   }
 }
 
