@@ -209,6 +209,7 @@ export function DeroulePhase({
   carteScene,
   dosRencontre,
   nomFr,
+  compterBoosts,
   question,
   herosLocauxIds,
   herosDesAutresIds,
@@ -366,6 +367,13 @@ export function DeroulePhase({
    * « Le Boulet » et « Envoyer Bouler ». Absent, ou muet : le nom du fait.
    */
   nomFr?: (id: number) => string | undefined
+  /**
+   * Le nombre de cartes boost (face cachée) déjà attachées à cet ennemi, pour
+   * le trait de phase (demande du 07/11/2026) : la seconde ligne « + N carte(s)
+   * boost » sous « 2 dégâts »/« 2 menaces » tant que le coup n'est pas résolu.
+   * Même mécanique attaque ET manigance (CoucheTraitPhase.tsx, trait-phase.ts).
+   */
+  compterBoosts?: (enemyId: number) => number
   /**
    * LA QUESTION DU MOTEUR, RENDUE PAR LE PLATEAU (board.tsx : le panneau
    * `DemandeCentrale` en mode scene). Quand elle est donnee, la scene reste
@@ -2013,6 +2021,7 @@ export function DeroulePhase({
           // Pendant une question, le trait d'une étape déjà RÉSOLUE (la riposte) n'a plus rien à montrer.
           actif={!enVolDeJeton && !(questionAuJoueur && etape?.etat === 'resolu')}
           sansEtiquette={Boolean(essai && etape && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0))}
+          compterBoosts={compterBoosts}
         />
         <EffetsSurTable
           etape={etape}

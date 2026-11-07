@@ -11,8 +11,10 @@ import { placesDeLecture, placesDesBoosts, type Boite } from './places-rencontre
 import { animationsCoupees } from './TrajetsPhase'
 import './rencontre-sur-table.css'
 
-export const DUREE_VOL_MS = 2000
-export const DUREE_ENTREE_MS = 900
+// Vitesses accelerees (demande utilisateur du 07/11/2026, mode « sur la table » : « on augmente la
+// vitesse (...) a laquelle la carte arrive et (...) repart »). Valeurs d'origine : 2000 et 900.
+export const DUREE_VOL_MS = 900
+export const DUREE_ENTREE_MS = 450
 
 export type ControleRencontre = {
   /** Consomme le clic pendant l'entrée ou le départ ; rappelle suite à l'arrivée. */

@@ -29,7 +29,9 @@ export const PAR_DEFAUT = EPURE;
  * Rend vrai si le passage vient d'avoir lieu (l'appelant doit alors aussi corriger le compte).
  */
 export const CLE_MIGRATION_AFFICHAGE = "mc_affichage_migre";
-export const VERSION_MIGRATION_AFFICHAGE = "2026-10-19";
+// Repasse tout le monde sur Normal une fois de plus (07/11/2026, meme demande que le plateau --
+// voir le commentaire jumeau dans ui-app/src/board/affichage.ts).
+export const VERSION_MIGRATION_AFFICHAGE = "2026-11-07";
 export function migrerAffichage(stockage) {
     try {
         if (!stockage || stockage.getItem(CLE_MIGRATION_AFFICHAGE) === VERSION_MIGRATION_AFFICHAGE) return false;
@@ -84,6 +86,16 @@ function hoteLocal() {
  */
 let epurePourTous = true;
 export function reglerEpurePourTous(valeur) { epurePourTous = !!valeur; }
+
+/**
+ * UN SEUL AFFICHAGE (07/11/2026, demande de l'utilisateur) : « on enlève tous les modes, on garde que
+ * le mode normal (...) on le garde dans le code, mais on le désactive. » Tant que c'est vrai, le bouton
+ * de cycle Normal/Coloré/Sobre (`boutonAffichage`) ne se pose plus du tout — rien n'est supprimé (CSS,
+ * `data-affichage`, `suivant`/`epurePermis` ci-dessus), juste rendu inaccessible.
+ */
+let unSeulAffichage = true;
+export function reglerUnSeulAffichage(valeur) { unSeulAffichage = !!valeur; }
+export function unSeulAffichageActif() { return unSeulAffichage; }
 
 export function epurePermis() {
     return epurePourTous || epurePermisReserve();

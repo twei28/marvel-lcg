@@ -6,7 +6,7 @@
 // feuilles de style lisent : aucun rechargement n'est nécessaire.
 "use strict";
 
-import { CLE_AFFICHAGE, PAR_DEFAUT, migrerAffichage, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, PAR_DEFAUT, migrerAffichage, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, unSeulAffichageActif, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
 
@@ -106,8 +106,13 @@ function dessinerBouton(bouton) {
         mode === EPURE ? t("Affichage normal") : mode === NORMAL ? t("Affichage coloré") : t("Affichage sobre"));
 }
 
-/** Bouton Normal / Coloré / Sobre, à poser à côté du bouton FR / EN. */
+/**
+ * Bouton Normal / Coloré / Sobre, à poser à côté du bouton FR / EN.
+ * UN SEUL AFFICHAGE (07/11/2026) : rend un nœud invisible tant que ce réglage est actif -- le bouton
+ * et sa logique de cycle restent dans le code, juste jamais posés à l'écran.
+ */
 export function boutonAffichage(classe) {
+    if (unSeulAffichageActif()) return document.createComment("affichage: un seul mode (desactive)");
     const bouton = document.createElement("button");
     bouton.type = "button";
     bouton.className = (classe || "") + " btn-affichage";

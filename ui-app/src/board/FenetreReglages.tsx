@@ -57,7 +57,7 @@ import {
   type ZoneAColonnes,
 } from './mobile/reglages-telephone'
 import type { NbColonnes } from './mobile/ronds/disposition-ronds'
-import { epurePermis, type Affichage } from './affichage'
+import { epurePermis, unSeulAffichageActif, type Affichage } from './affichage'
 import { essaiPhaseMechant } from './essais'
 import {
   PHASE_BIS_POUR_TOUS,
@@ -745,18 +745,22 @@ export function ContenuOnglet({
       <>
         <TitreSection>{t('Affichage')}</TitreSection>
         {/* Trois affichages au choix (18/10/2026) : Normal (valeur `epure`, celui de depart), Colore (valeur
-            `normal`), Sobre. Sans droit a l'epure (ancienne reserve), Normal n'est pas propose. */}
-        <LigneChoix
-          libelle={t('Style d’affichage')}
-          valeur={p.affichage}
-          choix={[
-            ...(epurePermis() ? [{ valeur: 'epure' as Affichage, libelle: t('Normal') }] : []),
-            { valeur: 'normal' as Affichage, libelle: t('Coloré') },
-            { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
-          ]}
-          onChoisir={p.changerAffichage}
-          detail={t('Coloré : couleurs du héros et halo vif. Sobre : fond gris, sans couleurs ni animations')}
-        />
+            `normal`), Sobre. Sans droit a l'epure (ancienne reserve), Normal n'est pas propose.
+            UN SEUL AFFICHAGE (07/11/2026) : le selecteur ne s'affiche plus du tout par defaut (voir
+            `unSeulAffichageActif` dans affichage.ts) -- rien n'est supprime ici, juste cache. */}
+        {unSeulAffichageActif() ? null : (
+          <LigneChoix
+            libelle={t('Style d’affichage')}
+            valeur={p.affichage}
+            choix={[
+              ...(epurePermis() ? [{ valeur: 'epure' as Affichage, libelle: t('Normal') }] : []),
+              { valeur: 'normal' as Affichage, libelle: t('Coloré') },
+              { valeur: 'sobre' as Affichage, libelle: t('Sobre') },
+            ]}
+            onChoisir={p.changerAffichage}
+            detail={t('Coloré : couleurs du héros et halo vif. Sobre : fond gris, sans couleurs ni animations')}
+          />
+        )}
         {/* La couleur du fond (04/10/2026) : la table change en direct. Repliee par defaut
             (05/11/2026, retour de l'utilisateur : « ça prend beaucoup de place alors qu'on
             va quasiment jamais y aller ») -- la roue ne s'ouvre qu'au clic sur le titre. */}

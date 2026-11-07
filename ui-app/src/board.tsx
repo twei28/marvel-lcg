@@ -170,7 +170,7 @@ import { RevuePhase } from './board/RevuePhase'
 import { EditeurTable } from './board/EditeurTable'
 import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/table-briques'
 import { enregistrerDisposition, useDispositionTable } from './board/table-perso'
-import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
+import { boostsAttaches, detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
 import { useCoupsEnVol } from './board/JetonsCoups'
 import { avecCompteursFiges } from './board/coups-sur-table'
 import { avecEcranStadeRevele, avecEtapesRiposte } from './board/etapes-essai'
@@ -3053,6 +3053,16 @@ export function PagePartie({
     () => detailAttaqueComplet(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr, idsDecksSupplementaires),
     [etat.demande, cartesMondeParId, nomPorteurFr, idsDecksSupplementaires]
   )
+  // Le meme compte de boosts, pour le TRAIT de phase (attaque ET manigance,
+  // demande du 07/11/2026 : « idem pour la manigance ») : le badge « 2 dégâts »
+  // gagne une seconde ligne « + N carte(s) boost » tant que le coup n'est pas
+  // résolu, même mécanique que la ligne sous « Ne pas défendre » ci-dessus,
+  // mais par identifiant d'ennemi plutôt que par l'option « Defense » (une
+  // manigance n'en a pas).
+  const compterBoostsDuTrait = useCallback(
+    (enemyId: number) => boostsAttaches(enemyId, cartesMondeParId, idsDecksSupplementaires),
+    [cartesMondeParId, idsDecksSupplementaires]
+  )
   /* ---- Le glisser-deposer : les REGLES (8 septembre 2026) -----------------
      Le plateau tient le geste et le dessin ; ici vivent les regles, parce que
      seule cette page connait les options du moteur. Rien n'est devine : tout
@@ -5205,6 +5215,7 @@ export function PagePartie({
             carteScene={carteScene}
             dosRencontre={dosRencontre}
             nomFr={nomPorteurFr}
+            compterBoosts={compterBoostsDuTrait}
             // LA QUESTION STRUCTUREE du cartouche du bas, pendant la phase
             // (voir `questionDuMoteurPC`).
             questionDuMoteur={phaseMechantEnCours ? questionDuMoteurPC : undefined}

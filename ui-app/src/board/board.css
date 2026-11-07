@@ -9351,6 +9351,17 @@
     font-size: 15px;
     letter-spacing: 0.02em;
   }
+
+  /* La seconde ligne « + N carte(s) boost » (07/11/2026) : ce qui est connu
+     AVANT résolution, jamais un total -- plus discrète que le nombre
+     principal, même esprit que la ligne sous « Ne pas défendre ». */
+  .trait-phase-etiquette text.trait-phase-boosts {
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0;
+    fill: #cbd5e1;
+  }
 }
 
 @layer utilitaires {
