@@ -4814,6 +4814,13 @@ function showDeckCards(deck, hero, deckId) {
         ...(lie ? lie.obligations || [] : []),
         ...(deck.nemesis_set || []),
         ...(lie ? lie.nemesis_set || [] : []),
+        // Le deck proprement dit (cartes d'aspect choisies par le joueur) :
+        // sans lui, « Voir les cartes » n'affichait que les cartes du HEROS
+        // (meme ensemble qu'a l'etape 1), jamais le contenu reel du deck que
+        // la tuile annonce pourtant (ex. « 25 cartes »). Demande utilisateur
+        // du 07/11/2026 : les deux doivent se voir ici.
+        ...(deck.player_deck || []),
+        ...(lie ? lie.player_deck || [] : []),
     ];
     const counts = {};
     for (const id of ids) counts[id] = (counts[id] || 0) + 1;
