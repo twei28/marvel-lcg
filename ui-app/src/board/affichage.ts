@@ -81,20 +81,21 @@ export function reglerEpurePourTous(valeur: boolean): void {
 }
 
 /**
- * UN SEUL AFFICHAGE (07/11/2026, demande de l'utilisateur) : « on enlève tous les modes, on garde
- * que le mode normal (...) on le garde dans le code, mais on le désactive. » Tant que ce réglage est
- * vrai, le sélecteur « Style d'affichage » (Normal/Coloré/Sobre) ne s'affiche plus du tout — rien n'y
- * est supprimé (CSS, logique `data-affichage`, `epurePermis` ci-dessus), juste rendu inaccessible.
- * `false` restaure l'ancien comportement (utile pour les tests qui couvrent encore les trois choix).
+ * SEUL « COLORÉ » EST RETIRÉ (07/11/2026, demande de l'utilisateur ; revenue en arrière le même jour
+ * sur « un seul affichage » : « tu peux laisser le mode sobre, juste enlever le mode coloré »). Tant
+ * que ce réglage est faux, le choix « Coloré » (valeur `normal`) n'apparaît plus dans le sélecteur
+ * « Style d'affichage » — Normal et Sobre restent tous les deux proposés. Rien n'est supprimé (CSS,
+ * logique `data-affichage`, `epurePermis` ci-dessus), juste rendu inaccessible. `true` restaure
+ * l'ancien comportement (utile pour les tests qui couvrent encore les trois choix).
  */
-let unSeulAffichage = true
+let coloreActif = false
 
-export function reglerUnSeulAffichage(valeur: boolean): void {
-  unSeulAffichage = valeur
+export function reglerColoreActif(valeur: boolean): void {
+  coloreActif = valeur
 }
 
-export function unSeulAffichageActif(): boolean {
-  return unSeulAffichage
+export function coloreEstActif(): boolean {
+  return coloreActif
 }
 
 export function epurePermis(): boolean {

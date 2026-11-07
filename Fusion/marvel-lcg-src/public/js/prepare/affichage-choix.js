@@ -88,14 +88,14 @@ let epurePourTous = true;
 export function reglerEpurePourTous(valeur) { epurePourTous = !!valeur; }
 
 /**
- * UN SEUL AFFICHAGE (07/11/2026, demande de l'utilisateur) : « on enlève tous les modes, on garde que
- * le mode normal (...) on le garde dans le code, mais on le désactive. » Tant que c'est vrai, le bouton
- * de cycle Normal/Coloré/Sobre (`boutonAffichage`) ne se pose plus du tout — rien n'est supprimé (CSS,
- * `data-affichage`, `suivant`/`epurePermis` ci-dessus), juste rendu inaccessible.
+ * SEUL « COLORÉ » EST RETIRÉ (07/11/2026, revenu en arrière le même jour sur « un seul affichage » :
+ * « tu peux laisser le mode sobre, juste enlever le mode coloré »). Tant que c'est faux, le bouton de
+ * cycle (`boutonAffichage`) saute l'état Coloré (valeur `normal`) : Normal <-> Sobre seulement. Rien
+ * n'est supprimé (CSS, `data-affichage`, `suivant`/`epurePermis` ci-dessus), juste rendu inaccessible.
  */
-let unSeulAffichage = true;
-export function reglerUnSeulAffichage(valeur) { unSeulAffichage = !!valeur; }
-export function unSeulAffichageActif() { return unSeulAffichage; }
+let coloreActif = false;
+export function reglerColoreActif(valeur) { coloreActif = !!valeur; }
+export function coloreEstActif() { return coloreActif; }
 
 export function epurePermis() {
     return epurePourTous || epurePermisReserve();

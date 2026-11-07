@@ -8,7 +8,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ContenuOnglet, FenetreReglages, ONGLETS, type ProprietesReglages } from './FenetreReglages'
-import { reglerEpurePourTous, reglerUnSeulAffichage } from './affichage'
+import { reglerColoreActif, reglerEpurePourTous } from './affichage'
 
 function proprietes(sur: Partial<ProprietesReglages> = {}): ProprietesReglages {
   return {
@@ -104,14 +104,14 @@ describe('un sous-reglage inutilisable reste VISIBLE', () => {
 const sansDroitAEpure = () => {
   reglerEpurePourTous(false)
   window.localStorage.setItem('mc_vue_joueur', 'oui')
-  // UN SEUL AFFICHAGE (07/11/2026) cache ce selecteur par defaut : ces tests couvrent encore le
-  // mecanisme des trois choix (desactive, pas supprime), donc le reactivent pour la duree du test.
-  reglerUnSeulAffichage(false)
+  // COLORÉ RETIRÉ (07/11/2026) cache ce choix par defaut : ces tests couvrent encore le mecanisme des
+  // trois choix (desactive, pas supprime), donc le reactivent pour la duree du test.
+  reglerColoreActif(true)
 }
 afterEach(() => {
   window.localStorage.removeItem('mc_vue_joueur')
   reglerEpurePourTous(true)
-  reglerUnSeulAffichage(true)
+  reglerColoreActif(false)
 })
 
 describe('aucun reglage n’a ete perdu au rangement', () => {
@@ -205,7 +205,7 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
   it('les trois affichages se choisissent : Normal (valeur epure), Colore (valeur normal), Sobre (18/10/2026)', () => {
     window.localStorage.removeItem('mc_vue_joueur')
     reglerEpurePourTous(true)
-    reglerUnSeulAffichage(false)
+    reglerColoreActif(true)
     const changerAffichage = vi.fn()
     render(<ContenuOnglet onglet="apparence" p={proprietes({ changerAffichage })} />)
     expect(screen.getByText('Style d’affichage')).toBeTruthy()
@@ -226,12 +226,15 @@ describe('chaque interrupteur appelle bien sa fonction', () => {
     expect(screen.queryByText('Épuré')).toBeNull()
   })
 
-  it('un seul affichage (07/11/2026) : le selecteur « Style d’affichage » disparait par defaut', () => {
-    reglerUnSeulAffichage(true)
+  it('colore retire (07/11/2026) : « Coloré » disparait par defaut, Normal et Sobre restent', () => {
+    window.localStorage.removeItem('mc_vue_joueur')
+    reglerEpurePourTous(true)
+    reglerColoreActif(false)
     render(<ContenuOnglet onglet="apparence" p={proprietes()} />)
-    expect(screen.queryByText('Style d’affichage')).toBeNull()
+    expect(screen.getByText('Style d’affichage')).toBeTruthy()
+    expect(screen.getByText('Normal')).toBeTruthy()
+    expect(screen.getByText('Sobre')).toBeTruthy()
     expect(screen.queryByText('Coloré')).toBeNull()
-    expect(screen.queryByText('Sobre')).toBeNull()
   })
 
   it('en affichage sobre, « Animations » reste visible mais inerte et sur « Non »', () => {
