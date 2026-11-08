@@ -9,6 +9,13 @@ import './traduction-posee.css'
 
 const LARGEUR = 300
 const HAUTEUR = 420
+/**
+ * Agrandissement de la taille de RÉFÉRENCE de la boîte de texte (la boîte est mise en page ×K puis réduite par transform).
+ * Un navigateur à taille de police minimale (Android : texte agrandi, Samsung Internet, ~16 px) empêchait le français de
+ * rétrécir à ~12 px sur une carte de téléphone : il débordait et se coupait en bas. À ×3, la police de référence reste
+ * au-dessus de tout minimum, et la réduction par transform, elle, n'est bornée par rien.
+ */
+const REF = 3
 const zones = new Map<string, Promise<ZoneTexte | null>>()
 
 /** Côté de la boîte de texte d'une carte paysage (manigance principale : gauche, annexe : droite). */
@@ -340,7 +347,7 @@ export function TraductionPosee({
           ? hauteurParent
           : Math.min(largeurParent, (hauteurParent * LARGEUR) / HAUTEUR)
         : LARGEUR
-      const echelle = carte > 0 ? carte / LARGEUR : 1
+      const echelle = carte > 0 ? carte / (LARGEUR * REF) : 1
       // Dimensions de la boîte À LA TAILLE DE RÉFÉRENCE (avant réduction).
       const largeurRef = ((zone.x1 - zone.x0) * largeurParent) / echelle
       const hauteurRef = ((zone.y1 - zone.y0) * hauteurParent) / echelle
@@ -352,10 +359,10 @@ export function TraductionPosee({
       // Départ : la taille de l'anglais imprimé, lue à son interligne quand on l'a mesuré (le corps fait ≈ 1/1,18 de
       // l'interligne, celui de la boîte), sinon 4,3 % de la largeur de la carte.
       const interligne = fond?.texte?.interligne ?? 0
-      let taille = interligne > 0 ? Math.min(LARGEUR * 0.06, Math.max(LARGEUR * 0.03, (interligne * HAUTEUR) / 1.18)) : LARGEUR * 0.043
+      let taille = interligne > 0 ? Math.min(LARGEUR * REF * 0.06, Math.max(LARGEUR * REF * 0.03, (interligne * HAUTEUR * REF) / 1.18)) : LARGEUR * REF * 0.043
       // Le fond est le scan nettoyé de SA zone : la boîte ne peut plus déborder sur l'illustration. Un texte long
       // rétrécit donc davantage (le plancher reste lisible une fois la carte agrandie).
-      const plancher = LARGEUR * 0.017
+      const plancher = LARGEUR * REF * 0.017
       element.style.fontSize = `${taille}px`
       element.style.top = `${zone.y0 * 100}%`
       element.style.height = `${hauteurRef}px`
@@ -466,7 +473,7 @@ export function TraductionPosee({
       }
       const deborde = () => placerLesBandes() || element.scrollHeight > element.clientHeight + 1
       while (deborde() && taille > plancher) {
-        taille -= LARGEUR * 0.001
+        taille -= LARGEUR * REF * 0.001
         element.style.fontSize = `${taille}px`
       }
       // La ligne des traits tient sur UNE ligne : elle déborde un peu dans les marges (symétriquement : elle reste centrée sur
