@@ -188,6 +188,14 @@ export type AssistantInteraction = {
   coutFacultatif?: boolean
   /** Quand une MÊME carte offre plusieurs moyens de payer (Mantis : source ennemie ou personnage), lequel est posé. */
   moyensChoisis?: string
+  /**
+   * La carte récompense un SURPAIEMENT : coût X, ou texte qui parle
+   * d'« overpay ». Rapport de bug n°116 (08/11/2026, Web Barrage) : à la
+   * confirmation, la phrase disait « Tout est prêt » sans un mot sur le
+   * paiement, alors que rien n'était payé et que la carte n'allait RIEN
+   * faire. Voir `Interaction.surpaiementRecompense`, calculé plus haut.
+   */
+  surpaiementRecompense?: boolean
 }
 
 /** Une cible que la table ne montre pas : elle passe par le selecteur. */
@@ -1244,7 +1252,14 @@ export function useInteraction(
 
   const coutAffiche =
     requis === 0
-      ? ''
+      ? // Coût X (surpaiementRecompense) : le coût imprimé (0) ne dit rien de ce
+        // qui compte vraiment, le montant PAYÉ. Rapport de bug n°116
+        // (08/11/2026, Web Barrage) : la pastille de coût restait muette, sans
+        // indiquer qu'on pouvait encore payer pour que la carte fasse quelque
+        // chose.
+        surpaiementRecompense && paye > 0
+        ? String(paye)
+        : ''
       : requis === undefined
       ? paiement?.cost && paiement.cost !== '0'
         ? paiement.cost
@@ -1295,6 +1310,7 @@ export function useInteraction(
     typesManquants: typesManquants(paiement, ressources),
     coutFacultatif: paiementFacultatif(paiement),
     moyensChoisis: moyensChoisisDesAlternatives(paiement, ressources, index.values()),
+    surpaiementRecompense,
   }
 
   // La confirmation « ce coup ne fera rien » (11/09/2026). Le moteur accepte

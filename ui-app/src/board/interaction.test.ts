@@ -1114,3 +1114,111 @@ describe('useInteraction, le vilain et les sbires d\'UN joueur (plusieurs joueur
     await waitFor(() => expect(result.current.assistant.cibleNombre).toBe(3))
   })
 })
+
+// Rapport de bug n°116 (08/11/2026, Web Barrage, sr004) : une carte a COÛT X
+// (imprimé « 0 ») passe DIRECTEMENT a 'confirm' des qu'on la choisit, le coût
+// requis (0) étant déjà couvert. Sans rien d'autre, le joueur validait sans
+// avoir rien payé, et la carte ne faisait rien — alors que la main montrait
+// bien des cartes surlignées, cliquables, pour payer.
+describe('useInteraction, carte a cout X (surpaiement recompense)', () => {
+  const BARRAGE = 400
+  const CATALOGUE_X: Catalogue = {
+    ...CATALOGUE,
+    // Seule la carte qui porte l'option (HEROS, card_id « 0100100 ») est
+    // marquee surpayable : exactement ce que fait le catalogue reel pour une
+    // carte `desc.Cost === 'X'` (voir catalogue.ts, scans-fr.test.ts).
+    surpayable: (cardId) => cardId === `0100${HEROS}`,
+  }
+  const mondeX = {
+    render_id: 1,
+    players: [
+      {
+        area_hero: [carte(HEROS, { card_type: 'hero' })],
+        hand: [carte(BARRAGE, { card_type: 'event', resources: [EFFET_RESSOURCE] })],
+      },
+    ],
+  } as unknown as World
+  const optionCoutX = (): Option => ({
+    id: 90,
+    name: 'Play',
+    bind_id: HEROS,
+    bind_player_id: 0,
+    all_legal_targets: [],
+    target_num_range: [0, 0],
+    target_payment: {
+      0: {
+        cost: '0',
+        payment: [{ effect_id: EFFET_RESSOURCE, res_text: 'R' }],
+        rule: [],
+      },
+    },
+    select_rule: '',
+    target_must_include_traits: [],
+    failure_reason: '',
+    is_search: false,
+  })
+  const monterX = () => {
+    const demande: Demande = {
+      options: [optionCoutX()],
+      refus: [],
+      prompt_text: '',
+      event_name: 'WhenPlayerInTurn',
+      show_cancel: true,
+      ability_type: 'FirstPlayerAction',
+    }
+    return renderHook(() =>
+      useInteraction(mondeX, demande, vi.fn(), new Set([HEROS, BARRAGE]), 0, CATALOGUE_X, 'simple')
+    )
+  }
+
+  it('passe a confirm sans rien payer, mais le dit : surpaiementRecompense et aucun cout affiche', () => {
+    const { result } = monterX()
+    act(() => result.current.choisirOption(optionCoutX()))
+    expect(result.current.assistant.etape).toBe('confirm')
+    expect(result.current.prete).toBe(true)
+    expect(result.current.assistant.coutPaye).toBe(0)
+    // C'est ce champ qui dit a `phraseEtat` de ne pas afficher « Tout est
+    // prêt » sans un mot sur le paiement (voir phrase-etat.test.ts).
+    expect(result.current.assistant.surpaiementRecompense).toBe(true)
+  })
+
+  it('la carte qui paie reste cliquable a la confirmation (deja le cas avant ce correctif)', () => {
+    const { result } = monterX()
+    act(() => result.current.choisirOption(optionCoutX()))
+    expect(result.current.cartes.get(BARRAGE)?.agir).toBeTypeOf('function')
+  })
+
+  it('une fois paye, le montant se voit : la pastille de coût n’est plus muette', () => {
+    const { result } = monterX()
+    act(() => result.current.choisirOption(optionCoutX()))
+    expect(result.current.coutAffiche).toBe('')
+
+    act(() => result.current.cartes.get(BARRAGE)?.agir?.())
+    expect(result.current.assistant.coutPaye).toBe(1)
+    expect(result.current.coutAffiche).toBe('1')
+  })
+
+  it('une carte a cout fixe (0), NON surpayable, reste muette meme une fois payee', () => {
+    const { result } = renderHook(() =>
+      useInteraction(
+        mondeX,
+        {
+          options: [optionCoutX()],
+          refus: [],
+          prompt_text: '',
+          event_name: 'WhenPlayerInTurn',
+          show_cancel: true,
+          ability_type: 'FirstPlayerAction',
+        },
+        vi.fn(),
+        new Set([HEROS, BARRAGE]),
+        0,
+        CATALOGUE,
+        'simple'
+      )
+    )
+    act(() => result.current.choisirOption(optionCoutX()))
+    expect(result.current.assistant.surpaiementRecompense).toBe(false)
+    expect(result.current.coutAffiche).toBe('')
+  })
+})

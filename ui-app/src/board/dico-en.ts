@@ -683,6 +683,8 @@ export const DICO_EN_BASE: Record<string, string> = {
   'vaut': 'is worth',
   'ici': 'here',
   'Tout est prêt': 'All set',
+  'Payé': 'Paid',
+  'Rien payé : tu peux encore ajouter des ressources avant de valider': 'Nothing paid yet: you can still add resources before confirming',
   'Il manque': 'Missing',
   'ressource': 'resource',
   'ressources': 'resources',
