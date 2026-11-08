@@ -4557,6 +4557,36 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"exhausted": ["sr009"]},
     },
+    # Rapport de bug (08/11/2026) : l'ancienne heuristique (deviner a la carte
+    # tiree, via son set) a ete remplacee par une question posee au joueur,
+    # qui regarde la carte piochee et juge lui-meme. Les deux reponses sont
+    # testees : « Yes » pioche une 2e carte, « No » s'arrete a la 1ere.
+    {
+        "nom": "sr009 J. Jonah Jameson — le joueur repond Yes : 2 cartes piochees",
+        "pourquoi": "la question posee au joueur, branche positive",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sr009')"],
+        # `main_exclusive: []` NE VIDE RIEN (test de verite Python) : une carte
+        # de remplissage neutre, sans rapport avec la question posee.
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Action('sr009', 'AlterEgoAction')"],
+        "choisir_option": "Yes",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 3},
+    },
+    {
+        "nom": "sr009 J. Jonah Jameson — le joueur repond No : une seule carte piochee",
+        "pourquoi": "la question posee au joueur, branche negative",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sr009')"],
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Action('sr009', 'AlterEgoAction')"],
+        "choisir_option": "No",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
+    },
     {
         "nom": "sr010 Spider-Sense — Hero Interrupt : piocher quand le vilain attaque",
         "pourquoi": "interrupt sur initiation d'attaque, atteint par Puzzle.Attack",

@@ -3,7 +3,7 @@
 // nom de capacité imprimé sur la carte doit rester en anglais.
 import { afterEach, describe, expect, it } from 'vitest'
 import { tonaliteAction } from './action-style'
-import { sansIndexDeCapacite, traduireMoteur } from './vocabulaire-moteur'
+import { sansIndexDeCapacite, traduireMoteur, traduireQuestionImage } from './vocabulaire-moteur'
 
 const enFrancais = () => window.localStorage.setItem('marvel-langue', 'fr')
 const enAnglais = () => window.localStorage.setItem('marvel-langue', 'en')
@@ -257,5 +257,28 @@ describe('traduireMoteur : choix du scénario Cassandra Nova (Hellfire Hunt, hf)
     )
     enAnglais()
     expect(traduireMoteur('Place 2 threat on each scheme')).toBe('Place 2 threat on each scheme')
+  })
+})
+
+// Rapport de bug du 08/11/2026 (J. Jonah Jameson, sr009) : question construite
+// par `AskChooseOneText`, pas de carte-modele a imiter par le moteur.
+describe('traduireQuestionImage', () => {
+  it('traduit la question, en gardant le nom de la carte tiree tel quel', () => {
+    enFrancais()
+    expect(traduireQuestionImage('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')).toBe(
+      'J. Jonah Jameson : la carte « Web Strike » montre-t-elle une image de Spider-Man ?'
+    )
+  })
+
+  it('un texte qui n a pas cette forme sort inchange', () => {
+    enFrancais()
+    expect(traduireQuestionImage('Quelque chose d’autre')).toBe('Quelque chose d’autre')
+  })
+
+  it('en anglais, rien n est traduit', () => {
+    enAnglais()
+    expect(traduireQuestionImage('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')).toBe(
+      'J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?'
+    )
   })
 })

@@ -440,6 +440,45 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
   })
 })
 
+// Rapport de bug du 08/11/2026 (J. Jonah Jameson, sr009) : le moteur ne sait
+// pas lire une image, il pose donc la question au joueur (`AskChooseOneText`).
+// Cette question-la n'a pas de carte-modele a imiter et restait en anglais.
+describe('DemandeCentrale — la carte demande si l image montre tel personnage (sr009, 08/11/2026)', () => {
+  const choix = (id: number, name: string): Option => ({ ...option(), id, name, bind_id: 0 })
+  const question = (prompt_text: string): Demande =>
+    ({
+      options: [choix(1, 'Yes'), choix(2, 'No')],
+      prompt_text,
+      event_name: 'WhenPlayerChooseAbility',
+      show_cancel: false,
+      ability_type: 'ChooseAbility',
+    }) as unknown as Demande
+
+  beforeEach(() => window.localStorage.setItem('marvel-langue', 'fr'))
+  afterEach(() => window.localStorage.clear())
+
+  it('traduit la question, et garde le nom de la carte tiree tel quel', () => {
+    const d = question('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('J. Jonah Jameson : la carte « Web Strike » montre-t-elle une image de Spider-Man ?')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Oui')).toBeInTheDocument()
+    expect(screen.getByText('Non')).toBeInTheDocument()
+  })
+
+  it('en anglais, rien n est traduit', () => {
+    window.localStorage.setItem('marvel-langue', 'en')
+    const d = question('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Yes')).toBeInTheDocument()
+    expect(screen.getByText('No')).toBeInTheDocument()
+  })
+})
+
 // Sonic Boom, heros incline et ressources incompletes (rapport Yarro, 11/10/2026) :
 // aucune option n'est faisable en entier, le moteur impose celle qu'on peut faire
 // au maximum. Le joueur doit lire POURQUOI, et voir laquelle est imposee.

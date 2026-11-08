@@ -47,6 +47,10 @@ const MOTEUR_FR: Record<string, string> = {
   // — pack silver_surfer_power_cosmic (prefixe pc, mecanique PLANET, 05/11/2026) —
   'Character Arrive Planet': 'Le personnage arrive à la planète',
   'Character Depart Planet': 'Le personnage part de la planète',
+  // Reponse Oui/Non posee au joueur (J. Jonah Jameson sr009, 08/11/2026) :
+  // les boutons d'un `AskChooseOneText([True, False], ["Yes", "No"], ...)`.
+  Yes: 'Oui',
+  No: 'Non',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',
@@ -612,6 +616,26 @@ export function traduireTitreRepetition(texte: string): string {
   if (enPlus) {
     return `${enPlus[1]} : ${traduireMoteur(enPlus[2]!)} fait (${enPlus[3]} sur ${enPlus[4]}). Combien de fois en plus ?`
   }
+  return texte
+}
+
+/**
+ * Les cartes qui, apres une pioche, demandent au JOUEUR de juger un dessin
+ * (le moteur ne sait pas lire une image) : J. Jonah Jameson (sr009, rapport
+ * de bug du 08/11/2026), et d'autres a venir sur le meme modele.
+ * `AskChooseOneText` construit ce texte lui-meme (il n'a pas de carte-modele
+ * a imiter), d'ou cette traduction a part, plutot qu'une entree fixe de
+ * `MOTEUR_FR`.
+ *
+ * ⚠ LE NOM DE LA CARTE TIREE ENTRE GUILLEMETS RESTE EN ANGLAIS, comme un nom
+ * de capacite imprime sur une carte (voir l'en-tete du fichier) : son scan
+ * sous les yeux l'est, et aucune carte fan-made n'a encore son NOM traduit
+ * (seulement son texte, `textes-fr-fanmade.ts`).
+ */
+export function traduireQuestionImage(texte: string): string {
+  if (langueActuelle() !== 'fr') return texte
+  const image = /^(.+): does "(.+)" have a picture of (.+) on it\?$/.exec(texte)
+  if (image) return `${image[1]} : la carte « ${image[2]} » montre-t-elle une image de ${image[3]} ?`
   return texte
 }
 

@@ -12,7 +12,7 @@ import { DEMANDER_A_UN_AUTRE, estDemandeAUnAutre, libelleDemandeAUnAutre } from 
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { useGlisserPanneau, styleAvecDecalage } from './placement/useGlisserPanneau'
-import { traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
+import { traduireMoteur, traduireQuestionImage, traduireTitreRepetition } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { NOMS_FR } from './noms-fr'
@@ -96,7 +96,12 @@ export function sansIdentifiantsEnFrancais(texte: string): string {
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
 function promptDemande(demande: Demande): string {
   const prompt = nettoyerNarration(sansIdentifiantsEnFrancais(demande.prompt_text))
-  return prompt ? traduireTitreRepetition(prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')) : ''
+  if (!prompt) return ''
+  const nettoye = prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')
+  // Rapport de bug du 08/11/2026 (J. Jonah Jameson) : une question construite
+  // par `AskChooseOneText` (pas de carte-modele a imiter par le moteur) reste
+  // sinon en anglais, la seule des deux formes a ne pas matcher.
+  return traduireQuestionImage(traduireTitreRepetition(nettoye))
 }
 
 export function texteDemande(demande: Demande): string {
