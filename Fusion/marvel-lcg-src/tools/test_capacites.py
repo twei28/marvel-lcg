@@ -1531,6 +1531,38 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats": [["01094", 2]], "compteurs": [["01094", "web", 1]]},
     },
+    # Rapport de bug n°115 (08/11/2026) : Great Power ne faisait RIEN quand elle payait une carte qui RESTE EN JEU.
+    # Le moteur n'envoie « AfterEffectResolved » que pour une capacite d'evenement : une amelioration ou un allie
+    # n'en ont pas, la reponse differee ne partait jamais (seul l'evenement Thwip! etait teste).
+    {
+        "nom": "sr007 Great Power — 2 degats apres avoir paye une AMELIORATION (Web-Shooters sr011)",
+        "pourquoi": "rapport 115 : la carte payee reste en jeu, pas d'AfterEffectResolved",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        "main_exclusive": ["sr011", "sr007"],
+        "declencher": [],
+        "jouer": ["sr011"],
+        "payer_avec": ["sr007"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "sr007 Great Power — 2 degats apres avoir paye un ALLIE (Spider-Man Ben Reilly sr002)",
+        "pourquoi": "rapport 115 : meme defaut avec un allie",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        # cout 2 : Great Power (1 ressource) + sr008 (1 ressource) paient ensemble.
+        "main_exclusive": ["sr002", "sr007", "sr008"],
+        "declencher": [],
+        "jouer": ["sr002"],
+        "payer_avec": ["sr007", "sr008"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
     {
         "nom": "sr008 Great Responsibility — retire 2 menaces apres paiement",
         "pourquoi": "meme montage, cote menace",
