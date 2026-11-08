@@ -2983,22 +2983,17 @@
      `height: 100%` + `overflow-y: auto` la gardent maintenant strictement
      dans sa propre rangée). */
 
-  /* ⚠ DEUX ÉTIQUETTES SE DISPUTAIENT LES MÊMES 20 PIXELS. Le titre de zone
-     (« Mises de côté / autres piles ») flotte à 4 px du haut ; la pastille
-     « NÉMÉSIS » de la pile se pose, elle, juste au-dessus de sa carte. Dans les
-     20 px de retrait que ces zones réservent, les deux se chevauchaient et le
-     badge rouge ressortait à moitié hors de la zone, détaché de tout.
-
-     Constat de l'utilisateur, capture à l'appui : « pourquoi la pile du némésis
-     est comme ça en deux morceaux, c'est nul ». C'est cette collision, pas la
-     pile elle-même.
-
-     Le retrait passe donc à 38 px POUR CETTE ZONE SEULEMENT : les deux autres
-     zones de piles n'ont aucune pastille au-dessus de leurs cartes et n'ont
-     donc rien à réserver. */
-  .zone-annexes .plateau-cartes {
-    padding-top: 38px;
-  }
+  /* ⚠ Le retrait de 38px ci-dessus (jusqu'au 08/11/2026) protegeait une
+     pastille « NÉMÉSIS » qui se posait au-dessus de la pile quand le set
+     nemesis etait encore affiche a part. Depuis le 05/10/2026
+     (`pileFondue`, zones.ts), le set nemesis est fondu dans la pile
+     « Cartes visibles » : la carte representant la pile est toujours un dos
+     de carte (`facedown = true`), sans aucune pastille au-dessus. Le retrait
+     special n'avait donc plus de raison d'etre et mangeait 18px de haut
+     utiles dans une zone deja plafonnee a sa rangee (`height: 100%`) --
+     signalement : « le deck nemesis est juste au-dessus a moitie cachee ».
+     Retire : `.zone-annexes` suit maintenant le retrait general de 20px,
+     comme les deux autres zones de piles. */
 
   .zone-rencontre {
     grid-area: rencontre;
