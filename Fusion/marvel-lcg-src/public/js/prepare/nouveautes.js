@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-08",
+        genre: "heros",
+        fr: "Blade et Dazzler ont maintenant leurs cartes officielles en français : plus de carte anglaise voilée quand le jeu est en français (sauf une quinzaine de cartes bonus de Dazzler, sans version française pour le moment).",
+        en: "Blade and Dazzler now have their official French cards: no more veiled English card when the game is in French (except about fifteen bonus Dazzler cards, which have no French version yet).",
+    },
+    {
+        date: "2026-11-08",
+        genre: "correction",
+        fr: "Sur le plateau, le deck supplémentaire et la pile Némésis ne se chevauchent plus.",
+        en: "On the board, the extra deck and the Nemesis pile no longer overlap.",
+    },
+    {
         date: "2026-11-07",
         genre: "correction",
         fr: "Une barre de défilement apparaissait parfois sur l'écran d'accueil au chargement, sans raison visible. Corrigé.",
