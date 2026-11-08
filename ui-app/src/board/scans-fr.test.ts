@@ -126,9 +126,9 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (76 avec les 18 de Beast, les 23 de Mystique et les 17 de Blade) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (100 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade et les 24 de Dazzler) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(76)
+    expect(SCANS_FR_FANMADE.size).toBe(100)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -147,6 +147,24 @@ describe('SCANS_FR_FANMADE (Blade de Rainy)', () => {
       expect(aScanFr(id)).toBe(true)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('bl009')).toBe('fr_bl009')
+  })
+})
+
+describe('SCANS_FR_FANMADE (Dazzler de Lord Havok)', () => {
+  it('les 24 cartes couvertes par le depot de l\'auteur ont un scan francais ; les cartes bonus sans scan gardent le voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    for (const id of [
+      'dz001a', 'dz001b', 'dz002', 'dz003', 'dz004', 'dz005', 'dz006', 'dz007', 'dz008', 'dz009', 'dz010',
+      'dz011', 'dz012', 'dz013', 'dz014', 'dz015', 'dz016', 'dz017a', 'dz017b', 'dz019', 'dz020', 'dz021',
+      'dz022', 'dz023',
+    ])
+      expect(aScanFr(id)).toBe(true)
+    // dz018 (Sound Absorption) et dz024-dz038 (cartes bonus) : aucun scan FR dans le depot, le voile reste.
+    expect(aScanFr('dz018')).toBe(false)
+    expect(aScanFr('dz024')).toBe(false)
+    expect(aScanFr('dz038')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('dz009')).toBe('fr_dz009')
   })
 })
 

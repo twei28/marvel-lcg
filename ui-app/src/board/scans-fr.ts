@@ -58,9 +58,16 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   // Mystique de Merlin (Release FR 1.1.1, 02/11/2026) : `fr_my*.jpg` deposes a la main dans assets/pics-fr (les 23 faces).
   'my001a', 'my001b', 'my002', 'my003a', 'my003b', 'my004a', 'my004b', 'my005a', 'my005b', 'my006', 'my007', 'my008',
   'my009', 'my010', 'my011', 'my012', 'my013', 'my014', 'my015', 'my016', 'my017', 'my018', 'my019',
-  // Blade de Rainy (04/11/2026) : `fr_bl*.jpg` depose a la main dans assets/pics-fr, les 17 cartes du pack.
+  // Blade de Rainy (04/11/2026, scans remplaces le 08/11/2026 par une version sans filigrane) : `fr_bl*.jpg`
+  // depose a la main dans assets/pics-fr, les 17 cartes du pack.
   'bl001a', 'bl001b', 'bl002', 'bl003', 'bl004', 'bl005', 'bl006', 'bl007', 'bl008', 'bl009', 'bl010', 'bl011',
   'bl012', 'bl013', 'bl014', 'bl015', 'bl016', 'bl017',
+  // Dazzler de Lord Havok (08/11/2026) : `fr_dz*.jpg` depose a la main dans assets/pics-fr. Couvre l'identite, les
+  // 15 cartes du deck signature, Concert en Direct (ses deux faces), l'obligation et le set nemesis (Klaw) —
+  // SAUF dz018 et dz024-dz038 (cartes bonus sans scan FR dans le depot de l'auteur : elles gardent le voile).
+  'dz001a', 'dz001b', 'dz002', 'dz003', 'dz004', 'dz005', 'dz006', 'dz007', 'dz008', 'dz009', 'dz010',
+  'dz011', 'dz012', 'dz013', 'dz014', 'dz015', 'dz016', 'dz017a', 'dz017b', 'dz019', 'dz020', 'dz021',
+  'dz022', 'dz023',
 ])
 
 /** Les cartes dont le SEUL scan est francais (aucun scan anglais n'existe : Beast de Proust, `bs*`) : en anglais on voile le scan francais et
