@@ -39,6 +39,8 @@ import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
 import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { VoletAideAuto } from './board/VoletAideAuto'
+import { VoletFeuillets } from './board/VoletFeuillets'
+import { feuilletsDeLaPartie } from './board/feuillets'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { carteDeLaTrame, contexteDePose, estCacheePourLeJoueur, origineDe } from './board/manuel/poser-en-jeu'
 import { peutBouger, proprietaireDe, siegesControles } from './board/manuel/proprietaire'
@@ -3898,6 +3900,9 @@ export function PagePartie({
   // Ses defilements (main, journal, piles...) : defilement-partage.ts.
   useEffect(() => (spectateur ? undefined : suivreDefilements(joueurActif)), [spectateur, joueurActif])
   useDefilementsDuJoueur(spectateur ? joueurActif : undefined)
+  const [feuilletsOuverts, setFeuilletsOuverts] = useState(false)
+  const ouvrirFeuillets = useCallback(() => setFeuilletsOuverts(true), [])
+  const fermerFeuillets = useCallback(() => setFeuilletsOuverts(false), [])
   const ouvrirAideAuto = useCallback(() => setAideAutoOuverte(true), [])
   const fermerAideAuto = useCallback(() => setAideAutoOuverte(false), [])
   const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
@@ -5953,6 +5958,12 @@ export function PagePartie({
           telephone={modePlateau === 'mobile'}
         />
       )}
+      <VoletFeuillets
+        feuillets={feuilletsDeLaPartie((etat.monde.players ?? []).map((joueur) => joueur.area_hero?.[0]?.pic_id))}
+        ouvert={feuilletsOuverts}
+        ouvrir={ouvrirFeuillets}
+        fermer={fermerFeuillets}
+      />
       {assembleeExportee ? (
         <VoletAssemblee
           assemblee={assembleeExportee}
