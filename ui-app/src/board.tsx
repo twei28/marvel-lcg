@@ -71,7 +71,7 @@ import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
 import { ciblesDeLaFeuille } from './board/mobile/cibles-feuille'
 import { cibleAEchanger } from './board/mobile/echange-cible'
-import { cartesPayantes } from './board/mobile/paiement-feuille'
+import { cartesPayantesParGroupe } from './board/mobile/paiement-feuille'
 import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
@@ -4616,8 +4616,9 @@ export function PagePartie({
   // anticipe, jamais apres (erreur React 310).
   const feuillePaiement = useMemo(() => {
     if (!plateau || modePlateau !== 'mobile' || interaction.assistant.etape !== 'payment') return undefined
-    const cartes = cartesPayantes(plateau, interaction.cartes, effets)
-    return cartes.length > 0 ? { cartes } : undefined
+    const { main, table } = cartesPayantesParGroupe(plateau, interaction.cartes, effets)
+    const cartes = [...main, ...table]
+    return cartes.length > 0 ? { cartes, nbMain: main.length } : undefined
   }, [modePlateau, interaction.assistant.etape, interaction.cartes, plateau, effets])
 
   if (!etat.monde || !plateau || voile) {

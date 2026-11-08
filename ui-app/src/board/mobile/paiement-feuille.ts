@@ -10,11 +10,11 @@ import { avecInteraction } from '../Board'
 import type { EtatInteractif } from '../interaction'
 import type { Plateau, UniteAffichee } from '../zones'
 
-export function cartesPayantes(
+export function cartesPayantesParGroupe(
   plateau: Plateau,
   interactifs: Map<number, EtatInteractif>,
   effets: Map<number, CardEffectDelta>
-): UniteAffichee[] {
+): { main: UniteAffichee[]; table: UniteAffichee[] } {
   const vues = new Set<string>()
   const main: UniteAffichee[] = []
   const table: UniteAffichee[] = []
@@ -22,13 +22,29 @@ export function cartesPayantes(
     const destination = emplacement.cle === 'main' ? main : table
     for (const groupe of emplacement.groupes) {
       for (const unite of groupe) {
-        if (vues.has(unite.carte.id)) continue
-        if (interactifs.get(Number(unite.carte.id))?.role !== 'ressource') continue
-        vues.add(unite.carte.id)
-        destination.push({ ...unite, carte: avecInteraction(unite.carte, interactifs, effets) })
+        // Une amelioration attachee (Amulette a Tete de Chat sur Tigra) vit dans `attachees`, pas comme carte principale.
+        const candidates: UniteAffichee[] = [
+          unite,
+          ...unite.attachees.map((attachee) => ({ cle: `attachee-${attachee.id}`, carte: attachee, attachees: [] })),
+        ]
+        for (const candidate of candidates) {
+          if (vues.has(candidate.carte.id)) continue
+          if (interactifs.get(Number(candidate.carte.id))?.role !== 'ressource') continue
+          vues.add(candidate.carte.id)
+          destination.push({ ...candidate, carte: avecInteraction(candidate.carte, interactifs, effets) })
+        }
       }
     }
   }
+  return { main, table }
+}
+
+export function cartesPayantes(
+  plateau: Plateau,
+  interactifs: Map<number, EtatInteractif>,
+  effets: Map<number, CardEffectDelta>
+): UniteAffichee[] {
+  const { main, table } = cartesPayantesParGroupe(plateau, interactifs, effets)
   return [...main, ...table]
 }
 

@@ -13,7 +13,7 @@ import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import type { UniteAffichee } from './zones'
 import { FeuilleCibles } from './mobile/FeuilleCibles'
-import { CarteMainPortrait } from './mobile/MainPortrait'
+import { RangeePaiement } from './mobile/RangeePaiement'
 import type { DecorRonds } from './mobile/ronds/Rond'
 import { resumePaiement } from './mobile/paiement-feuille'
 import './boutons-bd.css'
@@ -60,7 +60,7 @@ type AssistantActionProps = {
    * paiement devient la MEME feuille qu'on glisse, avec DEDANS les emplacements du cout et les cartes qui peuvent payer (main, puis
    * table) : un toucher paie, un second retire. Fourni par board.tsx sur telephone seulement, a l'etape du paiement.
    */
-  feuillePaiement?: { cartes: UniteAffichee[] }
+  feuillePaiement?: { cartes: UniteAffichee[]; nbMain?: number }
 }
 
 function nomCarte(id: number, cartesParId: Map<number, WorldCard>): string {
@@ -343,18 +343,7 @@ export function AssistantAction({
                 ))}
               </span>
             ) : null}
-            <div className="feuille-paiement-main">
-              {feuillePaiement.cartes.map((unite) => (
-                // Le type de la carte (« Événement », « Amélioration ») n'aide pas a payer : la pastille de type se tait, la carte gagne en hauteur.
-                <CarteMainPortrait
-                  key={unite.cle}
-                  unite={{ ...unite, carte: { ...unite.carte, masquerType: true } }}
-                  choisie={false}
-                  onOuvrir={() => undefined}
-                  paiement
-                />
-              ))}
-            </div>
+            <RangeePaiement cartes={feuillePaiement.cartes} nbMain={feuillePaiement.nbMain ?? feuillePaiement.cartes.length} />
           </>
         }
         prete={interaction.prete}

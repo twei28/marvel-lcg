@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import type { ScanCardProps } from '../../components/ScanCard'
 import type { EtatInteractif } from '../interaction'
 import type { Plateau, UniteAffichee } from '../zones'
-import { cartesPayantes, resumePaiement } from './paiement-feuille'
+import { cartesPayantes, cartesPayantesParGroupe, resumePaiement } from './paiement-feuille'
 
 const carte = (id: string, extra: Partial<ScanCardProps> = {}): ScanCardProps => ({ id, name: `Carte ${id}`, kind: 'event', imageUrl: `/scan/${id}.jpg`, ...extra })
 const unite = (id: string): UniteAffichee => ({ cle: `u${id}`, carte: carte(id), attachees: [] })
@@ -54,6 +54,23 @@ describe('cartesPayantes : les cartes que la feuille de paiement propose', () =>
     ])
     expect(cartesPayantes(p, interactifs, new Map())).toHaveLength(1)
     expect(cartesPayantes(plateau([{ cle: 'main', ids: ['1'] }]), new Map(), new Map())).toEqual([])
+  })
+})
+
+describe('cartesPayantesParGroupe : main d un cote, table de l autre', () => {
+  it('sépare la main de la table, et compte une amélioration ATTACHÉE (Amulette sur Tigra) côté table', () => {
+    const interactifs = new Map<number, EtatInteractif>([
+      [1, { role: 'ressource', choisie: false, agir: vi.fn() }],
+      [7, { role: 'ressource', choisie: false, agir: vi.fn() }],
+    ])
+    const p = plateau([
+      { cle: 'heros', ids: ['5'] },
+      { cle: 'main', ids: ['1'] },
+    ])
+    p.emplacements[0]!.groupes[0]![0]!.attachees = [carte('7')]
+    const { main, table } = cartesPayantesParGroupe(p, interactifs, new Map())
+    expect(main.map((u) => u.carte.id)).toEqual(['1'])
+    expect(table.map((u) => u.carte.id)).toEqual(['7'])
   })
 })
 

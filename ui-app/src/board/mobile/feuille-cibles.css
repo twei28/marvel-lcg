@@ -239,3 +239,37 @@
 .est-feuille-paiement .feuille-paiement-main > .main-portrait-carte:hover {
   z-index: auto;
 }
+
+.est-feuille-paiement .feuille-paiement-compte {
+  margin: 0;
+  padding: 0 16px 2px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.est-feuille-paiement .feuille-paiement-defilement {
+  position: relative;
+}
+.est-feuille-paiement .feuille-paiement-separateur {
+  flex: 0 0 2px;
+  align-self: stretch;
+  margin: 0 4px;
+  border-radius: 1px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.est-feuille-paiement .feuille-paiement-degrade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+}
+.est-feuille-paiement .feuille-paiement-degrade.est-gauche {
+  left: 0;
+  background: linear-gradient(to right, rgba(10, 14, 24, 0.9), transparent);
+}
+.est-feuille-paiement .feuille-paiement-degrade.est-droite {
+  right: 0;
+  background: linear-gradient(to left, rgba(10, 14, 24, 0.9), transparent);
+}
