@@ -275,10 +275,42 @@ describe('traduireQuestionImage', () => {
     expect(traduireQuestionImage('Quelque chose d’autre')).toBe('Quelque chose d’autre')
   })
 
+  // Muse (mu003, mu004, 08/11/2026) : « your identity » est un PRONOM, pas un
+  // nom propre comme « Spider-Man » — sans ce cas, la phrase melangeait les
+  // deux langues (« une image de your identity »).
+  it('traduit « your identity » (pas un nom propre) en « ton identité »', () => {
+    enFrancais()
+    expect(traduireQuestionImage('Muse: does "Backflip" have a picture of your identity on it?')).toBe(
+      'Muse : la carte « Backflip » montre-t-elle une image de ton identité ?'
+    )
+  })
+
   it('en anglais, rien n est traduit', () => {
     enAnglais()
     expect(traduireQuestionImage('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')).toBe(
       'J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?'
     )
+  })
+})
+
+// Muse (mu001 Art Imitates Death, mu006 Obsession, 08/11/2026) : un NOMBRE au
+// lieu d'un Oui/Non par carte.
+describe('traduireQuestionImage : les deux formes « combien »', () => {
+  it('Art Imitates Death : combien, parmi les cartes defaussees', () => {
+    enFrancais()
+    expect(
+      traduireQuestionImage(
+        'Art Imitates Death: of the 3 cards just discarded ("Enhanced Spider-Sense", "Backflip", "Black Cat"), how many have a picture of your identity on them?'
+      )
+    ).toBe(
+      'Art Imitates Death : parmi les 3 cartes qui viennent d’être défaussées ("Enhanced Spider-Sense", "Backflip", "Black Cat"), combien montrent une image de ton identité ?'
+    )
+  })
+
+  it('Obsession : combien, parmi les cartes en main', () => {
+    enFrancais()
+    expect(
+      traduireQuestionImage('Obsession: how many cards in your hand (2 card(s)) have a picture of your identity on them?')
+    ).toBe('Obsession : parmi les 2 cartes de ta main, combien montrent une image de ton identité ?')
   })
 })

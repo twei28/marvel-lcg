@@ -632,10 +632,37 @@ export function traduireTitreRepetition(texte: string): string {
  * sous les yeux l'est, et aucune carte fan-made n'a encore son NOM traduit
  * (seulement son texte, `textes-fr-fanmade.ts`).
  */
+/**
+ * « your identity », « their identity »… : des PRONOMS, pas des noms propres
+ * (contrairement à un nom de personnage comme « Spider-Man »), que le moteur
+ * écrit tels quels dans ces questions. Sans ce passage, la phrase mélangeait
+ * les deux langues (« combien montrent une image de your identity ? »).
+ */
+const QUI_FR: Record<string, string> = {
+  'your identity': 'ton identité',
+  'their identity': 'son identité',
+}
+const nomDeQui = (brut: string): string => QUI_FR[brut] ?? brut
+
 export function traduireQuestionImage(texte: string): string {
   if (langueActuelle() !== 'fr') return texte
   const image = /^(.+): does "(.+)" have a picture of (.+) on it\?$/.exec(texte)
-  if (image) return `${image[1]} : la carte « ${image[2]} » montre-t-elle une image de ${image[3]} ?`
+  if (image) return `${image[1]} : la carte « ${image[2]} » montre-t-elle une image de ${nomDeQui(image[3]!)} ?`
+  // Muse (mu001 Art Imitates Death, 08/11/2026) : un NOMBRE plutôt qu'un
+  // Oui/Non par carte, sur les cartes qu'on vient de défausser.
+  const combienDefaussees = /^(.+): of the (\d+) cards? just discarded \((.+)\), how many have a picture of (.+) on them\?$/.exec(
+    texte
+  )
+  if (combienDefaussees) {
+    return `${combienDefaussees[1]} : parmi les ${combienDefaussees[2]} cartes qui viennent d’être défaussées (${combienDefaussees[3]}), combien montrent une image de ${nomDeQui(combienDefaussees[4]!)} ?`
+  }
+  // Muse (mu006 Obsession, 08/11/2026) : un NOMBRE sur les cartes de la main.
+  const combienEnMain = /^(.+): how many cards in your hand \((\d+) card\(s\)\) have a picture of (.+) on them\?$/.exec(
+    texte
+  )
+  if (combienEnMain) {
+    return `${combienEnMain[1]} : parmi les ${combienEnMain[2]} cartes de ta main, combien montrent une image de ${nomDeQui(combienEnMain[3]!)} ?`
+  }
   return texte
 }
 
