@@ -127,6 +127,13 @@ describe('les jetons montrent l\'illustration anglaise (sans filigrane)', () => 
     expect(urlDuJeton('data:image/png;base64,AAA')).toBe('data:image/png;base64,AAA')
   })
 
+  it('garde le scan francais d\'une carte fan-made (sans filigrane), retire celui d\'une officielle', () => {
+    expect(urlDuJeton('/scan/fr_dz009.jpg')).toBe('/vignette/fr_dz009.jpg')
+    expect(urlDuJeton('/vignette/fr_bl001a')).toBe('/vignette/fr_bl001a')
+    expect(urlDuJeton('/scan/fr_dz018.jpg')).toBe('/vignette/dz018.jpg')
+    expect(urlDuJeton('/scan/dz018.jpg')).toBe('/vignette/dz018.jpg')
+  })
+
   it('le rond s\'habille de l\'anglais, ses ameliorations aussi', () => {
     const u = unite('x', 'ally', { imageUrl: '/scan/fr_01058.jpg' }, [carte('t', 'upgrade', { imageUrl: '/scan/fr_01008.jpg' })])
     const { container } = render(<Rond unite={u} zone="allies" decor={decor()} />)

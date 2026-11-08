@@ -91,6 +91,15 @@ export function aScanFr(picId: string): boolean {
   return CODES_SCAN_FR.has(picId) || SCANS_FR_MAISON.has(picId) || SCANS_FR_FANMADE.has(picId)
 }
 
+/** L'url d'un scan a montrer dans un petit JETON (rond, fantome de glisser). Les scans francais OFFICIELS portent un filigrane en losange
+    qui se voit dans un petit rond : on retire leur prefixe `fr_` pour montrer l'illustration anglaise. Les scans francais FAN-MADE
+    (SCANS_FR_FANMADE) n'ont pas de filigrane et sont le seul visage francais de la carte : on les garde (08/11/2026). */
+export function urlDeJeton(url: string): string {
+  return url.replace(/(\/(?:scan|vignette)\/)fr_([^/.?]+)/, (tout, voie: string, id: string) =>
+    SCANS_FR_FANMADE.has(id) ? tout : voie + id
+  )
+}
+
 /** Nom de fichier a demander au serveur pour cette carte. */
 export function picIdFr(picId: string): string {
   // Les dos génériques suivent le choix « Dos de cartes » (dos-cartes.ts).

@@ -11,6 +11,7 @@
 // Un toucher simple n'est pas touche : le clic qui suit un glisser est avale, jamais l'inverse.
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactElement } from 'react'
 import type { ReglagesGlisser } from '../../Board'
+import { urlDeJeton } from '../../scans-fr'
 import { BulleRefus } from '../../glisser/CoucheGlisser'
 import type { CibleSurvolee } from '../../glisser/useGlisser'
 
@@ -82,7 +83,7 @@ function fondDe(element: HTMLElement): { fond: string; cadrage?: { taille: strin
   // Une carte de la main : son illustration, cadree en haut comme un rond.
   const image = element.querySelector('img')
   // Le fantome est un jeton : l'illustration anglaise, sans filigrane (comme les ronds).
-  const sansFiligrane = image ? image.src.replace(/(\/(?:scan|vignette)\/)fr_/, '$1') : ''
+  const sansFiligrane = image ? urlDeJeton(image.src) : ''
   return { fond: image ? `url(${sansFiligrane})` : 'none', cadrage: { taille: '190% auto', position: '48% 24%' } }
 }
 

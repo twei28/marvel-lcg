@@ -12,6 +12,7 @@
 import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactElement } from 'react'
 import type { CardEffectDelta, ScanCardProps } from '../../../components/ScanCard'
 import { versVignette } from '../../../components/ScanCard'
+import { urlDeJeton } from '../../scans-fr'
 import { avecInteraction } from '../../Board'
 import type { EtatInteractif } from '../../interaction'
 import { t } from '../../langue'
@@ -36,12 +37,12 @@ export type DecorRonds = {
 }
 
 /**
- * Les JETONS (ronds) montrent l'illustration ANGLAISE : les scans francais portent un filigrane en losange qui se voit dans
+ * Les JETONS (ronds) montrent l'illustration ANGLAISE des cartes OFFICIELLES (scans FAN-MADE francais gardes, sans filigrane : voir `urlDeJeton`) : les scans francais portent un filigrane en losange qui se voit dans
  * un petit rond (demande du 24/10/2026). La feuille de la carte, elle, garde le scan francais. Le serveur rend toujours
  * quelque chose pour une vignette anglaise (repli sur la francaise quand il n'y en a pas).
  */
 export function urlDuJeton(url: string): string {
-  return versVignette(url.replace(/(\/(?:scan|vignette)\/)fr_/, '$1'))
+  return versVignette(urlDeJeton(url))
 }
 
 const ETIQUETTE_STAT: Record<string, string> = { ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', REC: 'REC', SCH: 'MNG' }
