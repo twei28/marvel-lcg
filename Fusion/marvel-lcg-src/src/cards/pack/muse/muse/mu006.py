@@ -13,6 +13,8 @@ from . import *
 #    + `PutIntoPlay(joueur, effect)`.
 #  - `sm016` Power Surge : le boost etoile variable, `this.GainBoostIcons(n,
 #    effect)` dans un `WhenCardBecomeBoost`.
+#  - `mu001` Art Imitates Death : meme arbitrage, meme forme de question (un
+#    nombre plutot que plusieurs Oui/Non).
 #
 # ⚠ « YOUR hand » SUR UNE CAPACITE BOOST = LE JOUEUR QUI DEFEND, et le moteur
 # le dit lui-meme (sender_card.py:688 : « Any constant or boost abilities that
@@ -33,8 +35,12 @@ from . import *
 #  ⚠ X peut valoir ZERO : une main sans aucune image de l'identite du defenseur
 #    n'ajoute rien, et la carte ne fait alors aucun boost. C'est bien ce que dit
 #    le texte.
-#  ⚠ « your identity's picture » : le RELEVE des illustrations tranche
-#    (`CartesAvecLImageDe`), pas la classe de la carte. Voir le `__init__.py`.
+#  ⚠ ARBITRAGE, decision utilisateur du 13/09/2026 puis du 08/11/2026 :
+#    « your identity's picture » ne se devine pas (meme probleme que `mu003`,
+#    voir son en-tete). Le RELEVE manuel (`PorteLImageDe`) n'a jamais ete
+#    rempli ; on demande au defenseur, qui REGARDE sa main et compte lui-meme,
+#    en UNE question (un nombre), pas une question Oui/Non par carte en main
+#    (decision utilisateur du 08/11/2026).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -70,8 +76,14 @@ def GetAbilities() -> Sequence['Ability']:
         joueur = message.GetToPlayer()
         if joueur is None:
             return
-        combien = len(CartesAvecLImageDe(
-            [c for c in joueur.hand_cards.Get() if c is not None], joueur))
+        main = [c for c in joueur.hand_cards.Get() if c is not None]
+        if not main:
+            return
+        combien = joueur.AskChooseOneText(
+            list(range(len(main) + 1)),
+            [str(i) for i in range(len(main) + 1)],
+            f"Obsession: how many cards in your hand ({len(main)} card(s)) have a picture of your identity on them?",
+        )
         if combien > 0:
             this.GainBoostIcons(combien, effect)
 

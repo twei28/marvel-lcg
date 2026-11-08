@@ -31375,40 +31375,46 @@ CAS = [
     # ------------------------------------------------------------------------
     # MUSE (Rainy, set 174, prefixe `mu`) : SET MODULAIRE, 6 cartes.
     #
-    # ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET (decision utilisateur, 13/09/2026) :
-    # « une carte avec l'image de votre identite dessus » = une CARTE SIGNATURE
-    # (`card_class="IdentitySpecific"`). C'est le vocabulaire de l'auteur
-    # lui-meme sur `mu005`. Quatre cartes sur six en dependent.
+    # ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET (decision utilisateur, 13/09/2026,
+    # REVU le 08/11/2026) : « une carte avec l'image de votre identite dessus »
+    # est du dessin, le moteur ne le lit pas. Le plan du 13/09 (releve manuel
+    # de 5746 illustrations) n'a jamais ete rempli ; remplace par la solution
+    # de `spider_man_rainy/sr009` J. Jonah Jameson : on demande au joueur, qui
+    # REGARDE et repond (`choisir_option` force sa reponse ici). Quatre cartes
+    # sur six en dependent (mu001, mu003, mu004, mu006) ; mu005 garde son
+    # arbitrage propre (« an identity-specific card » est ecrit dans son texte,
+    # pas une question d'image).
     #
-    # Le heros de service est Spider-Man : ses cartes signature sont 01002
-    # Black Cat, 01003 Backflip, 01004 Enhanced Spider-Sense, 01006 Aunt May,
-    # 01007 Spider-Tracer, 01008 Web-Shooter. Cartes NON signature de
-    # comparaison : 01086 First Aid et 01090 Strength (Basic).
+    # Le heros de service est Spider-Man : 01002 Black Cat, 01006 Aunt May,
+    # 01007 Spider-Tracer et 01090 Strength (Basic) servent juste a NOMMER des
+    # cartes distinctes dans la question posee ; `choisir_option` decide seul
+    # de la reponse.
     # ------------------------------------------------------------------------
     {
-        "nom": "mu001 Art Imitates Death — 1 degat par carte SIGNATURE defaussee du dessus du deck",
+        "nom": "mu001 Art Imitates Death — le joueur repond 3 : 3 degats",
         "pourquoi": ("« Discard the top 3 cards of each player's deck. For each card "
                      "discarded this way, deal 1 damage to each character whose picture "
-                     "was on that card. » ⚠ DEUX arbitrages utilisateur du 13/09/2026 : "
-                     "l'image de l'identite = la carte SIGNATURE, et c'est le HEROS DONT "
-                     "C'EST LE DECK qui encaisse, quoi que montre la carte. Trois "
-                     "signatures sur le dessus du deck, donc 3 degats"),
+                     "was on that card. » ⚠ ARBITRAGE : c'est le HEROS DONT C'EST LE DECK "
+                     "qui encaisse, quoi que montre la carte (decision utilisateur du "
+                     "13/09/2026). Le joueur regarde les 3 cartes defaussees et repond : "
+                     "3 montrent son identite, donc 3 degats"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
                           "Puzzle.CreatePlayerDeck('01002', '01003', '01004')"],
         "declencher": ["Puzzle.Reveal('mu001')"],
+        "choisir_option": "3",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 3},
     },
     {
-        "nom": "mu001 — TEMOIN : trois cartes NON signature, aucun degat",
-        "pourquoi": ("le contre-cas de l'arbitrage. Sans le filtre, la carte frapperait "
-                     "a 3 quel que soit le deck, et le choix « carte signature » ne "
-                     "voudrait plus rien dire. Trois cartes Basic : zero degat"),
+        "nom": "mu001 — TEMOIN : le joueur repond 0, aucun degat",
+        "pourquoi": ("le contre-cas : une reponse 0 ne doit infliger AUCUN degat. Sans ce "
+                     "temoin, un montant fige independant de la reponse passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
                           "Puzzle.CreatePlayerDeck('01086', '01090', '01088')"],
         "declencher": ["Puzzle.Reveal('mu001')"],
+        "choisir_option": "0",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0},
     },
@@ -31450,7 +31456,7 @@ CAS = [
         "attendu": {"degats_identite": 2},
     },
     {
-        "nom": "mu003 Muse — jouer une carte SIGNATURE le reveille, et il attaque",
+        "nom": "mu003 Muse — le joueur repond Yes : il se reveille et attaque",
         "pourquoi": ("« When a player plays a card that has their identity's picture on "
                      "it, Muse activates against that player. » Muse est engage avec le "
                      "joueur et incline le heros : son activation est donc une ATTAQUE a "
@@ -31465,25 +31471,25 @@ CAS = [
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["01007", "01090"],
         "declencher": [], "jouer": ["01007"],
+        "choisir_option": "Yes",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2, "en_jeu": ["01007"]},
     },
     {
-        "nom": "mu003 — TEMOIN : une carte NON signature ne le reveille pas",
-        "pourquoi": ("le contre-cas de l'arbitrage central. 01086 First Aid est une "
-                     "carte Basic : Muse dort, et le heros ne prend rien. Sans le "
-                     "filtre, TOUTE carte jouee declencherait une attaque et le set "
-                     "serait injouable"),
+        "nom": "mu003 — TEMOIN : le joueur repond No, il ne se reveille pas",
+        "pourquoi": ("le contre-cas : une reponse No ne doit declencher AUCUNE attaque. "
+                     "Sans ce temoin, Muse pourrait s'activer quelle que soit la reponse"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["05023", "01090"],
         "declencher": [], "jouer": ["05023"],
+        "choisir_option": "No",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0, "en_jeu": ["05023"]},
     },
     {
-        "nom": "mu004 Graffitied Streets — jouer une carte signature pose 1 menace sur la principale",
+        "nom": "mu004 Graffitied Streets — le joueur repond Yes : 1 menace sur la principale",
         "pourquoi": ("« When you play a card with your identity's picture on it, place 1 "
                      "threat on the main scheme. » La principale part de 0 : elle doit "
                      "porter 1. ⚠ `Uses (3[per_hero] graffiti)` est une BASE AUTOMATIQUE "
@@ -31499,8 +31505,24 @@ CAS = [
                           "Puzzle.SetThreat('01097b', 0)"],
         "main_exclusive": ["01006", "01090"],
         "declencher": [], "jouer": ["01006"],
+        "choisir_option": "Yes",
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 1]], "compteurs": [["mu004", "graffiti", 3]],
+                    "en_jeu": ["01006"]},
+    },
+    {
+        "nom": "mu004 — TEMOIN : le joueur repond No, aucune menace posee",
+        "pourquoi": ("le contre-cas : une reponse No ne doit poser AUCUNE menace. Sans "
+                     "ce temoin, la menace pourrait partir quelle que soit la reponse"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('mu004')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["01006", "01090"],
+        "declencher": [], "jouer": ["01006"],
+        "choisir_option": "No",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]], "compteurs": [["mu004", "graffiti", 3]],
                     "en_jeu": ["01006"]},
     },
     {
@@ -31554,35 +31576,35 @@ CAS = [
         "attendu": {"en_jeu": ["mu003"], "degats_identite": 2},
     },
     {
-        "nom": "mu006 — le boost ETOILE grossit d'une icone par carte signature EN MAIN",
+        "nom": "mu006 — le joueur repond 2 : le boost ETOILE gagne 2 icones",
         "pourquoi": ("« This card gets +X boost icons, where X is the number of cards in "
                      "your hand with your identity's picture. » ⚠ « YOUR hand » sur une "
                      "capacite Boost = LE JOUEUR QUI DEFEND (sender_card.py:688), pas le "
-                     "proprietaire de la carte. Deux signatures en main, Obsession n'a "
-                     "AUCUNE valeur de boost imprimee (boost etoile) : Rhino frappe a "
-                     "2 + 2 = 4. ⚠ LES DEUX CARTES EN MAIN SONT INERTES PENDANT UNE "
-                     "ATTAQUE (Aunt May, un soutien ; Spider-Tracer, une amelioration). "
-                     "Avec Backflip ou Enhanced Spider-Sense, le pilote les jouait pour "
-                     "PREVENIR l'attaque et le cas mesurait zero degat"),
+                     "proprietaire de la carte. Le defenseur regarde sa main (2 cartes) et "
+                     "repond 2 ; Obsession n'a AUCUNE valeur de boost imprimee (boost "
+                     "etoile) : Rhino frappe a 2 + 2 = 4"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01006", "01007"],
         "declencher": ["Puzzle.Attack('01094')"],
+        "choisir_option": "2",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 4},
     },
     {
-        "nom": "mu006 — TEMOIN : main sans carte signature, le boost n'ajoute rien",
-        "pourquoi": ("le contre-cas : X vaut ZERO et la carte ne boost pas. Rhino frappe "
-                     "a 2, sa valeur nue. Sans ce temoin, un X fige passerait inapercu"),
+        "nom": "mu006 — TEMOIN : le joueur repond 0, le boost n'ajoute rien",
+        "pourquoi": ("le contre-cas : une reponse 0 ne doit ajouter AUCUNE icone. Rhino "
+                     "frappe a 2, sa valeur nue. Sans ce temoin, un X fige independant de "
+                     "la reponse passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01086", "01090"],
         "declencher": ["Puzzle.Attack('01094')"],
+        "choisir_option": "0",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2},
     },

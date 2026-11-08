@@ -13,19 +13,27 @@ from . import *
 #    `"3*,graffiti"`. Le moteur pose les compteurs a l'entree en jeu ET
 #    DEFAUSSE LA CARTE quand le dernier part : c'est ainsi que l'environnement
 #    se retire, il n'y a rien a scripter pour cela.
-#  - `mu003` pour la meme fenetre « quand on joue une carte signature ».
+#  - `mu003` pour la meme fenetre « quand on joue une carte » et le meme
+#    arbitrage « poser la question au joueur ».
 #  - `an004` / `vp001a` pour `PlaceThreatOnSchemes("MainScheme", 1, effect)`.
 #
 # ⚠ Le compteur `graffiti` a ete DECLARE dans `CardFace.COUNTER` : sans lui,
 # `IsCounter` refuse le nom et la carte tombe des la creation de la partie
 # (lecon payee par `ih004`).
 #
+# ⚠ ARBITRAGE, decision utilisateur du 13/09/2026 puis du 08/11/2026 : « une
+# carte qui porte l'image de son identite » ne se devine pas (meme probleme
+# que `mu003`, voir son en-tete) ; on pose la question au joueur qui vient de
+# jouer, a CHAQUE carte jouee.
+#
 # TEXTE CONTRE CODE
 #  ⚠ « When YOU play » ici, contre « when A PLAYER plays » sur `mu003` : les
 #    deux cartes n'ont PAS la meme portee, et c'est imprime ainsi. Sur un
 #    environnement, « vous » designe chaque joueur pour lui-meme — la menace se
-#    pose donc a chaque carte signature, de qui que ce soit. `"AnyPlayer"` rend
-#    exactement cela.
+#    pose donc a chaque carte qui montre l'identite, de qui que ce soit. On
+#    pose donc la question a CHAQUE carte jouee par CHAQUE joueur, pas
+#    seulement au proprietaire de cette copie de l'environnement.
+#    `"AnyPlayer"` rend exactement cela.
 #  ⚠ « equal to that character's THW » : le CTR du personnage incline, pas le
 #    sien a lui. Un allie a 1 de CTR retire 1 compteur ; un heros a 3 en retire
 #    3. C'est la seule facon de vider la carte.
@@ -41,8 +49,16 @@ def GetAbilities() -> Sequence['Ability']:
 
     def taguer(effect: 'Effect', message: 'Message.WhenPlayerPlayCard') -> None:
         this = effect.this.CastTo(Environment)
-        Unused(message)
 
+        joueur = message.to_player
+        if joueur is None:
+            return
+        montre = joueur.AskChooseOneText(
+            [True, False], ["Yes", "No"],
+            f"Graffitied Streets: does \"{message.played_face.name}\" have a picture of your identity on it?",
+        )
+        if not montre:
+            return
         this.PlaceThreatOnSchemes("MainScheme", 1, effect)
 
     def effacer(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
@@ -62,10 +78,6 @@ def GetAbilities() -> Sequence['Ability']:
             "AnyPlayer",
             None,
             taguer,
-            conditions=[
-                lambda effect, message:
-                    PorteLImageDe(message.played_face, message.to_player)
-            ],
         ),
         AbilityFactory.WhenInYourPlayTurn(
             AbilityType.Action,
