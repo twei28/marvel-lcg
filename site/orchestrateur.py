@@ -1441,6 +1441,20 @@ CREATE TABLE IF NOT EXISTS parties_play (
     difficulte  TEXT
 );
 CREATE INDEX IF NOT EXISTS parties_play_jour ON parties_play(jour);
+-- Mode d'affichage de la phase du mechant choisi par les joueurs de play (compteur
+-- ANONYME : un nombre par jour et par valeur, rien d'autre). Table nouvelle : les
+-- donnees existantes ne sont pas touchees. `compteurs_depuis` garde le jour ou le
+-- comptage a commence (les parties d'avant ne sont pas comptees).
+CREATE TABLE IF NOT EXISTS phase_play (
+    jour    TEXT NOT NULL,
+    valeur  TEXT NOT NULL,
+    n       INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (jour, valeur)
+);
+CREATE TABLE IF NOT EXISTS compteurs_depuis (
+    nom   TEXT PRIMARY KEY,
+    jour  TEXT NOT NULL
+);
 -- LES DEMANDES DES CREATEURS (12/10/2026) : un createur (image, carte, contenu
 -- fan-made) qui n'a pas ete credite, ou qui veut que ses creations soient
 -- retirees, l'ecrit depuis le lien de l'accueil. Sans compte : `contact` est
@@ -2391,6 +2405,63 @@ def enregistrer_partie_play(brut: bytes) -> bool:
     return True
 
 
+COMPTEUR_PHASE_MAX_OCTETS = 256
+COMPTEUR_PHASE_MAX_PAR_JOUR = int(os.environ.get("COMPTEUR_PHASE_MAX_PAR_JOUR", "5000"))
+# Liste blanche : « guidee », « plateau_anime » et « accelere » sont les trois choix visibles du
+# reglage « Phase du mechant > Mode d'affichage » ; « etape » le mode cache (ancien choix gardé) ;
+# « telephone » = mode force par le telephone, a part pour ne pas gonfler « guidee ».
+_PHASE_VALEURS = ("guidee", "plateau_anime", "accelere", "etape", "telephone")
+_PHASE_LIBELLES = {"guidee": "Guidée", "plateau_anime": "Plateau animé", "accelere": "Accéléré",
+                   "etape": "Étape par étape (ancien choix)", "telephone": "Téléphone (Guidée d'office)"}
+
+
+def enregistrer_phase_play(brut: bytes) -> bool:
+    """Compte UN choix de mode de phase. Rend False si ignore (illisible, valeur
+    hors liste blanche, plafond du jour atteint). Ne stocke que (jour, valeur, n)."""
+    try:
+        donnees = json.loads(brut.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return False
+    valeur = donnees.get("phase") if isinstance(donnees, dict) else None
+    if valeur not in _PHASE_VALEURS:
+        return False
+    jour = time.strftime("%Y-%m-%d", time.gmtime())
+    with _cx() as cx:
+        deja = cx.execute("SELECT COALESCE(SUM(n), 0) FROM phase_play WHERE jour = ?", (jour,)).fetchone()[0]
+        if deja >= COMPTEUR_PHASE_MAX_PAR_JOUR:
+            return False
+        cx.execute("INSERT OR IGNORE INTO compteurs_depuis (nom, jour) VALUES ('phase_play', ?)", (jour,))
+        cx.execute("INSERT INTO phase_play (jour, valeur, n) VALUES (?, ?, 1)"
+                   " ON CONFLICT(jour, valeur) DO UPDATE SET n = n + 1", (jour, valeur))
+    return True
+
+
+def stats_phase_play() -> dict:
+    """Total par valeur depuis le debut du comptage, et ce jour de debut."""
+    with _cx() as cx:
+        par_valeur = {r["valeur"]: r["n"] for r in cx.execute(
+            "SELECT valeur, SUM(n) AS n FROM phase_play GROUP BY valeur")}
+        depuis = cx.execute("SELECT jour FROM compteurs_depuis WHERE nom = 'phase_play'").fetchone()
+    lignes = [(v, par_valeur[v]) for v in _PHASE_VALEURS if par_valeur.get(v)]
+    lignes.sort(key=lambda x: -x[1])
+    return {"lignes": lignes, "total": sum(n for _, n in lignes),
+            "depuis": depuis["jour"] if depuis else None}
+
+
+def bloc_phase_play() -> str:
+    st = stats_phase_play()
+    depuis = st["depuis"] or time.strftime("%Y-%m-%d", time.gmtime())
+    mention = ('<p class="sous">Compté depuis le %s (UTC), les parties passées ne sont pas comptées. '
+               'Une partie = un choix, relevé à l\'ouverture du plateau.</p>' % html.escape(depuis))
+    if not st["total"]:
+        return "<h3>Mode de la phase du méchant</h3>" + mention + '<p class="vide">Aucune donnée pour l\'instant.</p>'
+    corps = "".join(
+        '<tr><td data-label="Mode">%s</td><td data-label="Parties">%d</td><td data-label="Part">%d %%</td></tr>'
+        % (html.escape(_PHASE_LIBELLES[v]), n, round(100 * n / st["total"])) for v, n in st["lignes"])
+    return ("<h3>Mode de la phase du méchant</h3>" + mention
+            + "<table><tr><th>Mode</th><th>Parties</th><th>Part</th></tr>%s</table>" % corps)
+
+
 def stats_play(jours: int = 30, top: int = 10) -> dict:
     """Parties de play par jour (les `jours` derniers), et les plus joues."""
     depuis = time.strftime("%Y-%m-%d", time.gmtime(time.time() - (jours - 1) * 86400))
@@ -2460,7 +2531,11 @@ def presents_play(maintenant: float | None = None) -> int:
 
 
 def bloc_stats_play() -> str:
-    """Le sous-onglet « Play » de l'administration."""
+    """Le sous-onglet « Play » de l'administration : les parties, puis le mode de phase."""
+    return _bloc_parties_play() + bloc_phase_play()
+
+
+def _bloc_parties_play() -> str:
     st = stats_play()
     present = "<p class=\"sous\"><b>En ce moment sur play : %d</b></p>" % presents_play()
     if not st["total"]:
@@ -7942,6 +8017,16 @@ class Handler(BaseHTTPRequestHandler):
             enregistrer_partie_play(self.rfile.read(taille))
             # play. est isole (COEP require-corp, pour Safari, 12/10/2026) : sans
             # CORP, le navigateur refuse cette reponse venue du site principal.
+            self._repondre(204, b"", "text/plain; charset=utf-8",
+                           [("Cross-Origin-Resource-Policy", "same-site")])
+            return
+
+        if self.chemin == "/compteur_phase_play":
+            taille = self._taille_corps()
+            if taille > COMPTEUR_PHASE_MAX_OCTETS:
+                self._corps_refuse()
+                return
+            enregistrer_phase_play(self.rfile.read(taille))
             self._repondre(204, b"", "text/plain; charset=utf-8",
                            [("Cross-Origin-Resource-Policy", "same-site")])
             return
