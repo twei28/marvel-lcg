@@ -126,9 +126,9 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (100 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade et les 24 de Dazzler) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (120 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler et les 20 de Moon Knight) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(100)
+    expect(SCANS_FR_FANMADE.size).toBe(120)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -210,5 +210,20 @@ describe('SCANS_FR_FANMADE (Mystique de Merlin)', () => {
     expect(CODES_SANS_TEXTE_EN).toEqual([])
     expect(TEXTES_EN_SCAN_FR['my012']).toMatch(/ready Mystique/)
     expect(SCANS_FR_SEULS.has('my010')).toBe(false)
+  })
+})
+
+describe('SCANS_FR_FANMADE (Moon Knight de DesignHacker)', () => {
+  it('les 20 cartes du depot de l\'auteur ont un scan francais ; les cartes bonus sans scan gardent le voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    for (const id of [
+      'mk001a', 'mk001b', 'mk001c', 'mk001d', 'mk001e', 'mk002', 'mk003', 'mk004', 'mk005', 'mk006', 'mk007', 'mk008',
+      'mk009', 'mk010', 'mk011', 'mk012', 'mk013', 'mk014', 'mk015', 'mk016',
+    ])
+      expect(aScanFr(id)).toBe(true)
+    expect(aScanFr('mk017')).toBe(false)
+    expect(aScanFr('mk024')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('mk005')).toBe('fr_mk005')
   })
 })

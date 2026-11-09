@@ -68,6 +68,11 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   'dz001a', 'dz001b', 'dz002', 'dz003', 'dz004', 'dz005', 'dz006', 'dz007', 'dz008', 'dz009', 'dz010',
   'dz011', 'dz012', 'dz013', 'dz014', 'dz015', 'dz016', 'dz017a', 'dz017b', 'dz019', 'dz020', 'dz021',
   'dz022', 'dz023',
+  // Moon Knight de DesignHacker (09/11/2026) : `fr_mk*.jpg` depose a la main dans assets/pics-fr. Couvre les 5 faces d'identite,
+  // les 10 cartes du deck signature, l'obligation et le set nemesis (Bushman) : les 20 cartes du depot de l'auteur.
+  // Les cartes bonus mk017-mk024 n'ont pas de scan FR : elles gardent le voile.
+  'mk001a', 'mk001b', 'mk001c', 'mk001d', 'mk001e', 'mk002', 'mk003', 'mk004', 'mk005', 'mk006', 'mk007', 'mk008',
+  'mk009', 'mk010', 'mk011', 'mk012', 'mk013', 'mk014', 'mk015', 'mk016',
 ])
 
 /** Les cartes dont le SEUL scan est francais (aucun scan anglais n'existe : Beast de Proust, `bs*`) : en anglais on voile le scan francais et
