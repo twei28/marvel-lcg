@@ -92,6 +92,12 @@ export type UniteAffichee = {
   /** Titre de la pile regardable (« Discard pile »...). */
   pileTitre?: string
   /**
+   * Étiquette lisible POSÉE SUR LA TABLE, au pied de la carte (le titre de `pileTitre` n'apparaît qu'au clic). Une ligne
+   * par `\n`. Posée pour la Damnation (pack Mephisto) : une pile face cachée par joueur, sans quoi on ne la distingue
+   * pas d'un deck.
+   */
+  etiquette?: string
+  /**
    * Une pile faite de PLUSIEURS piles (« autres piles ») : à l'ouverture, les
    * cartes se lisent groupées par origine, un titre par groupe.
    */
@@ -1269,17 +1275,20 @@ export function construirePlateau(world: World, options: Options): Plateau {
       // lesquelles. Dans les annexes (zone commune) et non dans la zone du
       // joueur, pour que chaque camp voie le compteur des autres : la defaite
       // se joue sur le TOTAL, 10 cartes par joueur.
-      ...joueurs.map((joueur, index) =>
-        surLaTable(joueur)
-          ? pileFondue(
-              `damnation-${index}`,
-              multi ? `${t('Damnation')} — ${nomHero(joueur) ?? ''}` : t('Damnation'),
-              [{ cle: `damnation-${index}`, cartes: joueur.damnation, titre: t('Damnation') }],
-              rendu,
-              false
-            )
-          : []
-      ),
+      ...joueurs.map((joueur, index) => {
+        if (!surLaTable(joueur)) return []
+        const nom = nomHero(joueur)
+        const unites = pileFondue(
+          `damnation-${index}`,
+          multi ? `${t('Damnation')} — ${nom ?? ''}` : t('Damnation'),
+          [{ cle: `damnation-${index}`, cartes: joueur.damnation, titre: t('Damnation') }],
+          rendu,
+          false
+        )
+        // Étiquette sur la table : « Damnation », et le héros à plusieurs joueurs (chaque camp a SA pile).
+        for (const unite of unites) unite.etiquette = multi && nom ? `${t('Damnation')}\n${nom}` : t('Damnation')
+        return unites
+      }),
     ]),
 
 

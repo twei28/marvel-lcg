@@ -69,6 +69,13 @@ describe('Damnation (pack Mephisto)', () => {
     expect(pile.carte.imageUrl).not.toContain('9900')
   })
 
+  it('porte une étiquette lisible sur la table : « Damnation », et le héros à plusieurs joueurs', () => {
+    const [seule] = annexes(monde(joueur('Spider-Man', [carte(1, 'A')])))
+    expect(seule.etiquette).toBe('Damnation')
+    const deux = annexes(monde(joueur('Spider-Man', [carte(1, 'A')]), joueur('Hawkeye', [carte(4, 'D')])))
+    expect(deux.map((u) => u.etiquette)).toEqual(['Damnation\nSpider-Man', 'Damnation\nHawkeye'])
+  })
+
   it('ne dessine rien quand la Damnation est vide ou absente (hors Mephisto)', () => {
     expect(annexes(monde(joueur('Spider-Man', [])))).toEqual([])
     expect(annexes(monde(joueur('Spider-Man')))).toEqual([])

@@ -51,35 +51,26 @@ describe('piste des phases (mode manuel)', () => {
     expect(etapeSuivante({ round: 4, index: ETAPES_MANUEL.length - 1 })).toEqual({ round: 5, index: 0 })
   })
 
-  it('téléphone : la piste défile sur UNE ligne, round et « Étape suivante » restent en vue (CSS)', () => {
+  it('téléphone : rien n’est rendu (`?mobile` force le plateau téléphone)', () => {
+    window.history.pushState({}, '', '/?mobile')
+    try {
+      const { container } = render(<PisteDesPhases round={1} />)
+      expect(container.querySelector('.piste-phases')).toBeNull()
+      expect(screen.queryByText('Round 1')).toBeNull()
+    } finally {
+      window.history.pushState({}, '', '/')
+    }
+  })
+
+  it('témoin : sur bureau la piste est rendue', () => {
+    const { container } = render(<PisteDesPhases round={1} />)
+    expect(container.querySelector('.piste-phases')).not.toBeNull()
+    expect(screen.getByText('Round 1')).toBeTruthy()
+  })
+
+  it('le CSS ne garde plus aucune règle téléphone (pas de défilement, pas de pilule)', () => {
     const css = readFileSync(`${process.cwd()}/src/board/manuel/PisteDesPhases.css`, 'utf8')
-    const mobile = css.slice(css.indexOf('@media (max-width: 767px)'))
-    expect(mobile).toContain('flex-wrap: nowrap')
-    expect(mobile).toContain('overflow-x: auto')
-    expect(mobile).toMatch(/\.piste-phases-suivant[^}]*position: sticky/s)
-    expect(mobile).toMatch(/\.piste-phases-round,\s*\.piste-phases-suivant\s*\{[^}]*position: sticky/s)
-    // jamais de pilule, ni de bord arrondi hors des ~4 px du reste du site
-    expect(mobile).not.toMatch(/border-radius:\s*(9{3}|[5-9]\d|\d{3,})px/)
-  })
-
-  it('recentre l’étape courante quand la piste déborde (défilement du téléphone)', () => {
-    const { container } = render(<PisteDesPhases round={1} />)
-    const piste = container.querySelector('.piste-phases') as HTMLElement
-    Object.defineProperty(piste, 'scrollWidth', { configurable: true, value: 900 })
-    Object.defineProperty(piste, 'clientWidth', { configurable: true, value: 390 })
-    const cible = screen.getByRole('button', { name: '4. Carte de rencontre' })
-    Object.defineProperty(cible, 'offsetLeft', { configurable: true, value: 600 })
-    Object.defineProperty(cible, 'offsetWidth', { configurable: true, value: 100 })
-    fireEvent.click(cible)
-    expect(piste.scrollLeft).toBe(600 - (390 - 100) / 2)
-  })
-
-  it('bureau : sans débordement, la piste ne défile jamais', () => {
-    const { container } = render(<PisteDesPhases round={1} />)
-    const piste = container.querySelector('.piste-phases') as HTMLElement
-    Object.defineProperty(piste, 'scrollWidth', { configurable: true, value: 390 })
-    Object.defineProperty(piste, 'clientWidth', { configurable: true, value: 390 })
-    fireEvent.click(screen.getByRole('button', { name: '5. Révélation' }))
-    expect(piste.scrollLeft).toBe(0)
+    expect(css).not.toContain('@media (max-width: 767px)')
+    expect(css).not.toMatch(/border-radius:\s*(9{3}|[5-9]\d|\d{3,})px/)
   })
 })

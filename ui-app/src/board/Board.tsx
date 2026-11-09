@@ -422,6 +422,7 @@ export function Unite({
       ) : null}
 
       <ScanCard {...cartePorteur} />
+      {unite.etiquette ? <span className="plateau-pile-etiquette">{unite.etiquette}</span> : null}
       <PastillesTraits carte={unite.carte} posee />
       {compterEmpilees(upgrades) > 0 ? (
         // Des événements ou des ressources posés SOUS cette carte (State of Flow, cartes glissées) : une pile, pas des

@@ -7,8 +7,13 @@
 // round. On clique une étape pour s'y placer ; « Étape suivante » avance, et « Fin du round »
 // ouvre le round suivant. Le compteur de round est tenu ici et gardé en sessionStorage.
 // Rien n'est envoyé au moteur : ce n'est PAS le BandeauPhase du moteur.
-import { useEffect, useRef, useState } from 'react'
+//
+// TÉLÉPHONE : la piste n'est PAS rendue (décision du 09/11/2026 : sur 390 px elle recouvrait le plateau, même repliée
+// sur une ligne). Même critère que le plateau mobile (`useModeMobile`, seuil 767 px, ou `?mobile`) ; le bureau est
+// inchangé.
+import { useState } from 'react'
 import { t } from '../langue'
+import { useModeMobile } from '../mobile/useModeMobile'
 import './PisteDesPhases.css'
 import { ETAPES_MANUEL, etapeSuivante, etatInitial, type PisteEtat } from './phases-manuel'
 
@@ -36,16 +41,7 @@ function relire(round: number | undefined): PisteEtat {
 
 export function PisteDesPhases({ round }: { round?: number }) {
   const [etat, setEtat] = useState<PisteEtat>(() => relire(round))
-  const piste = useRef<HTMLDivElement>(null)
-
-  // Sur telephone la piste defile (voir le CSS) : l'etape courante est recentree pour ne jamais rester hors de vue.
-  // Sans debordement (bureau), scrollLeft ne bouge pas : aucun effet.
-  useEffect(() => {
-    const conteneur = piste.current
-    const courante = conteneur?.querySelector<HTMLElement>('.piste-phases-etape.est-courante')
-    if (!conteneur || !courante || conteneur.scrollWidth <= conteneur.clientWidth) return
-    conteneur.scrollLeft = courante.offsetLeft - (conteneur.clientWidth - courante.offsetWidth) / 2
-  }, [etat.index])
+  const { mode } = useModeMobile()
 
   function aller(suivant: PisteEtat) {
     setEtat(suivant)
@@ -71,11 +67,12 @@ export function PisteDesPhases({ round }: { round?: number }) {
       </button>
     )
   }
+  if (mode === 'mobile') return null
   const debutMechant = ETAPES_MANUEL.findIndex((e) => e.phase === 'mechant')
   const finMechant = ETAPES_MANUEL.length - 2
 
   return (
-    <div ref={piste} className="piste-phases" role="group" aria-label={t('Phases du round')}>
+    <div className="piste-phases" role="group" aria-label={t('Phases du round')}>
       <span className="piste-phases-round">{`${t('Round')} ${etat.round}`}</span>
       {bouton(0)}
       <span
