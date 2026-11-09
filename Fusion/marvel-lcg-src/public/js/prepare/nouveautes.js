@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-09",
+        genre: "jeu",
+        fr: "Un nouvel onglet « Feuillets » (à côté d'Aide et Journal) montre le feuillet de règles des héros en jeu : Dazzler pour commencer. Visible en français seulement.",
+        en: "A new \"Leaflets\" tab (next to Help and Journal) shows the rules leaflet of the heroes in play, starting with Dazzler. Shown in French only.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "correction",
+        fr: "Sur le plateau téléphone, les ronds des cartes fan-made (Blade, Dazzler...) montrent maintenant leur carte française au lieu de l'anglaise.",
+        en: "On the phone board, the round tokens of fan-made cards (Blade, Dazzler...) now show their French card instead of the English one.",
+    },
+    {
         date: "2026-11-08",
         genre: "heros",
         fr: "Blade et Dazzler ont maintenant leurs cartes officielles en français : plus de carte anglaise voilée quand le jeu est en français (sauf une quinzaine de cartes bonus de Dazzler, sans version française pour le moment).",
