@@ -11,7 +11,7 @@
    ce commentaire decrit une teinte abandonnee. Voir la memoire
    « style-site-bleu-pas-rouge » avant de changer cette couleur.
 
-   En bas a gauche (le journal occupe deja le bas a droite), sous les
+   A DROITE (depuis le 09/11/2026), avec les autres languettes (Aide, Feuillets, Journal), sous les
    fenetres modales (900), au-dessus du cartouche du mechant (540). */
 
 .volet-tchat {
@@ -20,7 +20,7 @@
   --tchat-bleu-vif: #6fa8ec;
   --tchat-encre: #0b0d13;
   position: fixed;
-  left: 0;
+  right: 0;
   bottom: 0;
   z-index: 620;
   width: var(--volet-largeur);
@@ -29,12 +29,12 @@
   flex-direction: column;
   background: linear-gradient(165deg, rgba(18, 20, 28, 0.98), rgba(12, 14, 20, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.14);
-  border-left: none;
+  border-right: none;
   border-bottom: none;
   border-top: 3px solid var(--tchat-bleu);
-  border-radius: 0 10px 0 0;
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
-  box-shadow: 12px 0 32px rgba(0, 0, 0, 0.6);
+  border-radius: 10px 0 0 0;
+  clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.6);
   color: #eef0f4;
   font-family: 'Segoe UI', system-ui, sans-serif;
   animation: volet-tchat-entre 180ms ease-out;
@@ -58,6 +58,7 @@
   bottom: auto;
   border-radius: 10px;
   border-left: 1px solid rgba(255, 255, 255, 0.14);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
   animation: none;
@@ -68,7 +69,7 @@
 
 @keyframes volet-tchat-entre {
   from {
-    transform: translateX(-100%);
+    transform: translateX(100%);
   }
   to {
     transform: none;
@@ -509,8 +510,8 @@
 
 .volet-tchat-languette {
   position: fixed;
-  left: 0;
-  bottom: 96px;
+  right: 0;
+  top: 336px;
   z-index: 615;
   padding: 12px 6px;
   font: inherit;
@@ -522,12 +523,13 @@
   color: #f2f3f6;
   background: linear-gradient(165deg, rgba(20, 26, 38, 0.95), rgba(14, 16, 22, 0.95));
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-left: none;
-  border-top: 2px solid var(--tchat-bleu, #3f86e0);
-  border-radius: 0 8px 8px 0;
+  border-right: none;
+  border-left: 2px solid var(--tchat-bleu, #3f86e0);
+  border-radius: 8px 0 0 8px;
   cursor: pointer;
   touch-action: none;
   writing-mode: vertical-rl;
+  transform: rotate(180deg);
 }
 
 .volet-tchat-languette:hover,
@@ -537,9 +539,10 @@
   outline: none;
 }
 
+/* Volet ouvert : la languette s'efface (09/11/2026, « pourquoi on voit l'onglet chat quand le chat est ouvert ? »). Elle faisait
+   doublon avec la croix du panneau et Echap. Les autres languettes (Aide, Feuillets, Journal) gardent, elles, leur poignee. */
 .volet-tchat-languette.est-ouvert {
-  left: min(400px, 92vw);
-  z-index: 625;
+  display: none;
 }
 
 .volet-tchat-pastille {
@@ -558,7 +561,11 @@
   align-items: center;
   justify-content: center;
   writing-mode: horizontal-tb;
-  transform: none;
+  /* La languette est retournee (lecture de bas en haut, comme les autres) : la pastille se remet a l'endroit et se pose
+     du cote du bord libre. */
+  top: auto;
+  bottom: -6px;
+  transform: rotate(180deg);
 }
 
 .volet-onglets .volet-tchat-pastille {

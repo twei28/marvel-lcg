@@ -179,6 +179,8 @@ html[data-tablette] .plateau-cadre .scan-card {
    Languettes AIDE / JOURNAL (decision 9) : a leur place, larges de 46 px. */
 html[data-tablette] .volet-aide-languette,
 html[data-tablette] .volet-journal-languette,
+html[data-tablette] .volet-feuillets-languette,
+html[data-tablette] .volet-tchat-languette,
 html[data-tablette] .volet-assemblee-languette,
 html[data-tablette] .volet-ville-languette {
   min-width: 46px;

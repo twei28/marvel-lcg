@@ -20,7 +20,7 @@
 .feuillet-zoom img { max-height: 96dvh; max-width: 96vw; background: #fff; }
 
 .volet-feuillets-languette {
-  position: fixed; right: 0; top: 215px; z-index: 606;
+  position: fixed; right: 0; top: 228px; z-index: 606;
   padding: 12px 5px; font: inherit; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #d9e1ea;
   background: rgba(30, 34, 44, 0.94); border: 1px solid rgba(255, 255, 255, 0.24); border-right: none; border-radius: 8px 0 0 8px; cursor: pointer;
   writing-mode: vertical-rl; transform: rotate(180deg);

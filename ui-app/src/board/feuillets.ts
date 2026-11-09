@@ -14,6 +14,7 @@ export interface Feuillet {
 
 export const FEUILLETS: readonly Feuillet[] = [
   { prefixe: 'dz', titre: 'Dazzler', charger: async () => (await import('./feuillets/dazzler.jpg')).default },
+  { prefixe: 'mk', titre: 'Moon Knight', charger: async () => (await import('./feuillets/moon-knight.jpg')).default },
 ]
 
 /** Les feuillets des heros presents dans la partie, sans doublon, dans l'ordre du registre. Vide en anglais. */
