@@ -19,6 +19,7 @@ import { useNomsZones } from './noms-zones'
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -936,6 +937,39 @@ export function CarteApercu({
     signature: `${carte.id}|${nbFaces}|${jumelles ? 'j' : ''}`,
   })
 
+  // CARTE A QUATRE FACES OU PLUS (Conan, Warriors Three) : l'apercu tient sur DEUX rangees et doit rentrer ENTIER dans la fenetre
+  // (demande du 09/11/2026 : la rangee du bas sortait de l'ecran). Sous chaque carte se lisent des blocs de hauteur libre
+  // (pastilles, PV, mots-cles, traduction) que la formule CSS en `vh` ne peut pas connaitre : on mesure, puis on borne la
+  // largeur des cartes. Seule la part qui suit la largeur (le cadre, rapport 176/127) est reduite, le reste (textes) est fixe.
+  // Le voile de traduction suit ce changement de taille (TraductionPosee observe sa carte).
+  const [largeurAjustee, setLargeurAjustee] = useState<{ id: ScanCardProps["id"]; largeur: number } | null>(null)
+  const largeurFit = largeurAjustee?.id === carte.id ? largeurAjustee.largeur : null
+  useLayoutEffect(() => {
+    const el = apercu.current
+    if (!el || nbFaces < 4) return
+    const RAPPORT = 176 / 127
+    const LARGEUR_MAX = 345
+    const ajuster = () => {
+      const carteDom = el.querySelector('.scan-card') as HTMLElement | null
+      if (!carteDom) return
+      const largeur = carteDom.getBoundingClientRect().width
+      if (!largeur) return
+      const dispo = window.innerHeight - 24
+      const fixe = el.offsetHeight - 2 * largeur * RAPPORT
+      const voulue = Math.round(Math.min(LARGEUR_MAX, Math.max(140, (dispo - fixe) / (2 * RAPPORT))))
+      if (Math.abs(voulue - largeur) < 2) return
+      setLargeurAjustee({ id: carte.id, largeur: voulue })
+    }
+    ajuster()
+    window.addEventListener('resize', ajuster)
+    const observateur = new ResizeObserver(ajuster)
+    observateur.observe(el)
+    return () => {
+      window.removeEventListener('resize', ajuster)
+      observateur.disconnect()
+    }
+  }, [carte.id, nbFaces, largeurFit])
+
   // Un bouton d'action touche referme l'apercu, APRES son propre clic. Ecoute du DOM et
   // non de React : les boutons y arrivent par un portail de la page, dont l'arbre React
   // ne passe pas par ici.
@@ -966,7 +1000,7 @@ export function CarteApercu({
     <div
       ref={apercu}
       className={`carte-apercu${jumelles ? ' a-jumelles' : nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}${tenu ? ' est-tenu' : ''}`}
-      style={tenu ? undefined : stylePlacement}
+      style={tenu ? undefined : largeurFit ? ({ ...stylePlacement, '--largeur-face': `${largeurFit}px`, '--largeur-face-paysage': `${(largeurFit * 506) / 345}px` } as CSSProperties) : stylePlacement}
       aria-hidden={tenu ? undefined : 'true'}
     >
       {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,

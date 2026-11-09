@@ -2805,12 +2805,18 @@
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
      qui appartiennent a la face visible, pas a celle-ci. */
-  .apercu-face-autre .top-strip,
   .apercu-face-autre .scan-stats-calee,
   .apercu-face-autre .scan-stat,
   .apercu-face-autre .scheme-threat-badge,
   .apercu-face-autre .ally-hp-badge {
     display: none;
+  }
+
+  /* ⚠ La bande de pastilles (« Premier joueur », « Actif ») est INVISIBLE sur l'autre face, pas retiree : elle tient 24px dans le
+     flux de la face en jeu, et un `display: none` ici decalait l'illustration de l'autre face de 24px vers le haut
+     (signale en jeu le 09/11/2026, heros / alter ego). `visibility` garde la meme hauteur, donc les deux cartes s'alignent. */
+  .apercu-face-autre .top-strip {
+    visibility: hidden;
   }
 
   .apercu-face-label {

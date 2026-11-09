@@ -259,6 +259,16 @@ export function TraductionPosee({
   const [zoneCadre, setZoneCadre] = useState<ZoneTexte | null>(null)
   const zone = zoneImage && !paysage ? (zoneCadre ?? zoneImage) : zoneImage
   const boite = useRef<HTMLDivElement | null>(null)
+  // La carte peut changer de TAILLE apres le montage (l'apercu d'un heros a 4 faces ou plus se borne a la fenetre) : sans cela,
+  // la zone et la police restaient calculees pour l'ancienne taille et l'anglais depassait du voile (09/11/2026).
+  const [largeurCadre, setLargeurCadre] = useState(0)
+  useLayoutEffect(() => {
+    const cadre = boite.current?.parentElement
+    if (!cadre || typeof ResizeObserver === 'undefined') return
+    const observateur = new ResizeObserver(() => setLargeurCadre(Math.round(cadre.clientWidth)))
+    observateur.observe(cadre)
+    return () => observateur.disconnect()
+  }, [zone])
   const contour = useRef<HTMLSpanElement | null>(null)
   const contourGauche = useRef<HTMLSpanElement | null>(null)
   // Les icônes imprimées sous le cache (Accélération, Crise...) : on les redessine.
@@ -321,7 +331,7 @@ export function TraductionPosee({
     poser()
     image.addEventListener('load', poser)
     return () => image.removeEventListener('load', poser)
-  }, [zoneImage, paysage, url])
+  }, [zoneImage, paysage, url, largeurCadre])
 
   // Le français est plus long que l'anglais : la police baisse jusqu'à ce que
   // le texte tienne, sans descendre sous un plancher lisible.
@@ -499,7 +509,7 @@ export function TraductionPosee({
     return () => {
       vivant = false
     }
-  }, [zone, texte, fond, icones])
+  }, [zone, texte, fond, icones, largeurCadre])
 
   if (!zone) return null
   const forme = formeDuCache(zone)
