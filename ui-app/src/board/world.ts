@@ -81,6 +81,13 @@ export type WorldPlayer = {
    */
   rising_tide?: WorldCard[]
   /**
+   * Damnation du pack Mephisto : une pile hors jeu PAR JOUEUR, toujours face
+   * cachée (les cartes y sont mises de côté depuis son deck). Absente des
+   * sauvegardes d'avant le pack, et vide hors scénario Mephisto : toujours la
+   * lire avec `?? []`.
+   */
+  damnation?: WorldCard[]
+  /**
    * Les cartes de CE joueur en cours de résolution : un événement joué, une
    * traîtrise qu'il subit, le temps que son texte s'applique.
    *

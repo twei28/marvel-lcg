@@ -94,6 +94,14 @@ class DeckTypeFlags:
         is_out_of_play = True
         is_face_up = True
 
+    # AJOUT (pack mephisto) : la Damnation, zone hors jeu propre a chaque joueur
+    # (cartes de SON deck mises de cote par le scenario Mephisto, face cachee).
+    # Ni `is_set_aside` (les recherches « set aside » ne la voient pas : seules
+    # des cartes de la rencontre y touchent), ni `is_like_in_hand`, ni
+    # `is_face_up` (les cartes y sont face cachee, comme le dit l'encart).
+    class DamnationArea(Base):
+        is_out_of_play = True
+
     class EngagedEnemiesArea(Base):
         is_in_play = True
         is_engaged = True
@@ -234,6 +242,7 @@ class DeckType(Enum):
     ResourcesArea           = 18
     ReserveArea             = 19 # CORRECTIF (pack brawn)
     RisingTideArea          = 24 # AJOUT (pack wave)
+    DamnationArea           = 25 # AJOUT (pack mephisto)
 
     AdditionalDeck          = 20
     AdditionalDiscardPile   = 21
@@ -274,6 +283,7 @@ class DeckType(Enum):
                 DeckType.ResourcesArea:             DeckTypeFlags.ResourcesArea,
                 DeckType.ReserveArea:               DeckTypeFlags.ReserveArea, # CORRECTIF (pack brawn)
                 DeckType.RisingTideArea:             DeckTypeFlags.RisingTideArea, # AJOUT (pack wave)
+                DeckType.DamnationArea:             DeckTypeFlags.DamnationArea, # AJOUT (pack mephisto)
                 DeckType.AdditionalDeck:            DeckTypeFlags.AdditionalDeck,
                 DeckType.AdditionalDiscardPile:     DeckTypeFlags.AdditionalDiscardPile,
                 DeckType.AsideDeck:                 DeckTypeFlags.AsideDeck,

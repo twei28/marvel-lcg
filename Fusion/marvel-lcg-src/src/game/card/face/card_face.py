@@ -246,6 +246,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "XENOMORPH", "YAUTJA",
         # AJOUT (25/10/2026) : trait du scenario custom The Vault (Kajislav) : Corrupted Guardsman est « TRAITOR. ».
         "TRAITOR",
+        # AJOUT (09/11/2026) : trait du scenario custom Mephisto (Neptune) : les attachements « BARGAIN. », que le joueur
+        # accepte ou refuse a la revelation. Les regles du scenario les comptent partout (« each BARGAIN attachment »).
+        "BARGAIN",
         # AJOUT (25/10/2026) : face « vaincue » des deux mechants d'Alien vs Predator (RyCoRan) : « DEFEATED. XENOMORPH. ».
         "DEFEATED",
         # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
@@ -603,6 +606,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'bouncer', 'culture', 'curse', 'rent', 'stock', 'takeout', 'dojo', 'hustle', 'quell',
         # AJOUT (22/10/2026) : pack Shadowland (MC65) : « corruption counter » (Creeping Corruption) et « passage counter » (Shadow Labyrinth).
         'corruption', 'passage',
+        # AJOUT (09/11/2026) : scenario custom Mephisto (Neptune) : « corrupt counter » (modulaire Corruptive Offers, sur les
+        # attachements BARGAIN) et « scorned counter » (side scheme Culling the Damned). Sans ces entrees `IsCounter` refuse le nom.
+        'corrupt', 'scorned',
+        # AJOUT (09/11/2026) : modulaire Damned (Neptune) : « damned counter » (Demon Amalgam).
+        'damned',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)

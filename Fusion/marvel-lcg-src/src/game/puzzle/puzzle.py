@@ -1483,6 +1483,7 @@ class RunPuzzle:
         'ResourcesArea':        lambda j: j.area_resources,
         'ReserveArea':          lambda j: j.reserve,
         'RisingTideArea':       lambda j: j.rising_tide, # AJOUT (pack wave)
+        'DamnationArea':        lambda j: j.damnation, # AJOUT (pack mephisto)
         # Correctif ronde 1 (18/09/2026) : `j.set_aside_deck` est un faux ami
         # herite du moteur de base (`player.py:100`), il vaut en realite
         # `additional_discard_pile` (`DeckType.AdditionalDiscardPile`), pas

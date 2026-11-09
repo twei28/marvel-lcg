@@ -95,6 +95,7 @@ class ToDescriptor:
         player_descriptor.hand_cards                = deck_to_descriptors(player.hand_cards)
         player_descriptor.reserve                   = deck_to_descriptors(player.reserve) # CORRECTIF (pack brawn)
         player_descriptor.rising_tide                = deck_to_descriptors(player.rising_tide) # AJOUT (pack wave)
+        player_descriptor.damnation                  = deck_to_descriptors(player.damnation) # AJOUT (pack mephisto)
         player_descriptor.engaged_enemies           = deck_to_descriptors(player.engaged_minions)
         player_descriptor.set_aside_nemesis_sets    = deck_to_descriptors(player.set_aside_nemesis_sets)
         player_descriptor.additional_deck           = deck_to_descriptors(player.additional_deck)

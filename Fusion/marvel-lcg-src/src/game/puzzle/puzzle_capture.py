@@ -141,7 +141,7 @@ def CapturePuzzle(world: Any) -> Dict[str, Any]:
 
     # ---- zones et etats que la capture ne sait pas rendre : dits, jamais tus
     for siege, joueur in enumerate(sieges):
-        for nom, zone in (("reserve", joueur.reserve), ("rising tide", joueur.rising_tide),
+        for nom, zone in (("reserve", joueur.reserve), ("rising tide", joueur.rising_tide), ("damnation", joueur.damnation),
                           ("cartes de rencontre distribuees", joueur.dealt_encounter_cards),
                           ("deck annexe", joueur.additional_deck)):
             if zone.GetSize() > 0:

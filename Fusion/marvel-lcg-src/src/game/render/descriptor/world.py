@@ -166,6 +166,7 @@ class WorldDescriptor:
         hand_cards: List[CardDescriptor] = field(default_factory=lambda: [])
         reserve: List[CardDescriptor] = field(default_factory=lambda: []) # CORRECTIF (pack brawn)
         rising_tide: List[CardDescriptor] = field(default_factory=lambda: []) # AJOUT (pack wave)
+        damnation: List[CardDescriptor] = field(default_factory=lambda: []) # AJOUT (pack mephisto)
         engaged_enemies: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_nemesis_sets: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_deck: List[CardDescriptor] = field(default_factory=lambda: [])
