@@ -970,6 +970,13 @@
    "cartes": 25,
    "depuis": "2026-11-04",
    "note": "Cree le 04/11/2026 depuis le zip « 3-D Man » (R. Tim Morris ; scans EN seuls). dm001a/b identite (3-D Man / Delroy Garrett Jr., restriction de deck-construction imprimee : cartes a 3 ressources seulement hors resources, jusqu'a 3 aspects d'evenements), dm002-dm010 set heros (9 textes distincts sur 15 cartes : Tri-Force Vision x3, Triple the Beatdown x2, Triple the Heroics x2, Triple the Effectiveness, 3-D Men Combined, 3-D Man's Suit x3, True Sight, The Triune Understanding, Tri-Power resource RES=RBY), dm011 obligation Arrival of the Triple-Evil!, dm012-dm015 set nemesis Skrull (Secret Initiative side scheme, Magnitude, Skrull Invaders, Skrull Infiltrator), dm016-dm021 cartes d'aspect custom fournies par l'auteur pour satisfaire la restriction de deck (She-Hulk et Number Cruncher reecrits a 3 couts, Getting it Done/Brick Session/Prevent Disaster/Team Coordination), dm022-dm024 reskins Energy/Genius/Strength. Decklist complete fournie par l'auteur (starter deck.png) : player_deck NON vide, cf. Etape 3 PROCESSUS-HEROS."
+  },
+  "mp": {
+   "pack": "mephisto",
+   "libelle": "254. Custom (Mephisto)",
+   "cartes": 70,
+   "depuis": "2026-11-09",
+   "note": "Cree le 09/11/2026 depuis le zip de Neptune (scenario Mephisto, EN). mp001-mp003 les trois stades du vilain, mp004a/b-mp006a/b les 3 complots, mp007a/b environnement Gateway to Corruption -> Hell, mp008 Hell Lord, mp009-mp015 les 7 attachements BARGAIN, mp016-mp028 side schemes et traitrises ; mp101-105 Blackheart, mp111-116 Corruptive Offers, mp121-132 Damned, mp141-145 Mother of Demons, mp151-157 Mephisto Standard, mp161-163 Mephisto Expert. Zone maison Damnation (DeckType 25). Voir A creer/import-mephisto/PLAN-DAMNATION.md."
   }
  }
 }

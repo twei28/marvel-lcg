@@ -1598,9 +1598,7 @@
   "encounters": [
    "muse"
   ],
-  "max_id": "mu006",
-  "indisponible": true,
-  "indisponible_note": "Set modulaire mis de cote le 13/09/2026, a la demande de l'utilisateur : il ne doit pas partir en production. Les fichiers restent en place (cartes, scripts, cas de test) pour que le harnais continue de tourner ; seul l'ecran de preparation cesse de le proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "mu006"
  },
  "175. Custom (Wave)": {
   "name": "wave",
@@ -2456,5 +2454,22 @@
   "encounters": [],
   "max_id": "pc003"
  },
- "checksum": "7be2552dba7e7f90cf4583121cfbf38c21b3d6fbfee1e71d57d98967297ff63b"
+ "254. Custom (Mephisto)": {
+  "name": "mephisto",
+  "scenarios": [
+   "mephisto"
+  ],
+  "heroes": [],
+  "encounters": [
+   "mp_mephisto",
+   "mp_blackheart",
+   "mp_corruptive_offers",
+   "mp_damned",
+   "mp_mother_of_demons",
+   "mp_standard",
+   "mp_expert"
+  ],
+  "max_id": "mp163"
+ },
+ "checksum": "9211c77e74a889034e42aaed2f40000a27dc20c03cb4bd3aa5b124da262b4d08"
 }

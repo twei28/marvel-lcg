@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Mother of Demons",
+  "encounters": [
+    "mp141",
+    "mp142",
+    "mp143",
+    "mp144",
+    "mp145"
+  ]
+}

@@ -381,3 +381,10 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - [x] duplicate.md (trait maison, ajoute le 04/11/2026, Multiple Man mm)
 - [x] dupe.md (nom d'allie maison, Multiple Man mm)
 - [x] x-factor.md (trait officiel, Multiple Man mm)
+
+## Ajoutés le 09/11/2026 (pack Mephisto, en cours)
+
+- [x] bargain.md (trait maison)
+- [x] hidden-clause.md (capacité maison)
+- [x] damnation.md (zone maison)
+- [x] compteurs-corrupt-scorned.md (compteurs maison)
