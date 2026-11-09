@@ -21,6 +21,7 @@ import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
 import { PastillesTraits } from '../PastillesTraits'
+import { typeDeBoite, useSurcoucheTraduction } from '../traduction-carte'
 import { useAppuiLong } from './useAppuiLong'
 import { FeuilleDetail } from './ronds/FeuilleDetail'
 import './portrait.css'
@@ -30,6 +31,24 @@ export const SEUIL_GLISSER_CARTE = 50
 
 /** Au-dela, le doigt glisse : ce n'est plus un maintien. */
 const SEUIL_MOUVEMENT = 10
+
+/**
+ * Un ScanCard qui porte, posés dessus, le voile (traduction ou ERRATA officiel) et la pastille « Errata » : les mêmes que sur
+ * ordinateur (traduction-carte.tsx). `code` : la carte dont c'est la face (celle de CETTE face, pas de la carte ouverte).
+ * Sans lui, le téléphone affichait le scan imprimé nu : aucun errata (retour d'un joueur, 09/11/2026).
+ */
+function ScanCardAvecVoile({ code, type, artAlternatif, ...props }: ScanCardProps & { code?: string; type?: string }) {
+  const surcouche = useSurcoucheTraduction({
+    codeCarte: code,
+    artAlternatif,
+    imageUrl: props.imageUrl,
+    traits: props.traits,
+    paysage: props.isLandscape,
+    type: type ?? (props.kind === 'main-scheme' ? 'MainScheme' : props.kind === 'side-scheme' ? 'SideScheme' : undefined),
+    facedown: props.facedown,
+  })
+  return <ScanCard {...props} artAlternatif={artAlternatif} surcouche={props.surcouche ?? surcouche} />
+}
 
 export function CarteOuverte({
   carte,
@@ -139,8 +158,11 @@ export function CarteOuverte({
           {/* Le scan COMPLET, pas la vignette de la table : agrandie a
               320 px sur un ecran 3x, la vignette etait floue (zone 3). */}
           {faceMontree ? (
-            <ScanCard
+            <ScanCardAvecVoile
               {...carte}
+              code={faceMontree.code}
+              artAlternatif={faceMontree.artAlternatif}
+              type={typeDeBoite(faceMontree.type)}
               imageUrl={faceMontree.url}
               isLandscape={faceMontree.isLandscape ?? carte.isLandscape}
               stats={undefined}
@@ -152,8 +174,9 @@ export function CarteOuverte({
               taille="grande"
             />
           ) : (
-            <ScanCard
+            <ScanCardAvecVoile
               {...carte}
+              code={carte.codeCarte}
               onSelect={undefined}
               taille="grande"
               {...(detail ? { jetonMenace: undefined, jetonDegats: undefined, counters: undefined } : {})}
@@ -164,9 +187,12 @@ export function CarteOuverte({
           {/* Q72 : l'autre face a COTE de la premiere, comme sur le PC (un peu plus petites). */}
           {detail && !faceMontree && !enFocus
             ? autresFaces.map((autre) => (
-                <ScanCard
+                <ScanCardAvecVoile
                   key={autre.url}
                   {...carte}
+                  code={autre.code}
+                  artAlternatif={autre.artAlternatif}
+                  type={typeDeBoite(autre.type)}
                   imageUrl={autre.url}
                   isLandscape={autre.isLandscape ?? carte.isLandscape}
                   stats={undefined}

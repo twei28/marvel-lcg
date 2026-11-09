@@ -37,6 +37,7 @@ import { CartesDuJournal, type AccesCartesJournal } from './board/NomsDeCartes'
 import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
+import { PisteDesPhases } from './board/manuel/PisteDesPhases'
 import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { VoletAideAuto } from './board/VoletAideAuto'
 import { VoletFeuillets } from './board/VoletFeuillets'
@@ -280,6 +281,8 @@ import {
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
+import { signalerModePhase, valeurCompteurPhase } from './board/compteur-phase'
+import { estTelephoneMaintenant } from './board/mobile/useModeMobile'
 import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
@@ -2664,6 +2667,12 @@ export function PagePartie({
   // publie avec son etape (etape-partagee.ts) ; son propre reglage ne change pas.
   const modeDuJoueurSuivi = useSuiviDuJoueur(spectateur).mode
   const modePhase = spectateur && modeDuJoueurSuivi ? modeDuJoueurSuivi : modePhaseChoisi
+  // COMPTEUR ANONYME du mode de phase (Play seulement) : une fois par partie, a l'ouverture du plateau, jamais bloquant.
+  useEffect(() => {
+    if (spectateur) return
+    signalerModePhase(valeurCompteurPhase(lireModePhaseMechant(), lirePresentationPhase(), estTelephoneMaintenant()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
@@ -5947,6 +5956,7 @@ export function PagePartie({
       />
       {manuel ? (
         <>
+          <PisteDesPhases round={etat.monde?.round_id} />
           <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
           <CoucheMarques marques={marquesManuel} />
           <CoucheSelection />

@@ -73,6 +73,7 @@ import {
 import { RoueTeinte } from './RoueTeinte'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
+import { ecrireVolumeMusique, lireVolumeMusique } from './musique'
 import { ecrireVolumeSons, jouerSon, lireVolumeSons } from './sons'
 import './reglages.css'
 import type { DosCartes } from './dos-cartes'
@@ -275,6 +276,36 @@ function LigneVolumeSons({ disponible }: { disponible: boolean }) {
         }}
         onPointerUp={() => jouerSon('activate')}
         onKeyUp={() => jouerSon('activate')}
+      />
+    </div>
+  )
+}
+
+/** Le volume de la musique de fond, sur le modèle du volume des bruitages. Grisé quand la musique est décochée. */
+function LigneVolumeMusique({ disponible }: { disponible: boolean }) {
+  const [volume, setVolume] = useState(lireVolumeMusique)
+  const libelle = t('Volume de la musique')
+  return (
+    <div className={'ligne-option ligne-option-choix' + (disponible ? '' : ' est-desactive')}>
+      <span className="ligne-option-libelle">
+        {libelle}
+        <small className="ligne-option-aide">{`${volume} %`}</small>
+      </span>
+      <input
+        type="range"
+        className="ligne-option-curseur"
+        min={0}
+        max={100}
+        step={5}
+        value={volume}
+        disabled={!disponible}
+        aria-label={libelle}
+        aria-valuetext={`${volume} %`}
+        onChange={(evenement) => {
+          const valeur = Number(evenement.target.value)
+          setVolume(valeur)
+          ecrireVolumeMusique(valeur)
+        }}
       />
     </div>
   )
@@ -835,6 +866,7 @@ export function ContenuOnglet({
           actif={p.musique}
           onBascule={p.basculerMusique}
         />
+        <LigneVolumeMusique disponible={p.musique} />
       </>
     )
   }

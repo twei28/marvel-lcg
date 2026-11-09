@@ -1,0 +1,125 @@
+/* La piste des phases du mode manuel (PisteDesPhases.tsx). Bleu du site, coins ~4px, jamais de pilule.
+   Sous la barre du haut (~52px) et sous les volets (z-index 610). */
+.piste-phases {
+  position: fixed;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 560;
+  width: max-content;
+  max-width: 98vw;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: rgba(18, 21, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #e8eef6;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+.piste-phases-round {
+  padding: 0 8px;
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.piste-phases-mechant {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 3px 1px 7px;
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 4px;
+}
+.piste-phases-mechant.est-courante {
+  border-color: #3f86e0;
+}
+.piste-phases-titre {
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  white-space: nowrap;
+}
+.piste-phases-etape,
+.piste-phases-suivant {
+  min-height: 22px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #e8edf3;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.piste-phases-etape:hover,
+.piste-phases-suivant:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.piste-phases-etape.est-courante {
+  color: #fff;
+  background: #3f86e0;
+  border-color: #3f86e0;
+}
+.piste-phases-suivant {
+  margin-left: 4px;
+  border-color: #3f86e0;
+}
+
+/* TELEPHONE (< 768 px, meme seuil que REQUETE_MOBILE de mobile/useModeMobile.ts ; retour testeur du 09/11/2026).
+   Sur 390 px la piste, centree et repliee sur 3 lignes, faisait 84 px de haut, debordait de l'ecran des deux cotes
+   (« Menace » coupe en « ace ») et recouvrait le vilain. Ici : UNE ligne pleine largeur qui defile a l'horizontale,
+   le round a gauche et « Etape suivante » a droite restent toujours visibles (sticky), l'etape courante est
+   recentree par PisteDesPhases.tsx. Le bureau n'est pas touche. */
+@media (max-width: 767px) {
+  .piste-phases {
+    left: 0;
+    right: 0;
+    transform: none;
+    width: auto;
+    max-width: none;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    gap: 4px;
+    padding: 3px 0;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .piste-phases::-webkit-scrollbar {
+    display: none;
+  }
+  .piste-phases > * {
+    flex: 0 0 auto;
+  }
+  .piste-phases-round,
+  .piste-phases-suivant {
+    position: sticky;
+    z-index: 1;
+    background: rgba(18, 21, 30, 0.97);
+  }
+  .piste-phases-round {
+    left: 0;
+    padding: 0 6px 0 8px;
+  }
+  .piste-phases-suivant {
+    right: 0;
+    margin-left: 0;
+    min-height: 26px;
+    box-shadow: -6px 0 6px rgba(18, 21, 30, 0.97);
+  }
+  .piste-phases-etape {
+    min-height: 26px;
+  }
+}

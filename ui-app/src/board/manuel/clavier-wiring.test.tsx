@@ -491,6 +491,20 @@ describe('les gestes OCTGN parlent au moteur', () => {
     envoye('Puzzle.Damage(7, 1)')
   })
 
+  it('fleche haut / bas sur un ALLIE : haut soigne (Heal), bas blesse (Damage) ; le chiffre blesse', async () => {
+    render(<Harness world={mondeManuel()} capture={{}} />)
+    survoler(5)
+    fireEvent.keyDown(document, { key: 'ArrowUp' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Heal(5, 1)')
+    fireEvent.keyDown(document, { key: 'ArrowDown' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Damage(5, 1)')
+    fireEvent.keyDown(document, { key: '2' })
+    await act(async () => { await Promise.resolve() })
+    envoye('Puzzle.Damage(5, 2)')
+  })
+
   it('fleche droite / gauche : un jeton generique ; haut sur une manigance : de la menace', async () => {
     render(<Harness world={mondeManuel()} capture={{}} />)
     survoler(7)

@@ -485,6 +485,23 @@ describe('le volume des bruitages (refonte des sons, 07/10/2026)', () => {
   })
 })
 
+describe('le volume de la musique (retour testeur, 09/11/2026)', () => {
+  it('curseur sous « Musique de fond », à 25 % par défaut, enregistré quand on le bouge', () => {
+    window.localStorage.removeItem('marvel-board-volume-musique')
+    render(<ContenuOnglet onglet="son" p={proprietes({ musique: true })} />)
+    const curseur = screen.getByRole('slider', { name: /volume de la musique/i }) as HTMLInputElement
+    expect(curseur.value).toBe('25')
+    expect(curseur.disabled).toBe(false)
+    fireEvent.change(curseur, { target: { value: '70' } })
+    expect(window.localStorage.getItem('marvel-board-volume-musique')).toBe('70')
+  })
+
+  it('musique décochée : le curseur reste VISIBLE mais grisé', () => {
+    render(<ContenuOnglet onglet="son" p={proprietes({ musique: false })} />)
+    expect((screen.getByRole('slider', { name: /volume de la musique/i }) as HTMLInputElement).disabled).toBe(true)
+  })
+})
+
 describe('FenetreReglages en lecture seule (relecture et spectateur)', () => {
   it('dit que ce sont les reglages du joueur et grise le contenu', () => {
     render(<FenetreReglages ouvert fermer={vi.fn()} lectureSeule {...proprietes()} />)

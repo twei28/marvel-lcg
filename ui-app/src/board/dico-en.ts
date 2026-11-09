@@ -151,6 +151,14 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // ---- board.tsx : barre du haut, sauvegardes, relecture, connexion, fin ----
   'Cartes regardées': 'Cards being looked at',
+  // Feuillets (inserts de regles) et Damnation (scenario Mephisto)
+  Damnation: 'Damnation',
+  Feuillet: 'Insert',
+  Feuillets: 'Inserts',
+  'Chargement…': 'Loading…',
+  Agrandir: 'Enlarge',
+  'Refermer les feuillets': 'Close the inserts',
+  'Ouvrir les feuillets': 'Open the inserts',
   'Dépense jusqu’à %1 ressource(s), puis valide': 'Spend up to %1 resource(s), then confirm',
   '%1 dépensée(s) sur %2 au plus': '%1 spent, %2 at most',
   'Répartis %1 dégâts indirects entre tes personnages': 'Assign %1 indirect damage among your characters',
@@ -227,7 +235,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   "Retirer le surlignage": "Clear the highlight",
   "Fermer le catalogue ; sinon décibler toutes tes cartes et effacer tes flèches (aussi à la fin de phase des héros, F12)": "Close the catalogue; otherwise untarget all your cards and clear your arrows (also at the end of the hero phase, F12)",
   "Incliner / redresser ; face cachée : retourner ; sur le méchant : carte boost, face cachée à côté de lui": "Exhaust / ready; face down: flip; on the villain: boost card, face down next to it",
-  "↑ +1 PV, ↓ −1 PV (héros, méchant) ; ↑ +1 dégât, ↓ −1 dégât (allié, sbire) ; menace (manigance), sinon marqueur": "↑ +1 HP, ↓ −1 HP (hero, villain); ↑ +1 damage, ↓ −1 damage (ally, minion); threat (scheme), otherwise marker",
+  "↑ +1 PV, ↓ −1 PV (héros, méchant, allié, sbire) ; menace (manigance), sinon marqueur": "↑ +1 HP, ↓ −1 HP (hero, villain, ally, minion); threat (scheme), otherwise marker",
   "Défausser ; sur le méchant : vaincre le stade ; sur la manigance principale : manigance terminée ; une carte Permanente refuse ; une carte « Victoire » va à la pile de victoire (question si elle n’a pas été vaincue)": "Discard; on the villain: defeat the stage; on the main scheme: scheme completed; a Permanent card refuses; a “Victory” card goes to the victory display (asked if it was not defeated)",
   "Carte boost : la carte du dessus du deck Rencontre, face cachée, à côté du méchant": "Boost card: the top card of the encounter deck, face down, next to the villain",
   "Carte boost": "Boost card",
@@ -1073,6 +1081,13 @@ export const DICO_EN_BASE: Record<string, string> = {
   // « Révélée » est déjà traduit plus bas : ne pas le redéclarer ici.
   'Cette pile est vide': 'This pile is empty',
   'Mélanger': 'Shuffle',
+  // ---- Mode manuel : regarder les X cartes du dessus d'un deck (RegarderDessus.tsx) ----
+  'Regarder le dessus': 'Look at the top',
+  'Regarder les': 'Look at the',
+  'cartes du dessus': 'top cards',
+  'Nombre de cartes à regarder': 'Number of cards to look at',
+  'Regard seul : rien n’est déplacé, aucune carte ne va en main.': 'Look only: nothing moves, no card goes to your hand.',
+  'Voir toute la pile': 'See the whole pile',
 
   // ---- Mode manuel : le menu de triche devient le menu normal ----
   'Déplacer vers': 'Move to',
@@ -1828,6 +1843,21 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Sous l’aperçu agrandi (chargé depuis fr.marvelcdb.com)': 'Under the enlarged preview (loaded from fr.marvelcdb.com)',
   'Bruitages': 'Sound effects',
   'Volume des bruitages': 'Sound effects volume',
+  'Volume de la musique': 'Music volume',
+  'Phases du round': 'Round phases',
+  'Phase des héros': 'Hero phase',
+  '1. Menace': '1. Threat',
+  '2. Activation du méchant': '2. Villain activation',
+  '3. Activation des sbires': '3. Minion activation',
+  '4. Carte de rencontre': '4. Encounter card',
+  '5. Révélation': '5. Reveal',
+  'Chaque héros joue son tour : cartes, actions, forme héros ou alter ego.': 'Each hero takes a turn: cards, actions, hero or alter-ego form.',
+  'Ajouter la menace sur la manigance principale (accélération comprise).': 'Add threat to the main scheme (acceleration included).',
+  'Le méchant attaque ou manigance : une carte boost par activation.': 'The villain attacks or schemes: one boost card per activation.',
+  'Chaque sbire attaque ou manigance : une carte boost par activation.': 'Each minion attacks or schemes: one boost card per activation.',
+  'Distribuer une carte rencontre à chaque héros.': 'Deal one encounter card to each hero.',
+  'Chaque héros révèle sa carte rencontre ; une carte Surge en fait révéler une autre.': 'Each hero reveals their encounter card; a Surge card reveals another.',
+  'Tout redresser, piocher jusqu’à la taille de main, passer le jeton premier joueur.': 'Ready everything, draw up to hand size, pass the first player token.',
   'Coups, cartes, jetons, survol des menus': 'Hits, cards, tokens, menu hover',
   'Coups, cartes jouées, menaces': 'Hits, played cards, threat',
   'Musique de fond': 'Background music',
@@ -2109,7 +2139,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Clic droit sur une carte': 'Right-click a card',
   'Poser en jeu (carte de ta main), Déplacer vers…': 'Put into play (card in your hand), Move to…',
   'Remélanger dans le deck': 'Shuffle into the deck',
-  'Ouvrir la pile : choisir une carte, mélanger, remélanger la défausse dans le deck': 'Open the pile: pick a card, shuffle, shuffle the discard into the deck',
+  'Ouvrir la pile : choisir une carte, mélanger, remélanger la défausse dans le deck, ou « Regarder le dessus » (les X premières cartes d’un deck, sans rien déplacer)': 'Open the pile: pick a card, shuffle, shuffle the discard into the deck, or “Look at the top” (the first X cards of a deck, without moving anything)',
   // Lot 6 du mode manuel (06/10/2026).
   'Piocher face cachée': 'Draw face down',
   'Poser face cachée': 'Put face down',
