@@ -157,7 +157,7 @@ une règle générale du jeu. Pas besoin d'un mécanisme moteur générique
 attaché à chaque personnage : une seule capacité passive sur la carte
 Héros, qui lit le marqueur « sur quelle planète » (déjà prévu, voir plus
 bas) pour n'importe quel personnage, ami ou ennemi, suffit. Décision
-utilisateur du 05/11 (voir `A créer/import-silver-surfer-power-cosmic/
+utilisateur du 05/11 (voir `archives/travail-heros-termines/import-silver-surfer-power-cosmic/
 QUESTIONS-AUTEUR.md`, Q1) : blocage attaque + manigance SEULEMENT, texte
 imprimé suivi à la lettre — pas de blocage de la défense (une clarification
 hors-carte le suggérait, mais le texte imprimé n'en parle pas).
