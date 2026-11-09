@@ -71,6 +71,25 @@ const MOTEUR_FR: Record<string, string> = {
   'Discard one': 'En défausser une',
   // Robbie Robertson 60156 : meme defaut, meme correctif (04/10/2026).
   'Discard it and deal another': 'La défausser et en distribuer une autre',
+  // Recherche sans résultat dans un deck (Carquois de Hawkeye 04003 et toutes les
+  // recherches « top N ») : on propose de voir les cartes avant le mélange
+  // (demande du 09/11/2026, search_internal.py).
+  'No Matching Card Found': 'Aucune carte ne correspond',
+  'Continue Without Looking': 'Continuer sans regarder',
+  'Look At The Cards': 'Regarder les cartes',
+  'Cards Searched': 'Cartes parcourues',
+  // Scénario Mephisto (Neptune) : les choix des cartes de rencontre et des pactes BARGAIN (mephisto/__init__.py et mp0xx.py).
+  'Attach this card to your identity': 'Attacher cette carte à ton identité',
+  'Discard this card and Mephisto activates against you': 'Défausser cette carte et Mephisto s’active contre toi',
+  'This card gains surge': 'Cette carte gagne Renfort',
+  'Mephisto attacks you': 'Mephisto t’attaque',
+  'Mephisto schemes against you': 'Mephisto manigance contre toi',
+  'Shuffle a BARGAIN attachment you control into the encounter deck': 'Mélanger dans le deck Rencontre un attachement BARGAIN que tu contrôles',
+  'Shuffle a BARGAIN attachment into the encounter deck and give Blackheart a tough status': 'Mélanger un attachement BARGAIN dans le deck Rencontre et donner une carte d’état Tenace à Blackheart',
+  'Search the encounter deck and discard pile for a BARGAIN attachment and attach it to your identity': 'Chercher un attachement BARGAIN dans le deck Rencontre et la défausse et l’attacher à ton identité',
+  'Ready your identity, draw 1 card, heal 4 damage and resolve the Hidden Clause': 'Redresser ton identité, piocher 1 carte, soigner 4 dégâts et résoudre la Hidden Clause',
+  'Discard your hand, shuffle your discard pile into your deck, draw up to your hand size, ready your identity and attach a BARGAIN attachment': 'Défausser ta main, mélanger ta défausse dans ton deck, piocher jusqu’à ta taille de main, redresser ton identité et attacher un attachement BARGAIN',
+  'Discard a BARGAIN attachment to cancel this activation and put Blackheart into play engaged with you': 'Défausser un attachement BARGAIN pour annuler cette activation et mettre Blackheart en jeu engagé avec toi',
   // Mot-clé Starting (60038, 61034, 61036, 61037), signalement Yarro n°70.
   'Add this card to your starting hand': 'Ajouter cette carte à ta main de départ',
 
@@ -458,6 +477,9 @@ const TYPES_ZONE_FR: Record<string, string> = {
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Famished Power (mp112) : « Combine ATK and DEF (7) » -> la somme de deux pouvoirs de base remplace la valeur utilisée.
+  [/^Combine (ATK|THW|DEF) and (ATK|THW|DEF) \((\d+)\)$/,
+    (m) => `Combiner ${m[1] === 'ATK' ? 'ATQ' : m[1] === 'THW' ? 'CTR' : 'DEF'} et ${m[2] === 'ATK' ? 'ATQ' : m[2] === 'THW' ? 'CTR' : 'DEF'} (${m[3]})`],
   // Changer de forme vers une forme NOMMEE (player_setup.py) : « Change To Spider-Man », ou, pour deux formes du meme
   // nom, le trait qui les distingue (« Change To GIANT » -> « Passer en forme Géant », Ant-Man, 24/10/2026).
   [/^Change To (.+)$/, (m) => `Passer en ${formeNommee(m[1]!)}`],
@@ -663,6 +685,9 @@ export function traduireQuestionImage(texte: string): string {
   if (combienEnMain) {
     return `${combienEnMain[1]} : parmi les ${combienEnMain[2]} cartes de ta main, combien montrent une image de ${nomDeQui(combienEnMain[3]!)} ?`
   }
+  // Recherche sans résultat dans un deck (search_internal.py, 09/11/2026) : le titre de la fenêtre est le `titre` de
+  // `AskChooseOneText`, qui n'a pas d'autre chemin de traduction que celui-ci (égalité exacte, jamais une sous-chaîne).
+  if (texte === 'No Matching Card Found') return MOTEUR_FR[texte]!
   return texte
 }
 

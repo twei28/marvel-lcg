@@ -109,11 +109,29 @@ class SearchInternal:
         # PUBLIQUE (defausse) ne declenche toujours aucun melange : le deck n'a
         # pas eu a etre fouille (lecture « Find », autre choix de l'utilisateur).
         # `not_move` reste respecte : il annonce une recherche qui ne melange pas.
-        if may and not faces and not not_move:
+        #
+        # RECHERCHE SANS RESULTAT (demande du 09/11/2026, retour testeur sur le
+        # Carquois de Hawkeye) : « search the top 5 cards for an Arrow » qui ne
+        # trouve rien n'ouvrait aucune fenetre, la carte semblait ne rien faire.
+        # Au jeu reel on regarde quand meme les cartes, puis le deck est
+        # melange en entier (meme regle RRG que ci-dessus, `may` ou non). On
+        # propose donc de les VOIR avant ce melange. `not_move` annonce un simple
+        # regard, deja montre : pas de question dans ce cas.
+        introuvable = not faces and not legal_faces
+        if (may or introuvable) and not faces and not not_move:
             fouilles: List[Deck] = []
             for zone in zones_avant.values():
                 if zone.flags.is_deck and not zone.flags.is_face_up and zone not in fouilles:
                     fouilles.append(zone)
+            if introuvable and fouilles:
+                a_voir = [f for f in all_faces if f.card.area in fouilles]
+                if a_voir and player.AskChooseOneText(
+                    [False, True],
+                    ["Continue Without Looking", "Look At The Cards"],
+                    titre="No Matching Card Found",
+                ):
+                    player.AskChooseFaces(a_voir, (1, 1), by_effect, peek=True, not_move=True, forced=False,
+                                          prompt="Cards Searched")
             for deck in fouilles:
                 if deck.GetSize() > 0:
                     deck.Shuffle(by_effect)

@@ -37,6 +37,27 @@ describe('traduireMoteur', () => {
       .toBe('Incliner une amélioration ARME que vous contrôlez pour sonner cet ennemi')
   })
 
+  it('traduit les choix des pactes et des cartes de rencontre de Mephisto', () => {
+    enFrancais()
+    expect(traduireMoteur('Attach this card to your identity')).toBe('Attacher cette carte à ton identité')
+    expect(traduireMoteur('Discard this card and Mephisto activates against you'))
+      .toBe('Défausser cette carte et Mephisto s’active contre toi')
+    expect(traduireMoteur('Combine ATK and DEF (7)')).toBe('Combiner ATQ et DEF (7)')
+    expect(traduireMoteur('Combine THW and DEF (4)')).toBe('Combiner CTR et DEF (4)')
+    enAnglais()
+    expect(traduireMoteur('Combine ATK and DEF (7)')).toBe('Combine ATK and DEF (7)')
+  })
+
+  it('traduit la question d une recherche sans résultat (Carquois de Hawkeye)', () => {
+    enFrancais()
+    expect(traduireMoteur('Continue Without Looking')).toBe('Continuer sans regarder')
+    expect(traduireMoteur('Look At The Cards')).toBe('Regarder les cartes')
+    expect(traduireMoteur('Cards Searched')).toBe('Cartes parcourues')
+    expect(traduireQuestionImage('No Matching Card Found')).toBe('Aucune carte ne correspond')
+    enAnglais()
+    expect(traduireMoteur('Look At The Cards')).toBe('Look At The Cards')
+  })
+
   it('traduit le choix du mot-clé Starting (signalement Yarro n°70)', () => {
     enFrancais()
     expect(traduireMoteur('Add this card to your starting hand')).toBe('Ajouter cette carte à ta main de départ')
