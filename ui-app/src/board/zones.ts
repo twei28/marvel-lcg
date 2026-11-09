@@ -1264,6 +1264,22 @@ export function construirePlateau(world: World, options: Options): Plateau {
         rendu,
         false
       ),
+      // AJOUT (pack mephisto) : la Damnation, UNE pile par joueur (decision du
+      // 09/11), face cachee pour tous : le clic dit combien il y en a, jamais
+      // lesquelles. Dans les annexes (zone commune) et non dans la zone du
+      // joueur, pour que chaque camp voie le compteur des autres : la defaite
+      // se joue sur le TOTAL, 10 cartes par joueur.
+      ...joueurs.map((joueur, index) =>
+        surLaTable(joueur)
+          ? pileFondue(
+              `damnation-${index}`,
+              multi ? `${t('Damnation')} — ${nomHero(joueur) ?? ''}` : t('Damnation'),
+              [{ cle: `damnation-${index}`, cartes: joueur.damnation, titre: t('Damnation') }],
+              rendu,
+              false
+            )
+          : []
+      ),
     ]),
 
 

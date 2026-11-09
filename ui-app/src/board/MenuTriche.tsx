@@ -63,6 +63,9 @@ export const ZONES_MANUELLES: readonly string[] = [
   // juste au-dessus, atteignable par le glisser (`PILE_PAR_ZONE`,
   // glisser-manuel.ts) mais qui manquait ici.
   'RisingTideArea',
+  // AJOUT (pack mephisto) : la Damnation, une pile par joueur (`player.damnation`, `RunPuzzle.ZONES_JOUEUR`), hors jeu et
+  // sans emplacement au plateau tant qu'elle est vide : sans cette entree, ni la deplacer vers elle ni la vider ne serait possible.
+  'DamnationArea',
   'MainSchemesArea',
   'AdditionalDeck',
   // La défausse du deck spécial : le moteur ne l'exposait à AUCUNE des deux
@@ -139,6 +142,8 @@ export function libellePile(zone: string): string {
     // AJOUT (pack wave) : même clé que `zones.ts` (`emplacement('rising-tide',
     // t('Ta marée montante'), ...)`), même objet (`player.rising_tide`).
     case 'RisingTideArea': return t('Ta marée montante')
+    // AJOUT (pack mephisto) : même clé que la pile de `zones.ts` (`pileFondue('damnation-N', t('Damnation'), ...)`).
+    case 'DamnationArea': return t('Damnation')
     case 'MainSchemesArea': return t('Manigance principale')
     // I2 (revue finale) : MÊME CLÉ que `zones.ts` pour « Mises de côté du
     // scénario » (`t('Mises de côté du scénario')`, groupe de la pile

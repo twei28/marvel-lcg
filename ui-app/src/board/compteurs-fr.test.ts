@@ -11,6 +11,13 @@ describe('nomDeCompteur', () => {
     expect(nomDeCompteur('charge')).toBe('charge')
   })
 
+  it('traduit les compteurs du scénario Mephisto', () => {
+    vi.spyOn(langue, 'langueActuelle').mockReturnValue('fr')
+    expect(nomDeCompteur('corrupt')).toBe('corruption')
+    expect(nomDeCompteur('scorned')).toBe('mépris')
+    expect(nomDeCompteur('damned')).toBe('damnation')
+  })
+
   it('traduit le compteur a deux mots du pack Spider-Woman', () => {
     // La clef porte un ESPACE (« psionic web »), pas un souligne : la
     // recherche se fait sur la clef brute, et une table indexee autrement

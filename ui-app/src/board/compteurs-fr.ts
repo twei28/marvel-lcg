@@ -65,6 +65,9 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   illusion: 'illusion',
   cassandra_controls: 'contrôle de Cassandra', // hf601-hf621 (scénario Cassandra Nova, Hellfire Hunt) : « Cassandra Controls counter »
   menace: 'menace',
+  corrupt: 'corruption', // scénario Mephisto (Neptune) : « corrupt counter » sur les attachements BARGAIN (Corruptive Offers)
+  scorned: 'mépris', // Culling the Damned (mp025) : « scorned counter »
+  damned: 'damnation', // Demon Amalgam (modulaire Damned) : « damned counter »
   evidence: 'preuve',
   adrenaline: 'adrénaline',
   reactor: 'réacteur',

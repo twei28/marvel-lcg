@@ -20,6 +20,14 @@ const NOMS_SETS_RENCONTRE = {
     ts_chunin: "Chunin",
     ts_foot_goon_squad: "Foot Goon Squad",
     ts_shadow_of_the_foot: "Shadow of the Foot",
+    // Scénario Mephisto (Neptune) : le fichier garde le préfixe `mp_`, le nom des cartes (`set_name`) non.
+    mp_mephisto: "Mephisto",
+    mp_blackheart: "Blackheart",
+    mp_corruptive_offers: "Corruptive Offers",
+    mp_damned: "Damned",
+    mp_mother_of_demons: "Mother of Demons",
+    mp_standard: "Mephisto Standard",
+    mp_expert: "Mephisto Expert",
 };
 const nomSetRencontre = (n) => NOMS_SETS_RENCONTRE[String(n)] || titleize(n);
 const cleanName = (s) => String(s || "").replace(/^\*\s*/, "").trim();

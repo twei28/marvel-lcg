@@ -2918,6 +2918,11 @@
        PLUTOT que de chevaucher sa voisine, qui doit rester intouchee. */
     height: 100%;
     overflow-y: auto;
+    /* ⚠ ALIGNEMENT « SAFE » (09/11/2026, scenario Mephisto a DEUX joueurs : pile de mises de cote + une Damnation PAR joueur = 3 piles, donc deux
+       rangees de 192 px dans une zone de ~225 px). `.plateau-emplacement` cale ses enfants en bas (`align-items: flex-end`) : un contenu plus
+       haut que la zone debordait alors vers le HAUT, hors de portee du defilement (le haut des piles etait coupe, on n'en voyait qu'un liseré).
+       `safe` retombe sur le haut des que ca deborde : la premiere rangee reste visible et la zone defile vers la seconde, comme prevu ci-dessus. */
+    align-items: safe flex-end;
   }
 
   /* Les piles d'une meme zone forment UN groupe : c'est donc le groupe qui doit
