@@ -48,6 +48,42 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-09",
+        genre: "heros",
+        fr: "Un nouveau scénario fan-made : Mephisto, de Neptune. Tentations, pactes et une Damnation où disparaissent les cartes de votre deck, avec ses modulaires Blackheart, Corruptive Offers, Damned et Mother of Demons.",
+        en: "A new fan-made scenario: Mephisto, by Neptune. Temptations, pacts and a Damnation where cards from your deck vanish, with its Blackheart, Corruptive Offers, Damned and Mother of Demons modulars.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "jeu",
+        fr: "Quand une recherche dans un deck ne trouve rien (le Carquois de Hawkeye par exemple), le jeu le dit et propose de regarder quand même les cartes parcourues. Le deck est ensuite mélangé.",
+        en: "When a search in a deck finds nothing (Hawkeye's Quiver for example), the game now says so and offers to look at the cards searched anyway. The deck is then shuffled.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "jeu",
+        fr: "En mode Manuel, un clic droit sur un deck propose « Regarder le dessus » : vous voyez les X premières cartes sans rien déplacer. Un bandeau de phases en haut du plateau permet de suivre et de changer d'étape.",
+        en: "In Manual mode, right-clicking a deck now offers \"Look at the top\": you see the first X cards without moving anything. A phase banner at the top of the board lets you follow and change the step.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "jeu",
+        fr: "Quarante-quatre feuillets de règles de héros officiels s'ajoutent à l'onglet Feuillets, avec celui du scénario Mephisto.",
+        en: "Forty-four official hero rules leaflets join the Leaflets tab, along with the Mephisto scenario one.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "correction",
+        fr: "La musique d'ambiance est réparée et son volume se règle dans les réglages. Les flèches haut et bas ajoutent ou retirent 1 point de vie aux alliés et aux sbires comme aux héros.",
+        en: "Background music is fixed and its volume can be set in the settings. The up and down arrows now add or remove 1 hit point on allies and minions as they do on heroes.",
+    },
+    {
+        date: "2026-11-09",
+        genre: "correction",
+        fr: "La pastille « Errata » reprend le style du reste du site, et les noms des sets de Mephisto sont lisibles dans l'assistant.",
+        en: "The \"Errata\" badge now matches the rest of the site, and the Mephisto set names are readable in the wizard.",
+    },
+    {
+        date: "2026-11-09",
         genre: "jeu",
         fr: "Un nouvel onglet « Feuillets » (à côté d'Aide et Journal) montre le feuillet de règles des héros en jeu : Dazzler pour commencer. Visible en français seulement.",
         en: "A new \"Leaflets\" tab (next to Help and Journal) shows the rules leaflet of the heroes in play, starting with Dazzler. Shown in French only.",
