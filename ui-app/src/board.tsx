@@ -5960,7 +5960,11 @@ export function PagePartie({
         />
       )}
       <VoletFeuillets
-        feuillets={feuilletsDeLaPartie((etat.monde.players ?? []).map((joueur) => joueur.area_hero?.[0]?.pic_id))}
+        feuillets={feuilletsDeLaPartie([
+          ...(etat.monde.players ?? []).map((joueur) => joueur.area_hero?.[0]?.pic_id),
+          ...(etat.monde.area_villain ?? []).map((carte) => carte.pic_id),
+          ...(etat.monde.area_schemes_main ?? []).map((carte) => carte.pic_id),
+        ])}
         ouvert={feuilletsOuverts}
         ouvrir={ouvrirFeuillets}
         fermer={fermerFeuillets}

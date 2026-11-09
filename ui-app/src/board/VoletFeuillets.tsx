@@ -1,31 +1,32 @@
 /**
  * L'onglet « FEUILLETS », tire depuis le bord droit comme l'Aide et le Journal : le feuillet de regles des heros en jeu
- * (Dazzler pour l'instant). Le parent ne le monte que s'il y a au moins un feuillet (`feuilletsDeLaPartie`).
+ * (un ou plusieurs par heros, dans la langue du joueur, sinon dans l'autre). Le parent ne le monte que s'il y a au moins un feuillet (`feuilletsDeLaPartie`).
  */
 import { useEffect, useState } from 'react'
 import { t } from './langue'
 import type { Feuillet } from './feuillets'
 import './VoletFeuillets.css'
 
-function ImageFeuillet({ feuillet }: { feuillet: Feuillet }) {
+function ImageFeuillet({ feuillet, charger, page }: { feuillet: Feuillet; charger: () => Promise<string>; page: number }) {
   const [src, setSrc] = useState<string | null>(null)
   const [agrandi, setAgrandi] = useState(false)
+  const legende = feuillet.pages.length > 1 ? `${t('Feuillet')} ${feuillet.titre} ${page}` : `${t('Feuillet')} ${feuillet.titre}`
   useEffect(() => {
     let actif = true
-    void feuillet.charger().then((url) => actif && setSrc(url))
+    void charger().then((url) => actif && setSrc(url))
     return () => {
       actif = false
     }
-  }, [feuillet])
+  }, [charger])
   if (!src) return <p className="feuillet-attente">{t('Chargement…')}</p>
   return (
     <>
       <button type="button" className="feuillet-image" onClick={() => setAgrandi(true)} title={t('Agrandir')}>
-        <img src={src} alt={`${t('Feuillet')} ${feuillet.titre}`} />
+        <img src={src} alt={legende} />
       </button>
       {agrandi ? (
-        <div className="feuillet-zoom" role="dialog" aria-label={`${t('Feuillet')} ${feuillet.titre}`} onClick={() => setAgrandi(false)}>
-          <img src={src} alt={`${t('Feuillet')} ${feuillet.titre}`} />
+        <div className="feuillet-zoom" role="dialog" aria-label={legende} onClick={() => setAgrandi(false)}>
+          <img src={src} alt={legende} />
         </div>
       ) : null}
     </>
@@ -76,7 +77,9 @@ export function VoletFeuillets({
             {feuillets.map((f) => (
               <section key={f.prefixe}>
                 {feuillets.length > 1 ? <h3>{f.titre}</h3> : null}
-                <ImageFeuillet feuillet={f} />
+                {f.pages.map((charger, i) => (
+                  <ImageFeuillet key={i} feuillet={f} charger={charger} page={i + 1} />
+                ))}
               </section>
             ))}
           </div>
