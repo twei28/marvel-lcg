@@ -19,5 +19,21 @@ avoir lu cette section en premier).
   de code. Absente → la créer d'abord, sur le gabarit donné en tête de
   `docs/reference/mots-cles/README.md`.
 
+## Règle impérative : tests après un changement du moteur
+
+- **Pas de batterie complète** de `tools/test_capacites.py` : elle dépasse
+  4 à 5 heures (12 000+ cas) et sature le disque. Rejouer uniquement les
+  cas des cartes que le changement peut toucher, par filtre de nom
+  (`python tools/test_capacites.py .game-src <port> <rapport.json> "<filtre>"`).
+- Choisir les cartes touchées en cherchant ce qui passe par le code modifié
+  (ex. toutes les cartes qui redirigent une défausse, toutes celles qui lisent
+  leurs compteurs après un coût « Discard This »), puis lancer un filtre par
+  famille. Ajouter un cas dédié dans `tools/cas/` : vert avec le changement,
+  rouge sans.
+- **Squirrel Girl** (héroïne fan-made, pack `sg`) n'est plus vérifiée : ne
+  pas rejouer ses cas, leurs échecs ne bloquent ni un commit ni un push.
+- Ports : base <= 36975 (jamais 49152+). Ne jamais lancer deux harnais sur le
+  même `game_dir`. Le harnais réécrit `launch.json` : le remettre après coup.
+
 Pour toute autre question (mode campagne, multijoueur, stratégie, rapports
 d'audit passés), voir `docs/README.md`.

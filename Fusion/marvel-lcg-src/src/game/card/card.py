@@ -463,6 +463,8 @@ class Card(Object):
         if self.area == message.into_area:
             return True
 
+        # Fix "01018" : une defausse redirigee (Collector) garde les compteurs, comme une defausse
+        self.state.discard_redirected = into_area.flags.is_discards and not message.into_area.flags.is_discards
         into_area = message.into_area
         self.can_state.Reset()
         self.is_apply_unique_rule = None
@@ -579,7 +581,7 @@ class Card(Object):
             after_leave_message = Message.AfterCardLeavePlay(up_face, from_area, into_area, leave_play_message)
             up_face.OnAfterCardLeavePlay(after_leave_message)
             # Fix surge
-            if not from_area.flags.is_obligations_area and not into_area.flags.is_discards and not into_area.flags.is_place_card_area:
+            if not from_area.flags.is_obligations_area and not into_area.flags.is_discards and not into_area.flags.is_place_card_area and not self.state.discard_redirected:
                 up_face.Reset(False)
         elif into_area.flags.is_in_play and not from_area.flags.is_in_play:
             up_face.ApplyAfterEnterPlay(from_area, into_area, by_effect, is_flip=False)
