@@ -369,3 +369,4 @@ html[data-tablette] .db-chip,
 html[data-tablette] .db-basmob button,
 html[data-tablette] .db-filtres-col button { min-height: 44px; }
 html[data-tablette] .db-pm { min-width: 40px; min-height: 40px; font-size: 18px; }
+#db-status .db-statut-actions { display: flex; gap: 8px; margin-top: 8px; }

@@ -1372,4 +1372,16 @@ async function demarrer() {
     statut("");
 }
 
-demarrer().catch((e) => statut(`${t("Échec du chargement :")} ${e.message}`, true));
+/** Réponse HTML au lieu des cartes (cookie de connexion ou de version refusé) :
+ *  dire quoi faire, avec un bouton, plutôt qu'un « Unexpected token < » muet. */
+function expliquerSession() {
+    const zone = $("#db-status");
+    zone.classList.add("est-erreur");
+    remplacer(zone,
+        el("span", {}, t("Le serveur n'a pas reconnu votre session (cookies bloqués, session expirée ou ancienne version en cache). Rechargez la page ; si cela persiste, reconnectez-vous depuis l'accueil et autorisez les cookies du site.")),
+        el("span", { class: "db-statut-actions" },
+            el("button", { type: "button", class: "btn ghost", onclick: () => window.location.reload() }, t("Recharger")),
+            el("a", { class: "btn ghost", href: "/" }, t("Accueil / reconnexion"))));
+}
+
+demarrer().catch((e) => (e && e.reponseHtml ? expliquerSession() : statut(`${t("Échec du chargement :")} ${e.message}`, true)));

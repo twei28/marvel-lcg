@@ -3,6 +3,10 @@
 "use strict";
 
 export const DICO_EN_DECKBUILDER = {
+    "Le serveur n'a pas reconnu votre session (cookies bloqués, session expirée ou ancienne version en cache). Rechargez la page ; si cela persiste, reconnectez-vous depuis l'accueil et autorisez les cookies du site.":
+        "The server did not recognise your session (cookies blocked, expired session or an old cached version). Reload the page; if it persists, sign in again from the home page and allow the site's cookies.",
+    "Recharger": "Reload",
+    "Accueil / reconnexion": "Home / sign in again",
     "ARTS": "ARTS",
     // Regle declaree `ressources_egales` (Carol Danvers, Galactic Storm, 20/10/2026).
     "Il faut": "Required:",
