@@ -58603,6 +58603,68 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["mp007a"], "hors_jeu": ["mp008"]},
     },
+    {
+        "nom": "04002 Hawkeye's Bow — une attaque de BASE ne gagne pas « à distance » : elle subit la Riposte 1 de l'Energy Shield (04073)",
+        "pourquoi": "« each of your [[Arrow]] attacks gain ranged » : seules les attaques FLECHE. Hawkeye attaque normalement un vilain portant Energy Shield (Attached villain gains retaliate 1) : il subit 1 degat",
+        "scenario": "rhino",
+        "heros": "hawkeye",
+        "mise_en_place": [
+                "Puzzle.ChangeForm('04001b')",
+                "Puzzle.AttachReel('04002', '04001a')",
+                "Puzzle.AttachReel('04073', '01094')"
+        ],
+        "declencher": [
+                "Puzzle.Attack('04001a')"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+                "degats": [
+                        [
+                                "04001a",
+                                1
+                        ]
+                ]
+        }
+},
+    {
+        "nom": "04002 Hawkeye's Bow — une attaque FLECHE (Electric Arrow) gagne « à distance » : aucune Riposte de l'Energy Shield",
+        "pourquoi": "Electric Arrow est une action d'attaque (Hero Action (attack)) portee par l'arc : elle gagne ranged, donc ignore la Riposte 1 du bouclier. Hawkeye ne subit aucun degat",
+        "scenario": "rhino",
+        "heros": "hawkeye",
+        "mise_en_place": [
+                "Puzzle.ChangeForm('04001b')",
+                "Puzzle.AttachReel('04002', '04001a')",
+                "Puzzle.AttachReel('04073', '01094')"
+        ],
+        "main_exclusive": [
+                "04007",
+                "01055",
+                "01055",
+                "01055"
+        ],
+        "declencher": [],
+        "jouer": [
+                "04007"
+        ],
+        "cibles": [
+                "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+                "degats": [
+                        [
+                                "04001a",
+                                0
+                        ],
+                        [
+                                "01094",
+                                3
+                        ]
+                ]
+        }
+},
 ]
 # ----------------------------------------------------- cas par bloc, hors fichier --
 # AJOUT (15/10/2026, coffret Skrull Menace) : plusieurs agents ecrivent leurs cas
