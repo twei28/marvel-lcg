@@ -3147,6 +3147,10 @@ function stepTeam() {
         }),
     );
     const f = state.heroFilters;
+    const boutonFavoris = el("button", {
+        class: "tampon" + (f.fav ? " on" : ""),
+        onclick: (e) => { f.fav = !f.fav; e.currentTarget.classList.toggle("on", f.fav); refreshHeroGrid(); },
+    }, t("Favoris"));
     const droite = el("div", { class: "tb-droite" },
         // Bureau (variante D, 28/10/2026) : l'etat en ligne et la campagne sont
         // des pastilles de l'en-tete, l'invitation vit sur la rangee « Ton
@@ -3177,10 +3181,7 @@ function stepTeam() {
                 value: f.q,
                 oninput: (e) => { f.q = e.target.value; refreshHeroGrid(); },
             }),
-            el("button", {
-                class: "tampon" + (f.fav ? " on" : ""),
-                onclick: (e) => { f.fav = !f.fav; e.currentTarget.classList.toggle("on", f.fav); refreshHeroGrid(); },
-            }, t("Favoris")),
+            boutonFavoris,
             el("select", {
                 class: "sel vague-select tampon",
                 onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
@@ -3192,6 +3193,10 @@ function stepTeam() {
                     f.homebrew = !f.homebrew;
                     e.currentTarget.classList.toggle("on", f.homebrew);
                     f.vague = "";
+                    // Changer de famille remet « Favoris » à zéro, comme la vague : sinon, revenu des
+                    // fan-made, la grille restait vide (rapport de bug 126, Legacy).
+                    f.fav = false;
+                    boutonFavoris.classList.remove("on");
                     majMenuVagues();
                     refreshHeroGrid();
                 },
