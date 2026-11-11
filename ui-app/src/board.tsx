@@ -190,7 +190,7 @@ import {
   lireTeinteDuNavigateur,
   type Teinte,
 } from './board/teinte'
-import { appliquerFondImage, lireFondImage } from './board/fond-image'
+import { appliquerFondImage, baseDuFondImage, EVENEMENT_FOND_IMAGE, lireFondImage } from './board/fond-image'
 import { texteTempsParDecision } from './board/deroule-textes'
 import { SplashTour } from './board/SplashTour'
 import {
@@ -3990,6 +3990,13 @@ export function PagePartie({
   // Le méchant en jeu : ses cartes (toutes les phases partagent la même palette), jointes en une
   // clé simple pour ne repartir que quand le méchant change.
   const clesMechant = identitesMechants(etat.monde).join(',')
+  // Image de fond et choix « garder les couleurs » (board/fond-image.ts) : un changement recalcule les halos.
+  const [fondTick, setFondTick] = useState(0)
+  useEffect(() => {
+    const surChangement = () => setFondTick((n) => n + 1)
+    window.addEventListener(EVENEMENT_FOND_IMAGE, surChangement)
+    return () => window.removeEventListener(EVENEMENT_FOND_IMAGE, surChangement)
+  }, [])
   useEffect(() => {
     const racine = document.documentElement
     const corps = document.body
@@ -4027,7 +4034,7 @@ export function PagePartie({
         '--fond-plateau',
         fondDe(
           couleurs,
-          'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))',
+          baseDuFondImage() ?? 'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))',
           couleursMechant
         )
       )
@@ -4036,7 +4043,7 @@ export function PagePartie({
     return () => {
       vivant = false
     }
-  }, [essais, identite, clesMechant, affichage])
+  }, [essais, identite, clesMechant, affichage, fondTick])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'

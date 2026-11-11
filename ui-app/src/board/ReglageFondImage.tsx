@@ -5,7 +5,14 @@
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { t } from './langue'
-import { importerFondImage, lireFondImage, retirerFondImage, type ResultatImport } from './fond-image'
+import {
+  ecrireGarderCouleurs,
+  importerFondImage,
+  lireFondImage,
+  lireGarderCouleurs,
+  retirerFondImage,
+  type ResultatImport,
+} from './fond-image'
 
 const MESSAGES: Record<Exclude<ResultatImport, 'ok'>, string> = {
   illisible: "Ce fichier n'est pas une image lisible.",
@@ -16,6 +23,7 @@ const MESSAGES: Record<Exclude<ResultatImport, 'ok'>, string> = {
 export function ReglageFondImage() {
   const [presente, setPresente] = useState(() => !!lireFondImage())
   const [message, setMessage] = useState<string>()
+  const [garder, setGarder] = useState(() => lireGarderCouleurs())
 
   async function choisir(evenement: ChangeEvent<HTMLInputElement>) {
     const fichier = evenement.target.files?.[0]
@@ -52,6 +60,19 @@ export function ReglageFondImage() {
           </button>
         ) : null}
       </div>
+      {presente ? (
+        <label className="reglage-fond-image-case">
+          <input
+            type="checkbox"
+            checked={garder}
+            onChange={(evenement) => {
+              setGarder(evenement.target.checked)
+              ecrireGarderCouleurs(evenement.target.checked)
+            }}
+          />
+          {t('Garder les couleurs du héros et du méchant')}
+        </label>
+      ) : null}
       {message ? <p className="reglage-fond-image-erreur" role="alert">{message}</p> : null}
     </div>
   )

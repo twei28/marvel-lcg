@@ -1832,6 +1832,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Couleur de la table': 'Table colour',
   'Image de fond de la table': 'Table background image',
   'Importer une image…': 'Import an image…',
+  'Garder les couleurs du héros et du méchant': 'Keep the hero and villain colours',
   'Retirer': 'Remove',
   "Ce fichier n'est pas une image lisible.": 'This file is not a readable image.',
   "L'image reste trop lourde même réduite : prends-en une plus petite.": 'The image is still too large even when reduced: choose a smaller one.',

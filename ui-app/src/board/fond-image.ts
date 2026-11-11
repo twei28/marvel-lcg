@@ -4,10 +4,14 @@
 // AUCUNE : seul ce que le joueur importe est affiché. L'image reste sur CET appareil (navigateur),
 // réduite à 1920 px et recompressée en JPEG, pour tenir dans le stockage local.
 //
-// La teinte (teinte.ts) reste là quand il n'y a pas d'image : le fond d'image passe par-dessus,
-// et le retirer rend la couleur choisie.
+// Les couleurs du héros et du méchant (halos en coin, board/halo-heros.ts) sont MASQUÉES avec une
+// image, sauf si le joueur coche « Garder les couleurs du héros et du méchant » (11/11/2026). Gardées,
+// les bandes restent aux mêmes coins, posées par-dessus l'image.
 
 export const CLE_FOND_IMAGE = 'mc_fond_image_v1'
+export const CLE_FOND_COULEURS = 'mc_fond_image_couleurs_v1'
+/** Événement émis quand l'image ou le choix des couleurs change : le plateau recalcule ses halos. */
+export const EVENEMENT_FOND_IMAGE = 'fond-image-change'
 
 /** Plus grand côté gardé à l'import. */
 const COTE_MAX = 1920
@@ -24,16 +28,52 @@ export function lireFondImage(): string | undefined {
   }
 }
 
-/** Pose (ou retire, avec `undefined`) l'image de fond de la table sur la page. */
+export function lireGarderCouleurs(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_FOND_COULEURS) === '1'
+  } catch {
+    return false
+  }
+}
+
+/** Le fond de la table quand on garde les couleurs : l'image sert de couche de base, sous les bandes. */
+export function baseDuFondImage(): string | undefined {
+  return document.documentElement.dataset.fondImage && document.documentElement.dataset.fondCouleurs
+    ? 'var(--fond-image)'
+    : undefined
+}
+
+function prevenir(): void {
+  window.dispatchEvent(new CustomEvent(EVENEMENT_FOND_IMAGE))
+}
+
+/**
+ * Pose (ou retire, avec `undefined`) l'image de fond de la table sur la page. Le choix « garder les
+ * couleurs » est relu ici : il ne vaut que s'il y a une image.
+ */
 export function appliquerFondImage(url: string | undefined): void {
   const racine = document.documentElement
   if (!url) {
     racine.style.removeProperty('--fond-image')
     delete racine.dataset.fondImage
+    delete racine.dataset.fondCouleurs
     return
   }
-  racine.style.setProperty('--fond-image', `url("${url}")`)
+  racine.style.setProperty('--fond-image', `url("${url}") center / cover no-repeat`)
   racine.dataset.fondImage = 'oui'
+  if (lireGarderCouleurs()) racine.dataset.fondCouleurs = 'oui'
+  else delete racine.dataset.fondCouleurs
+}
+
+export function ecrireGarderCouleurs(garder: boolean): void {
+  try {
+    if (garder) window.localStorage.setItem(CLE_FOND_COULEURS, '1')
+    else window.localStorage.removeItem(CLE_FOND_COULEURS)
+  } catch {
+    /* stockage refusé : le choix vaut pour la session */
+  }
+  appliquerFondImage(lireFondImage())
+  prevenir()
 }
 
 /** Réduit l'image importée et la range. Le résultat dit ce qui s'est passé. */
@@ -63,6 +103,7 @@ export async function importerFondImage(fichier: File): Promise<ResultatImport> 
     return 'stockage'
   }
   appliquerFondImage(url)
+  prevenir()
   return 'ok'
 }
 
@@ -73,4 +114,5 @@ export function retirerFondImage(): void {
     /* stockage refusé : rien à retirer */
   }
   appliquerFondImage(undefined)
+  prevenir()
 }

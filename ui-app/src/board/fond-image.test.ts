@@ -1,5 +1,14 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { CLE_FOND_IMAGE, appliquerFondImage, lireFondImage, retirerFondImage } from './fond-image'
+import {
+  CLE_FOND_COULEURS,
+  CLE_FOND_IMAGE,
+  appliquerFondImage,
+  baseDuFondImage,
+  ecrireGarderCouleurs,
+  lireFondImage,
+  lireGarderCouleurs,
+  retirerFondImage,
+} from './fond-image'
 
 beforeEach(() => {
   window.localStorage.clear()
@@ -26,5 +35,23 @@ describe('image de fond de la table', () => {
     expect(lireFondImage()).toBe('data:image/jpeg;base64,AAAA')
     retirerFondImage()
     expect(lireFondImage()).toBeUndefined()
+  })
+
+  it('garder les couleurs est désactivé par défaut, et ne vaut qu’avec une image', () => {
+    expect(lireGarderCouleurs()).toBe(false)
+    appliquerFondImage('data:image/jpeg;base64,AAAA')
+    expect(document.documentElement.dataset.fondCouleurs).toBeUndefined()
+    expect(baseDuFondImage()).toBeUndefined()
+  })
+
+  it('garder les couleurs : l’image devient la couche de base des halos', () => {
+    window.localStorage.setItem(CLE_FOND_IMAGE, 'data:image/jpeg;base64,AAAA')
+    ecrireGarderCouleurs(true)
+    expect(window.localStorage.getItem(CLE_FOND_COULEURS)).toBe('1')
+    expect(document.documentElement.dataset.fondCouleurs).toBe('oui')
+    expect(baseDuFondImage()).toBe('var(--fond-image)')
+    ecrireGarderCouleurs(false)
+    expect(document.documentElement.dataset.fondCouleurs).toBeUndefined()
+    expect(baseDuFondImage()).toBeUndefined()
   })
 })
