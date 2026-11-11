@@ -356,6 +356,10 @@ export const DICO_EN_BASE = {
     "Ce choix ne se refait pas.": "This choice cannot be changed later.",
     "Débloquer ce héros pour 1 jeton ?": "Unlock this hero for 1 token?",
     "Débloquer": "Unlock",
+    "Repartir de zéro : jetons et héros débloqués oubliés. L'historique des parties reste.": "Start over: tokens and unlocked heroes are forgotten. Your game history stays.",
+    "Réinitialiser Legacy ?": "Reset Legacy?",
+    "Réinitialiser Legacy": "Reset Legacy",
+    "Réinitialiser": "Reset",
     "Legacy": "Legacy",
     // Le choix de la langue, pose une fois (13/09/2026)
     "Bienvenue": "Welcome",

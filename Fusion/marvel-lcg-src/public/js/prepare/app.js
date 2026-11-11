@@ -21,7 +21,7 @@ import { aDeckDeBase } from "/public/js/prepare/catalog.js";
 import { nomAvecAuteur, createursDeTout, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
-import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
+import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy, reinitialiser as reinitialiserFicheLegacy } from "/public/js/prepare/legacy-fiche.js";
 import { fabriquerVerrou } from "/public/js/prepare/legacy-verrou.js";
 import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
@@ -2455,7 +2455,22 @@ function bandeLegacy() {
             : null,
         el("span", { class: "legacy-regle" },
             t("Seuls les méchants ouvrent la vague suivante. Les héros, eux, rapportent les jetons.")),
+        el("button", { class: "tampon legacy-reinit", onclick: reinitialiserLegacy },
+            t("Réinitialiser Legacy")),
     );
+}
+
+/** Remet toute la progression Legacy à zéro, après confirmation. */
+async function reinitialiserLegacy() {
+    const oui = await confirmerLegacy(
+        t("Repartir de zéro : jetons et héros débloqués oubliés. L'historique des parties reste."),
+        t("Réinitialiser Legacy ?"), t("Réinitialiser"));
+    if (!oui) return;
+    await reinitialiserFicheLegacy();
+    await rafraichirLegacy();
+    await refreshHeroGrid();
+    const bande = document.querySelector(".legacy-bande");
+    if (bande) bande.replaceWith(bandeLegacy());
 }
 
 /** La phrase de condition d'une étape, dans la langue de l'écran. */
@@ -2487,7 +2502,7 @@ async function acheterHerosLegacy(h, portraitEl) {
     recruterVraiment(h, portraitEl);
 }
 
-function confirmerLegacy(question, detail) {
+function confirmerLegacy(question, detail, libelleOk = t("Débloquer")) {
     return new Promise((resolve) => {
         const finir = (valeur) => { hideHover(); fermerModale(overlay); resolve(valeur); };
         const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) finir(false); } },
@@ -2498,7 +2513,7 @@ function confirmerLegacy(question, detail) {
                 ),
                 el("div", { class: "vh-actions" },
                     el("button", { class: "tampon", onclick: () => finir(false) }, t("Annuler")),
-                    el("button", { class: "tampon jaune", onclick: () => finir(true) }, t("Débloquer")),
+                    el("button", { class: "tampon jaune", onclick: () => finir(true) }, libelleOk),
                 ),
             ),
         );
@@ -4354,6 +4369,16 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
         surChoix(options[idx].code);
     };
     const pousser = (sens) => (delegue ? delegue(sens) : aller(idx + sens));
+    // Vignettes : le survol montre l'art à droite sans rien changer, le clic
+    // le choisit. Avec « même série », le clic passe par la paire liée, comme
+    // une flèche.
+    const urlArt = (o) => cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+    const vignettes = el("div", { class: "ca-vignettes" }, options.map((o, i) => el("button", {
+        type: "button", class: "ca-vignette", title: o.nom, "aria-label": o.nom,
+        onmouseenter: () => dessiner(i), onmouseleave: () => dessiner(),
+        onfocus: () => dessiner(i), onblur: () => dessiner(),
+        onclick: () => (delegue ? delegue(i - idx) : aller(i)),
+    }, el("img", { src: urlArt(o), alt: "", loading: "lazy", draggable: "false" }))));
     const fleche = (sens, glyphe, libelle) => el("button", {
         type: "button", class: "ca-fleche ca-fleche-" + (sens < 0 ? "g" : "d"),
         "aria-label": libelle, onclick: () => pousser(sens),
@@ -4378,10 +4403,16 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
         el("div", { class: "ca-corps" },
             fleche(-1, "\u2039", t("Art précédent")), scene, fleche(1, "\u203A", t("Art suivant"))),
         el("div", { class: "ca-pied" }, nom, compteur),
+        vignettes,
     );
-    function dessiner() {
-        const o = options[idx];
-        image.src = cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+    // `voir` : l'art montré (l'aperçu au survol), `idx` reste l'art choisi.
+    function dessiner(voir = idx) {
+        const o = options[voir];
+        image.src = urlArt(o);
+        vignettes.querySelectorAll(".ca-vignette").forEach((b, n) => {
+            b.classList.toggle("ca-vignette-choisie", n === idx);
+            b.classList.toggle("ca-vignette-vue", n === voir);
+        });
         const ce_tirage = ++tirage;
         const carte = cards.get(picId);
         const temoin = el("div", { class: "ca-cadre-pose" });
@@ -4390,7 +4421,7 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
             .then(() => { if (ce_tirage !== tirage) temoin.remove(); });
         for (const ancien of cadre.querySelectorAll(".ca-cadre-pose")) if (ancien !== temoin) ancien.remove();
         nom.textContent = o.nom;
-        compteur.textContent = options.length > 1 ? `${idx + 1} / ${options.length}` : "";
+        compteur.textContent = options.length > 1 ? `${voir + 1} / ${options.length}` : "";
         noeud.classList.toggle("ca-seul", options.length < 2 && !delegue);
     }
     dessiner();
