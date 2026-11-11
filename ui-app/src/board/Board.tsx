@@ -781,6 +781,11 @@ function FaceCarteApercu({
         />
         {/* Les traits qu'a le heros EN CE MOMENT, sous la carte (reglage « Traits du heros »). */}
         <PastillesTraits carte={carte} />
+        {/* UN ART ALTERNATIF : le texte posé sur le scan est parfois trop petit pour se lire. On le
+            répète ici, en police normale, sous la carte en grand. Français seulement. */}
+        {carte.artAlternatif && !carte.facedown && texteSurCarte?.langue === 'fr' ? (
+          <div className="apercu-texte-art" lang="fr" dangerouslySetInnerHTML={{ __html: texteEnHtml(texteSurCarte.texte) }} />
+        ) : null}
         {/* L'ERRATA, en clair sous la carte : la souris n'atteint pas la pastille de l'aperçu. */}
         {erratum ? <NoteErrata erratum={erratum} /> : null}
         {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres

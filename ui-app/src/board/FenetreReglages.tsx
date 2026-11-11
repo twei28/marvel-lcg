@@ -71,6 +71,7 @@ import {
   type PresentationPhase,
 } from './phase-presentation'
 import { RoueTeinte } from './RoueTeinte'
+import { ReglageFondImage } from './ReglageFondImage'
 import type { Teinte } from './teinte'
 import { ecrireFaconParDefaut, lireFaconParDefaut, type FaconDeJouer } from './manuel/facon-de-jouer'
 import { ecrireVolumeMusique, lireVolumeMusique } from './musique'
@@ -804,6 +805,7 @@ export function ContenuOnglet({
             <RoueTeinte valeur={p.teinte} changer={p.changerTeinte} reinitialiser={p.reinitialiserTeinte} />
           </details>
         ) : null}
+        <ReglageFondImage />
         <LigneBascule
           libelle={t('Animations')}
           detail={t('Cartes qui bougent, secousses, halos')}

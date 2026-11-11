@@ -39,9 +39,21 @@ function relire(round: number | undefined): PisteEtat {
   return etatInitial(round)
 }
 
-export function PisteDesPhases({ round }: { round?: number }) {
+/**
+ * `lecture` : la piste suit la partie (moteur, modes Plateau animé et Accéléré). Pas de clic, pas
+ * de « Étape suivante », l'étape vient de `index` (null = aucune). Sans `lecture` : la piste
+ * manuelle, tenue à la main.
+ */
+export function PisteDesPhases({
+  round,
+  lecture,
+}: {
+  round?: number
+  lecture?: { round: number; index: number | null }
+}) {
   const [etat, setEtat] = useState<PisteEtat>(() => relire(round))
   const { mode } = useModeMobile()
+  const courant: PisteEtat = lecture ? { round: lecture.round, index: lecture.index ?? -1 } : etat
 
   function aller(suivant: PisteEtat) {
     setEtat(suivant)
@@ -54,12 +66,20 @@ export function PisteDesPhases({ round }: { round?: number }) {
 
   const bouton = (i: number) => {
     const etape = ETAPES_MANUEL[i]
+    const classe = `piste-phases-etape${i === courant.index ? ' est-courante' : ''}`
+    if (lecture) {
+      return (
+        <span key={etape.id} className={classe} aria-current={i === courant.index ? 'step' : undefined} title={t(etape.detail)}>
+          {t(etape.libelle)}
+        </span>
+      )
+    }
     return (
       <button
         key={etape.id}
         type="button"
-        className={`piste-phases-etape${i === etat.index ? ' est-courante' : ''}`}
-        aria-current={i === etat.index ? 'step' : undefined}
+        className={classe}
+        aria-current={i === courant.index ? 'step' : undefined}
         title={t(etape.detail)}
         onClick={() => aller({ round: etat.round, index: i })}
       >
@@ -73,22 +93,24 @@ export function PisteDesPhases({ round }: { round?: number }) {
 
   return (
     <div className="piste-phases" role="group" aria-label={t('Phases du round')}>
-      <span className="piste-phases-round">{`${t('Round')} ${etat.round}`}</span>
+      <span className="piste-phases-round">{`${t('Round')} ${courant.round}`}</span>
       {bouton(0)}
       <span
-        className={`piste-phases-mechant${etat.index >= debutMechant && etat.index <= finMechant ? ' est-courante' : ''}`}
+        className={`piste-phases-mechant${courant.index >= debutMechant && courant.index <= finMechant ? ' est-courante' : ''}`}
       >
         <span className="piste-phases-titre">{t('Phase du méchant')}</span>
         {ETAPES_MANUEL.slice(debutMechant, finMechant + 1).map((_, k) => bouton(debutMechant + k))}
       </span>
       {bouton(ETAPES_MANUEL.length - 1)}
-      <button
-        type="button"
-        className="piste-phases-suivant"
-        onClick={() => aller(etapeSuivante(etat))}
-      >
-        {t('Étape suivante')} ›
-      </button>
+      {lecture ? null : (
+        <button
+          type="button"
+          className="piste-phases-suivant"
+          onClick={() => aller(etapeSuivante(etat))}
+        >
+          {t('Étape suivante')} ›
+        </button>
+      )}
     </div>
   )
 }

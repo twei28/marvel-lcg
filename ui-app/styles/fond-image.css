@@ -1,0 +1,37 @@
+/* L'IMAGE DE FOND DE LA TABLE, importée par le joueur (board/fond-image.ts, 11/11/2026).
+
+   Même principe que teinte.css : hors de toute couche, chargée après teinte.css, donc elle passe
+   devant la couleur de la table à specificité égale. Sans image (`data-fond-image` absent), rien
+   ne joue : le fond reste la couleur choisie ou d'origine. */
+
+html[data-fond-image] .plateau-scene,
+html[data-fond-image] #scene,
+html[data-fond-image][data-affichage='sobre'] body,
+html[data-fond-image][data-affichage='sobre'] .plateau-scene,
+html[data-fond-image] body.a-halo-heros .plateau-scene {
+  background: var(--fond-image) center / cover no-repeat;
+}
+
+/* Le réglage « Image de fond de la table » (board/ReglageFondImage.tsx). */
+.reglage-fond-image {
+  margin: 8px 0;
+}
+.reglage-fond-image-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.reglage-fond-image-bouton {
+  padding: 4px 10px;
+  font-size: 13px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.reglage-fond-image-erreur {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: #f08a8a;
+}

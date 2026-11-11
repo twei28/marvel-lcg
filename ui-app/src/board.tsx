@@ -30,6 +30,7 @@ import '../styles/palette.css'
 import '../styles/affichage-sobre.css'
 import '../styles/affichage-epure.css'
 import '../styles/teinte.css'
+import '../styles/fond-image.css'
 import { PlusieursJoueurs, ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
 import { consigne, phraseEtat } from './board/phrase-etat'
@@ -38,6 +39,7 @@ import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
 import { PisteDesPhases } from './board/manuel/PisteDesPhases'
+import { indexDepuisMoteur } from './board/manuel/phases-manuel'
 import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { VoletAideAuto } from './board/VoletAideAuto'
 import { VoletFeuillets } from './board/VoletFeuillets'
@@ -188,6 +190,7 @@ import {
   lireTeinteDuNavigateur,
   type Teinte,
 } from './board/teinte'
+import { appliquerFondImage, lireFondImage } from './board/fond-image'
 import { texteTempsParDecision } from './board/deroule-textes'
 import { SplashTour } from './board/SplashTour'
 import {
@@ -5962,12 +5965,22 @@ export function PagePartie({
           <CoucheSelection />
         </>
       ) : (
-        <VoletAideAuto
-          ouvert={aideAutoOuverte}
-          ouvrir={ouvrirAideAuto}
-          fermer={fermerAideAuto}
-          telephone={modePlateau === 'mobile'}
-        />
+        <>
+          {/* Plateau animé et Accéléré n'ont pas le cartouche du bas : la piste des phases, en lecture
+              seule, dit où en est la partie (round + étape), comme en manuel. Guidé a déjà son cartouche. */}
+          {modePhaseChoisi !== 'detaille' && etat.monde?.round_id ? (
+            <PisteDesPhases
+              round={etat.monde.round_id}
+              lecture={{ round: etat.monde.round_id, index: indexDepuisMoteur(etat.monde.phase) }}
+            />
+          ) : null}
+          <VoletAideAuto
+            ouvert={aideAutoOuverte}
+            ouvrir={ouvrirAideAuto}
+            fermer={fermerAideAuto}
+            telephone={modePlateau === 'mobile'}
+          />
+        </>
       )}
       <VoletFeuillets
         feuillets={feuilletsDeLaPartie([
@@ -6311,6 +6324,7 @@ if (!import.meta.env.VITEST) {
   appliquerAffichage(lireAffichage())
   appliquerEtiquettesTable(lireEtiquettesTable())
   appliquerTeinte(lireTeinteDuNavigateur())
+  appliquerFondImage(lireFondImage())
   window.racinePlateau ??= createRoot(cible)
   window.racinePlateau.render(<Page />)
 }

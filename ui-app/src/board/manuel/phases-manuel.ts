@@ -56,6 +56,19 @@ export const ETAPES_MANUEL: EtapePhase[] = [
   },
 ]
 
+/** L'étape de la piste qui correspond à une phase du moteur, ou `null` quand la phase n'en a pas
+ *  (mise en place, mulligans). « Enemy Activation » vaut pour le méchant ET ses sbires : on
+ *  marque l'étape du méchant, le moteur ne dit pas lequel agit. */
+export function indexDepuisMoteur(phase: string | undefined): number | null {
+  if (!phase) return null
+  if (/^Player \d+ Turn$/.test(phase) || phase === 'Player Turn End') return 0
+  if (phase === 'Main Scheme Place Threat') return 1
+  if (phase === 'Enemy Activation') return 2
+  if (phase === 'Deal Encounter Cards') return 4
+  if (phase === 'Reveal Encounter Cards') return 5
+  return null
+}
+
 export type PisteEtat = { round: number; index: number }
 
 export function etatInitial(round: number | undefined): PisteEtat {

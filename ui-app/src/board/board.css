@@ -2487,6 +2487,20 @@
     transform: translate(-50%, 16px);
   }
 
+  /* --- Texte d'un ART ALTERNATIF, sous la grande carte (Board.tsx) : lisible, police normale. */
+  .carte-apercu .apercu-texte-art {
+    margin-top: 8px;
+    max-width: 100%;
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: left;
+    color: var(--txt, #e8edf3);
+    background: rgba(12, 14, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+  }
+
   /* --- SOUS la grande carte : les jetons, puis les statuts -------------------
      Demande de l'utilisateur (09/09/2026). Sur la table les jetons restent sur
      la carte ; en grand ils masquaient le texte, qu'on vient justement lire.
