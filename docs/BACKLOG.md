@@ -238,3 +238,21 @@ Liste vivante, à cocher au fur et à mesure : `docs/rapports/2026-10-26-problem
 - **Questions ouvertes** : X-Gene ×2 contre « Max 1 per player » ; texte de hf044 Psychic Minefield ; Rally the Survivors « reste en jeu » ; permission de jouer Blink depuis la défausse Recruited ; moment où la 1B de White Queen avance après la fin du round et report du jeton d'accélération ; hf304 en multijoueur ; incite du stade 3 à la première révélation ; **règle jour/nuit de Black Queen** (portée par ses deux cartes d'environnement, absente du livret).
 - **Hydra Unleashed** : 385 cartes, 8 scénarios, 5 mots-clés absents du moteur (Civilians X, Heroic, Sniper X, Zealot, Mercenary), au moins 4 extensions moteur (six vilains simultanés avec jeton d'activation, vilain issu du deck de rencontre, deck de Lieutenants, vilain à six cartes avec dé) ; héros Mockingbird sans cartes.
 - **Une seule passe complète des cas de test à la fin des campagnes** (décision de l'utilisateur) : en mode parallèle `PARALLELES=6` (environ une heure ; la séquentielle dépasse six heures).
+
+## 10. Retours du créateur TMNT et rapports de bug (ajouté le 12/11/2026)
+
+Reste à faire après la session du 12/11 (commits `2f7c51d6`, `e16fc138`, `a3ddb219` non poussés sur `gs7-earth-under-siege`).
+
+**Cartes du créateur à publier** (fichiers ou textes à demander au créateur) : Odyn (set Taijutsu), Nobody (set Alopex), Onmitsu (Path shinobi, recto et verso), Shuriken renommée Throwing Stars (FFG a déjà une carte Suriken). Chaque carte passe par `docs/reference/PROCESSUS-CARTE.md`.
+
+**Kuji-Kiri, Ring of Protection (sj007)** : le créateur signale qu'elle ne propose jamais d'annuler une traitrise pendant une partie avec Baxter. Non reproduit : les 7 cas `[sj] sj007` passent. Il faut le nom de la traitrise et le moment exact de la partie.
+
+**Dazed et Cloaked sur les trahisons** : même correction appliquée aux deux (`2f7c51d6`, `a3ddb219`). Le créateur n'a demandé que Cloaked : à confirmer.
+
+**Voie Shinobi dans l'éditeur de deck** (`e16fc138`) : panneau de choix du Path, filtrage de la grille, Voie propre de Jennika. Logique testée (node), rendu jamais vérifié à l'écran : le créateur doit le tester. Il dit neuf Paths ; les données en contiennent onze.
+
+**Bug 128 : Odorat Amélioré (Enhanced Olfaction, 60003) ne se déclenche jamais.** Confirmé : aucun script pour 60002 à 60006 dans `src/cards/pack/fne/daredevil/` (seul 60012 existe, et il ne fait que lister ces cartes comme cibles d'attachement). Les interruptions de la série Sense (attacher, réduire le coût de la prochaine carte) ne sont donc jamais jouées. Carte à implémenter, pas un misplay. Cinq cartes à faire : 60002, 60003, 60004, 60005, 60006.
+
+**Bug 129 : Nick Fury (art alternatif) ne propose pas « retirer 2 menaces ».** Probablement pas un bug : le complot The Crimson Cowl avait 0 menace au moment du choix (journal), donc l'option n'a pas de cible. Capture et journal lus. À confirmer avec le joueur ; si la règle veut qu'elle soit proposée à 0 menace, c'est un correctif moteur.
+
+**Poussée** : les commits de cette session et les quatre précédents restent locaux (sept commits au total sur la branche).
