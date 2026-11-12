@@ -56,6 +56,14 @@ class Enemies:
                 if villains is not None:
                     villains_to_activate = list(villains)
                 for active_villain in villains_to_activate:
+                    # CORRECTIF (12/11/2026, rapport joueur Bebop & Rocksteady) : la liste est
+                    # figee avant les activations, mais un vilain peut se RETOURNER pendant
+                    # l'activation d'un autre (Headfirst / Headstrong : les deux passent K.O.).
+                    # L'ancien objet garde l'ALERT et `IsInPlay` le croit en jeu (meme nom) :
+                    # son activation partait sans les capacites de la face courante.
+                    # On reprend donc la face COURANTE au moment de l'activation.
+                    if Villain.IsType(active_villain.card.face):
+                        active_villain = active_villain.card.face.CastTo(Villain)
                     if not active_villain.IsInPlay():
                         continue
                     has_enemy = True
