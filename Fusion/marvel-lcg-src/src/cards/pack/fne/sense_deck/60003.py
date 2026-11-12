@@ -28,4 +28,5 @@ def GetAbilities() -> Sequence['Ability']:
         return (message.GetDefeatingPlayer() == this.GetControlByPlayer())
     return [AbilityFactory.CanPlayThisUpgradeCard(ENEMY_OR_SCHEME),
             AbilityFactory.WhenUnitBeDefeated(AbilityType.Interrupt, None, defeat_enemy, conditions=[check_enemy_you]),
-            AbilityFactory.WhenSchemeBeDefeated(AbilityType.Interrupt, None, defeat_scheme, has_defeating_player=True, conditions=[check_scheme_you])]
+            AbilityFactory.WhenSchemeBeDefeated(AbilityType.Interrupt, None, defeat_scheme, has_defeating_player=True, conditions=[check_scheme_you]),
+            DerniereMenaceDuComplotPrincipal(AbilityType.Interrupt, defeat_scheme)]
