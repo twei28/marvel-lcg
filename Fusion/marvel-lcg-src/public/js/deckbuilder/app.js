@@ -30,6 +30,7 @@ import { urlNarval } from "/public/js/prepare/narval.js";
 import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
+import { passeLaVoie, reglesDuPath, reglesDuPathPropre, estPath } from "/public/js/deckbuilder/paths-shinobi.js";
 import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
 // Arts alternatifs (TMNT) : même carte, seule l'image change. Choix dans mc_card_art_v1.
 import { artsDe, origine, codeAffiche, STANDARD, exclusiveRefusee } from "/public/js/prepare/arts-cartes-choix.js";
@@ -173,6 +174,8 @@ const etat = {
     kitOuvert: false,
     problemesOuverts: false,
     sectionsOuvertes: new Set(["aspects", "types", "couts"]),
+    // Héros pour lequel le joueur a répondu « Sans Voie » (le panneau se tait pour lui seulement).
+    voieRefuseePour: null,
     apercu: null,
     epingle: null,
     pioche: { mode: "alter", main: [], reste: [], signature: "" },
@@ -709,7 +712,10 @@ const cleImpression = (c) => `${c.name}|${c.class}|${c.type}`;
 
 async function rendreGrille() {
     // Cartes EXCLUSIVES à une série (TMNT) : absentes de la grille hors de ses héros.
-    const pool = (await poolJoueur(estStanLee(etat.hero))).filter((x) => !exclusiveRefusee(x.carte.set_name, refHeros()));
+    const voie = voieDuDeck();
+    const pool = (await poolJoueur(estStanLee(etat.hero)))
+        .filter((x) => !exclusiveRefusee(x.carte.set_name, refHeros()))
+        .filter((x) => passeLaVoie(x.carte, voie));
     if (!document.querySelector("#db-filtres .db-chip")) rendreFiltres();
     const tri = comparateur(etat.triGrille, nomCarte);
     const passent = pool.filter((x) => passeFiltres(x.carte, etat.filtres, ctxFiltres))
@@ -1082,10 +1088,71 @@ function rendreMobile() {
     $("#db-mob-deck").textContent = `${t("Deck")} (${v.total || 0}) ${v.ok ? "✓" : ""}`.trim();
 }
 
+/* ---------------- Voie Shinobi (Path) ---------------- */
+
+/** Le Path choisi dans le deck (carte `{ id, c }`), ou null. */
+function pathChoisi() {
+    for (const [id] of etat.choisies) {
+        const c = cards.get(id);
+        if (c && estPath(c)) return { id, c };
+    }
+    return null;
+}
+
+/** La Voie qui gouverne la grille : le Path choisi, sinon la Voie propre du héros (Jennika), sinon aucune. */
+function voieDuDeck() {
+    const choisi = pathChoisi();
+    if (choisi) return reglesDuPath(choisi.c, choisi.id);
+    return etat.hero ? reglesDuPathPropre(etat.hero) : null;
+}
+
+/** Le panneau Voie : propre au héros, Path déjà choisi, ou proposition des 11 Paths (« Sans Voie » possible). */
+function rendreVoie() {
+    const zone = $("#db-voie");
+    if (!zone) return;
+    if (!etat.hero) { remplacer(zone); zone.hidden = true; return; }
+    zone.hidden = false;
+    const propre = reglesDuPathPropre(etat.hero);
+    if (propre) {
+        remplacer(zone, el("p", { class: "db-voie-texte" },
+            `${t("Voie propre")} : ${propre.nom} — ${t("cartes Shinobi de n’importe quelle combinaison, aucun aspect, cartes Basic.")}`));
+        return;
+    }
+    const choisi = pathChoisi();
+    if (choisi) {
+        const r = reglesDuPath(choisi.c, choisi.id);
+        remplacer(zone,
+            el("p", { class: "db-voie-texte" },
+                `${t("Voie")} : ${nomCarte(choisi.c)} — ${r.types.join(", ")}${r.aspects.max === 0 ? "" : ` · ${t("un aspect")}`}`),
+            el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.choisies.delete(choisi.id); changement(); } },
+                t("Changer de Voie")));
+        return;
+    }
+    if (etat.voieRefuseePour === refHeros()) {
+        remplacer(zone, el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.voieRefuseePour = null; rendreTout(); } },
+            t("Choisir une Voie Shinobi")));
+        return;
+    }
+    const paths = cards.ids().filter((id) => estPath(cards.get(id)))
+        .sort((a, b) => nomCarte(cards.get(a)).localeCompare(nomCarte(cards.get(b))));
+    remplacer(zone,
+        el("p", { class: "db-voie-texte" },
+            t("Ce deck suit-il une Voie Shinobi ? Sans Voie, aucune carte Shinobi n’est proposée.")),
+        el("div", { class: "db-voie-grille" }, paths.map((id) => {
+            const c = cards.get(id);
+            return el("button", { type: "button", class: "db-voie-carte", title: nomCarte(c), onclick: () => ajouter(id) },
+                el("img", { src: urlCarte(id), loading: "lazy", alt: nomCarte(c) }),
+                el("span", {}, nomCarte(c)));
+        })),
+        el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.voieRefuseePour = refHeros(); rendreTout(); } },
+            t("Sans Voie")));
+}
+
 function rendreTout() {
     const v = valider();
     rendreResume(v);
     rendreDeck();
+    rendreVoie();
     rendreGrille();
     rendreMobile();
     const aspects = $("#db-heros-aspects");

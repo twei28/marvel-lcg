@@ -120,4 +120,13 @@ export const DICO_EN_DECKBUILDER = {
     "survol = aperçu": "hover = preview",
     "toucher = aperçu": "tap = preview",
     "Toucher = aperçu · − / + sur la carte": "Tap = preview · − / + on the card",
+    // Panneau Voie Shinobi (Path), 12/11/2026.
+    "Voie propre": "Own Path",
+    "cartes Shinobi de n’importe quelle combinaison, aucun aspect, cartes Basic.": "Shinobi cards of any combination, no aspect, Basic cards.",
+    "Voie": "Path",
+    "un aspect": "one aspect",
+    "Changer de Voie": "Change Path",
+    "Choisir une Voie Shinobi": "Choose a Shinobi Path",
+    "Ce deck suit-il une Voie Shinobi ? Sans Voie, aucune carte Shinobi n’est proposée.": "Does this deck follow a Shinobi Path? Without a Path, no Shinobi card is offered.",
+    "Sans Voie": "No Path",
 };

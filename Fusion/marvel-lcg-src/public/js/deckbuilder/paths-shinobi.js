@@ -76,3 +76,16 @@ export function reglesDuPathPropre(hero) {
 export function admiseParLePath(c, regles) {
     return typesShinobi(c.class).some((t) => regles.types.includes(t));
 }
+
+const ASPECTS_DU_JEU = ["Aggression", "Justice", "Leadership", "Protection"];
+
+/** La carte `c` est-elle proposee dans la grille du deck, sous la Voie `voie` (regles d'un Path, ou null) ?
+ *  - un Path ne se prend que dans le panneau Voie, jamais dans la grille ;
+ *  - une carte Shinobi exige une Voie qui l'admet (sans Voie, aucune) ;
+ *  - une Voie sans aspect (Sosaiken de Jennika, `aspects.max` 0) n'admet aucune carte d'aspect. */
+export function passeLaVoie(c, voie) {
+    if (estPath(c)) return false;
+    if (estShinobi(c)) return !!voie && admiseParLePath(c, voie);
+    if (voie && voie.aspects.max === 0 && parties(c && c.class).some((x) => ASPECTS_DU_JEU.includes(x))) return false;
+    return true;
+}
