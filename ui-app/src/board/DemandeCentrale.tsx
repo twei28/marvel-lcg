@@ -22,6 +22,8 @@ import './boutons-bd.css'
 type DemandeCentraleProps = {
   demande: Demande
   options: Option[]
+  /** Les choix sans cible (bug 129, choix-refuses.ts) : montres grises apres les vrais, jamais cliquables. */
+  optionsRefusees?: Option[]
   cartesParId: Map<number, WorldCard>
   choisirOption: (option: Option) => void
   annuler: () => void
@@ -444,6 +446,7 @@ export function EvenementCentrale({
 export function DemandeCentrale({
   demande,
   options,
+  optionsRefusees,
   cartesParId,
   choisirOption,
   annuler,
@@ -461,6 +464,8 @@ export function DemandeCentrale({
   annulerAction,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
+  // Ce qu'on MONTRE : les vrais choix puis les refuses. Tous les comptes (choix unique, taille) restent sur `options`.
+  const affichees = optionsRefusees?.length ? [...options, ...optionsRefusees] : options
   // UN SEUL CHOIX, SANS « Passer » : le titre recopiait le bouton (« Fin de
   // phase pour Domino » au-dessus de « FIN DE PHASE / Domino »). Demande de
   // l'utilisateur, 03/10/2026 : garder seulement le bouton. Le bandeau reste en
@@ -605,7 +610,7 @@ export function DemandeCentrale({
       ? t('Qui défend contre cette attaque ?')
       : titreDepuisSource(demande, options, cartesParId).replace(/\s*\(\+0\)\s*$/, '')
     const posees = new Set<number>()
-    const choix: ChoixSurTable[] = options.map((option) => {
+    const choix: ChoixSurTable[] = affichees.map((option) => {
       const nomBrut = estDemandeAUnAutre(option)
         ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
         : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
@@ -773,7 +778,7 @@ export function DemandeCentrale({
           sous `bind_id === 0`) : regrouper par porteur les fondrait en une
           seule vignette et on ne saurait plus ce qu'on choisit.
         */}
-        {options.map((option) => {
+        {affichees.map((option) => {
           const nomBrut = estDemandeAUnAutre(option)
             ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
             : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)

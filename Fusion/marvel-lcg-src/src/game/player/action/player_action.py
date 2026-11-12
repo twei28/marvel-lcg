@@ -650,6 +650,12 @@ class PlayerAction:
             if filtered_effects == []:
                 return None
             from game.message import Message
+            # Bug 129 (Nick Fury 01084) : les options de CE choix que le filtre vient d'ecarter, gardees pour le
+            # plateau, qui les montre grisees. Voir `WorldRender.choix_refuses`.
+            if type(message) is Message.WhenPlayerChooseAbility:
+                player.world.render.choix_refuses = (message, [
+                    refuse for refuse in player.world.render.derniers_refus
+                    if any(refuse is propose for propose in effects)])
             Message.PlayerOnEvent_Text(player, message)
             effect, cheat = self.ChoiceAndSpellEffect(filtered_effects, message, priority, forced, passer_refuse=passer_refuse)
             if cheat:

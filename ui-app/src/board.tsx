@@ -207,6 +207,7 @@ import { poserVitre } from './board/vitre-spectateur'
 import { CadreJoueur } from './board/CadreJoueur'
 import { suivreDefilements, useDefilementsDuJoueur } from './board/defilement-partage'
 import { phraseDuRefus } from './board/raisons-refus'
+import { choixRefuses } from './board/choix-refuses'
 import { CoucheRefusEffets } from './board/refus-effets'
 import { CoucheChoixUniques } from './board/choix-uniques'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
@@ -2488,10 +2489,13 @@ export function PagePartie({
   // afficher qu'un jargon anglais. Ce silence n'est pas un repli tolere, c'est
   // un defaut : `tools/verifier_raisons_refus.py` echoue des qu'un code
   // atteint le plateau sans phrase.
+  const optionsRefusees = useMemo(() => choixRefuses(etat.demande ?? undefined), [etat.demande])
   const raisonsRefus = useMemo(() => {
     const parCarte = new Map<number, string[]>()
     for (const refus of etat.demande?.refus ?? []) {
       if (!refus.bind_id) continue
+      // Un CHOIX sans cible (bug 129) n'est pas une carte injouable : il se montre grise dans la question.
+      if (refus.is_text_choice && etat.demande?.event_name === 'WhenPlayerChooseAbility') continue
       const phrase = phraseDuRefus(refus.failure_reason)
       if (phrase === undefined) continue
       const deja = parCarte.get(refus.bind_id) ?? []
@@ -4985,6 +4989,7 @@ export function PagePartie({
           <DemandeCentrale
             demande={etat.demande}
             options={interaction.options}
+            optionsRefusees={optionsRefusees}
             cartesParId={cartesMondeParId}
             choisirOption={choisirOptionDepuisMenu}
             annuler={interaction.annuler}
@@ -5018,6 +5023,7 @@ export function PagePartie({
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
+          optionsRefusees={optionsRefusees}
           cartesParId={cartesMondeParId}
           choisirOption={choisirOptionDepuisMenu}
           annuler={interaction.annuler}
@@ -5387,6 +5393,7 @@ export function PagePartie({
                 <DemandeCentrale
                   demande={etat.demande}
                   options={interaction.options}
+                  optionsRefusees={optionsRefusees}
                   cartesParId={cartesMondeParId}
                   choisirOption={choisirOptionDepuisMenu}
                   annuler={interaction.annuler}

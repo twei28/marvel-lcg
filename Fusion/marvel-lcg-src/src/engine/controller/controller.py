@@ -36,7 +36,7 @@ class Controller:
     ################################################################################
     #
     # GetInput
-    def RendreLesRefus(self, by_effect: 'Effect|None') -> List[Any]:
+    def RendreLesRefus(self, by_effect: 'Effect|None', choix: 'Message2|None'=None) -> List[Any]:
         """Les effets ECARTES de la question en cours, au format des options.
 
         POURQUOI (10/09/2026, demande de l'utilisateur : « quand on survole une
@@ -58,13 +58,23 @@ class Controller:
         except Exception:
             pass
         try:
-            derniers = getattr(self.world.render, "derniers_refus", None) or []
+            derniers = list(getattr(self.world.render, "derniers_refus", None) or [])
+            # Les options refusees du CHOIX en cours (bug 129) : leur tampon a elles, `derniers_refus` etant deja
+            # ecrase par `_RefusDesCartesAJouer` juste au-dessus.
+            question, ecartes = getattr(self.world.render, "choix_refuses", (None, []))
+            du_choix: List[Any] = []
+            if choix is not None and question is choix:
+                du_choix = [effect for effect in ecartes if not any(effect is deja for deja in derniers)]
+                derniers += du_choix
             for effect in derniers:
                 try:
                     # Sans `by_effect` : `Render` rendrait le `bind_id` de l'effet qui
                     # POSE la question, et le refus d'une autre carte s'afficherait
                     # « Injouable » sur elle (signalement Rapid Response, 11/10/2026).
-                    descriptor = effect.Render(None, self.player_id)
+                    # Une option du choix, elle, EST portee par la carte qui pose la question (« Nick Fury »),
+                    # comme ses soeurs offertes : sans cela le plateau la signait du nom de l'identite.
+                    porteur = by_effect if any(effect is e for e in du_choix) else None
+                    descriptor = effect.Render(porteur, self.player_id)
                 except Exception:
                     continue
                 if not descriptor.failure_reason:
@@ -82,7 +92,11 @@ class Controller:
         try:
             ids_identites = {j.GetIdentity().card.object_id
                              for j in self.world.players if j.GetIdentity() is not None}
-            refus = [r for r in refus if r.bind_id not in ids_identites]
+            # SAUF les options d'un CHOIX (`ChooseAbilities`, bug 129 du 12/11/2026, Nick Fury 01084 : « retirer 2
+            # menaces » disparaissait sans un mot quand aucun complot n'avait de menace). Un choix est toujours porte
+            # par l'identite : pendant CETTE question seulement (`choix`), ses options refusees partent, marquees
+            # `is_text_choice`, et le plateau les montre grisees dans la liste au lieu de les coller sur le heros.
+            refus = [r for r in refus if r.bind_id not in ids_identites or (choix is not None and r.is_text_choice)]
         except Exception:
             pass
         return refus
@@ -409,7 +423,7 @@ class Controller:
                 user_input = self.input.GetInput(
                     AskOptionPayload(
                         options_json=Json.Dumps(effect_descriptors),
-                        refus_json=Json.Dumps(self.RendreLesRefus(by_effect)),
+                        refus_json=Json.Dumps(self.RendreLesRefus(by_effect, choix=message if message_name == "WhenPlayerChooseAbility" else None)),
                         ability_type=priority.name,
                         event_name=message_name,
                         prompt_text=prompt_text,

@@ -17,6 +17,7 @@
 
 import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
+import { choixRefuses } from './choix-refuses'
 import { nettoyerNarration, nomLisible } from './BarreAction'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import {
@@ -404,7 +405,7 @@ export function vueSousCadre(
       // vignettes identiques ne disaient plus lequel faisait quoi (planche du
       // lot 4, Poseur de Bombe d'Hydra). Une carte que le choix NOMME garde
       // sa vignette.
-      choix: options.map((option, rang) => ({
+      choix: [...options, ...choixRefuses(q.demande)].map((option, rang) => ({
         ...vignetteOption(option, rang + 1, q, nomLisible(option)),
         scan: q.carteDeLOption?.(option),
       })),
@@ -413,7 +414,7 @@ export function vueSousCadre(
   }
 
   const porteurUnique = porteurCommun(options)
-  if (q.demande.event_name === 'WhenPlayerChooseAbility' && options.length > 1 && porteurUnique !== undefined) {
+  if (q.demande.event_name === 'WhenPlayerChooseAbility' && options.length + choixRefuses(q.demande).length > 1 && porteurUnique !== undefined) {
     // UNE carte propose plusieurs effets (Proxima Midnight : 1 dégât à la tour
     // OU +2 ATQ) : un bouton par effet, nommé par son texte. Deux vignettes de
     // la même carte avec le même texte ne disaient pas lequel faisait quoi.
@@ -421,7 +422,8 @@ export function vueSousCadre(
     return {
       genre: 'choix-carte',
       intitule: nom ? `${nom} : ${t('choisis un effet')}` : t('Choisis un effet'),
-      choix: options.map((option, rang) => ({
+      // Les choix sans cible suivent, grises (bug 129, choix-refuses.ts).
+      choix: [...options, ...choixRefuses(q.demande)].map((option, rang) => ({
         ...vignetteOption(option, rang + 1, q, libelleDeChoix(option, porteurUnique, q)),
         scan: q.carteDeLOption?.(option),
       })),
