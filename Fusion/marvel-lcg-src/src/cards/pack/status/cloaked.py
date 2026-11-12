@@ -55,12 +55,17 @@ def GetAbilities() -> Sequence['Ability']:
         consommer(effect)
 
     def vraie_activation_de_base(effect: 'Effect', message: 'Message.WhenEnemyActivateAgainstYou') -> bool:
-        if message.would_act_message is None or not pas_de_dazed(effect):
+        # CORRECTIF (12/11/2026, retour du createur TMNT) : une attaque de
+        # traitrise (Shred, Disarming Assault : « Shredder attacks you ») n'est
+        # pas une activation (`would_act_message` None) mais doit faire
+        # activer le Cloaked. Ici donc : toute attaque ennemie ; une
+        # activation (attaque ou manigance) reste soumise au pouvoir de base.
+        if not pas_de_dazed(effect):
             return False
         would = message.would_message
         if isinstance(would, Message.WhenUnitWouldAttack):
-            return would.IsBasicAttack()
-        return would.IsBasicScheme()
+            return message.would_act_message is None or would.IsBasicAttack()
+        return message.would_act_message is not None and would.IsBasicScheme()
 
     def degats(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> None:
         # CORRECTIF (16/10/2026, encart Shredder) : « Tough status cards always
