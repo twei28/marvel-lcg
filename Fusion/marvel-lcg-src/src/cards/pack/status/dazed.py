@@ -65,12 +65,13 @@ def GetAbilities() -> Sequence['Ability']:
         consommer_le_lot(effect)
 
     def vraie_activation_de_base(effect: 'Effect', message: 'Message.WhenEnemyActivateAgainstYou') -> bool:
-        if message.would_act_message is None:
-            return False
+        # CORRECTIF (12/11/2026) : meme regle que cloaked.py. Une attaque de traitrise
+        # (Shred, Disarming Assault) n'est pas une activation (`would_act_message` None)
+        # mais fait activer la carte ; une activation reste soumise au pouvoir de base.
         would = message.would_message
         if isinstance(would, Message.WhenUnitWouldAttack):
-            return would.IsBasicAttack()
-        return would.IsBasicScheme()
+            return message.would_act_message is None or would.IsBasicAttack()
+        return message.would_act_message is not None and would.IsBasicScheme()
 
     def tough_absorbe(effect: 'Effect', message: 'Message.WhenUnitWouldTakeDamage') -> bool:
         unit = porteur(effect)
