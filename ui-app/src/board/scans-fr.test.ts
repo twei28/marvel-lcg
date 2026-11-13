@@ -126,9 +126,9 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (120 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler et les 20 de Moon Knight) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (260 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler les 20 de Moon Knight et les 140 de La ville ne dort jamais) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(120)
+    expect(SCANS_FR_FANMADE.size).toBe(260)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -225,5 +225,33 @@ describe('SCANS_FR_FANMADE (Moon Knight de DesignHacker)', () => {
     expect(aScanFr('mk024')).toBe(false)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('mk005')).toBe('fr_mk005')
+  })
+})
+
+describe('SCANS_FR_FANMADE (La ville ne dort jamais, MC×DC 2026)', () => {
+  it('les 140 cartes du zip ont un scan francais ; les cartes de campagne et de defi gardent le voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    for (const id of [
+      'pu001a', 'pu001b', 'pu002a', 'pu002b', 'pu003a', 'pu003b', 'pu004', 'pu005', 'pu006', 'pu007', 'pu008', 'pu009',
+      'pu010', 'pu011', 'pu012', 'pu013', 'pu014', 'pu015', 'pu016', 'pu017', 'pu018', 'pu020', 'pu021', 'pu022',
+      'pu023', 'pu024', 'pu025', 'pu026', 'pu027', 'pu028', 'pu030', 'pu031', 'pu032', 'pu033', 'pu034', 'pu035',
+      'pu036', 'pu037', 'pu038', 'pu039', 'pu040', 'pu041', 'pu042', 'pu043', 'pu044', 'pu045', 'pu046', 'pu047',
+      'pu048a', 'pu048b', 'pu049a', 'pu049b', 'pu050a', 'pu050b', 'pu051a', 'pu051b', 'pu052a', 'pu052b', 'pu053a', 'pu053b',
+      'pu054a', 'pu054b', 'pu055a', 'pu055b', 'pu056a', 'pu056b', 'pu057a', 'pu057b', 'pu058', 'pu059', 'pu060', 'pu063',
+      'pu064', 'pu065', 'pu066', 'pu068', 'pu070', 'pu071a', 'pu071b', 'pu072a', 'pu072b', 'pu073', 'pu074', 'pu075',
+      'pu076', 'pu077', 'pu078', 'pu079', 'pu080', 'pu082', 'pu084', 'pu086a', 'pu086b', 'pu087a', 'pu087b', 'pu088a',
+      'pu088b', 'pu089a', 'pu089b', 'pu090a', 'pu090b', 'pu091a', 'pu091b', 'pu092', 'pu093', 'pu094', 'pu095', 'pu096',
+      'pu097', 'pu098', 'pu099', 'pu100', 'pu102', 'pu104', 'pu105', 'pu106a', 'pu106b', 'pu107', 'pu108', 'pu109',
+      'pu110', 'pu111', 'pu113', 'pu114', 'pu115', 'pu116', 'pu117', 'pu118', 'pu119', 'pu120', 'pu121', 'pu123',
+      'pu125', 'pu126', 'pu127', 'pu128', 'pu129', 'pu130', 'pu131', 'pu139',
+    ])
+      expect(aScanFr(id)).toBe(true)
+    // un second exemplaire (6019) n'a pas de fiche : il partage pu018 ; les images de campagne ne sont pas associees
+    expect(aScanFr('pu019')).toBe(false)
+    for (const id of ['pu140', 'pu141', 'pu149a', 'pu151', 'pu279', 'pu283b', 'pu285b']) expect(aScanFr(id)).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('pu005')).toBe('fr_pu005')
+    expect(picIdFr('pu006')).toBe('fr_pu006')
+    expect(picIdFr('pu140')).toBe('pu140')
   })
 })
