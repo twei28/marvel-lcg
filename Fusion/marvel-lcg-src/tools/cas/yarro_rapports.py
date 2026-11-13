@@ -1,5 +1,44 @@
 # Rapports de bug de Yarro (n 85 a 93, 15-17/10/2026) : cas de non-regression.
+SANS_BOOST_Y130 = ["Puzzle.EmptyEncounterDeck()",
+                   "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')"]
 CAS = [
+    {
+        "nom": "[yarro130] Faces.DiscardAll(simultaneous) : AUCUNE question d'ordre pour des cartes face cachee, une question des qu'une est face visible",
+        "pourquoi": ("les deux cas suivants passent aussi sans le correctif (le harnais repond seul a la question) : celui-ci COMPTE "
+                     "les appels a ChooseOrder. Rouge sans le correctif de Faces.DiscardAll (rapport Yarro n130, Seized!)"),
+        "scenario": "magneto",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.PutIntoPlay('32158')",
+                          "Puzzle.PlaceUnder('01088', '32158')", "Puzzle.PlaceUnder('01089', '32158')", "Puzzle.PlaceUnder('01090', '32158')"],
+        "declencher": [],
+        "verifier": "yarro130_ordre_defausse",
+        "attendu": {},
+    },
+    {
+        "nom": "[yarro130] 32158 Seized! vaincu : les cartes FACE CACHEE dessous partent en defausse sans question d'ordre",
+        "pourquoi": ("rapport Yarro n130 (13/11/2026) : « Simultaneous Discard » demandait d'ordonner 6/6 cartes face cachee ; "
+                     "le joueur annulait, l'annulation defaisait le contre, et la sequence bouclait. Aucune question ne doit rester"),
+        "scenario": "magneto",
+        "heros": "rocket_raccoon",
+        "mise_en_place": SANS_BOOST_Y130 + ["Puzzle.ChangeForm('16029b')", "Puzzle.PutIntoPlay('32158')", "Puzzle.SetThreat('32158', 2)",
+                                            "Puzzle.PlaceUnder('01088', '32158')", "Puzzle.PlaceUnder('01089', '32158')",
+                                            "Puzzle.PlaceUnder('01090', '32158')"],
+        "declencher": ["Puzzle.Thwart('16029a')"], "cibles": ["32158"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["32158"], "defausse": ["01088", "01089", "01090"]},
+    },
+    {
+        "nom": "[yarro130] 32158 Seized! vaincu — TEMOIN : une carte FACE VISIBLE dessous garde la question d'ordre (acceptee ici)",
+        "pourquoi": "le correctif ne retire la question que pour des cartes toutes face cachee ; une carte visible se defausse toujours, ordre demande",
+        "scenario": "magneto",
+        "heros": "rocket_raccoon",
+        "mise_en_place": SANS_BOOST_Y130 + ["Puzzle.ChangeForm('16029b')", "Puzzle.PutIntoPlay('32158')", "Puzzle.SetThreat('32158', 2)",
+                                            "Puzzle.PlaceUnder('01088', '32158', face_up=True)", "Puzzle.PlaceUnder('01089', '32158')"],
+        "declencher": ["Puzzle.Thwart('16029a')"], "cibles": ["32158"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["32158"], "defausse": ["01088", "01089"]},
+    },
     {
         "nom": "[yarro93] 16093 Nebula's Ship — Shoot the Thrusters! : 2 ressources depensees retirent 2 compteurs evasion",
         "pourquoi": ("rapport Yarro n93 (17/10/2026) : le Milano s'inclinait mais aucune ressource ne pouvait etre "
@@ -153,4 +192,38 @@ def yarro_poison(monde, aides):
     if degats != attendu["degats"] or compteurs != attendu["poison"] or energie != attendu.get("energie"):
         return False, f"degats={degats} poison={compteurs} energie={energie} (attendu {attendu})"
     return True, "etat conforme"
+
+def yarro130_ordre_defausse(monde, aides):
+    """Compte les questions d'ordre posees par une defausse simultanee : 0 face cachee, 1 des qu'une carte est visible."""
+    from game.effect.rule import DebugRule
+    from game.operate.faces import Faces
+    joueur = monde.players[0]
+    effet = DebugRule(monde.object_manager.card_dict[0].face)
+    manigance = aides["par_id"](monde, "32158")
+    if manigance is None:
+        return False, "Seized! introuvable en jeu"
+    dessous = list(manigance.card.components.OnDiscard(effet))
+    if len(dessous) != 3:
+        return False, f"cartes dessous = {len(dessous)} (attendu 3)"
+    if any(f.card.IsFaceUp() for f in dessous):
+        return False, "une carte dessous est face visible : le montage ne fabrique pas du face cachee"
+    appels = []
+    d_origine = type(joueur).ChooseOrder
+    def compte(self, faces, *, prompt=""):
+        appels.append(len(faces))
+        return list(faces)
+    type(joueur).ChooseOrder = compte
+    try:
+        Faces.DiscardAll(dessous, effet, simultaneous=True)
+        cache = len(appels)
+        dessous[0].card.state.is_face_up = True
+        Faces.DiscardAll(list(dessous), effet, simultaneous=True)
+        visible = len(appels) - cache
+    finally:
+        type(joueur).ChooseOrder = d_origine
+    if cache != 0:
+        return False, f"{cache} question(s) d'ordre pour 3 cartes face cachee (attendu 0)"
+    if visible != 1:
+        return False, f"{visible} question(s) d'ordre avec une carte face visible (attendu 1)"
+    return True, "0 question face cachee, 1 question des qu'une carte est visible"
 '''

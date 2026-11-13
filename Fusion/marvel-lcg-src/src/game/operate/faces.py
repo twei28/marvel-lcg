@@ -10,7 +10,11 @@ class Faces:
         moved_faces: List['CardFace'] = []
         from_decks = Faces.GetDecksInDeck(faces)
 
-        if simultaneous and faces:
+        # ⚠ PAS D'ORDRE A CHOISIR ENTRE CARTES FACE CACHEE (rapport 130, Yarro, 13/11/2026, Seized! 32158). Le joueur ne
+        # connait pas ces cartes : l'ordre n'est pas un choix, c'est un tirage. La question demandait pourtant de les
+        # designer TOUTES (6/6) ; le joueur l'annulait, « Annuler » defaisait le contre de la manigance, et la meme
+        # sequence recommencait a chaque tour. On ne demande l'ordre que s'il reste au moins une carte face visible.
+        if simultaneous and faces and any(face.card.IsFaceUp() for face in faces):
             faces = by_effect.world.GetFirstPlayer().ChooseOrder(faces, prompt="Simultaneous Discard")
 
         for face in faces:
