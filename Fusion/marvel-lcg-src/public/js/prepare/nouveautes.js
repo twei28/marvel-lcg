@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-13",
+        genre: "heros",
+        fr: "La ville ne dort jamais (Punisher, MC×DC 2026) : 155 cartes s'affichent avec leurs scans français quand vous jouez en français, y compris l'image double The City + Never Sleeps.",
+        en: "The City Never Sleeps (Punisher, MC×DC 2026): 155 cards now show their French scans when you play in French, including the double image The City + Never Sleeps.",
+    },
+    {
+        date: "2026-11-13",
+        genre: "correction",
+        fr: "Défausser des cartes face cachée (Seized! de Yarro par exemple) ne pose plus de question d'ordre inutile.",
+        en: "Discarding face-down cards (Yarro's Seized! for example) no longer asks a pointless ordering question.",
+    },
+    {
         date: "2026-11-12",
         genre: "correction",
         fr: "Quand un choix de carte n'a aucune cible (retirer de la menace alors qu'aucune manigance n'en porte, avec Nick Fury par exemple), il reste affiché, grisé, avec la raison. Avant, il disparaissait sans un mot.",
