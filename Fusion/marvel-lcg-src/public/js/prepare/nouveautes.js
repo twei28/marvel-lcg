@@ -47,6 +47,24 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-12",
+        genre: "correction",
+        fr: "Quand un choix de carte n'a aucune cible (retirer de la menace alors qu'aucune manigance n'en porte, avec Nick Fury par exemple), il reste affiché, grisé, avec la raison. Avant, il disparaissait sans un mot.",
+        en: "When a card's choice has no legal target (removing threat when no scheme has any, with Nick Fury for example), it now stays visible, greyed out, with the reason. Before, it vanished without a word.",
+    },
+    {
+        date: "2026-11-12",
+        genre: "correction",
+        fr: "Daredevil : Tactilité Aiguë et Odorat Amélioré se déclenchent enfin quand la dernière menace d'un complot principal est retirée. Dazed et Cloaked s'activent aussi sur les attaques de traîtrise, et le K.O. d'un vilain (Bebop) retire son compteur en dehors de sa phase.",
+        en: "Daredevil: Acute Tactility and Enhanced Olfaction now trigger when the last threat is removed from a main scheme. Dazed and Cloaked also activate on treachery attacks, and a defeated villain (Bebop) now removes its counter outside its own phase.",
+    },
+    {
+        date: "2026-11-12",
+        genre: "jeu",
+        fr: "Éditeur de deck : un panneau pour choisir la Voie Shinobi (Path) des Tortues Ninja, avec la grille de cartes filtrée en conséquence.",
+        en: "Deck editor: a panel to pick the Teenage Mutant Ninja Turtles' Shinobi Path, with the card grid filtered accordingly.",
+    },
+    {
         date: "2026-11-09",
         genre: "heros",
         fr: "Un nouveau scénario fan-made : Mephisto, de Neptune. Tentations, pactes et une Damnation où disparaissent les cartes de votre deck, avec ses modulaires Blackheart, Corruptive Offers, Damned et Mother of Demons.",
