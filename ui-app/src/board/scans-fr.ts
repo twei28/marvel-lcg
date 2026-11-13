@@ -74,9 +74,9 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   'mk001a', 'mk001b', 'mk001c', 'mk001d', 'mk001e', 'mk002', 'mk003', 'mk004', 'mk005', 'mk006', 'mk007', 'mk008',
   'mk009', 'mk010', 'mk011', 'mk012', 'mk013', 'mk014', 'mk015', 'mk016',
   // La ville ne dort jamais (campagne MC×DC 2026, Punisher) : scans FR de l'equipe (zip du 13/11/2026), `fr_pu*.jpg` poses par
-  // .planning/mcdc-punisher/poser-scans-fr.py. 140 cartes ; les seconds exemplaires partagent le scan de l'original. The City (pu005) et
-  // Never Sleeps (pu006) ont leurs illustrations recollees (panorama-city-fr.py). SANS scan FR (voile garde) : les cartes de campagne et
-  // de defi pu140-pu151 et pu279-pu285, dont les images du zip ne portent pas le numero de leur fiche.
+  // .planning/mcdc-punisher/poser-scans-fr.py. 155 cartes, cartes de campagne (pu140-pu151) et de defi (pu279-pu282) comprises ; les seconds
+  // exemplaires partagent le scan de l'original. The City (pu005) et Never Sleeps (pu006) ont leurs illustrations recollees
+  // (panorama-city-fr.py). SANS scan FR (voile garde) : pu146 (allie Punisher, l'image 6138 n'est pas associee), Hawkeye pu283 et Resistance pu284b/pu285b.
   'pu001a', 'pu001b', 'pu002a', 'pu002b', 'pu003a', 'pu003b', 'pu004', 'pu005', 'pu006', 'pu007', 'pu008', 'pu009',
   'pu010', 'pu011', 'pu012', 'pu013', 'pu014', 'pu015', 'pu016', 'pu017', 'pu018', 'pu020', 'pu021', 'pu022',
   'pu023', 'pu024', 'pu025', 'pu026', 'pu027', 'pu028', 'pu030', 'pu031', 'pu032', 'pu033', 'pu034', 'pu035',
@@ -88,7 +88,8 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   'pu088b', 'pu089a', 'pu089b', 'pu090a', 'pu090b', 'pu091a', 'pu091b', 'pu092', 'pu093', 'pu094', 'pu095', 'pu096',
   'pu097', 'pu098', 'pu099', 'pu100', 'pu102', 'pu104', 'pu105', 'pu106a', 'pu106b', 'pu107', 'pu108', 'pu109',
   'pu110', 'pu111', 'pu113', 'pu114', 'pu115', 'pu116', 'pu117', 'pu118', 'pu119', 'pu120', 'pu121', 'pu123',
-  'pu125', 'pu126', 'pu127', 'pu128', 'pu129', 'pu130', 'pu131', 'pu139',
+  'pu125', 'pu126', 'pu127', 'pu128', 'pu129', 'pu130', 'pu131', 'pu139', 'pu140', 'pu141', 'pu142', 'pu143',
+  'pu144', 'pu145', 'pu147', 'pu148', 'pu149a', 'pu149b', 'pu151', 'pu279', 'pu280', 'pu281', 'pu282',
 ])
 
 /** Les cartes dont le SEUL scan est francais (aucun scan anglais n'existe : Beast de Proust, `bs*`) : en anglais on voile le scan francais et

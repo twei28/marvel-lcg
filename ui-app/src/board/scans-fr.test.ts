@@ -126,9 +126,9 @@ describe('scanDejaFrancais', () => {
 })
 
 describe('SCANS_FR_FANMADE', () => {
-  it('les 17 cartes de Destiny (260 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler les 20 de Moon Knight et les 140 de La ville ne dort jamais) ont un scan francais, donc pas de voile', async () => {
+  it('les 17 cartes de Destiny (275 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler les 20 de Moon Knight et les 155 de La ville ne dort jamais) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(260)
+    expect(SCANS_FR_FANMADE.size).toBe(275)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -229,7 +229,7 @@ describe('SCANS_FR_FANMADE (Moon Knight de DesignHacker)', () => {
 })
 
 describe('SCANS_FR_FANMADE (La ville ne dort jamais, MC×DC 2026)', () => {
-  it('les 140 cartes du zip ont un scan francais ; les cartes de campagne et de defi gardent le voile', async () => {
+  it('les 155 cartes du zip ont un scan francais ; les cartes d\'autres packs et l\'allie Punisher gardent le voile', async () => {
     const { aScanFr, picIdFr } = await import('./scans-fr')
     for (const id of [
       'pu001a', 'pu001b', 'pu002a', 'pu002b', 'pu003a', 'pu003b', 'pu004', 'pu005', 'pu006', 'pu007', 'pu008', 'pu009',
@@ -243,15 +243,16 @@ describe('SCANS_FR_FANMADE (La ville ne dort jamais, MC×DC 2026)', () => {
       'pu088b', 'pu089a', 'pu089b', 'pu090a', 'pu090b', 'pu091a', 'pu091b', 'pu092', 'pu093', 'pu094', 'pu095', 'pu096',
       'pu097', 'pu098', 'pu099', 'pu100', 'pu102', 'pu104', 'pu105', 'pu106a', 'pu106b', 'pu107', 'pu108', 'pu109',
       'pu110', 'pu111', 'pu113', 'pu114', 'pu115', 'pu116', 'pu117', 'pu118', 'pu119', 'pu120', 'pu121', 'pu123',
-      'pu125', 'pu126', 'pu127', 'pu128', 'pu129', 'pu130', 'pu131', 'pu139',
+      'pu125', 'pu126', 'pu127', 'pu128', 'pu129', 'pu130', 'pu131', 'pu139', 'pu140', 'pu141', 'pu142', 'pu143',
+      'pu144', 'pu145', 'pu147', 'pu148', 'pu149a', 'pu149b', 'pu151', 'pu279', 'pu280', 'pu281', 'pu282',
     ])
       expect(aScanFr(id)).toBe(true)
-    // un second exemplaire (6019) n'a pas de fiche : il partage pu018 ; les images de campagne ne sont pas associees
-    expect(aScanFr('pu019')).toBe(false)
-    for (const id of ['pu140', 'pu141', 'pu149a', 'pu151', 'pu279', 'pu283b', 'pu285b']) expect(aScanFr(id)).toBe(false)
+    // un second exemplaire (6019) n'a pas de fiche : il partage pu018 ; 6138 (pu146 ?) n'est pas associee ; Hawkeye et Resistance sont d'autres packs
+    for (const id of ['pu019', 'pu146', 'pu283a', 'pu283b', 'pu284b', 'pu285b']) expect(aScanFr(id)).toBe(false)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('pu005')).toBe('fr_pu005')
     expect(picIdFr('pu006')).toBe('fr_pu006')
-    expect(picIdFr('pu140')).toBe('pu140')
+    expect(picIdFr('pu140')).toBe('fr_pu140')
+    expect(picIdFr('pu146')).toBe('pu146')
   })
 })
