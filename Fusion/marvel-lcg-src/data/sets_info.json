@@ -916,9 +916,11 @@
  "63. Elektra Natchios": {
   "name": "elektra",
   "scenarios": [],
-  "heroes": [],
+  "heroes": [
+   "elektra"
+  ],
   "encounters": [],
-  "max_id": ""
+  "max_id": "63014"
  },
  "64. Iron Fist": {
   "name": "iron_fist",
@@ -2471,5 +2473,5 @@
   ],
   "max_id": "mp163"
  },
- "checksum": "9211c77e74a889034e42aaed2f40000a27dc20c03cb4bd3aa5b124da262b4d08"
+ "checksum": "14336ddef2cf5cf534c64554e51a98747266c45025dd151ad848186813400757"
 }

@@ -60170,6 +60170,7 @@ IMPRIME = {
 # le meme cas — leurs verificateurs dedies existaient, mais ces cas-la
 # appelaient `etat_attendu`. Toute cle inconnue fait desormais ECHOUER le cas.
 CLES_ETAT_ATTENDU = {
+    "deck_annexe", "deck_annexe_taille", "rencontre_compte",   # AJOUT 13/11/2026 (paquet Ninja d'Elektra)
     'absent_main', 'attaches', 'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
     'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
     'defausse_joueur', 'defausse_dessus', 'defausse_rencontre', 'degats', 'degats_identite',
@@ -61301,6 +61302,26 @@ def etat_attendu(monde, aides):
         for card_id in attendu["dans_deck_rencontre"]:
             if card_id not in ids:
                 soucis.append(f"{card_id} absent du deck Rencontre")
+
+    # `deck_annexe_taille` : nombre de cartes de `additional_deck` du joueur 1. AJOUT (13/11/2026, heros Elektra : paquet
+    # Ninja de 6 cartes). `deck_annexe` : card_id des cartes qu'il contient (liste triee, doublons compris).
+    if "deck_annexe_taille" in attendu:
+        n_annexe = monde.players[0].additional_deck.GetSize()
+        if n_annexe != attendu["deck_annexe_taille"]:
+            soucis.append(f"deck annexe {n_annexe} carte(s) (attendu {attendu['deck_annexe_taille']})")
+    # `rencontre_compte` : [[[card_id, ...], n], ...] = combien de cartes de CES card_id sont dans le paquet de rencontre
+    # (AJOUT 13/11/2026 : on ne sait pas laquelle des cartes Ninja le melange a tiree, on compte donc par famille).
+    if "rencontre_compte" in attendu:
+        from game.operate.worlds import Worlds
+        ids_renc = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+        for ids_voulus, n_voulu in attendu["rencontre_compte"]:
+            n_reel = sum(1 for i in ids_renc if i in ids_voulus)
+            if n_reel != n_voulu:
+                soucis.append(f"paquet de rencontre : {n_reel} carte(s) parmi {ids_voulus} (attendu {n_voulu})")
+    if "deck_annexe" in attendu:
+        reel_annexe = sorted(getattr(f.paper, "card_id", None) for f in monde.players[0].additional_deck.Get())
+        if reel_annexe != sorted(attendu["deck_annexe"]):
+            soucis.append(f"deck annexe {reel_annexe} (attendu {sorted(attendu['deck_annexe'])})")
 
     if "forme" in attendu:
         courante = "Hero" if monde.players[0].IsHero() else "AlterEgo"

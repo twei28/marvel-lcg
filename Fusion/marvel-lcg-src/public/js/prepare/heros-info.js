@@ -50,6 +50,16 @@ export const HEROS_INFO = {
         apparition: "Marvel Premiere #15 (1974)",
     },
 
+    "63001a": {
+        bio: "Fille d'un ambassadeur grec, Elektra Natchios perd sa mère puis son père très jeune et se tourne vers les arts martiaux. Formée par Stick puis par la Main, elle devient l'une des meilleures assassins du monde, avant de croiser Matt Murdock, qu'elle aime et qui ne parviendra jamais à la détourner de sa voie. Tuée par Bullseye puis ramenée à la vie par la Main, elle reste une lame sans maître, partagée entre sa quête de vengeance et ce qu'il lui reste d'honneur.",
+        bioEn: "The daughter of a Greek ambassador, Elektra Natchios loses her mother and then her father at a young age and throws herself into the martial arts. Trained by Stick and then by the Hand, she becomes one of the finest assassins in the world, until she crosses paths with Matt Murdock, who loves her and never manages to turn her from her path. Killed by Bullseye and then brought back by the Hand, she remains a blade with no master, torn between her need for vengeance and whatever honor she has left.",
+        civil: "Elektra Natchios",
+        base: "New York",
+        ennemis: "Bullseye, la Main",
+        ennemisEn: "Bullseye, the Hand",
+        apparition: "Daredevil #168 (1981)",
+    },
+
     "kb001a": {
         bio: "Fille d'un riche homme d'affaires new-yorkais, Kate Bishop n'a aucun pouvoir : seulement un arc, une discipline de fer et un culot à toute épreuve. Elle rejoint les Jeunes Vengeurs alors que Clint Barton passe pour mort, et c'est lui, de retour, qui lui laisse le nom de Hawkeye. Partenaire de Clint, patronne des Vengeurs de la côte Ouest, détective à Los Angeles à ses heures, elle est la preuve qu'on peut tenir tête à un dieu avec des flèches et une grande gueule.",
         bioEn: "Daughter of a wealthy New York businessman, Kate Bishop has no powers: just a bow, iron discipline and boundless nerve. She joins the Young Avengers while Clint Barton is believed dead, and it is Clint himself, once back, who lets her keep the name Hawkeye. Clint's partner, boss of the West Coast Avengers, part-time detective in Los Angeles, she is living proof that you can stand up to a god with arrows and a big mouth.",

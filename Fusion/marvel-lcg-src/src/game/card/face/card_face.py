@@ -288,6 +288,9 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # deja sur tj006) et SENPAI (Sosaiken tj011, The Last Ronin se005), lus par « OATH upgrades you
         # control » (Samurai, Way of the Warrior). Declaratifs a l'execution.
         "OATH", "SENPAI",
+        # AJOUT (13/11/2026, heros Elektra MC63) : ACROBATIC n'est PAS decoratif, Elektra's Sai (63012) cherche
+        # « the next ACROBATIC or ATTACK event » par ce trait (Acrobatic Prowess 63006, Move Unseen 63008).
+        "ACROBATIC",
         # Les Paths Shinobi (se001-se011) impriment leur(s) type(s) Shinobi en ligne de traits.
         "BUSHIDO", "KUJI-KIRI", "NINJUTSU", "TAIJUTSU",
         # AJOUT (20/10/2026) : pack officiel Iron Fist (MC64EN). « K'UN-LUN » est imprime sur le

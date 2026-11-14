@@ -1,0 +1,33 @@
+{
+    "version": "0.5.9",
+    "name": "Elektra",
+    "metadata": {
+        "url": "",
+        "deck_note": "Hero Pack officiel MC63 (novembre 2026). Seul ce qui est imprime et publie : identite et 15 cartes signature (le paquet Ninja est monte par 63001b). Obligation et set nemesis : non publies, laisses vides. player_deck vide (PROCESSUS-HEROS etape 3).",
+        "incomplet": true
+    },
+    "hero": [
+        "63001a,63001b"
+    ],
+    "hero_deck": [
+        "63005",
+        "63006",
+        "63006",
+        "63007",
+        "63007",
+        "63008",
+        "63008",
+        "63009",
+        "63009",
+        "63010",
+        "63011",
+        "63012",
+        "63012",
+        "63013",
+        "63014"
+    ],
+    "set_aside": [],
+    "obligations": [],
+    "nemesis_set": [],
+    "player_deck": []
+}

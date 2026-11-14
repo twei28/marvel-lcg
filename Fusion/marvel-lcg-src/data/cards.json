@@ -81361,6 +81361,262 @@
  ],
  "elektra": [
   {
+   "card_id": "63001a",
+   "type": "Hero",
+   "name": "* Elektra",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "ATK": "1",
+    "THW": "0",
+    "DEF": "1",
+    "HS": "5",
+    "Villainous": "1"
+   },
+   "traits": [
+    "DEFENDER",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "Elektra",
+   "text": "[star] Villainous. <i>(When this character uses a basic power, give it a boost card.)</i>\n<i>Killer Instinct</i> — <b>Interrupt</b>: When a boost card given to Elektra is turned faceup, cancel its \"Boost\" ability. Then, that card gains [boost]."
+  },
+  {
+   "card_id": "63001b",
+   "type": "AlterEgo",
+   "name": "* Elektra Natchios",
+   "subtitle": "",
+   "desc": {
+    "HP": "9",
+    "REC": "3",
+    "HS": "6"
+   },
+   "traits": [
+    "ASSASSIN"
+   ],
+   "set_name": "Elektra",
+   "text": "Elektra Natchios begins the game with a [[Ninja]] deck. <i>(See insert.)</i>\n<i>Ninja Training</i> — <b>Interrupt</b>: When you change to hero form, shuffle the top card of the [[Ninja]] deck into the encounter deck."
+  },
+  {
+   "card_id": "63002",
+   "type": "Treachery",
+   "name": "Ninja Stars",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1"
+   },
+   "traits": [
+    "NINJA"
+   ],
+   "set_name": "Elektra Ninja",
+   "text": "Surge. <i>(After this card is revealed, reveal 1 additional encounter card.)</i>\n<b>When Revealed</b>: Give this card to Elektra as a facedown boost card.\n<hr />\n[star] <b>Boost</b>: If Elektra is using a basic power, draw 2 cards and shuffle this card into the [[Ninja]] deck. Otherwise, give this card to Elektra as a facedown boost card."
+  },
+  {
+   "card_id": "63003",
+   "type": "Treachery",
+   "name": "Ninja Strike",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1"
+   },
+   "traits": [
+    "NINJA"
+   ],
+   "set_name": "Elektra Ninja",
+   "text": "Surge. <i>(After this card is revealed, reveal 1 additional encounter card.)</i>\n<b>When Revealed</b>: Give this card to Elektra as a facedown boost card.\n<hr />\n[star] <b>Boost</b>: If Elektra is using a basic power, she gets +3 to that power for this use and you shuffle this card into the [[Ninja]] deck. Otherwise, give this card to Elektra as a facedown boost card."
+  },
+  {
+   "card_id": "63004",
+   "type": "Treachery",
+   "name": "Ninja Vanish",
+   "subtitle": "",
+   "desc": {
+    "Surge": "1"
+   },
+   "traits": [
+    "NINJA"
+   ],
+   "set_name": "Elektra Ninja",
+   "text": "Surge. <i>(After this card is revealed, reveal 1 additional encounter card.)</i>\n<b>When Revealed</b>: Give this card to Elektra as a facedown boost card.\n<hr />\n[star] <b>Boost</b>: If Elektra is using a basic power, give her a tough status card and shuffle this card into the [[Ninja]] deck. Otherwise, give this card to Elektra as a facedown boost card."
+  },
+  {
+   "card_id": "63005",
+   "type": "Ally",
+   "name": "* Daredevil",
+   "subtitle": "Matt Murdock",
+   "desc": {
+    "Cost": "3",
+    "RES": "G",
+    "HP": "3",
+    "ATK": "2*",
+    "THW": "2*",
+    "Class": "Hero",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "DEFENDER",
+    "MARTIAL ARTIST"
+   ],
+   "set_name": "Elektra",
+   "text": "[star] <b>Response</b>: After Daredevil uses a basic power, place a card from the encounter discard pile on top of the encounter deck."
+  },
+  {
+   "card_id": "63006",
+   "type": "Event",
+   "name": "Acrobatic Prowess",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero",
+    "MaxPerDeck": "2"
+   },
+   "traits": [
+    "ACROBATIC",
+    "SKILL"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Hero Action</b>: Ready Elektra and give her 1 facedown boost card."
+  },
+  {
+   "card_id": "63007",
+   "type": "Event",
+   "name": "Killer Blow",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "Y",
+    "Class": "Hero",
+    "MaxPerDeck": "2"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal up to 5 damage to an enemy. If this attack defeats that enemy, shuffle the top card of the [[Ninja]] deck into the encounter deck."
+  },
+  {
+   "card_id": "63008",
+   "type": "Event",
+   "name": "Move Unseen",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerDeck": "2"
+   },
+   "traits": [
+    "ACROBATIC",
+    "THWART"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove up to 4 threat from a scheme. Shuffle the top card of the [[Ninja]] deck into the encounter deck."
+  },
+  {
+   "card_id": "63009",
+   "type": "Event",
+   "name": "Sai Strike",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "R",
+    "Class": "Hero",
+    "MaxPerDeck": "2"
+   },
+   "traits": [
+    "ATTACK"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Hero Action</b> <i>(attack)</i>: Deal 3 damage to an enemy. For each Elektra's Sai you control, shuffle the top card of the [[Ninja]] deck into the encounter deck."
+  },
+  {
+   "card_id": "63010",
+   "type": "Support",
+   "name": "* Resurrection Altar",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "HAND",
+    "LOCATION"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Interrupt</b>: When you would be defeated, remove this card from the game → set your hit point dial to 9 instead. Find your obligation and reveal it."
+  },
+  {
+   "card_id": "63011",
+   "type": "Support",
+   "name": "* White Tiger",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "PERSONA"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Response</b>: After you change to hero form, shuffle the top card of the [[Ninja]] deck into the encounter deck. Otherwise, give Elektra 1 facedown boost card."
+  },
+  {
+   "card_id": "63012",
+   "type": "Upgrade",
+   "name": "Elektra's Sai",
+   "subtitle": "",
+   "desc": {
+    "Cost": "2",
+    "RES": "R",
+    "Class": "Hero",
+    "MaxPerDeck": "2",
+    "Restricted": "1"
+   },
+   "traits": [
+    "WEAPON"
+   ],
+   "set_name": "Elektra",
+   "text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\n<b>Hero Action</b>: Exhaust Elektra's Sai → deal 1 damage to an enemy and reduce the cost of the next [[Acrobatic]] or [[Attack]] event you play this phase by 1."
+  },
+  {
+   "card_id": "63013",
+   "type": "Upgrade",
+   "name": "History with the Hand",
+   "subtitle": "",
+   "desc": {
+    "Cost": "0",
+    "RES": "B",
+    "Class": "Hero",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "CONDITION"
+   ],
+   "set_name": "Elektra",
+   "text": "Prerequisite (hero form).\nYou get +1 hand size.\n<b>Forced Response</b>: After you change form, discard this card."
+  },
+  {
+   "card_id": "63014",
+   "type": "Upgrade",
+   "name": "Stealth Mastery",
+   "subtitle": "",
+   "desc": {
+    "Cost": "1",
+    "RES": "Y",
+    "Class": "Hero",
+    "MaxPerDeck": "1"
+   },
+   "traits": [
+    "SKILL"
+   ],
+   "set_name": "Elektra",
+   "text": "<b>Forced Interrupt</b>: When you attack or are attacked, choose to either increase or reduce the damage that attack deals by 3. Put Stealth Mastery on top of your deck."
+  },
+  {
    "card_id": "63015",
    "type": "Ally",
    "name": "* Shang-Chi",
@@ -136907,7 +137163,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "10c1c92bf3ee22fea206d85bb031dc383133c9413e33742c1ef0e746dffea403",
+ "checksum": "8458e6e1b91b38cf5583764813cfe5cd13419805449b9cdc09fb759f37f79727",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",

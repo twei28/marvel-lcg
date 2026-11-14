@@ -638,7 +638,8 @@ class SenderCard:
     class WhenBoostCardWouldTurnedFaceUp(TriggerFaceMessage, TriggerNonePlayerMessage, AttackerNoneMessage, CanBeInstead):
         def __init__(self, face: 'CardFace', being_message: 'Message.WhenUnitBeingAttack|Message.WhenSchemeBeingScheme') -> None:
             from game.message import Message
-            player = being_message.would_message.property.against_player
+            # `getattr` : un DEJOUER ou une DEFENSE de heros (Elektra, 13/11/2026) n'a pas de joueur vise.
+            player = getattr(being_message.would_message.property, 'against_player', None)
             self.being_message: Final = being_message
             self.would_message: Final = being_message.would_message
             self.would_atk_message: Final = being_message.would_message if isinstance(being_message.would_message, Message.WhenUnitWouldAttack) else None
@@ -655,7 +656,8 @@ class SenderCard:
         def __init__(self, face: 'CardFace', being_message: 'Message.WhenUnitBeingAttack|Message.WhenSchemeBeingScheme') -> None:
             from game.card.face.base import EncounterNonVillainCard
             from game.message import Message
-            player = being_message.would_message.property.against_player
+            # `getattr` : un DEJOUER ou une DEFENSE de heros (Elektra, 13/11/2026) n'a pas de joueur vise.
+            player = getattr(being_message.would_message.property, 'against_player', None)
             
             self.being_message: Final = being_message
             self.would_message: Final = being_message.would_message
@@ -716,7 +718,7 @@ class SenderCard:
             self.is_cancel_boost_ability: Final = flip_message.cancel_boost_ability
             self.being_message: Final = flip_message.being_message
             self.would_message = self.being_message.would_message
-            self.against_player = self.would_message.property.against_player
+            self.against_player = getattr(self.would_message.property, 'against_player', None)
             player = self.against_player
             # AJOUT (20/10/2026, brique « un ennemi attaque un ennemi ») : une
             # attaque contre un ENNEMI ne vise aucun joueur ; le « vous » des

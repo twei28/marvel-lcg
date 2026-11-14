@@ -113,6 +113,12 @@ class CanThwart(CardFace):
         else:
             use_basic_power_message = None
 
+        # AJOUT (13/11/2026, Elektra) : un HEROS villainous recoit sa carte de boost aussi pour un deploiement de menace de base,
+        # et resout sa pile (voir `CanBoost.HeroBoostForBasicPower`). Inerte pour tout autre heros.
+        if is_basic_thwart and CanBoost.IsType(this):
+            this.HeroBoostForBasicPower(would_thw_message, "THW")
+            this = this.card.CastTo(Unit2)
+
         gain_value_when_divided(would_thw_message)
 
         thwart_targets: List['Scheme2'] = []
