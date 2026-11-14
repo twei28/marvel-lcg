@@ -296,10 +296,22 @@ class AbilityFactoryBoost:
                     return False
                 return not message.cancel_boost_ability
 
+        # CORRECTIF (14/11/2026, set nemesis d'Elektra, 63029 Aka) : une capacite de type BOOST ne vaut que lorsque la carte
+        # EST la carte de boost retournee. Ce message part pour TOUTES les cartes, et une capacite Boost reste valide sur une
+        # carte EN JEU (effect_checker.py:300) : sans cette condition, un permanent en jeu resolvait son [star] Boost a chaque
+        # AUTRE carte de boost retournee. `62029` Cottonmouth et `63029` Aka se distribuaient eux-memes au joueur et quittaient
+        # le jeu ; `62030`, `62032` et `60062` rejouaient leur effet. Les autres types (Interrupt, Response...) ecoutent bien
+        # les cartes de boost des AUTRES : ils ne sont pas touches. Cas dedies : tools/cas/boost_carte_en_jeu.py.
+        def check_cette_carte_est_le_boost(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
+            if ability_type != AbilityType.Boost:
+                return True
+            return message.trigger == effect.this
+
         return Ability(
             ability_type,
             Message.WhenBoostCardTurnedFaceUp,
             [
+                check_cette_carte_est_le_boost,
                 check_while_attack,
                 check_while_scheme,
                 check_boost_for_card,

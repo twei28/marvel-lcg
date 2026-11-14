@@ -7,7 +7,7 @@ from cards.pack import *
 # set « Elektra Ninja ». Elles vivent dans `joueur.additional_deck` (modele : le deck Sense de Daredevil FNE,
 # `fne/daredevil/60001b.py`) : mises de cote par `BeginGameWithSetAside` sur 63001b, puis posees face cachee dans
 # `additional_deck` et melangees. « Melanger la carte du dessus du paquet NINJA dans le paquet de rencontre » =
-# `MelangerDessusNinja`. Pas d'obligation ni de set nemesis (non publies, decision du 13/11/2026).
+# `MelangerDessusNinja`. Set nemesis : `elektra/elektra_nemesis/` (14/11/2026). Pas d'obligation (63028 sans scan officiel, decision du 14/11/2026).
 # ===========================================================================
 
 NINJA_IDS = ('63002', '63002', '63003', '63003', '63004', '63004')

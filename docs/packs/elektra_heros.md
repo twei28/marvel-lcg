@@ -6,8 +6,10 @@ transcrits et décisions : `.planning/elektra-heros/PLAN.md`. Scans : `.planning
 play.marvelsimulator.com), posés dans `assets/pics/63001a.png` à `63014.png`.
 
 ## Décisions de l'utilisateur (13/11/2026)
-1. **Comme Iron Fist** : héros + 15 cartes signature + paquet Ninja. **Obligation et set némésis NON PUBLIÉS** (63024-26 et 63028-33 absents) : laissés
-   vides dans `deck/starter/elektra.json` (`incomplet: true`). Resurrection Altar : PV à 9, « trouvez votre obligation » sans effet tant qu'elle n'existe pas.
+1. **Comme Iron Fist** : héros + 15 cartes signature + paquet Ninja. **Mise à jour du 14/11/2026** : le set NÉMÉSIS 63029-63033 est monté (voir la
+   section « Set némésis » plus bas). **L'obligation 63028 n'est PAS montée, décision de l'utilisateur du 14/11** : pas de scan officiel (seule une image
+   « Unofficial preview » existe sur play.marvelsimulator.com) ; c'est la seule carte manquante. 63024-63026 : absents partout (très probablement les
+   réimpressions Energy / Genius / Strength, non prouvé). Resurrection Altar : PV à 9, « trouvez votre obligation » sans effet tant qu'elle n'existe pas.
 2. **Extension moteur fidèle** pour le boost d'un héros (voir ci-dessous).
 3. **White Tiger 63011** : « Otherwise » = si le paquet NINJA est VIDE, Elektra reçoit 1 carte de boost face cachée.
 4. **Étoiles sur THW / ATQ / DEF** : « décrit dans la capacité du héros » (le ★ Villainous) : aucun effet propre.
@@ -65,9 +67,32 @@ contre-cas d'ABSENCE d'effet (assumés) : 63005 (défausse de rencontre vide), 6
 - Écran (Chromium, moteur de test local, 13/11) : Elektra dans la sélection (visuel, DEFENDER · MARTIAL ARTIST · ASSASSIN, PV 9), biographie au survol, deck proposé choisi, partie lancée ;
   le paquet Ninja est dessiné à côté de l'identité (6 cartes, dessus visible).
 
+## Set némésis 63029-63033 (14/11/2026) : gabarits PROCESSUS-CARTE
+Set « Elektra Nemesis », `src/cards/pack/elektra/elektra_nemesis/`, déclaré dans `deck/starter/elektra.json`. Scans anglais :
+`.planning/elektra-iron-fist-scans-mc4db/` et `-marvelsimulator/`, posés dans `assets/pics/`. Cas : `tools/cas/elektra_nemesis.py`, préfixe
+`[elektra_nem]`, **18 cas verts** (filtre `[elektra` : 57/57). Fiches mots-clés lues : `quickstrike`, `ranged`, `hazard`, `boost`.
+
+**Correctif moteur lié** (`boost.py`, `check_cette_carte_est_le_boost`) : un ★ Boost ne vaut que pour la carte retournée ; avant, Aka EN JEU se
+distribuait lui-même à chaque autre carte de boost. Fiche `docs/reference/mots-cles/boost.md`. Cas dédiés `tools/cas/boost_carte_en_jeu.py`
+(`[boost_en_jeu]`) : 6/6 verts avec le correctif, 3/6 rouges sans (les trois cas « EN JEU »). Cartes touchées rejouées : `62029`, `62030`, `62032`, `60062`.
+
+| card_id | Carte | Étape 2 (modèle) | Étape 5 (mots lus) | Cas (7) | Rouges sans module | 7 bis | 8 (écran FR) | 8 bis | Terminée |
+|---|---|---|---|---|---|---|---|---|---|
+| 63029 | Aka (sbire némésis, Quickstrike) | `62029` Cottonmouth | « shuffle into the encounter deck » si vaincu ; ★ Boost : donné face cachée au joueur Elektra | 4 | 2/4 (verts : valeurs imprimées, cas EN JEU porté par le moteur) | OUI (boost.py, ci-dessus) | voile FR vu | NON | OUI |
+| 63030 | The Fist Fits in the Hand (manigance annexe, Hazard) | manigances annexes à bonus de trait | « each HAND minion gets +1 ATK and +1 SCH » | 4 | 1/4 (verts : témoin, sbire sans trait, icône imprimée) | NON | voile FR vu (paysage : `ZONES_MANUELLES` + `VOILE_UNI`) | NON | OUI |
+| 63031 | Hand Katana (attachement) | attachements « otherwise attach to the villain » | sbire HAND aux PV les plus hauts, sinon le méchant (`Villain`) ; +2 ATQ ; Hero Action 2 ressources | 3 | 3/3 | NON | voile FR vu | NON | OUI |
+| 63032 | Hand Blademaster (sbire) | sbires à bonus conditionnel | +1/+1 tant qu'un AUTRE sbire HAND est en jeu ; mélangé si vaincu | 5 | 2/5 (verts : ligne de base, témoin de ranged, retour à 1/1) | NON | voile FR vu | NON | OUI |
+| 63033 | Hand Archer (sbire, Ranged) | `ranged` (fiche) | attaque sans riposte ; mélangé si vaincu | 2 | 2/2 | NON | voile FR vu | NON | OUI |
+
+Gates du 14/11 : `verifier_appels_modules elektra iron_fist` OK ; `test_cards` 8373 ok / 0 erreur ; `verifier_api_cartes` 9437 fichiers, 0 en faute ;
+`DECK_NOM=elektra verifier_tous_les_decks` : « identité 63001a, main 6, deck 9 » ; autoplay 8 parties contre Rhino : 0 traceback, 0 victoire, 1 partie
+arrêtée par le garde anti-répétition du pilote sur Killer Instinct (graine 2, pas une carte némésis). Les cartes némésis ne sont JAMAIS sorties en
+autoplay (mises de côté) : leur preuve est dans les cas. Écran (Chromium, FR) : les 5 cartes affichent le voile français ; en anglais, le scan brut.
+Voile des scans paysage basse résolution à filigrane : zones posées à la main (`zones-corrections.ts`, `ZONES_MANUELLES` + `VOILE_UNI`).
+
 ## Ce qui reste NON vérifié (à dire clairement)
 - **Aucune partie jouée par un humain** avec Elektra. La pile de boost du HÉROS (cartes données et en attente) n'a pas été regardée à l'écran : seul le paquet Ninja l'a été.
-- **L'obligation et le set némésis n'existent pas** (non publiés) : Resurrection Altar ne révèle rien.
+- **L'obligation 63028 n'est pas montée** (décision du 14/11, pas de scan officiel) : Resurrection Altar ne révèle rien. Le set némésis n'a été vu ni en autoplay ni en partie humaine.
 - Traits `ACROBATIC` : pas de traduction française officielle connue (affiché en anglais). Textes français des 15 cartes : PROVISOIRES (`textes-fr-fanmade.ts`).
 - Les ★ de THW/ATQ/DEF : interprétation de l'utilisateur, aucun effet propre.
-- **Héros terminé : NON** tant que la partie humaine et l'obligation/némésis ne sont pas faites ; tous les gabarits ci-dessus sont verts.
+- **Héros terminé : NON** tant que la partie humaine et l'obligation 63028 ne sont pas faites ; tous les gabarits ci-dessus sont verts.

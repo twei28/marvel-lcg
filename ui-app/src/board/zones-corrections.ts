@@ -210,13 +210,19 @@ export const ZONES_MANUELLES: Readonly<Record<string, ZoneManuelle>> = {
   // Spider-Man (04045, allié) : cadre de texte teinté crème, non gris clair — la détection posait le voile
   // SUR L'ILLUSTRATION, au milieu de la carte, sans texte lisible (signalé en jeu, 06/11/2026). Zone relevée sur le scan.
   '04045': { x0: 0.05, y0: 0.598, x1: 0.94, y1: 0.915, fond: [244, 246, 236] },
+  // Elektra / Iron Fist, annexes némésis (14/11/2026) : scans mc4db en 300 px avec un losange gris en filigrane sur la moitié gauche du
+  // cadre. La détection s'arrêtait au milieu du cadre, puis l'effaceur prenait les lettres posées sur le losange pour de l'illustration :
+  // l'anglais restait, ou le français se serrait en petit à droite du losange. Zone relevée + voile uni (VOILE_UNI), l'icône Accélération
+  // est redessinée par le voile (63030 : elle est imprimée au milieu du cadre, le voile la couvre).
+  '64029': { x0: 0.485, y0: 0.24, x1: 0.972, y1: 0.875, fond: [232, 236, 247] },
+  '63030': { x0: 0.475, y0: 0.24, x1: 0.955, y1: 0.875, fond: [240, 234, 236] },
 }
 
 /**
  * Cartes où l'effacement des lettres échoue (texte clair sur cadre sombre à reflets, tableau imprimé dans le cadre) : on y
  * garde le voile UNI d'avant, qui couvre tout le cadre.
  */
-export const VOILE_UNI: ReadonlySet<string> = new Set(['cd015', 'pu142', 'co005', 'rz001a', 'bm019', 'wn001a', 'wn001b', 'wn002', 'wn003', 'wn004', 'wn006', 'wn009', 'wn010', 'sy042'])
+export const VOILE_UNI: ReadonlySet<string> = new Set(['cd015', 'pu142', 'co005', 'rz001a', 'bm019', 'wn001a', 'wn001b', 'wn002', 'wn003', 'wn004', 'wn006', 'wn009', 'wn010', 'sy042', '64029', '63030'])
 
 function zoneManuelle(m: ZoneManuelle): ZoneTexte {
   const lignes = 100

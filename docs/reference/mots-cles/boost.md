@@ -47,6 +47,17 @@ permanente ET un `WhenCardBecomeBoost`.
   connu (Shocker `01103`) pour que les dégâts soient déterministes. Détail :
   `RECETTES-MOTEUR.md` §7.
 
+- **Un ★ Boost ne vaut que pour la carte RETOURNÉE** (correctif moteur du
+  14/11/2026, `boost.py`, `check_cette_carte_est_le_boost`).
+  `WhenBoostCardTurnedFaceUp` part pour toutes les cartes, et une capacité
+  Boost reste valide sur une carte EN JEU : avant le correctif, un permanent
+  en jeu résolvait son ★ Boost à chaque AUTRE carte de boost retournée
+  (`62029` Cottonmouth et `63029` Aka se distribuaient eux-mêmes et
+  quittaient le jeu ; `62030`, `62032`, `60062` rejouaient leur effet). Les
+  Interruptions / Réponses qui écoutent les boosts des autres ne sont pas
+  touchées. Cas dédiés : `tools/cas/boost_carte_en_jeu.py` (verts avec,
+  rouges sans).
+
 **Variantes maison** : `gb010` (Necro-Raven, pack `gorr`) : le ★ Boost met le
 sbire en jeu engagé avec le joueur au lieu de l'envoyer à la défausse, et se
 cumule avec la Réponse Obligatoire d'entrée en jeu de la carte.

@@ -5,7 +5,8 @@ Preuves du 20/10/2026, branche `iron-fist-officiel`. Pack `iron_fist`, set « Ir
 officielle (série 64 libre dans `data/cards.json` : Jessica Jones 61, Luke Cage 62, Wave fan-made 65) ;
 numéro de carte = numéro de collection imprimé (1A/1B, 2 à 12).
 Périmètre (décision du 20/10/2026) : héros + cartes signature. PAS les cartes d'aspect du pack ni les cartes
-de rencontre (obligation, némésis : non publiées).
+de rencontre (obligation, némésis : non publiées). **Mise à jour du 14/11/2026** : obligation 64026 et set
+némésis 64027-64029 montés, voir « Obligation et set némésis » plus bas.
 
 Sources : `.planning/iron-fist-officiel/` (relevé Hall of Heroes, lecture, cinq décisions de l'utilisateur
 `lecture-reponses.md`, question ouverte `creation-questions.md`). Chaque carte relue sur son image avant le
@@ -279,13 +280,33 @@ Carte terminée : NON — étape 8 non exercée : la Ressource de héros n'a pay
 - Étapes 1-8 : cartes, scripts, deck de départ, `sets_info.json` (« 64. Iron Fist »), images PROVISOIRES
   (`assets/pics/<id>.png`, non versionnées), biographie `heros-info.js` (`64001a`, syntaxe vérifiée par
   `node --check` ; survol dans le wizard NON vérifié), texte FR provisoire `textes-fr-fanmade.ts`. Pas de
-  `data/nemesis/` (rien de publié).
+  `data/nemesis/` au 20/10 (monté le 14/11, voir plus bas).
 - « Carte terminée : OUI » : 64001a, 64001b, 64003, 64004, 64005, 64006, 64008, 64009, 64010, 64011.
   NON : 64002, 64007, 64012 (étape 8 non exercée par le pilote, voir ci-dessous).
 - `verifier_tous_les_decks` (DECK_NOM=iron_fist) : vert.
 - Partie complète : 24 parties d'autoplay ; aucune partie humaine.
 
-**Héros terminé : NON** (trois cartes NON ci-dessus ; obligation et set némésis non publiés).
+**Héros terminé : NON** (trois cartes NON ci-dessus ; aucune partie humaine).
+
+## Obligation et set némésis 64026-64029 (14/11/2026) : gabarits PROCESSUS-CARTE
+
+Set « Iron Fist Nemesis », `src/cards/pack/iron_fist/iron_fist_nemesis/`, déclaré dans `deck/starter/iron_fist.json`. Scans anglais :
+`.planning/elektra-iron-fist-scans-mc4db/` et `-marvelsimulator/`, posés dans `assets/pics/`. Cas : `tools/cas/iron_fist_nemesis.py`, préfixe
+`[iron_fist_nem]`, **24 cas verts** (filtre `[iron_fist` : 81/81). Substitution par carte ci-dessous ; les cas restés verts sont des témoins
+d'absence ou des valeurs imprimées.
+
+| card_id | Carte | Étape 5 (mots lus) | Cas (7) | Rouges sans module | 7 bis | 8 bis | Terminée |
+|---|---|---|---|---|---|---|---|
+| 64026 | Lack of Chi (obligation) | les chi d'Iron Fist passent ici ; tout chi posé ensuite est détourné ; défaussée au 4e chi DÉTOURNÉ (pas à la révélation) | 6 | 5/6 | NON | NON | OUI |
+| 64027 | Davos (sbire némésis) | « find » : mis de côté, deck, défausse ET en jeu ; chaque blessure évitée = une Crane Daughter mélangée | 6 | 5/6 | NON | NON | OUI |
+| 64028 | Crane Daughter (sbire ×3, Vulnerable) | mélangée si vaincue ; en boost avec Davos en jeu : glissée sous lui | 4 | 2/4 | NON | NON | OUI |
+| 64029 | Steel Serpent (manigance annexe, Acceleration) | Davos attaque : défausser une Crane Daughter dessous OU en vaincre une en jeu → +3 ATQ pour CETTE attaque | 8 | 3/8 | NON | NON | OUI |
+
+Gates du 14/11 : `verifier_appels_modules elektra iron_fist` OK ; `test_cards` 8373 ok / 0 erreur ; `verifier_api_cartes` 0 en faute ;
+`DECK_NOM=iron_fist verifier_tous_les_decks` : « identité 64001b, main 6, deck 9 » ; autoplay 8 parties contre Rhino : 0 traceback, 0 victoire, 1 partie
+arrêtée par le garde anti-répétition du pilote sur Martial Arts Master (graine 7). Les cartes némésis ne sont jamais sorties en autoplay (mises de côté).
+Voile français : 64029 (paysage) posé à la main (`ZONES_MANUELLES` + `VOILE_UNI`). Écran : les cartes d'Iron Fist n'ont PAS été regardées une à une dans
+Chromium le 14/11 (seules celles d'Elektra l'ont été). Aucune partie humaine.
 
 ### Essai de partie dirigée pour 64002, 64007, 64012 (20/10/2026)
 
