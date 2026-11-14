@@ -7,6 +7,7 @@
 import type { ReactElement } from 'react'
 import { JetonsCarte, type ScanCardProps } from '../../../components/ScanCard'
 import { t } from '../../langue'
+import { estUnProxy } from '../../proxys'
 import { traducteurDuScanFr } from '../../scans-fr'
 
 const NOMS_STAT: Record<string, string> = { ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', REC: 'REC', SCH: 'MNG', HP: 'PV' }
@@ -26,7 +27,9 @@ export function FeuilleDetail({ carte }: { carte: ScanCardProps }): ReactElement
   const aDesJetons = !!carte.jetonMenace || !!carte.jetonDegats || jetons.length > 0
   // Scan français d'un pack fan-made : son traducteur, comme sous l'aperçu du PC (14/11/2026).
   const traducteur = carte.facedown ? undefined : traducteurDuScanFr(carte.imageUrl)
-  if (stats.length === 0 && !aDesJetons && motsCles.length === 0 && !traducteur) return null
+  // Image maison en attendant le scan officiel : le dire (14/11/2026).
+  const proxy = !carte.facedown && estUnProxy(carte.imageUrl)
+  if (stats.length === 0 && !aDesJetons && motsCles.length === 0 && !traducteur && !proxy) return null
   return (
     <div className="feuille-detail">
       {stats.length > 0 ? (
@@ -49,6 +52,11 @@ export function FeuilleDetail({ carte }: { carte: ScanCardProps }): ReactElement
       {traducteur ? (
         <p className="apercu-traducteur">
           {t('Traduction faite par')} <b>{traducteur}</b>
+        </p>
+      ) : null}
+      {proxy ? (
+        <p className="apercu-traducteur apercu-proxy">
+          <b>{t('Proxy')}</b> {t(': image non officielle, en attendant le scan')}
         </p>
       ) : null}
       {motsCles.length > 0 ? (

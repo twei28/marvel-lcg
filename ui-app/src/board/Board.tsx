@@ -49,6 +49,7 @@ import { coteDuTexte, useTexteSurCarte, useTraductionFr } from './traduction-car
 import { erratumDeCarte } from './errata-rrg'
 import { NoteErrata, PastilleErrata } from './PastilleErrata'
 import { traducteurDuScanFr } from './scans-fr'
+import { estUnProxy } from './proxys'
 import { texteEnHtml } from './traduction-posee'
 import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
@@ -791,6 +792,12 @@ function FaceCarteApercu({
         {!carte.facedown && traducteurDuScanFr(carteAgrandie.imageUrl) ? (
           <p className="apercu-traducteur">
             {t('Traduction faite par')} <b>{traducteurDuScanFr(carteAgrandie.imageUrl)}</b>
+          </p>
+        ) : null}
+        {/* Image maison en attendant le scan officiel : on dit que c'est un proxy (14/11/2026). */}
+        {!carte.facedown && estUnProxy(carteAgrandie.imageUrl) ? (
+          <p className="apercu-traducteur apercu-proxy">
+            <b>{t('Proxy')}</b> {t(': image non officielle, en attendant le scan')}
           </p>
         ) : null}
         {/* L'ERRATA, en clair sous la carte : la souris n'atteint pas la pastille de l'aperçu. */}
