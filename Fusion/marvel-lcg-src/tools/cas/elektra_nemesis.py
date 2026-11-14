@@ -1,6 +1,6 @@
 # Cas test_capacites du SET NEMESIS d'ELEKTRA (Hero Pack MC63, set « Elektra Nemesis », 63029-63033), noms prefixes
 # « [elektra_nem] ». Un cas par capacite, le card_id est dans le nom. Gabarits : docs/packs/elektra_heros.md.
-# Scripts : src/cards/pack/elektra/elektra_nemesis/. L'obligation 63028 n'est PAS montee (pas de scan officiel, 14/11/2026).
+# Scripts : src/cards/pack/elektra/elektra_nemesis/. L'obligation 63028 est montee (texte releve par un joueur, 14/11/2026).
 #
 # Montage : vilain Rhino 01094 (14 PV, ATQ 2) ; Elektra en HEROS. Le deck rencontre est remplace par des 01105 (0 icone de boost).
 # ⚠ `attributs_carte` attend un ECART par rapport a l'imprime, pas une valeur absolue.
@@ -10,6 +10,9 @@ HEROS = "Puzzle.ChangeToFace('63001b', '63001a')"
 SANS_BOOST = ["Puzzle.EmptyEncounterDeck()",
               "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')"]
 USAGI = "up041"
+OBLIGATION = "Puzzle.Reveal('63028')"
+ALLIE = "01083"  # Mockingbird, 3 PV (Usagi entre en jeu avec Tenace : il absorberait les 3 degats)
+FIN_DE_PHASE = "Puzzle.EndPlayerPhase()"
 SANS_DEFENSE = {"passer_sur_option": "Defense"}
 # Le set nemesis est MIS DE COTE en debut de partie : sans ce retrait, le harnais retrouve l'exemplaire mis de cote d'Aka
 # au lieu de celui qu'il vient de poser (meme precaution que tools/cas/carnage.py).
@@ -92,4 +95,32 @@ CAS = [
     _c("63029 Aka EN JEU : une autre carte de boost est retournee (Elektra defend son attaque Quickstrike) -> Aka reste en jeu",
        "le [star] Boost ne vaut que lorsque Aka EST la carte de boost retournee ; rouge sans la condition `message.trigger == effect.this`",
        [SANS_NEMESIS] + pose("63029"), [], {"en_jeu": ["63029"]}, verifier="ares_cartes_rencontre_distribuees"),
+
+    # ===================================================================== 63028 Conditioned by the Hand (obligation)
+    _c("63028 Conditioned by the Hand : Elektra en heros, Mockingbird (3 PV) en jeu, fin de la phase des joueurs -> 3 degats sur Mockingbird, vaincu",
+       "Forced Response (Hero) : After the player phase ends, deal 3 damage to another identity or ally in play",
+       [OBLIGATION, "Puzzle.PutIntoPlay('%s', under_control=True)" % ALLIE], [FIN_DE_PHASE],
+       {"hors_jeu": [ALLIE], "en_jeu": ["63028"], "degats_identite": 0}, accepter_choix=True),
+    _c("63028 TEMOIN : sans l'obligation, Mockingbird survit a la fin de la phase des joueurs",
+       "ligne de base du cas precedent", ["Puzzle.PutIntoPlay('%s', under_control=True)" % ALLIE], [FIN_DE_PHASE],
+       {"en_jeu": [ALLIE]}, accepter_choix=True),
+    _c("63028 Conditioned by the Hand : Elektra en ALTER-EGO -> la reponse forcee ne part pas, Mockingbird survit",
+       "« (Hero) » : forme heros seulement",
+       [OBLIGATION, "Puzzle.PutIntoPlay('%s', under_control=True)" % ALLIE, "Puzzle.ChangeToFace('63001a', '63001b')"], [FIN_DE_PHASE],
+       {"en_jeu": [ALLIE, "63028"]}, accepter_choix=True),
+    _c("63028 Conditioned by the Hand : seule en jeu, aucun allie -> aucune cible, Elektra ne prend rien",
+       "« ANOTHER identity » : jamais l'identite d'Elektra", [OBLIGATION], [FIN_DE_PHASE],
+       {"en_jeu": ["63028"], "degats_identite": 0}, accepter_choix=True),
+    _c("63028 Conditioned by the Hand : deux joueurs, aucun allie -> l'AUTRE identite (Peter Parker) prend 3 degats",
+       "« another identity » : l'identite d'un autre joueur est une cible",
+       [OBLIGATION], [FIN_DE_PHASE], {"en_jeu": ["63028"], "degats_identite": 0, "degats": [["01001b", 3]]},
+       accepter_choix=True, heros2="spider_man"),
+    _c("63028 Conditioned by the Hand : Alter-Ego Action -> Elektra Natchios est inclinee, l'obligation est defaussee",
+       "Alter-Ego Action : Exhaust your identity -> discard this card",
+       [OBLIGATION, "Puzzle.ChangeToFace('63001a', '63001b')"], [],
+       {"hors_jeu": ["63028"], "exhausted": ["63001b"]}, declencher_apres=["Puzzle.Action('63028', 'AlterEgoAction')"]),
+    _c("63010 Resurrection Altar : l'Autel sauve Elektra PUIS trouve l'obligation 63028 dans le deck de rencontre et la revele (en jeu)",
+       "« Find your obligation and reveal it »",
+       ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('63028', '01105', '01105', '01105', '01105')", "Puzzle.PutIntoPlay('63010', under_control=True)", "Puzzle.Damage('63001a', 8)", "Puzzle.PutIntoPlay('01131')"],
+       ["Puzzle.Attack('01131')"], {"hors_jeu": ["63010"], "en_jeu": ["63028"], "degats_identite": 0}, accepter_choix=True, main_exclusive=["01090"]),
 ]

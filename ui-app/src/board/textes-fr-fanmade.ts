@@ -4942,7 +4942,9 @@ export const TEXTES_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   '63012': "Restreint. <i>(2 cartes restreintes max par joueur.)</i>\n<b>Action de héros</b> : inclinez le Sai d'Elektra → infligez 1 dégât à un ennemi et réduisez de 1 le coût du prochain événement [[Acrobatic]] ou [[Attack]] que vous jouez cette phase.",
   '63013': "Prérequis (forme de héros).\nVous avez +1 à votre taille de main.\n<b>Réponse forcée</b> : après que vous changez de forme, défaussez cette carte.",
   '63014': "<b>Interruption forcée</b> : quand vous attaquez ou êtes attaqué, choisissez d'augmenter ou de réduire de 3 les dégâts de cette attaque. Placez Stealth Mastery sur le dessus de votre deck.",
-  // elektra — set NEMESIS (14/11/2026), meme traduction provisoire. L'obligation 63028 n'est pas montee (pas de scan officiel).
+  // elektra — set NEMESIS (14/11/2026), meme traduction provisoire. L'obligation 63028 est montee d'apres le texte lu par un joueur
+  // (image maison du createur de cartes, a remplacer par le scan officiel des qu'il existe).
+  '63028': "<b><i>Donnez cette carte au joueur d'Elektra Natchios.</i></b>\n<b>Réponse forcée (Héros)</b> : après la fin de la phase des joueurs, infligez 3 dégâts à une autre identité ou à un allié en jeu.\n<b>Action d'alter ego</b> : inclinez votre identité → défaussez cette carte.",
   '63029': "Coup Rapide.\n<b>Une fois vaincue</b> : mélangez cette carte dans le deck Rencontre.\n<i>(Sbire némésis d'Elektra.)</i>\n<hr />\n[star] <b>Boost</b> : attribuez Aka au joueur d'Elektra Natchios en tant que carte Rencontre face cachée.",
   '63030': "Chaque sbire [[HAND]] gagne +1 MAN et +1 ATQ.\n<i>« Tu te crois seule, Elektra. Mais tu ne seras jamais seule… Je serai toujours là, avec toi, dans l'ombre. » — Aka</i>",
   '63031': "Attachez cette carte au sbire [[HAND]] avec le plus de points de vie imprimés. Sinon, attachez-la au méchant.\n<b>Action de héros</b> : dépensez 2 ressources de n'importe quel type → défaussez cette carte.",

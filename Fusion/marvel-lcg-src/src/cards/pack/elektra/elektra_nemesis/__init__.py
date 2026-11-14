@@ -6,9 +6,8 @@ from cards.pack import *
 # (.planning/elektra-iron-fist-scans-mc4db/). Gabarits PROCESSUS-CARTE : docs/packs/elektra_heros.md.
 # Cas test_capacites : tools/cas/elektra_nemesis.py (noms prefixes « [elektra_nem] »).
 #
-# ⚠ L'OBLIGATION 63028 Conditioned by the Hand N'EXISTE PAS AU DEPOT : decision utilisateur du 14/11/2026, on ne la monte
-#   pas tant que son scan officiel n'est pas publie (seul un apercu non officiel circule). `obligations` reste vide dans
-#   deck/starter/elektra.json, et 63010 Resurrection Altar ne revele rien.
+# L'OBLIGATION 63028 Conditioned by the Hand est rangee ICI (comme 64026 chez Iron Fist) : montee le 14/11/2026 depuis le texte
+#   releve par un joueur sur la carte. Pas de scan officiel : image maison dans assets/pics.
 # ⚠ Seul 63029 Aka porte `desc.Nemesis` : c'est la seule carte imprimee « (Elektra's nemesis minion.) » (regle moteur du
 #   04/10/2026). Les noms se cherchent SANS l'etoile d'unicite (« Aka »).
 # ===========================================================================

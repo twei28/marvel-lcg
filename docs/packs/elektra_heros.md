@@ -7,8 +7,8 @@ play.marvelsimulator.com), posés dans `assets/pics/63001a.png` à `63014.png`.
 
 ## Décisions de l'utilisateur (13/11/2026)
 1. **Comme Iron Fist** : héros + 15 cartes signature + paquet Ninja. **Mise à jour du 14/11/2026** : le set NÉMÉSIS 63029-63033 est monté (voir la
-   section « Set némésis » plus bas). **L'obligation 63028 n'est PAS montée, décision de l'utilisateur du 14/11** : pas de scan officiel (seule une image
-   « Unofficial preview » existe sur play.marvelsimulator.com) ; c'est la seule carte manquante. 63024-63026 : absents partout (très probablement les
+   section « Set némésis » plus bas). **L'obligation 63028 est montée depuis le 14/11 après-midi** d'après le texte lu par un joueur (pas de scan officiel : image
+   maison, voir la section « Obligation 63028 » plus bas). 63024-63026 : absents partout (très probablement les
    réimpressions Energy / Genius / Strength, non prouvé). Resurrection Altar : PV à 9, « trouvez votre obligation » sans effet tant qu'elle n'existe pas.
 2. **Extension moteur fidèle** pour le boost d'un héros (voir ci-dessous).
 3. **White Tiger 63011** : « Otherwise » = si le paquet NINJA est VIDE, Elektra reçoit 1 carte de boost face cachée.
@@ -90,9 +90,39 @@ arrêtée par le garde anti-répétition du pilote sur Killer Instinct (graine 2
 autoplay (mises de côté) : leur preuve est dans les cas. Écran (Chromium, FR) : les 5 cartes affichent le voile français ; en anglais, le scan brut.
 Voile des scans paysage basse résolution à filigrane : zones posées à la main (`zones-corrections.ts`, `ZONES_MANUELLES` + `VOILE_UNI`).
 
+## Obligation 63028 Conditioned by the Hand (14/11/2026) : gabarit PROCESSUS-CARTE
+**Annule la décision du matin** (« pas de scan officiel, on ne la monte pas ») : l'utilisateur a transmis le texte lu sur la carte par un joueur
+et a demandé le script. Règle donnée le même jour : dès qu'un vrai scan existe, il remplace l'image maison.
+
+- **Texte source** (joueur, 14/11) : « Give to the Elektra Natchios player. Forced Response (Hero): After the player phase ends, deal 3 damage to
+  another identity or ally in play. Alter-Ego Action: Exhaust your identity → discard this card. » 2 icônes de boost. Concorde avec l'image
+  « Unofficial preview » de marvelsimulator (`.planning/elektra-iron-fist-scans-marvelsimulator/63028.png`).
+- **Étape 2 (modèles)** : `aos/maria_hill/50029` (réponse forcée de fin de phase des joueurs + action d'alter ego « Exhaust your identity → discard »),
+  `62028`, `bg016` (`AskChooseFace`) ; pour Resurrection Altar : `gs221` / `27135` (`Search.SearchForCard(card_type=Obligation, obligation_give_to=…)` + `Reveal`).
+- **Étape 5 (mots lus)** : « (Hero) » = rien en alter ego ; « another identity or ally » = jamais l'identité d'Elektra, mais ses propres alliés oui ;
+  « in play » ; aucune cible = rien (pas de « sinon ») ; le joueur d'Elektra choisit. `desc` : `Boost "2"`, `GiveTo "Elektra Natchios"`.
+- **Fichiers** : `src/cards/pack/elektra/elektra_nemesis/63028.py` ; `data/cards.json` (somme de contrôle recalculée) ;
+  `deck/starter/elektra.json` (`obligations: ["63028"]`) ; `63010.py` Resurrection Altar trouve et révèle maintenant l'obligation
+  (deck Rencontre, défausse, mises de côté).
+- **Étape 7 (cas)** : `tools/cas/elektra_nemesis.py`, 6 cas `63028` (héros + allié vaincu par les 3 dégâts, témoin sans obligation, alter ego = rien,
+  seule = rien, deux joueurs = l'autre identité prend 3, Action d'alter ego = identité inclinée + carte défaussée) et 1 cas `63010` (l'Autel trouve et
+  révèle 63028). Filtre `6302` : 27/27 ; filtre `[elektra` : 64/64. **Substitution** : 63028 → 3/7 rouges (verts assumés : témoin, alter ego, seule,
+  et le cas de l'Autel qui appartient à 63010) ; 63010 → 2/3 rouges.
+- **Gates** : `verifier_appels_modules elektra` OK ; `test_cards` 8374 ok / 0 erreur ; `verifier_api_cartes` 9438 fichiers, 0 en faute ;
+  `DECK_NOM=elektra verifier_tous_les_decks` : « identité 63001a, main 6, deck 9 ».
+- **Étape 8 (autoplay)** : 8 parties contre Rhino, 0 traceback. Journal lu : partie 1, l'obligation sert de carte de boost (2 icônes comptées) ;
+  partie 6, Resurrection Altar la trouve dans le deck Rencontre et la révèle, puis elle « s'active » à chaque fin de phase des joueurs
+  (solo : aucune cible, aucun dégât, conforme).
+- **Étape 8 bis (écran, Chromium, moteur d'essai 2346)** : carte révélée par le bac à sable, vue sur la table et en agrandi ; en français le voile
+  recouvre proprement le cadre de texte, en anglais l'image brute.
+- **Image** : PAS un scan. Image maison produite par le moteur du créateur de cartes (`public/createur-cartes/carte.js`, type `obligation`,
+  couleurs rouge/noir d'Elektra), SANS illustration (aucune disponible). Posée dans `assets/pics/63028.png` (600×860) ; original 1500×2150 :
+  `.planning/elektra-iron-fist-nemesis/63028-image-maison-1500x2150.png`. À remplacer par le scan officiel dès qu'il existe.
+- **Carte terminée : OUI** (script, cas, substitution, gates, écran). Réserves : texte de seconde main (non relu sur un scan officiel), image maison.
+
 ## Ce qui reste NON vérifié (à dire clairement)
 - **Aucune partie jouée par un humain** avec Elektra. La pile de boost du HÉROS (cartes données et en attente) n'a pas été regardée à l'écran : seul le paquet Ninja l'a été.
-- **L'obligation 63028 n'est pas montée** (décision du 14/11, pas de scan officiel) : Resurrection Altar ne révèle rien. Le set némésis n'a été vu ni en autoplay ni en partie humaine.
+- **Obligation 63028** : montée d'après le texte lu par un joueur, pas d'après un scan officiel ; image maison sans illustration. Le set némésis (63029-63033) n'a été vu ni en autoplay ni en partie humaine.
 - Traits `ACROBATIC` : pas de traduction française officielle connue (affiché en anglais). Textes français des 15 cartes : PROVISOIRES (`textes-fr-fanmade.ts`).
 - Les ★ de THW/ATQ/DEF : interprétation de l'utilisateur, aucun effet propre.
-- **Héros terminé : NON** tant que la partie humaine et l'obligation 63028 ne sont pas faites ; tous les gabarits ci-dessus sont verts.
+- **Héros terminé : NON** tant que la partie humaine n'est pas faite ; tous les gabarits ci-dessus sont verts.

@@ -15,8 +15,10 @@ from . import *
 #  ⚠ « set your hit point dial to 9 INSTEAD » : la defaite n'a pas lieu (`SetBeInstead`) et les PV restants valent 9 (pas « soigne 9 »).
 #    9 = les PV maximum des deux faces d'Elektra, jamais plus.
 #  ⚠ « remove this card FROM THE GAME » : hors du jeu pour la partie (pas la defausse).
-#  ⚠ « Find your obligation and reveal it » : SANS EFFET pour l'instant. L'obligation 63028 n'a pas de scan officiel publie : decision
-#    utilisateur du 14/11/2026, on ne la monte pas (le set nemesis 63029-63033, lui, est monte). A coder le jour ou elle sort.
+#  ⚠ « FIND your obligation and reveal it » : 63028 Conditioned by the Hand (montee le 14/11/2026). « Find » lu comme `gs221`
+#    Whisper in the Mind (livret Galactic Storm p.4, lecture deja retenue) : deck de rencontre, defausse de rencontre, zone mise de
+#    cote ; ni la pile de victoire ni la zone retiree du jeu. Deja en jeu devant Elektra : rien a trouver. « YOUR obligation » :
+#    celle du joueur de l'Autel (`obligation_give_to`). Revelee APRES la remise des PV a 9.
 #  Chiffres : cout 1, PV remis a 9.
 
 
@@ -29,6 +31,19 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.RemoveAllFromGame([effect.this], effect)
         message.SetBeInstead(effect)
         identite.SetHealth(9, effect)
+        joueur = identite.GetControlByPlayer()
+        obligation = Search.SearchForCard(
+            effect,
+            joueur,
+            include_encounter_deck=True,
+            include_encounter_discard_pile=True,
+            include_set_aside=True,
+            card_type=Obligation,
+            obligation_give_to=joueur,
+            check_face_fn=lambda f: not f.card.state.is_revealing,
+        )
+        if obligation is not None:
+            obligation.Reveal(joueur, effect)
 
     return [
         AbilityFactory.WhenUnitWouldBeDefeated(

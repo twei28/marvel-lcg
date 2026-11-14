@@ -81793,6 +81793,19 @@
    "text": "Team-Up (Daredevil and Elektra). Max 1 per deck.\nAttach to an enemy.\n<b>Hero Action</b> <i>(attack)</i>: Discard this card → deal 3 damage to attached enemy."
   },
   {
+   "card_id": "63028",
+   "type": "Obligation",
+   "name": "Conditioned by the Hand",
+   "subtitle": "",
+   "desc": {
+    "Boost": "2",
+    "GiveTo": "Elektra Natchios"
+   },
+   "traits": [],
+   "set_name": "Elektra Nemesis",
+   "text": "<b><i>Give to the Elektra Natchios player.</i></b>\n<b>Forced Response (Hero)</b>: After the player phase ends, deal 3 damage to another identity or ally in play.\n<b>Alter-Ego Action</b>: Exhaust your identity → discard this card."
+  },
+  {
    "card_id": "63029",
    "type": "Minion",
    "name": "* Aka",
@@ -137312,7 +137325,7 @@
    "custom": "BlueHG"
   }
  ],
- "checksum": "eba702556c8bc8d9037873ce3ca1f6adbe5cab4004a24e4f4a0e859454b7cbd0",
+ "checksum": "b13d1f911940d8fc17d5b214360da9db7b8b6136548a895fedff981efb66175a",
  "hellfire_hunt_white_queen": [
   {
    "card_id": "hf101a",
