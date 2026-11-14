@@ -94,7 +94,7 @@ def GetAbilities() -> Sequence['Ability']:
         if not EstJoueur(proprietaire):
             return
         identite = proprietaire.GetIdentity()
-        if identite is None or identite.IsExhausted():
+        if identite is None or identite.IsExhaust():
             return
 
         def faire(targets: Sequence['CardFace']) -> None:
