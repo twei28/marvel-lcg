@@ -159,6 +159,41 @@ try:
              "table-3" not in corps["preferences"], corps["preferences"])
     appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-1": None, "table-2": None}}))
 
+    # LES REGLAGES DU PLATEAU (14/11/2026) : des cles du localStorage, liste
+    # fermee, valeur = texte court sans caractere de controle.
+    NOMS = json.dumps({"he": "Mon héros", "ma": "Ma main"}, ensure_ascii=False)
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        "mc_ameliorations_cote": "gauche", "mc_noms_zones_v1": NOMS, "marvel-tel-plateau": "ronds"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("reglages du plateau ecrits et relus",
+             corps["preferences"].get("mc_ameliorations_cote") == "gauche"
+             and corps["preferences"].get("mc_noms_zones_v1") == NOMS
+             and corps["preferences"].get("marvel-tel-plateau") == "ronds", corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        "mc_vue_joueur": "1", "marvel-langue": "en", "mc_fond_image_v1": "x", "marvel-historique-partie": "[]",
+        "mc_piles_inversees": "x" * 2001, "mc_apercu_zoom": 3, "mc_etiquettes_table": "a\nb",
+        "mc_traits_pastilles": {"a": 1}}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("cles hors liste, valeurs trop longues, non textuelles ou a caractere de controle ignorees",
+             set(corps["preferences"]) == {"mc_ameliorations_cote", "mc_noms_zones_v1", "marvel-tel-plateau"},
+             corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": "sobre"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("un autre changement ne perd pas les reglages",
+             corps["preferences"].get("mc_ameliorations_cote") == "gauche"
+             and corps["preferences"].get("affichage") == "sobre", corps["preferences"])
+    statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        c: "1" for c in sorted(serveur.REGLAGES_CLES)}}))
+    verifier("premier versement de tous les reglages en un appel", statut == 200, statut)
+    statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        f"cle-{i}": "1" for i in range(61)}}))
+    verifier("plus de 60 changements refuses (400)", statut == 400, statut)
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        c: None for c in sorted(serveur.REGLAGES_CLES)}}))
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": None}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("null efface les reglages", corps["preferences"] == {}, corps["preferences"])
+
     statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": ["sobre"]}))
     verifier("corps invalide refuse (400)", statut == 400, statut)
 

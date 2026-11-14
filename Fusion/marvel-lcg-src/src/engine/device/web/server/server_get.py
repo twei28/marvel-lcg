@@ -2595,6 +2595,41 @@ class GameServerGet(GameServerBase):
                     return False
         return True
 
+    # LES REGLAGES DU PLATEAU (14/11/2026, demande des joueurs : retrouver ses
+    # reglages sur un autre appareil). Chaque reglage est une cle du
+    # localStorage du plateau, gardee TELLE QUELLE sur le compte. Liste FERMEE
+    # de cles (la meme que `REGLAGES_DU_COMPTE`, ui-app/src/board/reglages-compte.ts :
+    # un test de l'UI compare les deux) ; la valeur est un texte court, sans
+    # caractere de controle, que seul le navigateur du titulaire relira.
+    # Restent hors du compte : ce qui tient a l'APPAREIL (positions de boites,
+    # mode telephone force, jeu au doigt), la langue, l'image de fond (trop
+    # lourde) et ce qui n'est pas un reglage (historique, rapports, succes).
+    REGLAGES_CLES = frozenset((
+        'marvel-board-action-mode', 'marvel-board-animations', 'marvel-board-annuler-explique',
+        'marvel-board-auto-cible', 'marvel-board-avance-auto', 'marvel-board-curseurs',
+        'marvel-board-delai-pas-a-pas', 'marvel-board-dos-cartes', 'marvel-board-facon-de-jouer',
+        'marvel-board-fin-tour-auto', 'marvel-board-meteo', 'marvel-board-mode-phase-mechant',
+        'marvel-board-musique', 'marvel-board-paiement-auto', 'marvel-board-phase-auto',
+        'marvel-board-phase-rapide', 'marvel-board-piste-phases', 'marvel-board-revelation',
+        'marvel-board-sauvegarde-auto', 'marvel-board-scans-fr', 'marvel-board-sons',
+        'marvel-board-tutoriel', 'marvel-board-validation-courte', 'marvel-board-volume-musique',
+        'marvel-board-volume-sons',
+        'marvel-encoche-gauche',
+        'marvel-tel-aide-debut', 'marvel-tel-colonnes-zones', 'marvel-tel-plateau',
+        'marvel-tel-plateau-choisi', 'marvel-tel-plateau-memorise', 'marvel-tel-taille-texte',
+        'marvel-tel-verrou-portrait', 'marvel-tel-vibrations', 'marvel-tel-visite-piles',
+        'mc_aide_bulle_table', 'mc_ameliorations_chevauchement', 'mc_ameliorations_cote',
+        'mc_apercu_zoom', 'mc_barre_avantage', 'mc_card_art_v1', 'mc_etiquettes_table',
+        'mc_noms_zones_v1', 'mc_phase_bis', 'mc_phase_presentation', 'mc_piles_inversees',
+        'mc_resource_art_v1', 'mc_traits_pastilles',
+    ))
+    REGLAGE_LONGUEUR_MAX = 2000
+
+    @classmethod
+    def _reglage_valide(cls, valeur) -> bool:
+        return (isinstance(valeur, str) and len(valeur) <= cls.REGLAGE_LONGUEUR_MAX
+                and all(c >= ' ' and c != '\x7f' for c in valeur))
+
     @staticmethod
     def _chemin_preferences() -> str:
         """Le fichier de preferences du compte, a cote de son fichier d'arts
@@ -2617,6 +2652,9 @@ class GameServerGet(GameServerBase):
                         propres[cle] = valeur
                 elif cle in cls.TABLE_CLES:
                     if cls._table_valide(valeur):
+                        propres[cle] = valeur
+                elif cle in cls.REGLAGES_CLES:
+                    if cls._reglage_valide(valeur):
                         propres[cle] = valeur
                 elif valeur in cls.PREFERENCES_PERMISES.get(cle, ()):
                     propres[cle] = valeur
@@ -2650,7 +2688,8 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'reserve au titulaire du compte'}, status=403)
         data = await request.json()
         changements = data.get('changements') if isinstance(data, dict) else None
-        if not isinstance(changements, dict) or len(changements) > 20:
+        # 60 : le premier versement des reglages du plateau (une cinquantaine de cles).
+        if not isinstance(changements, dict) or len(changements) > 60:
             return web.json_response({'error': 'changements invalides'}, status=400)
         chemin = self._chemin_preferences()
         if not chemin:

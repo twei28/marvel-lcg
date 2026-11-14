@@ -24,6 +24,7 @@ import {
   type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
+import { chargerReglagesDuCompte } from './board/reglages-compte'
 import { createRoot, type Root } from 'react-dom/client'
 import '../styles/tokens.css'
 import '../styles/palette.css'
@@ -6339,6 +6340,11 @@ if (!import.meta.env.VITEST) {
   appliquerEtiquettesTable(lireEtiquettesTable())
   appliquerTeinte(lireTeinteDuNavigateur())
   appliquerFondImage(lireFondImage())
-  window.racinePlateau ??= createRoot(cible)
-  window.racinePlateau.render(<Page />)
+  // Les reglages gardes sur le compte arrivent AVANT le premier rendu (attente
+  // bornee) : chaque composant lit alors la bonne valeur des son montage.
+  void chargerReglagesDuCompte().then(() => {
+    appliquerEtiquettesTable(lireEtiquettesTable())
+    window.racinePlateau ??= createRoot(cible)
+    window.racinePlateau.render(<Page />)
+  })
 }

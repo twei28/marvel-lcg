@@ -47,6 +47,24 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-14",
+        genre: "jeu",
+        fr: "Vos réglages du plateau (sons, musique, automatismes, noms des zones, réglages du téléphone…) sont gardés sur votre compte : vous les retrouvez sur un autre appareil. Ceux que vous aviez déjà sont repris à votre prochaine visite.",
+        en: "Your board settings (sounds, music, automations, zone names, phone settings…) are now kept on your account: you get them back on another device. The ones you already had are picked up on your next visit.",
+    },
+    {
+        date: "2026-11-14",
+        genre: "heros",
+        fr: "Elektra rejoint le roster avec son paquet Ninja, son obligation et son set Némésis. Iron Fist reçoit lui aussi son obligation et son set Némésis.",
+        en: "Elektra joins the roster with her Ninja deck, her obligation and her Nemesis set. Iron Fist also gets his obligation and Nemesis set.",
+    },
+    {
+        date: "2026-11-14",
+        genre: "coulisses",
+        fr: "Une carte dont le scan officiel n'existe pas encore porte la mention « Proxy » sous son image agrandie.",
+        en: "A card whose official scan does not exist yet is marked “Proxy” under its enlarged image.",
+    },
+    {
         date: "2026-11-13",
         genre: "heros",
         fr: "La ville ne dort jamais (Punisher, MC×DC 2026) : 155 cartes s'affichent avec leurs scans français quand vous jouez en français, y compris l'image double The City + Never Sleeps.",
