@@ -207,8 +207,14 @@ CAS += _paire("up035", "21061", "Shield Spell : identite MYSTIC (Doctor Strange)
 
 CAS += _paire("up036", "60054", "Stand Alone : sans allie, l'attaque de Rhino redresse le heros",
               "« When an enemy attacks you, if you do not control any allies, exhaust Stand Alone -> ready your hero »",
-              [HEROS, "Puzzle.PutIntoPlay('up036', under_control=True)", "Puzzle.Exhaust('01001a')"], ["Puzzle.Attack('01094')"],
+              [HEROS, "Puzzle.PutIntoPlay('up036', under_control=True)", "Puzzle.Exhaust('01001b')"], ["Puzzle.Attack('01094')"],
               {"exhausted": ["up036"]},
+              main_exclusive=["01090"], accepter_choix=True)
+
+CAS += _paire("up036", "60054", "Stand Alone : heros PRET (pas incline) -> la carte n'est PAS proposee, elle reste redressee (rapport 132)",
+              "la question « ready your hero » ne se pose que si le heros est epuise",
+              [HEROS, "Puzzle.PutIntoPlay('up036', under_control=True)"], ["Puzzle.Attack('01094')"],
+              {"exhausted": [], "en_jeu": ["up036"]},
               main_exclusive=["01090"], accepter_choix=True)
 
 CAS += _paire("up037", "56048", "Taunt : Rhino attaque, puis 3 cartes piochees",

@@ -8,6 +8,10 @@ def GetAbilities() -> Sequence['Ability']:
         player = effect.this.GetControlByPlayer()
         if (message.GetAgainstPlayer() != player):
             return False
+        # Rapport 132 (14/11/2026) : la question etait posee meme heros PRET, alors que « ready your hero » ne
+        # sert a rien. On ne propose la carte que si l'identite est epuisee.
+        if not player.GetIdentity().IsExhaust():
+            return False
         return (player.allies.FindCard(card_type=Ally) == None)
     return [AbilityFactory.CanPlayThisUpgradeCard(),
             AbilityFactory.WhenUnitAttackYou(AbilityType.HeroInterrupt, Enemy, stand_alone, conditions=[check_no_allies]).SetCostFunc(CostFunc.Exhaust('This'))]
