@@ -371,6 +371,11 @@
     align-content: start; padding-bottom: 8px; -webkit-overflow-scrolling: touch;
   }
   html.tel .tb-cartes-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Les cartes d'un heros (14/11/2026) : une image pas encore chargee (chargement paresseux, reseau mobile) ne pesait
+     que sa bordure (6 px). Le panneau n'avait alors AUCUNE hauteur a defiler : le doigt faisait defiler la PAGE
+     (Chrome masque sa barre) au lieu de la grille, et les cartes du bas n'arrivaient jamais. `auto 225/326` reserve la
+     place d'une carte en attendant, puis prend le vrai rapport de l'image (carte paysage comprise). */
+  html.tel .tb-carte img { aspect-ratio: auto 225 / 326; background: rgba(255, 255, 255, .06); }
   html.tel .vh-panel .vh-actions { flex-wrap: wrap; }
   html.tel .vh-panel .vh-actions .tampon { min-height: 44px; flex: 1 1 auto; justify-content: center; }
   html.tel .fiche-heros .fh-art { height: min(26dvh, 220px); }

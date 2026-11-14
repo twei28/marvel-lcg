@@ -35,5 +35,17 @@ avoir lu cette section en premier).
 - Ports : base <= 36975 (jamais 49152+). Ne jamais lancer deux harnais sur le
   même `game_dir`. Le harnais réécrit `launch.json` : le remettre après coup.
 
+## Règle impérative : vérification à l'écran
+
+- **Toujours l'affichage « Normal » (la version classique)**, jamais le
+  « Coloré », jamais le « Sobre » : ni pour regarder une capture, ni pour
+  mesurer, ni pour dire « corrigé ». ⚠ PIÈGE DES NOMS : la valeur RANGÉE
+  `epure` se lit « Normal » ; la valeur rangée `normal` se lit « Coloré »
+  (`ui-app/src/board/affichage.ts`). Le harnais `ui-check` force le coloré par
+  défaut (`global-setup`, `normal`) : dans un test temporaire, poser
+  `localStorage.mc_affichage_v1 = 'epure'` avant d'ouvrir la page. Quand la
+  couleur compte, poser aussi la teinte bleue du compte
+  (`mc_teinte_v1` = `63,134,224`) et écarter `/get_preferences`.
+
 Pour toute autre question (mode campagne, multijoueur, stratégie, rapports
 d'audit passés), voir `docs/README.md`.
