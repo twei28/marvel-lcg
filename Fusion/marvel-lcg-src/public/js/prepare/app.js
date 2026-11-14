@@ -2535,8 +2535,23 @@ const URL_LOTR = "https://narwhalchampions.com/lotrlcg/";
 function bandeauLotr() {
     return el("a", { class: "acc-lotr", href: URL_LOTR, target: "_blank", rel: "noopener", title: t("Notre autre site") },
         el("span", { class: "acc-lotr-texte" },
-            el("b", {}, t("Seigneur des Anneaux"))),
+            el("b", {}, t("Le Seigneur des Anneaux"))),
         el("span", { class: "acc-lotr-communaute", "aria-hidden": "true" }));
+}
+
+/** Arkham Horror LCG (14/11/2026, demande de l'utilisateur : modele B, sans phrase) : meme principe que le bandeau LOTR,
+ *  a cote de lui. Tant que `URL_ARKHAM` est vide, le bouton n'est pas affiche. */
+const URL_ARKHAM = "https://arkham.narwhalchampions.com";
+function bandeauArkham() {
+    if (!URL_ARKHAM) return null;
+    return el("a", { class: "acc-arkham", href: URL_ARKHAM, target: "_blank", rel: "noopener" },
+        el("b", {}, t("Horreur à Arkham")),
+        el("span", { class: "acc-arkham-sceau", "aria-hidden": "true" }));
+}
+
+/** Les liens vers nos autres sites, cote a cote sous les tuiles. */
+function autresSites() {
+    return el("div", { class: "acc-autres" }, bandeauLotr(), bandeauArkham());
 }
 
 function accueilTel(tuiles, partir) {
@@ -2586,7 +2601,7 @@ function accueilTel(tuiles, partir) {
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
             vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => ouvrirReglagesEnJeu()),
         ),
-        bandeauLotr(),
+        autresSites(),
         blocRemerciements(),
     );
 }
@@ -2808,7 +2823,7 @@ function accueilView() {
             ),
         ),
         grille,
-        bandeauLotr(),
+        autresSites(),
         blocRemerciements(),
     );
 }
