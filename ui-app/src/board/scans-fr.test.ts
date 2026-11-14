@@ -125,6 +125,21 @@ describe('scanDejaFrancais', () => {
   })
 })
 
+describe('traducteurDuScanFr', () => {
+  it('crédite Nicodede62 sous le scan français de Blade, Dazzler et Moon Knight, et rien ailleurs', async () => {
+    const { traducteurDuScanFr } = await import('./scans-fr')
+    expect(traducteurDuScanFr('/scan/fr_bl005')).toBe('Nicodede62')
+    expect(traducteurDuScanFr('/scan/fr_dz017a')).toBe('Nicodede62')
+    expect(traducteurDuScanFr('/vignette/fr_mk001e')).toBe('Nicodede62')
+    // En anglais (scan sans prefixe), carte bonus sans scan FR, autre pack fan-made, carte officielle : rien.
+    expect(traducteurDuScanFr('/scan/bl005')).toBeUndefined()
+    expect(traducteurDuScanFr('/scan/fr_dz018')).toBeUndefined()
+    expect(traducteurDuScanFr('/scan/fr_dy001a')).toBeUndefined()
+    expect(traducteurDuScanFr('/scan/fr_01001a')).toBeUndefined()
+    expect(traducteurDuScanFr(undefined)).toBeUndefined()
+  })
+})
+
 describe('SCANS_FR_FANMADE', () => {
   it('les 17 cartes de Destiny (275 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler les 20 de Moon Knight et les 155 de La ville ne dort jamais) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')

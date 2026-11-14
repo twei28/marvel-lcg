@@ -107,6 +107,18 @@ export function scanDejaFrancais(code: string): boolean {
   return /^si\d{3}[ab]?$/.test(code)
 }
 
+/** Qui a TRADUIT les scans francais d'un pack fan-made (prefixe du card_id -> nom). Blade, Dazzler et Moon Knight : Nicodede62
+    (demande du 14/11/2026 : le dire sous la carte agrandie quand on joue en francais). */
+const TRADUCTEURS_SCANS_FR: Readonly<Record<string, string>> = { bl: 'Nicodede62', dz: 'Nicodede62', mk: 'Nicodede62' }
+
+/** Le traducteur a crediter pour ce scan, lu sur l'URL REELLEMENT affichee : seulement quand c'est le scan francais (`fr_<id>`) d'une
+    carte de SCANS_FR_FANMADE. En anglais, ou pour une carte bonus restee en « scan anglais + voile », rien. */
+export function traducteurDuScanFr(url: string | undefined): string | undefined {
+  const id = url?.match(/\/fr_([a-z]{2}\d{3}[a-z]?)(?:[.?]|$)/)?.[1]
+  if (!id || !SCANS_FR_FANMADE.has(id)) return undefined
+  return TRADUCTEURS_SCANS_FR[id.slice(0, 2)]
+}
+
 /** La liste generee fait foi : elle ne contient que des fichiers reellement
     extraits, donc jamais un art alternatif ni un dos generique. */
 export function aScanFr(picId: string): boolean {

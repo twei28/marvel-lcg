@@ -48,6 +48,7 @@ import { compterEmpilees, estEmpilee, libelleEmpilees } from './empilees'
 import { coteDuTexte, useTexteSurCarte, useTraductionFr } from './traduction-carte'
 import { erratumDeCarte } from './errata-rrg'
 import { NoteErrata, PastilleErrata } from './PastilleErrata'
+import { traducteurDuScanFr } from './scans-fr'
 import { texteEnHtml } from './traduction-posee'
 import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
@@ -785,6 +786,12 @@ function FaceCarteApercu({
             répète ici, en police normale, sous la carte en grand. Français seulement. */}
         {carte.artAlternatif && !carte.facedown && texteSurCarte?.langue === 'fr' ? (
           <div className="apercu-texte-art" lang="fr" dangerouslySetInnerHTML={{ __html: texteEnHtml(texteSurCarte.texte) }} />
+        ) : null}
+        {/* Scan français d'un pack fan-made : on crédite son traducteur (Blade, Dazzler, Moon Knight ; 14/11/2026). */}
+        {!carte.facedown && traducteurDuScanFr(carteAgrandie.imageUrl) ? (
+          <p className="apercu-traducteur">
+            {t('Traduction faite par')} <b>{traducteurDuScanFr(carteAgrandie.imageUrl)}</b>
+          </p>
         ) : null}
         {/* L'ERRATA, en clair sous la carte : la souris n'atteint pas la pastille de l'aperçu. */}
         {erratum ? <NoteErrata erratum={erratum} /> : null}

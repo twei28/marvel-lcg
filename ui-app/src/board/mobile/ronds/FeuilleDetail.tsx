@@ -7,6 +7,7 @@
 import type { ReactElement } from 'react'
 import { JetonsCarte, type ScanCardProps } from '../../../components/ScanCard'
 import { t } from '../../langue'
+import { traducteurDuScanFr } from '../../scans-fr'
 
 const NOMS_STAT: Record<string, string> = { ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', REC: 'REC', SCH: 'MNG', HP: 'PV' }
 
@@ -23,7 +24,9 @@ export function FeuilleDetail({ carte }: { carte: ScanCardProps }): ReactElement
   const jetons = carte.counters ?? []
   const motsCles = carte.facedown ? [] : (carte.keywords ?? [])
   const aDesJetons = !!carte.jetonMenace || !!carte.jetonDegats || jetons.length > 0
-  if (stats.length === 0 && !aDesJetons && motsCles.length === 0) return null
+  // Scan français d'un pack fan-made : son traducteur, comme sous l'aperçu du PC (14/11/2026).
+  const traducteur = carte.facedown ? undefined : traducteurDuScanFr(carte.imageUrl)
+  if (stats.length === 0 && !aDesJetons && motsCles.length === 0 && !traducteur) return null
   return (
     <div className="feuille-detail">
       {stats.length > 0 ? (
@@ -42,6 +45,11 @@ export function FeuilleDetail({ carte }: { carte: ScanCardProps }): ReactElement
         <div className="feuille-jetons">
           <JetonsCarte menace={carte.jetonMenace} degats={carte.jetonDegats} compteurs={jetons} dessous />
         </div>
+      ) : null}
+      {traducteur ? (
+        <p className="apercu-traducteur">
+          {t('Traduction faite par')} <b>{traducteur}</b>
+        </p>
       ) : null}
       {motsCles.length > 0 ? (
         <dl className="apercu-mots-cles">

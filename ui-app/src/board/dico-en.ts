@@ -1581,6 +1581,7 @@ export const DICO_EN_BASE: Record<string, string> = {
 
   // Raisons pour lesquelles une carte est injouable (raisons-refus.ts).
   'Injouable': 'Unplayable',
+  'Traduction faite par': 'Translation by',
   // Effets refusés en silence par le moteur (refus-effets.tsx).
   'Pas {statut} : {raison}': 'Not {statut}: {raison}',
   '{carte} : une seule option possible, appliquée d’office : {option}': '{carte}: only one option is possible, applied automatically: {option}',
