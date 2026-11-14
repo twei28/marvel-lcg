@@ -2279,3 +2279,14 @@ n'existent ni dans `data/cards.json` (recherche par nom dans tous les sets) ni d
 **Navigateur** (Chromium, Playwright, `ui-check/tests/campagne-hellfire.spec.ts`, serveur de test `launcher_fast.py --config launch.hfm-web.json`, port 11060) : la boîte avec sa couverture et son résumé ; création avec Sunspot ;
 livre ouvert (couverture + présentation, règles de la campagne) ; scénario 1 lancé depuis l'écran jusqu'au plateau (White Queen, Cerebro Insights, Xavier's Institute, Roberto Da Costa) ; victoire forcée, parcours de fin,
 page Carnet (alliés Recruited, Potential Ally retirées) ; retour à l'écran avec le scénario 2 (Black King) et ses pages. Captures lues : `captures/hellfire-campagne/` (git-ignorées).
+
+## Cartes qui se retirent du carnet (14/11/2026)
+
+« Discard this card and remove it from the campaign log » (Tactical Scanner 04155-04158, Hydra Campaign) : le coût
+`CostFunc.RemoveFromCampaignLog` ne faisait RIEN, le carnet gardait la carte et `EachPlayerSearchTheirDeckForSetupKeyword`
+la remettait au scénario suivant (signalement d'un joueur). Il efface maintenant la clé du carnet du joueur qui la porte
+(`Player N Tech Upgrade`, `Basic Upgrade`, `Support / Upgrade #1/#2`) dans le monde et la note dans le store
+`Campaign Log Keys Removed` ; le descripteur l'expose en `campagne_retraits` et `PanneauRecompenses` retire ces clés du carnet
+enregistré (`campagne/retraits-carnet.ts`). Cas : `tools/cas/campagne_retraits.py` (7, rouges sans le correctif).
+Seules ces 4 cartes portent cette formule. Les rôles de Mutant Genesis (« remove from the game and the campaign pool ») ont
+leur propre mécanisme (`Role Upgrades Removed`, collecteur `mut_gen`) ; les unités du Marché sont consommées à l'achat.

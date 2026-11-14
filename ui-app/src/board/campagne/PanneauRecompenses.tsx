@@ -40,6 +40,7 @@ import {
   peutValider,
 } from './droits-carnet'
 import { assainirCarnet, preRemplir } from './preremplissage'
+import { sansRetraits } from './retraits-carnet'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
 import { estModeManuel } from '../manuel/mode'
@@ -313,7 +314,12 @@ export function PanneauRecompenses({
   // Le verdict se calcule sur le carnet TEL QU'IL SERA ENREGISTRE, corrections
   // du joueur comprises : pour AoA, cocher « Professeur X sauvé » à la main
   // doit sauver la campagne, exactement comme si le moteur l'avait relevé.
-  const carnetApres = { ...(campagne.carnet ?? {}), ...assainirCarnet(champs, valeurs, total) }
+  // Une carte qui s'est « retirée du carnet de campagne » pendant la partie (Scanner tactique) n'y revient pas : sans cela
+  // l'amélioration était remise au scénario suivant (signalement du 14/11/2026).
+  const carnetApres = sansRetraits(
+    { ...(campagne.carnet ?? {}), ...assainirCarnet(champs, valeurs, total) },
+    monde as World
+  )
   const verdict: Verdict = verdictDeCampagne({
     final: Boolean(scenario.final),
     regle: scenario.defaite,

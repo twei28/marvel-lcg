@@ -119,6 +119,10 @@ class WorldDescriptor:
     # Dictionnaires plutot qu'une dataclasse : ce journal ne sert qu'a
     # l'affichage, il traverse le meme JSON que le reste, et lui donner une
     # forme figee obligerait a la maintenir des deux cotes pour rien.
+    # Les cles du carnet de campagne qu'une carte a RETIREES pendant la partie (« remove it from the campaign log » :
+    # Tactical Scanner 04155-04158), ex. « Player 1 Tech Upgrade ». Le panneau de fin de scenario les retire du carnet
+    # enregistre, sinon l'amelioration revient au scenario suivant (signalement du 14/11/2026).
+    campagne_retraits: List[str] = field(default_factory=lambda: [])
     faits_mechant: List[Dict[str, Any]] = field(default_factory=lambda: [])
     # Les choix a UNE SEULE option resolus d'office (voir WorldStat.choix_uniques) : l'interface en affiche un bandeau.
     choix_uniques: List[Dict[str, Any]] = field(default_factory=lambda: [])

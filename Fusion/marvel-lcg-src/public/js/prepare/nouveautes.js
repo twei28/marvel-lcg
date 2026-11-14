@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-14",
+        genre: "correction",
+        fr: "Campagne Hydra : une amélioration « Scanner tactique » utilisée dans un scénario est bien retirée du registre de campagne, elle ne revient plus au méchant suivant.",
+        en: "Hydra campaign: a Tactical Scanner upgrade used in a scenario is now really removed from the campaign log and no longer comes back against the next villain.",
+    },
+    {
+        date: "2026-11-14",
         genre: "jeu",
         fr: "Presque tout ce que vous réglez suit maintenant votre compte : la langue, la place des fenêtres et du tchat, vos puzzles créés et les préférences des pages de préparation. Seule l'image de fond reste sur l'appareil.",
         en: "Almost everything you set now follows your account: the language, the position of windows and chat, your created puzzles and the preferences of the preparation pages. Only the background image stays on the device.",

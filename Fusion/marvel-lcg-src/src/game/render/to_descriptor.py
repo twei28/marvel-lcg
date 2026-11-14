@@ -267,6 +267,7 @@ class ToDescriptor:
         world_descriptor.area_revealing         = deck_to_descriptors(world.area_revealing)
 
         world_descriptor.area_removed           = deck_to_descriptors(world.area_removed)
+        world_descriptor.campagne_retraits      = [x for x in world.store.GetStr('Campaign Log Keys Removed').split(';') if x] if world.store.HasKey('Campaign Log Keys Removed') else []
         world_descriptor.area_insert            = deck_to_descriptors(world.area_insert)
         world_descriptor.area_set_aside         = deck_to_descriptors(world.aside_deck)
         world_descriptor.area_set_aside         += deck_to_descriptors(world.aside_modular)

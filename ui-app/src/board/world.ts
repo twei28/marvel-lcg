@@ -790,6 +790,11 @@ export type World = {
    * Absent des sauvegardes anciennes et des moteurs non mis à jour : tout
    * lecteur doit tenir le cas où la liste manque.
    */
+  /**
+   * Les clés du carnet de campagne qu'une carte a RETIRÉES pendant la partie (« remove it from the campaign log » :
+   * Tactical Scanner 04155-04158), ex. « Player 1 Tech Upgrade ». Moteur du 14/11/2026 ; absent d'un moteur plus ancien.
+   */
+  campagne_retraits?: string[]
   faits_mechant?: FaitMechant[]
   /**
    * Effets REFUSES en silence par le moteur (`WorldStat.RecordRefusEffet`) :
