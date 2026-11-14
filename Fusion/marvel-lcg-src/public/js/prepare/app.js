@@ -2528,6 +2528,17 @@ function confirmerLegacy(question, detail, libelleOk = t("Débloquer")) {
  * « Jouer » qui ouvre, en feuille basse, les façons de jouer (les mêmes tuiles
  * que le PC, nombre de héros compris), puis des vignettes vers le reste du jeu.
  */
+/** Le site du Seigneur des Anneaux LCG, lie depuis l'accueil (14/11/2026, demande de l'utilisateur).
+ *  Un bandeau sous les tuiles : la Communaute de l'Anneau en silhouettes (image prise dans le dossier LOTR LCG,
+ *  ui/public/brand/silhouettes.png), un clic ouvre l'autre site dans un NOUVEL onglet (le joueur garde sa preparation). */
+const URL_LOTR = "https://narwhalchampions.com/lotrlcg/";
+function bandeauLotr() {
+    return el("a", { class: "acc-lotr", href: URL_LOTR, target: "_blank", rel: "noopener", title: t("Notre autre site") },
+        el("span", { class: "acc-lotr-texte" },
+            el("b", {}, t("Seigneur des Anneaux"))),
+        el("span", { class: "acc-lotr-communaute", "aria-hidden": "true" }));
+}
+
 function accueilTel(tuiles, partir) {
     const ouvrirModes = () => {
         let fermer = () => {};
@@ -2575,6 +2586,7 @@ function accueilTel(tuiles, partir) {
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
             vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => ouvrirReglagesEnJeu()),
         ),
+        bandeauLotr(),
         blocRemerciements(),
     );
 }
@@ -2796,6 +2808,7 @@ function accueilView() {
             ),
         ),
         grille,
+        bandeauLotr(),
         blocRemerciements(),
     );
 }

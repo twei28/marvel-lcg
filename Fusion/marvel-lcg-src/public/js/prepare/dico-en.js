@@ -723,6 +723,8 @@ export const DICO_EN_BASE = {
     "Automatique : le moteur applique les règles": "Automatic: the engine applies the rules",
     "Manuel façon OCTGN : le moteur pose la table, puis ne joue plus": "Manual, OCTGN style: the engine sets up the table, then stops playing",
     "Façon de jouer": "Way to play",
+    "Seigneur des Anneaux": "Lord of the Rings",
+    "Notre autre site": "Our other site",
     "Tirage au hasard": "Random draws",
     "Je tire moi-même les cartes « au hasard »": "I draw “at random” cards myself",
     "Les cartes cachées se mélangent face cachée et tu en désignes une, comme à la table": "Hidden cards are shuffled face down and you pick one, as at the table",
