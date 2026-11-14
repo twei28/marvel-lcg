@@ -2631,7 +2631,6 @@ class GameServerGet(GameServerBase):
         'marvel-boite-phase-mechant', 'marvel-tchat-position', 'marvel-tchat-taille',
         'marvel-tsm-bandeau-place',
         'marvel-tchat-pseudo-play', 'marvel-tchat-langues', 'marvel-tchat-fermees',
-        'mode-plateau', 'marvel-jeu-au-doigt',
         'mc-puzzles-crees', 'mc-puzzle-pseudo',
         'mc_prepare_prefs_v1', 'mc_ext_groupe_v1', 'mc_roue_fanmade', 'mc_phase_choix_vu',
         'mc_phase_mode_vu_v1', 'mc_card_art_noask_v1', 'marvel-legacy-explique',

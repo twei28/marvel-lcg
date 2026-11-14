@@ -78,8 +78,6 @@ export const REGLAGES_DU_COMPTE: readonly string[] = [
   'marvel-tchat-pseudo-play',
   'marvel-tchat-langues',
   'marvel-tchat-fermees',
-  'mode-plateau',
-  'marvel-jeu-au-doigt',
   'mc-puzzles-crees',
   'mc-puzzle-pseudo',
   'mc_prepare_prefs_v1',

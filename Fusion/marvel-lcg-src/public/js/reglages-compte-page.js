@@ -38,7 +38,7 @@ export const REGLAGES_DU_COMPTE = [
     "marvel-langue-choisie", "marvel-board-succes", "marvel-board-marvelcdb", "marvel-board-design-essai",
     "marvel-board-ambiance-demande", "marvel-boite-phase-mechant", "marvel-tchat-position",
     "marvel-tchat-taille", "marvel-tsm-bandeau-place", "marvel-tchat-pseudo-play", "marvel-tchat-langues",
-    "marvel-tchat-fermees", "mode-plateau", "marvel-jeu-au-doigt", "mc-puzzles-crees", "mc-puzzle-pseudo",
+    "marvel-tchat-fermees", "mc-puzzles-crees", "mc-puzzle-pseudo",
     "mc_prepare_prefs_v1", "mc_ext_groupe_v1", "mc_roue_fanmade", "mc_phase_choix_vu", "mc_phase_mode_vu_v1",
     "mc_card_art_noask_v1", "marvel-legacy-explique", "marvelcdb_favoris", "mc-deckbuilder-filtres-replies",
     "mc-deckbuilder-drafts", "mc_sandbox_garnir", "mc-campagne-brouillon",
