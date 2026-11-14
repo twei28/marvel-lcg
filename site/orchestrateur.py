@@ -534,6 +534,12 @@ def _nettoyer_emplacement(emplacement: int) -> None:
     for relatif in (f"../games_history-serveur-{emplacement}.json",
                     f"../statistics-serveur-{emplacement}.json",
                     f"../achievements-serveur-{emplacement}.json",
+                    # Ce qui suit le COMPTE (14/11/2026) : la fiche Legacy, les arts de heros
+                    # et les preferences (reglages, puzzles crees, brouillons). Oublies
+                    # jusque-la : le nouvel occupant de la place les heritait.
+                    f"../legacy-serveur-{emplacement}.json",
+                    f"../arts-heros-serveur-{emplacement}.json",
+                    f"../preferences-serveur-{emplacement}.json",
                     f"./campaign-log-last-serveur-{emplacement}.json"):
         chemin = os.path.normpath(os.path.join(racine_game, relatif))
         try:

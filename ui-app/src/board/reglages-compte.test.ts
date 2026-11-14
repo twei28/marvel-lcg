@@ -6,42 +6,69 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { StockageMemoire } from './cadre-joueur'
-import { changementsDepuis, lireReglages, rapprocher, reglageValide, REGLAGES_DU_COMPTE } from './reglages-compte'
+import { changementsDepuis, lireReglages, rapprocher, reglageValide, REGLAGES_DU_COMPTE, REGLAGE_LONGUEUR_PAR_CLE } from './reglages-compte'
 
 const ici = dirname(fileURLToPath(import.meta.url))
 const serveur = readFileSync(
   join(ici, '../../../Fusion/marvel-lcg-src/src/engine/device/web/server/server_get.py'),
   'utf8',
 )
+const classique = readFileSync(join(ici, '../../../Fusion/marvel-lcg-src/public/js/reglages-compte-page.js'), 'utf8')
 
 describe('reglages du compte', () => {
   it('a exactement les cles que le serveur accepte', () => {
     const bloc = serveur.match(/REGLAGES_CLES = frozenset\(\(([\s\S]*?)\)\)/)?.[1] ?? ''
-    const cles = [...bloc.matchAll(/'([^']+)'/g)].map((m) => m[1])
+    const sansCommentaires = bloc.replace(/#.*$/gm, '')
+    const cles = [...sansCommentaires.matchAll(/'([^']+)'/g)].map((m) => m[1])
     expect(cles.length).toBeGreaterThan(40)
     expect([...REGLAGES_DU_COMPTE].sort()).toEqual(cles.sort())
     expect(new Set(REGLAGES_DU_COMPTE).size).toBe(REGLAGES_DU_COMPTE.length)
   })
 
+  it('la liste des pages classiques est la meme', () => {
+    const bloc = classique.match(/REGLAGES_DU_COMPTE = \[([\s\S]*?)\];/)?.[1] ?? ''
+    const cles = [...bloc.matchAll(/"([^"]+)"/g)].map((m) => m[1])
+    expect(cles.sort()).toEqual([...REGLAGES_DU_COMPTE].sort())
+  })
+
+  it('les bornes par cle sont les memes cote serveur, plateau et pages classiques', () => {
+    const lire = (texte: string, debut: RegExp) => {
+      const bloc = texte.match(debut)?.[1] ?? ''
+      return Object.fromEntries([...bloc.matchAll(/['"]?([\w-]+)['"]?\s*:\s*(\d+)/g)].map((m) => [m[1], Number(m[2])]))
+    }
+    const duServeur = lire(serveur, /REGLAGE_LONGUEUR_PAR_CLE = \{([\s\S]*?)\}/)
+    expect(Object.keys(duServeur).length).toBeGreaterThan(3)
+    expect(duServeur).toEqual(REGLAGE_LONGUEUR_PAR_CLE)
+    expect(lire(classique, /LONGUEUR_PAR_CLE = \{([\s\S]*?)\}/)).toEqual(REGLAGE_LONGUEUR_PAR_CLE)
+  })
+
+  it('garde hors compte le fond, l historique, le rapport et les pointeurs de partie', () => {
+    for (const cle of ['mc_fond_image_v1', 'mc_fond_image_couleurs_v1', 'marvel-historique-partie', 'marvel-rapport-en-attente', 'mc-campagne-partie', 'mc-puzzle-courant', 'mc_vue_joueur', 'mc_affichage_migre']) {
+      expect(REGLAGES_DU_COMPTE).not.toContain(cle)
+    }
+  })
+
   it('laisse hors du compte la langue, la vue admin et ce qui est deja synchronise', () => {
-    for (const cle of ['marvel-langue', 'mc_vue_joueur', 'mc_affichage_v1', 'mc_teinte_v1', 'mc_table_v1', 'mc_hero_art_v1', 'mc_fond_image_v1']) {
+    for (const cle of ['mc_affichage_v1', 'mc_teinte_v1', 'mc_table_v1', 'mc_hero_art_v1', 'mc_fond_image_v1']) {
       expect(REGLAGES_DU_COMPTE).not.toContain(cle)
     }
   })
 
   it('ne garde que des textes courts sans caractere de controle', () => {
-    expect(reglageValide('gauche')).toBe(true)
-    expect(reglageValide('{"he":"Mon héros"}')).toBe(true)
-    expect(reglageValide('x'.repeat(2001))).toBe(false)
-    expect(reglageValide('a\nb')).toBe(false)
-    expect(reglageValide(null)).toBe(false)
-    expect(reglageValide(3)).toBe(false)
+    expect(reglageValide('mc_ameliorations_cote', 'gauche')).toBe(true)
+    expect(reglageValide('mc_noms_zones_v1', '{"he":"Mon héros"}')).toBe(true)
+    expect(reglageValide('mc_ameliorations_cote', 'x'.repeat(2001))).toBe(false)
+    expect(reglageValide('mc-deckbuilder-drafts', 'x'.repeat(60000))).toBe(true)
+    expect(reglageValide('mc-deckbuilder-drafts', 'x'.repeat(65537))).toBe(false)
+    expect(reglageValide('mc_ameliorations_cote', 'a\nb')).toBe(false)
+    expect(reglageValide('mc_ameliorations_cote', null)).toBe(false)
+    expect(reglageValide('mc_ameliorations_cote', 3)).toBe(false)
   })
 
   it('lit les seules cles de la liste', () => {
     const stockage = new StockageMemoire()
     stockage.setItem('mc_ameliorations_cote', 'gauche')
-    stockage.setItem('marvel-langue', 'en')
+    stockage.setItem('mc_fond_image_v1', 'x')
     stockage.setItem('mc_piles_inversees', 'x'.repeat(2001))
     expect(lireReglages(stockage)).toEqual({ mc_ameliorations_cote: 'gauche' })
   })

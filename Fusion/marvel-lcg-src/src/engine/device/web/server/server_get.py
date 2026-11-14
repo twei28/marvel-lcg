@@ -2622,12 +2622,47 @@ class GameServerGet(GameServerBase):
         'mc_apercu_zoom', 'mc_barre_avantage', 'mc_card_art_v1', 'mc_etiquettes_table',
         'mc_noms_zones_v1', 'mc_phase_bis', 'mc_phase_presentation', 'mc_piles_inversees',
         'mc_resource_art_v1', 'mc_traits_pastilles',
+        # 2e versement (14/11/2026, « tout suit le compte » sauf l'image de fond) :
+        # la langue, la place des boites, le tchat, les reglages propres a
+        # l'appareil, les puzzles crees et les preferences des pages classiques.
+        'marvel-langue', 'marvel-langue-choisie',
+        'marvel-board-succes', 'marvel-board-marvelcdb', 'marvel-board-design-essai',
+        'marvel-board-ambiance-demande',
+        'marvel-boite-phase-mechant', 'marvel-tchat-position', 'marvel-tchat-taille',
+        'marvel-tsm-bandeau-place',
+        'marvel-tchat-pseudo-play', 'marvel-tchat-langues', 'marvel-tchat-fermees',
+        'mode-plateau', 'marvel-jeu-au-doigt',
+        'mc-puzzles-crees', 'mc-puzzle-pseudo',
+        'mc_prepare_prefs_v1', 'mc_ext_groupe_v1', 'mc_roue_fanmade', 'mc_phase_choix_vu',
+        'mc_phase_mode_vu_v1', 'mc_card_art_noask_v1', 'marvel-legacy-explique',
+        'marvelcdb_favoris', 'mc-deckbuilder-filtres-replies', 'mc-deckbuilder-drafts',
+        'mc_sandbox_garnir', 'mc-campagne-brouillon',
     ))
+    # Hors compte, EXPRES : l'image de fond (trop lourde), l'historique de la
+    # partie (sessionStorage, propre a l'onglet), le rapport en attente (une
+    # capture de 4 Mo, et il partirait en double depuis un autre appareil),
+    # `mc-campagne-partie` et `mc-puzzle-courant` (des pointeurs vers LA table en
+    # cours : sur un autre appareil ils afficheraient un panneau de recompenses
+    # ou d'enonce sans partie), les marqueurs de migration `*_migre*`, la vue
+    # joueur de l'admin. Campagnes, hauts faits, historique des parties, Legacy
+    # et decks vivent deja sur le serveur, par emplacement.
     REGLAGE_LONGUEUR_MAX = 2000
+    # Les cles qui portent une liste ou un brouillon : plus de place, mais bornee.
+    REGLAGE_LONGUEUR_PAR_CLE = {
+        'mc-deckbuilder-drafts': 65536,
+        'mc-campagne-brouillon': 32768,
+        'mc-puzzles-crees': 16384,
+        'mc_prepare_prefs_v1': 16384,
+        'marvelcdb_favoris': 16384,
+    }
+    # Tout ce qui est range ici pour UN compte tient dans 256 Ko : au-dela
+    # l'ecriture est refusee (413), le navigateur garde sa valeur.
+    REGLAGES_TOTAL_MAX = 262144
 
     @classmethod
-    def _reglage_valide(cls, valeur) -> bool:
-        return (isinstance(valeur, str) and len(valeur) <= cls.REGLAGE_LONGUEUR_MAX
+    def _reglage_valide(cls, cle, valeur) -> bool:
+        return (isinstance(valeur, str)
+                and len(valeur) <= cls.REGLAGE_LONGUEUR_PAR_CLE.get(cle, cls.REGLAGE_LONGUEUR_MAX)
                 and all(c >= ' ' and c != '\x7f' for c in valeur))
 
     @staticmethod
@@ -2654,7 +2689,7 @@ class GameServerGet(GameServerBase):
                     if cls._table_valide(valeur):
                         propres[cle] = valeur
                 elif cle in cls.REGLAGES_CLES:
-                    if cls._reglage_valide(valeur):
+                    if cls._reglage_valide(cle, valeur):
                         propres[cle] = valeur
                 elif valeur in cls.PREFERENCES_PERMISES.get(cle, ()):
                     propres[cle] = valeur
@@ -2688,8 +2723,8 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'reserve au titulaire du compte'}, status=403)
         data = await request.json()
         changements = data.get('changements') if isinstance(data, dict) else None
-        # 60 : le premier versement des reglages du plateau (une cinquantaine de cles).
-        if not isinstance(changements, dict) or len(changements) > 60:
+        # 100 : le premier versement des reglages (une quatre-vingtaine de cles).
+        if not isinstance(changements, dict) or len(changements) > 100:
             return web.json_response({'error': 'changements invalides'}, status=400)
         chemin = self._chemin_preferences()
         if not chemin:
@@ -2703,6 +2738,8 @@ class GameServerGet(GameServerBase):
             if valeur is None:
                 preferences.pop(cle, None)
         preferences.update(self._preferences_valides(changements))
+        if sum(len(v) for c, v in preferences.items() if c in self.REGLAGES_CLES) > self.REGLAGES_TOTAL_MAX:
+            return web.json_response({'error': 'trop de reglages pour ce compte'}, status=413)
         dossier = os.path.dirname(chemin)
         if dossier:
             os.makedirs(dossier, exist_ok=True)

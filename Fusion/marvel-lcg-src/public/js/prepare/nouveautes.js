@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-14",
         genre: "jeu",
+        fr: "Presque tout ce que vous réglez suit maintenant votre compte : la langue, la place des fenêtres et du tchat, vos puzzles créés et les préférences des pages de préparation. Seule l'image de fond reste sur l'appareil.",
+        en: "Almost everything you set now follows your account: the language, the position of windows and chat, your created puzzles and the preferences of the preparation pages. Only the background image stays on the device.",
+    },
+    {
+        date: "2026-11-14",
+        genre: "jeu",
         fr: "Vos réglages du plateau (sons, musique, automatismes, noms des zones, réglages du téléphone…) sont gardés sur votre compte : vous les retrouvez sur un autre appareil. Ceux que vous aviez déjà sont repris à votre prochaine visite.",
         en: "Your board settings (sounds, music, automations, zone names, phone settings…) are now kept on your account: you get them back on another device. The ones you already had are picked up on your next visit.",
     },

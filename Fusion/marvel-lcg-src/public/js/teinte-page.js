@@ -13,6 +13,8 @@
 
 import { CLE_TEINTE, SEUIL_TABLE_CLAIRE, bornerTeinte, lireTeinte, variablesDeTeinte } from "/public/js/prepare/teinte-choix.js";
 import { CLE_AFFICHAGE, SOBRE, normaliser, poserAttributs, verifierEpurePermis } from "/public/js/prepare/affichage-choix.js";
+// Les reglages du joueur suivent son COMPTE sur toutes les pages (14/11/2026) : reglages-compte-page.js.
+import "/public/js/reglages-compte-page.js";
 
 const NOMS = Object.keys(variablesDeTeinte({ h: 0, s: 0, l: 20 }));
 

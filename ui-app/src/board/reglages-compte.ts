@@ -11,6 +11,7 @@
 // La liste est FERMEE et doit rester identique a `REGLAGES_CLES` du serveur
 // (server_get.py) : reglages-compte.test.ts compare les deux.
 import { estCadre } from './cadre-joueur'
+import { appliquerLangueDuCompte } from './langue'
 
 export const REGLAGES_DU_COMPTE: readonly string[] = [
   'marvel-board-action-mode',
@@ -61,20 +62,62 @@ export const REGLAGES_DU_COMPTE: readonly string[] = [
   'mc_piles_inversees',
   'mc_resource_art_v1',
   'mc_traits_pastilles',
+  // 2e versement (14/11/2026, « tout suit le compte » sauf l'image de fond) : la
+  // langue, la place des boites, le tchat, les reglages propres a l'appareil, les
+  // puzzles crees et les preferences des pages classiques.
+  'marvel-langue',
+  'marvel-langue-choisie',
+  'marvel-board-succes',
+  'marvel-board-marvelcdb',
+  'marvel-board-design-essai',
+  'marvel-board-ambiance-demande',
+  'marvel-boite-phase-mechant',
+  'marvel-tchat-position',
+  'marvel-tchat-taille',
+  'marvel-tsm-bandeau-place',
+  'marvel-tchat-pseudo-play',
+  'marvel-tchat-langues',
+  'marvel-tchat-fermees',
+  'mode-plateau',
+  'marvel-jeu-au-doigt',
+  'mc-puzzles-crees',
+  'mc-puzzle-pseudo',
+  'mc_prepare_prefs_v1',
+  'mc_ext_groupe_v1',
+  'mc_roue_fanmade',
+  'mc_phase_choix_vu',
+  'mc_phase_mode_vu_v1',
+  'mc_card_art_noask_v1',
+  'marvel-legacy-explique',
+  'marvelcdb_favoris',
+  'mc-deckbuilder-filtres-replies',
+  'mc-deckbuilder-drafts',
+  'mc_sandbox_garnir',
+  'mc-campagne-brouillon',
 ]
+// Hors compte, EXPRES (voir REGLAGES_CLES, server_get.py) : l'image de fond, l'historique de la
+// partie (sessionStorage), le rapport en attente, les pointeurs `mc-campagne-partie` et
+// `mc-puzzle-courant`, les marqueurs de migration, la vue joueur de l'admin.
 
-/** Meme borne que le serveur : au-dela, la valeur reste dans le navigateur. */
+/** Memes bornes que le serveur : au-dela, la valeur reste dans le navigateur. */
 export const REGLAGE_LONGUEUR_MAX = 2000
-/** Le serveur refuse plus de 60 changements par appel. */
+export const REGLAGE_LONGUEUR_PAR_CLE: Readonly<Record<string, number>> = {
+  'mc-deckbuilder-drafts': 65536,
+  'mc-campagne-brouillon': 32768,
+  'mc-puzzles-crees': 16384,
+  mc_prepare_prefs_v1: 16384,
+  marvelcdb_favoris: 16384,
+}
+/** Le serveur refuse plus de 100 changements par appel. */
 const CHANGEMENTS_PAR_APPEL = 60
 
 type Reglages = Record<string, string>
 type Changements = Record<string, string | null>
 
 /** Le serveur garderait-il cette valeur ? (texte court, sans caractere de controle) */
-export function reglageValide(valeur: unknown): valeur is string {
+export function reglageValide(cle: string, valeur: unknown): valeur is string {
   // eslint-disable-next-line no-control-regex
-  return typeof valeur === 'string' && valeur.length <= REGLAGE_LONGUEUR_MAX && !/[\x00-\x1f\x7f]/.test(valeur)
+  return typeof valeur === 'string' && valeur.length <= (REGLAGE_LONGUEUR_PAR_CLE[cle] ?? REGLAGE_LONGUEUR_MAX) && !/[\x00-\x1f\x7f]/.test(valeur)
 }
 
 /** Les reglages du navigateur que le compte peut garder. */
@@ -83,7 +126,7 @@ export function lireReglages(stockage: Storage = window.localStorage): Reglages 
   try {
     for (const cle of REGLAGES_DU_COMPTE) {
       const valeur = stockage.getItem(cle)
-      if (reglageValide(valeur)) reglages[cle] = valeur
+      if (reglageValide(cle, valeur)) reglages[cle] = valeur
     }
   } catch {
     // Stockage refuse : rien a garder.
@@ -100,7 +143,7 @@ export function rapprocher(compte: Record<string, unknown>, navigateur: Reglages
   const versCompte: Reglages = {}
   for (const cle of REGLAGES_DU_COMPTE) {
     const duCompte = compte[cle]
-    if (reglageValide(duCompte)) {
+    if (reglageValide(cle, duCompte)) {
       if (navigateur[cle] !== duCompte) versNavigateur[cle] = duCompte
     } else if (cle in navigateur) {
       versCompte[cle] = navigateur[cle]
@@ -180,6 +223,9 @@ export function chargerReglagesDuCompte(delaiMs = 1500): Promise<void> {
       if (!corps || !corps.compte) return
       const { versNavigateur, versCompte } = rapprocher(corps.preferences ?? {}, lireReglages())
       poserDansLeNavigateur(versNavigateur)
+      // La langue du compte arrive avant le premier rendu : la narration du moteur et le cookie
+      // du site la suivent aussi.
+      if ('marvel-langue' in versNavigateur) appliquerLangueDuCompte()
       if (Object.keys(versCompte).length) envoyer(versCompte)
       suivre()
     } catch {

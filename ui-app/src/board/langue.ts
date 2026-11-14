@@ -42,6 +42,13 @@ function poserCookieLangue(langue: Langue): void {
   }
 }
 
+/** La langue venue du compte vient d'etre posee dans le navigateur (reglages-compte.ts) : le cookie du site et la
+ *  narration du moteur la suivent. Pas de rechargement, la page n'a pas encore ete dessinee. */
+export function appliquerLangueDuCompte(): void {
+  poserCookieLangue(langueActuelle())
+  synchroniserLangueServeur()
+}
+
 /** Français → anglais. Rempli dans dico-en.ts ; une clé absente reste en FR. */
 const DICO_EN: Record<string, string> = { ...DICO_EN_BASE }
 
