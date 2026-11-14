@@ -48,7 +48,7 @@ class Selector(metaclass=Tracker.Meta):
 
     def GetRandomTarget(self, legal_faces: Sequence['CardFace'], effect: 'Effect') -> Sequence['CardFace']:
         from game.operate.rand import Rand
-        return Rand.RandomChoice2(legal_faces, self.selector_range.GetTargetMax(effect, legal_faces), effect)
+        return Rand.RandomCards(legal_faces, self.selector_range.GetTargetMax(effect, legal_faces), effect)
 
     def GetAllLegalTargets(self, effect: 'Effect', referential_effect: 'Effect|None'=None, *, just_check: bool=False) -> Sequence['CardFace']:
         from game.operate.referential import Referential

@@ -366,6 +366,8 @@ const state = {
     reglesV16: true,      // pousse "v16_all" dans rules (défaut actif)
     // Façon de jouer de CETTE partie ; le défaut vient des Réglages du plateau.
     modeManuel: lanceEnManuel(faconParDefaut(window.localStorage)),
+    // Tirage « au hasard » fait par le joueur (14/11/2026, rapport 131) : decoche par defaut ; pousse "tirage_manuel" dans rules.
+    tirageManuel: false,
 };
 
 /**
@@ -6592,6 +6594,13 @@ function blocAvance() {
             onchange: () => { state.modeManuel = valeur === FACON_MANUEL; },
         }),
         el("span", {}, libelle));
+    const tirage = el("label", { class: "cj-chk" },
+        el("input", {
+            type: "checkbox",
+            checked: state.tirageManuel === true || undefined,
+            onchange: (e) => { state.tirageManuel = e.target.checked; },
+        }),
+        el("span", {}, t("Je tire moi-même les cartes « au hasard »")));
     const manuel = el("div", {},
         choixFacon(FACON_AUTO, t("Automatique : le moteur applique les règles")),
         choixFacon(FACON_MANUEL, t("Manuel façon OCTGN : le moteur pose la table, puis ne joue plus")));
@@ -6605,6 +6614,8 @@ function blocAvance() {
             ligne(t("Règles v16"), v16, null),
             ligne(t("Façon de jouer"), manuel,
                   t("En manuel, tu appliques toutes les règles toi-même")),
+            ligne(t("Tirage au hasard"), tirage,
+                  t("Les cartes cachées se mélangent face cachée et tu en désignes une, comme à la table")),
         ),
     );
 }

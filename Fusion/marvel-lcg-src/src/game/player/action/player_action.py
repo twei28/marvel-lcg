@@ -1357,7 +1357,7 @@ class PlayerAction:
             faces = [face for face in faces if face not in exclude]
         if len(faces) > size:
             from game.operate.rand import Rand
-            return Rand.RandomChoice2(faces, size, player.world)
+            return Rand.RandomCards(faces, size, player.world, player)
         return faces if exclude else player.hand_cards.Get()
 
     def DiscardAllHands(self, by_effect: 'Effect', finder: 'CardFinder|None'=None) -> int:

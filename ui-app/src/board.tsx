@@ -106,6 +106,8 @@ import {
 import { adresseApresPartie, estInviteDeTable, useRetourAuSalon } from './board/retour-salon'
 import { estFenetreDeReaction, texteDemande } from './board/DemandeCentrale'
 import { SelecteurChoixTexte } from './board/SelecteurChoixTexte'
+import { SelecteurTirageCache } from './board/SelecteurTirageCache'
+import { estTirageCache } from './board/tirage-cache'
 import {
   narrationAuCentre,
   questionDansLaScene,
@@ -2391,7 +2393,9 @@ export function PagePartie({
   }, [estChoixTexte, interaction.options, carteDeLOption, idsEnMain])
   const estChoixTexteEnMain = estChoixTexte && choixTexteParCarteId.size === interaction.options.length
   // La grille ne s'affiche que si CE N'EST PAS entierement resolu en main.
-  const estChoixTexteGrille = estChoixTexte && !estChoixTexteEnMain
+  // TIRAGE MANUEL (regle `tirage_manuel`, 14/11/2026) : des dos a melanger, jamais des noms de cartes.
+  const estTirageCacheDemande = estTirageCache(interaction.options)
+  const estChoixTexteGrille = (estChoixTexte && !estChoixTexteEnMain) || estTirageCacheDemande
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -5010,7 +5014,16 @@ export function PagePartie({
         </DansLeCadre>
       ) : null}
 
-      {manuel ? null : estChoixTexteGrille && etat.demande ? (
+      {manuel ? null : estTirageCacheDemande && etat.demande ? (
+        <SelecteurTirageCache
+          titre={t('Tire une carte au hasard')}
+          options={interaction.options}
+          choisir={choisirOptionDepuisMenu}
+          annuler={etat.demande.show_cancel ? interaction.annuler : undefined}
+        />
+      ) : null}
+
+      {manuel ? null : estChoixTexteGrille && !estTirageCacheDemande && etat.demande ? (
         <SelecteurChoixTexte
           titre={texteDemande(etat.demande) || t('Choisis une carte')}
           options={interaction.options}

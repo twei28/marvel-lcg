@@ -54,6 +54,9 @@ function buildRules(state) {
     // declenche plus rien. Comme les autres modes, le drapeau passe par `rules`
     // et survit donc au chargement d'une sauvegarde.
     if (state.modeManuel === true) rules.push("mode_manuel");
+    // Tirage « au hasard » fait par le joueur : les cartes cachees se melangent face cachee, il en designe une
+    // (moteur : `Rand.RandomCards`). Inscrit dans `rules`, donc conserve par la sauvegarde ; decoche = rien ne change.
+    if (state.tirageManuel === true) rules.push("tirage_manuel");
     // Bataille : le moteur ouvre une seconde zone de jeu, y pose le second
     // leader et enfile les phases camp par camp. Comme les autres modes, le
     // drapeau passe par `rules` et survit donc au chargement d'une sauvegarde.

@@ -101,6 +101,11 @@ class WorldRule:
         # sauvegarde. Ignoree hors des sets TMNT Standard / Expert : voir
         # `World.CartesSetupOptionnelles`.
         self.tmnt_intense_combatants        = VariableBool(self, False, "tmnt_intense_combatants")
+        # Tirage « au hasard » fait PAR LE JOUEUR (14/11/2026, rapport 131) : au lieu de laisser le moteur
+        # tirer, les cartes cachees (main, paquet, zone de cote) se presentent face cachee, melangees, et le
+        # joueur en designe une. PAR DEFAUT A FAUX : une question de plus decalerait la liste des operations
+        # rejouees d'une sauvegarde ancienne (controle CRC). Posee par la case de l'ecran de preparation.
+        self.tirage_manuel                  = VariableBool(self, False, "tirage_manuel")
 
     def SetRule(self, rules: List[str], is_puzzle: bool, seed: int):
         for var in self.vars_bool:

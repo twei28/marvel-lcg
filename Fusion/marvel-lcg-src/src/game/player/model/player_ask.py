@@ -53,6 +53,21 @@ class PlayerAsk:
             text_list2 = None
         return self.AskChooseOneText(item_list2, text_list2)
 
+    # Marque posee devant le nom des options d'un tirage a la main : le plateau y reconnait « des dos de cartes
+    # a melanger » et non une liste de noms (`ui-app/src/board/tirage-cache.ts`, meme constante).
+    PREFIXE_TIRAGE_CACHE = "[tirage-cache] "
+
+    def AskPickHiddenCard(self, faces: Sequence['CardFace']) -> 'CardFace':
+        """Le joueur designe une carte parmi `faces`, presentees FACE CACHEE et melangees (rapport 131 : « Captured
+        by Hydra, tire au hasard »). Le melange sert l'ordre d'affichage seulement : le joueur ne sait pas laquelle
+        est laquelle. Regle de partie `tirage_manuel` ; voir `Rand.RandomCards`."""
+        self.nb_tirages_manuels = getattr(self, "nb_tirages_manuels", 0) + 1  # lu par tools/cas/capture_hydra.py
+        from engine.lib import Random
+        ordre = list(faces)
+        Random.Shuffle(ordre)
+        textes = [f"{self.PREFIXE_TIRAGE_CACHE}{i + 1}" for i in range(len(ordre))]
+        return self.AskChooseOneText(ordre, textes, "Choose a card at random")
+
     def AskChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None, titre: str="") -> T:
         from game.card.face.card_face import CardFace
         from game.effect.rule import GameRule
