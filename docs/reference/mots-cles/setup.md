@@ -36,3 +36,8 @@ le seul `desc`, sans une ligne de script.
   cachée (RECETTES-MOTEUR §7quater).
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf371`, `hf604a`, 01/11/2026)
+
+- `hf371` Psychic Aegis (`Setup`, « Attach to the villain ») : `desc.Setup = "1"` + `AttachToFaceWhenPutIntoPlay(Villain)` ; la carte entre en jeu a la mise en place si son ensemble modulaire est dans le deck, attachee au vilain, et RESTE attachee quand le stade I est vaincu (cas dedie).
+- `hf604a` : le Setup d'une face A de complot s'execute AVANT que le moteur avance A -> B (`World` etape 12) : un « advance to stage 2A » du Setup se code sur la face B par `AfterGameSetup` (recette §41 de RECETTES-MOTEUR).

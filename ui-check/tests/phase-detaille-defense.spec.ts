@@ -118,6 +118,8 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
     // LE MODE QUI NOUS INTÉRESSE, écrit explicitement : c'est le défaut du
     // jeu, mais un test ne doit pas dépendre d'un défaut.
     localStorage.setItem('marvel-board-mode-phase-mechant', 'detaille');
+    // « detaille » se lit « tris » depuis le 19/10/2026 (Guidée) : posé explicitement, jamais par défaut.
+    localStorage.setItem('mc_phase_presentation', 'tris');
     localStorage.setItem('marvel-board-avance-auto', 'off');
   });
 
@@ -140,18 +142,18 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
   // mesuré le 14/09/2026, une seule fenêtre de défense atteinte au lieu de deux.
   for (let tour = 0; tour < 200 && defensesVues < DEFENSES_A_VOIR; tour += 1) {
     const suivant = page.locator('.deroule-suivant');
-    const defendre = page.getByRole('button', { name: /^Défendre avec/i }).first();
-    const passer = page.getByRole('button', { name: /^Ne pas défendre/ }).first();
+    const defendre = page.getByRole('button', { name: /Défendre avec/i }).first();
+    const passer = page.getByRole('button', { name: /Ne pas défendre/ }).first();
     // Tout autre refus du cartouche (« Ne pas utiliser Sens d’Araignée »,
     // « Aucune réponse », « Continuer sans rien jouer », « Annuler »).
-    const refus = page.locator('.deroule-phase.est-scene [data-refus]').first();
+    const refus = page.locator('.deroule-phase.est-scene [data-refus], .deroule-phase.est-scene .essai-choix.est-refus').first();
 
     if (await defendre.count()) {
       defensesVues += 1;
 
       // La question est posée : le cartouche du bas la porte, choix ET refus.
       await expect(
-        page.locator('.deroule-phase.est-scene .deroule-rangee [data-choix]').first(),
+        page.locator('.deroule-phase.est-scene .deroule-rangee [data-choix], .deroule-phase.est-scene .essai-choix').first(),
         'le moteur demande « Défendre ? » et la rangée du cartouche ne propose aucun défenseur'
       ).toBeVisible();
       await expect(passer, 'fenêtre de défense sans bouton « Ne pas défendre »').toBeVisible();
@@ -282,7 +284,7 @@ test('⚠ en mode Détaillé, on sait TOUJOURS quand on peut défendre', async (
         `le cartouche DÉFILE en ${mesure!.largeur}×${mesure!.hauteur} : ` +
           `${mesure!.contenu}px de contenu pour ${mesure!.visible}px visibles` +
           ` — par enfant : ${mesure!.detail}`
-      ).toBeLessThanOrEqual(mesure!.visible);
+      ).toBeLessThanOrEqual(mesure!.visible + 1); // +1 : scrollHeight arrondit au-dessus, clientHeight en dessous (hauteurs fractionnaires de la Guidée, 19/10/2026) ; un vrai défilement dépasse de bien plus
       // Le carré fait la largeur de la variable, à 1 px près, et jamais moins
       // que les 3/4 de sa largeur de haut.
       expect.soft(

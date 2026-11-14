@@ -1,0 +1,15 @@
+{
+    "version": "0.5.8",
+    "name": "Ninja Swarm",
+    "encounters": [
+        "sl028",
+        "sl029",
+        "sl030",
+        "sl031",
+        "sl032",
+        "sl033",
+        "sl034",
+        "sl035",
+        "sl036"
+    ]
+}

@@ -1,7 +1,48 @@
 from . import *
 
+class BoostContext:
+    """Remplace `WhenUnitBeingAttack` / `WhenSchemeBeingScheme` quand un HEROS resout ses cartes de boost sur un
+    DEPLOIEMENT DE MENACE ou une DEFENSE de base (AJOUT 13/11/2026, heros officiel Elektra, MC63).
+
+    Les messages de boost ne lisent de `being_message` que `would_message` (le message `WhenUnitWould...` de la
+    puissance en cours) ; ce petit objet suffit donc, sans fabriquer un faux `Being...`.
+    """
+
+    def __init__(self, would_message: 'Message2') -> None:
+        self.would_message = would_message
+
+
 # Gain boost card when activate
 class CanBoost(CardFace):
+
+    def HeroBoostForBasicPower(self, would_message: 'Message2', power: str) -> None:
+        """Un HEROS qui utilise un pouvoir de base DEJOUER (`"THW"`) ou DEFENSE (`"DEF"`) recoit sa carte de boost
+        (Villainous) puis resout toute sa pile, comme `can_attack.py` le fait pour l'ATTAQUE.
+
+        AJOUT (13/11/2026, Elektra : « Villainous. When this character uses a basic power, give it a boost card »,
+        etoiles imprimees sur THW / ATQ / DEF). Avant : seuls l'attaque et la manigance d'un ENNEMI resolvaient une pile
+        de boost ; une carte donnee a un heros pour un deploiement ou une defense restait posee, jamais retournee.
+
+        Inerte pour tout heros non villainous sans carte de boost en attente : `GetBoostCardNum` rend 0, la pile est vide,
+        on sort aussitot. Les ennemis ont leurs propres chemins (`can_attack`, `can_scheme`) : on ne touche que les heros.
+        """
+        from game.card.face.card_type import Hero
+        from game.effect.rule import GameRule
+        if not Hero.IsType(self):
+            return
+        self.GiveFacedownBoostCardsInternal(self.GetBoostCardNum(would_message), GameRule(self), None)
+        if self.components.boostable.GetDeck().GetSize() == 0:
+            return
+
+        def gain(face: 'CardFace', boost_value: int) -> None:
+            # `GainForThisActive` (TemporaryGain) ne connait pas `WhenUnitWouldDefend` : on passe par les primitives du message,
+            # comme `WhenUnitUseBasicPower.GainValue` (sender_unit.py:21).
+            if power == "THW":
+                would_message.GainTHWForThisThwart(boost_value, GameRule(face))
+            else:
+                would_message.GainDEFForThisAttack(boost_value, GameRule(face))
+
+        self.ResolveBoostCards(BoostContext(would_message), gain)
 
     def GetBoostCardNum(self, message: 'Message2') -> int:
         assert False, f"You have to over write this function, {self=}"
@@ -60,8 +101,21 @@ class CanBoost(CardFace):
         from game.operate.worlds import Worlds
 
         world = self.card.world
+        # AJOUT (13/11/2026, Elektra) : pour un HEROS, on ne resout QUE les cartes presentes au depart (instantane). Une carte
+        # RE-DONNEE pendant la resolution (« Otherwise, give this card to Elektra as a facedown boost card ») reste dans la pile
+        # pour la prochaine fois, au lieu d'etre retournee a l'infini. Les ennemis gardent la boucle d'origine (des cartes
+        # comme `GiveAdditionalBoostCardForThisActivation` comptent sur le fait que la boucle retourne aussi les cartes ajoutees).
+        from game.card.face.card_type import Hero
+        instantane = list(self.components.boostable.GetDeck().Get()) if Hero.IsType(self) else None
         while self.components.boostable.GetDeck().GetSize() != 0:
-            face = self.components.boostable.GetDeck().GetTop()
+            if instantane is not None:
+                restantes = [f for f in instantane if f.card.area == self.components.boostable.GetDeck()]
+                if not restantes:
+                    break
+                face = restantes[-1]   # le dessus d'abord (comme `GetTop`)
+                instantane.remove(face)
+            else:
+                face = self.components.boostable.GetDeck().GetTop()
             assert face
 
             if world.is_game_over:

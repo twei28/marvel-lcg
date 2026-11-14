@@ -100,6 +100,11 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
         if not self.card.IsOnField():
             #  or self.card.face.IsDefeated():
             return False
+        # BRIQUE 2 (20/10/2026) : une carte joueur ne pose aucun etat sur une
+        # face insensible aux cartes joueur (Galactic Storm p.14).
+        from game.operate.immunity import PlayerCardImmunity
+        if PlayerCardImmunity.Refuses(self, by_effect):
+            return False
         # assert name in ['tough', 'stunned', 'confused'], f"{name=}"
 
         # AJOUT (16/10/2026, te201 Intense Combatants) : « When a status card would be
@@ -153,6 +158,12 @@ class CanStatus(HasVulnerable, HasSteady, HasToughness, HasStalwart):
     def LoseState(self, name: "CardFace.STATUS", by_effect: 'Effect', rule: DISCARD_RULE) -> int:
         if not self.card.IsOnField():
             return False
+        # BRIQUE 2 (20/10/2026) : une carte joueur ne defausse aucun etat d'une
+        # face insensible aux cartes joueur, Robuste par perforant compris
+        # (Galactic Storm p.14). Retourne 0 : rien n'a ete defausse.
+        from game.operate.immunity import PlayerCardImmunity
+        if PlayerCardImmunity.Refuses(self, by_effect):
+            return 0
         return self.components.status.DiscardStatusCard(name, by_effect, rule)
 
     # def GainConfused(self, by_effect: 'Effect') -> bool:

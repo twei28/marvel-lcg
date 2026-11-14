@@ -188,3 +188,71 @@ html[data-taille-texte='tres-grand'] {
     opacity: 0.4;
   }
 }
+
+/* --- Plusieurs cartes peuvent reagir en meme temps (variante B, 24/10/2026) : cote a cote, un toucher joue celle-la en premier --- */
+body.mode-plateau-portrait .demande-centrale.dc-cote-a-cote {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 960;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: calc(100dvh - 70px);
+  padding: 12px;
+  border-radius: 14px;
+  background: #161b26;
+  border: 1px solid #3a8ee6;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+}
+body.mode-plateau-portrait .dc-cote-a-cote .dc-texte {
+  text-align: center;
+}
+body.mode-plateau-portrait .dc-cote-a-cote .dc-texte strong {
+  display: block;
+  font-size: 1.05rem;
+  color: #fff;
+}
+.dc-cartes-reaction {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+.dc-carte-reaction {
+  flex: 1 0 0;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 2px solid #f3c623;
+  background: #1f2533;
+  color: #f2f3f5;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.dc-carte-reaction-scan {
+  width: 100%;
+  max-width: 150px;
+  pointer-events: none;
+}
+.dc-carte-reaction-scan .scan-card {
+  width: 100%;
+  --card-w: 100%;
+}
+.dc-carte-reaction b {
+  font-size: 0.95rem;
+}
+.dc-carte-reaction-texte {
+  font-size: 0.78rem;
+  line-height: 1.3;
+  color: #c9d0dc;
+}
+body.mode-plateau-portrait .dc-cote-a-cote .dc-ignorer-tout {
+  min-height: 46px;
+}

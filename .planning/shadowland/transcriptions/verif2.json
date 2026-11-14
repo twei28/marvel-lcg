@@ -1,0 +1,214 @@
+[
+ {
+  "id_scan": "65044",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"etoile rouge (coin bas droit, icone d'ecran de menace / acceleration ?)\", \"boost x1 (chevron rouge en Y)\"]",
+    "nouveau": "[\"boost ★ (etoile rouge isolee)\", \"boost x1 (chevron rouge en Y)\"]",
+    "raison": "etoile rouge en bas a droite = icone de boost ★, effet ecrit dans le texte; pas d'acceleration/crisis"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65045",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"etoile rouge (coin bas droit)\", \"boost x2 (chevrons rouges en Y)\"]",
+    "nouveau": "[\"boost ★ (etoile rouge isolee)\", \"boost x2 (chevrons rouges en Y)\"]",
+    "raison": "etoile rouge en bas a droite = icone de boost ★, effet ecrit dans le texte; pas d'acceleration/crisis"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65046",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<i>CONDITION.</i>\nAttach to your identity.\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Disarm</i>\" effect on a <b>TRAP!</b> card, name an encounter card type, then discard the top card of the encounter deck. If the card discarded this way was not of the named type, take 4 indirect damage and discard this attachment.",
+    "nouveau": "Attach to your identity.\n<b>Forced Interrupt</b>: When you choose the \"<i>Avoid</i>\" effect or the \"<i>Disarm</i>\" effect on a <b>TRAP!</b> card, name an encounter card type, then discard the top card of the encounter deck. If the card discarded this way was not of the named type, take 4 indirect damage and discard this attachment.",
+    "raison": "la ligne 'CONDITION.' est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65047",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "{\"SCH\": \"2\", \"ATK\": \"1\", \"cout_ou_PV\": \"4 (cercle orange-rouge en bas a droite de l'image, probablement PV)\"}",
+    "nouveau": "{\"SCH\": \"2\", \"ATK\": \"1\", \"HP\": \"4\"}",
+    "raison": "cercle orange en bas a droite de l'image d'un MINION = HP 4 (pas de symbole par joueur)"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65048",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"icone crisis/acceleration (point d'exclamation dans un eclat noir, au centre)\", \"etoile rouge (coin bas gauche)\"]",
+    "nouveau": "[\"crisis (!! dans un eclat)\", \"boost ★ (etoile rouge isolee, bas gauche)\"]",
+    "raison": "etoile rouge en bas a gauche = icone de boost ★"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65049",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "icones",
+    "ancien": "[\"etoile rouge (coin bas gauche)\"]",
+    "nouveau": "[\"boost ★ (etoile rouge isolee, bas gauche)\"]",
+    "raison": "etoile rouge en bas a gauche = icone de boost ★"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65050",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>THWART</b> event from your hand.\n• <i>Disarm</i> — Discard 2 cards at random from your hand, then give a character you control a tough status card.\n• <i>Trip</i> — Deal 2 damage to your identity and confuse it.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>THWART</b> event from your hand.\n• <i>Disarm</i> — Discard 2 cards at random from your hand, then give a character you control a tough status card.\n• <i>Trip</i> — Deal 2 damage to your identity and confuse it.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65051",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>DEFENSE</b> event from your hand.\n• <i>Disarm</i> — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy.\n• <i>Trip</i> — Deal 2 damage to your identity and stun it.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard a <b>DEFENSE</b> event from your hand.\n• <i>Disarm</i> — Discard 1 identity-specific card from your hand, then deal 2 damage to an enemy.\n• <i>Trip</i> — Deal 2 damage to your identity and stun it.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65052",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an ally from your hand.\n• <i>Disarm</i> — Discard an ally you control, then draw 2 cards.\n• <i>Trip</i> — Deal 3 damage to your identity. Discard the top 3 cards of your deck.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an ally from your hand.\n• <i>Disarm</i> — Discard an ally you control, then draw 2 cards.\n• <i>Trip</i> — Deal 3 damage to your identity. Discard the top 3 cards of your deck.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65053",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an upgrade from your hand.\n• <i>Disarm</i> — Discard an upgrade you control, then remove 4 threat from the main scheme.\n• <i>Trip</i> — Discard 1 card from your hand. Discard the top 8 cards of your deck.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an upgrade from your hand.\n• <i>Disarm</i> — Discard an upgrade you control, then remove 4 threat from the main scheme.\n• <i>Trip</i> — Discard 1 card from your hand. Discard the top 8 cards of your deck.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65054",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [energy] [energy] resources.\n• <i>Disarm</i> — Spend [mental] [mental] [physical] resources, then deal 3 damage to the villain.\n• <i>Trip</i> — Deal 3 damage to your identity and exhaust it.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [energy] [energy] resources.\n• <i>Disarm</i> — Spend [mental] [mental] [physical] resources, then deal 3 damage to the villain.\n• <i>Trip</i> — Deal 3 damage to your identity and exhaust it.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65055",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [mental] [mental] resources.\n• <i>Disarm</i> — Spend [energy] [physical] [physical] resources, then search the top 4 cards of your deck for a card and add it to your hand. <i>(Shuffle.)</i>\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Spend [mental] [mental] resources.\n• <i>Disarm</i> — Spend [energy] [physical] [physical] resources, then search the top 4 cards of your deck for a card and add it to your hand. <i>(Shuffle.)</i>\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a minion is discarded, then reveal it.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65056",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "texte",
+    "ancien": "<b>TRAP!</b>\n<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an <b>ATTACK</b> event from your hand.\n• <i>Disarm</i> — Discard a support you control, then remove 3 threat from a scheme.\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it.",
+    "nouveau": "<b>When Revealed</b>: Choose:\n• <i>Avoid</i> — Discard an <b>ATTACK</b> event from your hand.\n• <i>Disarm</i> — Discard a support you control, then remove 3 threat from a scheme.\n• <i>Trip</i> — Discard cards from the top of the encounter deck until a side scheme is discarded, then reveal it.",
+    "raison": "'TRAP!' centre en gras italique en haut de la boite est la ligne de traits (deja dans traits), pas du texte de regle"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65057",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65058",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65059",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65060A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65060B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "{\"StartingThreat\": \"6 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"2 par_joueur\", \"niveau_etape\": \"1B\"}",
+    "nouveau": "{\"StartingThreat\": \"2 par_joueur\", \"escalade\": \"+1 par_joueur\", \"TargetThreat\": \"6 par_joueur\", \"niveau_etape\": \"1B\"}",
+    "raison": "rond en haut a gauche '6 par joueur' = menace CIBLE; nombre en bas a droite '2 par joueur' = menace de DEPART; '+1 par joueur' = escalade (convention)"
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65061A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ }
+]

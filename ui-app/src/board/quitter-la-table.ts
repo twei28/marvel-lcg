@@ -27,6 +27,8 @@
 // une troisième issue, et refuse d'affirmer sur elle.
 
 /** L'adresse publique du site, et si on la connaît seulement. */
+import { signalerDepart } from './mobile/retour-android'
+
 export type Site = {
   /** Faux tant que la lecture n'a pas abouti. Ce n'est PAS « aucun site ». */
   connu: boolean
@@ -53,6 +55,7 @@ export const PLAFOND_LECTURE_SITE_MS = 2000
  * est justement ce qui casse quand la table s'éteint.
  */
 export function atterrir(url: string): void {
+  signalerDepart()
   window.location.href = url
 }
 

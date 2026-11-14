@@ -19,6 +19,7 @@ import { useNomsZones } from './noms-zones'
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -37,11 +38,20 @@ import { CoucheGlisser, BulleRefus } from './glisser/CoucheGlisser'
 import { CoucheOrdre } from './ordre/CoucheOrdre'
 import { cleDePile, cleDeRangee, coteDe, ranger, type Ordres } from './ordre/ordre-cartes'
 import { useCoteAmeliorations } from './cote-ameliorations'
+import { useInversionPiles } from './inversion-piles'
+import { PastillesTraits } from './PastillesTraits'
+import { PAS_PAR_CHEVAUCHEMENT, useChevauchement, useZoomApercuSync } from './reglages-affichage-cartes'
 import { useReordonner } from './ordre/useReordonner'
 import { cibleSousLePoint, useGlisser, type CibleSurvolee, type EtatGlisser } from './glisser/useGlisser'
 import { TraductionPosee } from './TraductionPosee'
-import { coteDuTexte, useTraductionFr } from './traduction-carte'
+import { compterEmpilees, estEmpilee, libelleEmpilees } from './empilees'
+import { coteDuTexte, useTexteSurCarte, useTraductionFr } from './traduction-carte'
+import { erratumDeCarte } from './errata-rrg'
+import { NoteErrata, PastilleErrata } from './PastilleErrata'
+import { traducteurDuScanFr } from './scans-fr'
+import { estUnProxy } from './proxys'
 import { texteEnHtml } from './traduction-posee'
+import { APERCU_JUMELLES_DOUBLE, jumellesPourApercu, type ApercuJumelle } from './panorama-jumelles'
 import { pastilleRedondante, type EmplacementAffiche, type GroupeDePile, type Plateau, type UniteAffichee } from './zones'
 import type { World } from './world'
 import type { EtatInteractif } from './interaction'
@@ -233,7 +243,13 @@ export function avecInteraction(
     onOrdreAvancer: etat.ordreAvancer,
     onAssignerReste: etat.assignerReste,
     assignerResteQuantite: etat.assignerResteQuantite,
-    targetPulse: etat.pulse,
+    // Le paiement d'un cout (role 'ressource') a son propre halo bleu
+    // continu, distinct du flash dore d'1s qui designe une cible/un
+    // attaquant — sinon les cartes payeuses (main et capacites comme
+    // Redirect Chi) se fondaient dans tout le reste et passaient inapercues
+    // (demande utilisateur du 07/11/2026).
+    targetPulse: etat.role === 'ressource' ? false : etat.pulse,
+    paymentPulse: etat.role === 'ressource' ? etat.pulse : false,
     effectDelta: effets.get(Number(props.id)),
   }
 }
@@ -309,6 +325,7 @@ export function Unite({
   ordres?: Ordres
 }) {
   const coteParDefaut = useCoteAmeliorations()
+  const pasAmeliorations = PAS_PAR_CHEVAUCHEMENT[useChevauchement()]
   const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
     return (
@@ -369,7 +386,7 @@ export function Unite({
     // cartes voisines. --i donne le cran de decalage de chaque upgrade.
     <div
       className="plateau-unite"
-      style={{ '--nb': aDroite.length, '--nb-g': aGauche.length } as CSSProperties}
+      style={{ '--nb': aDroite.length, '--nb-g': aGauche.length, '--attach-step-x': `${pasAmeliorations}px` } as CSSProperties}
       // ⚠ `data-pile` NE VISE QUE LES VRAIES PILES (tache 5, glisser-depose du
       // mode manuel) : `unite.pile` n'est pose par zones.ts QUE sur un deck,
       // une defausse... jamais sur une carte posee (allie, heros, sbire) ni
@@ -380,26 +397,15 @@ export function Unite({
       data-pile={unite.pile}
       data-pile-accueille={pileAccueille ? '' : undefined}
     >
-      {/* Phases A VENIR (vilain/complot) : un petit tas DERRIERE la carte, plus
-          un bouton loupe qui ouvre la vue de toutes les phases. Purement visuel :
-          le clic/survol passe a la carte dessous. */}
+      {/* Phases A VENIR (vilain/complot) : un bouton loupe qui ouvre la vue de
+          toutes les phases. Avant le 06/11/2026, un petit tas de cartes
+          s'empilait aussi DERRIERE la carte active (purement visuel) ; retire
+          a la demande de l'utilisateur, illisible des qu'un scenario a
+          beaucoup de stades (la manigance principale, en particulier). La
+          loupe + son compteur suffisent a savoir qu'il y a d'autres phases
+          dessous. */}
       {unite.stagesArriere && unite.stagesArriere.length > 0 ? (
         <>
-          {unite.stagesArriere.map((stage, i) => (
-            <span
-              className="stage-arriere"
-              key={stage.id}
-              style={{ '--i': i + 1 } as CSSProperties}
-              aria-hidden="true"
-            >
-              <ScanCard
-                {...taire(stage)}
-                effectDelta={effets.get(Number(stage.id))}
-                onSelect={undefined}
-                highlight={false}
-              />
-            </span>
-          ))}
           <button
             type="button"
             className="stages-bouton"
@@ -418,12 +424,25 @@ export function Unite({
       ) : null}
 
       <ScanCard {...cartePorteur} />
+      {unite.etiquette ? <span className="plateau-pile-etiquette">{unite.etiquette}</span> : null}
+      <PastillesTraits carte={unite.carte} posee />
+      {compterEmpilees(upgrades) > 0 ? (
+        // Des événements ou des ressources posés SOUS cette carte (State of Flow, cartes glissées) : une pile, pas des
+        // améliorations en jeu. La pastille le dit et compte les cartes.
+        <span
+          className="pile-sous-carte"
+          aria-label={libelleEmpilees(compterEmpilees(upgrades))}
+          title={libelleEmpilees(compterEmpilees(upgrades))}
+        >
+          {libelleEmpilees(compterEmpilees(upgrades))}
+        </span>
+      ) : null}
       {upgrades.map((attachee) => {
         const cote = coteDe(Number(attachee.id), Number(unite.carte.id), ordres, coteParDefaut)
         const i = (cote === 'gauche' ? aGauche : aDroite).indexOf(attachee)
         return (
           <span
-            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}`}
+            className={`est-attachee${cote === 'gauche' ? ' est-a-gauche' : ''}${estEmpilee(attachee) ? ' est-empilee' : ''}`}
             key={attachee.id}
             style={{ '--i': i } as CSSProperties}
           >
@@ -525,6 +544,8 @@ function Emplacement({
             // tous les autres emplacements (`groupesPiles` n'est fourni que
             // par `terrain-combat`, zones.ts).
             data-pile={emplacement.groupesPiles?.[index]}
+            // Les environnements ne se chevauchent JAMAIS (23/10/2026) : la regle de compression des lignes chargees (board.css) les exclut.
+            data-brique={emplacement.groupesBriques?.[index]}
             // Le siege du joueur a qui est ce groupe (lot 5 du 06/10/2026) :
             // une carte lachee dedans, en mode manuel, arrive chez lui.
             data-joueur={emplacement.proprietaires?.[index]}
@@ -639,11 +660,19 @@ function ApercuAutreFace({
   paysageVisible: boolean
 }) {
   const estPaysage = face.isLandscape ?? paysageVisible
-  const traduction = useTraductionFr(face.code, face.artAlternatif)
+  const texteSurFace = useTexteSurCarte(face.code, face.artAlternatif)
+  const erratumFace = erratumDeCarte(face.code)
   const paysage = estPaysage ? coteDuTexte(face.type) : undefined
+  const voileFace =
+    texteSurFace && (!estPaysage || paysage) ? (
+      <TraductionPosee url={face.url} texte={texteSurFace.texte} traits={face.traits} paysage={paysage} langue={texteSurFace.langue} />
+    ) : undefined
   const surcouche =
-    traduction && (!estPaysage || paysage) ? (
-      <TraductionPosee url={face.url} texte={traduction} traits={face.traits} paysage={paysage} />
+    voileFace || erratumFace ? (
+      <>
+        {voileFace}
+        {erratumFace ? <PastilleErrata erratum={erratumFace} cote={paysage} /> : null}
+      </>
     ) : undefined
   return (
     <div className={`apercu-face apercu-face-autre${estPaysage ? ' est-paysage' : ''}`}>
@@ -662,40 +691,40 @@ function ApercuAutreFace({
         onSelect={undefined}
         highlight={false}
         surcouche={surcouche}
+        taille="grande"
       />
     </div>
   )
 }
 
-export function CarteApercu({
+/**
+ * Le volet d'aide du mode manuel (fiche du 07/10/2026) : ouvert, il occupe la colonne de droite et cachait
+ * l'agrandissement (z-index 610 contre 545). L'agrandissement se range a SA GAUCHE, languette comprise. Aucune
+ * borne quand le volet est ferme (rien d'attache au document) ou plein ecran (petit ecran : pas de place a cote).
+ */
+function bornesDuVoletAide(): readonly string[] {
+  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 760px), (max-height: 520px)').matches) return []
+  return ['.volet-aide', '.volet-aide-languette.est-ouvert']
+}
+
+/** Une carte de l'aperçu : le scan agrandi et tout ce qui se lit dessous (une par carte, deux pour une paire jumelle). */
+function FaceCarteApercu({
   carte,
   statuts,
   raisons,
-  classe,
-  borneDroite,
+  panorama,
+  avecLabel,
 }: {
   carte: ScanCardProps
-  /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
   statuts?: ScanCardProps[]
-  /**
-   * Pourquoi cette carte est injouable, une ligne par action refusee.
-   * Deja mises en phrase (voir `raisons-refus.ts`) : l'apercu ne fait que les
-   * poser. Vide ou absent quand la carte est jouable, ou quand le moteur n'a
-   * rien a dire.
-   */
   raisons?: string[]
-  /**
-   * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
-   * table : l'apercu est monte dans <body> avec un z-index taille pour passer
-   * devant le plateau (400), pas devant un panneau plein ecran. Le bilan de la
-   * phase du mechant (540) le recouvrirait sans cela.
-   */
-  classe?: string
-  /** Panneaux a ne pas recouvrir, a la place de la colonne des manigances (le volet du journal). */
-  borneDroite?: readonly string[]
+  /** Moitié d'une paire jumelle : le scan se raccorde à son voisin (mêmes classes que sur la table). */
+  panorama?: 'gauche' | 'droite'
+  /** Carte recto-verso (ApercuAutreFace à côté) : un label de même hauteur que
+   * le sien, sinon son « Autre face » pousse SA carte plus bas et les deux
+   * cadres ne s'alignent plus (signale en jeu, 06/11/2026). */
+  avecLabel?: boolean
 }) {
-  const autresFaces = carte.autresFaces ?? []
-  const nbFaces = 1 + autresFaces.length
   // Un complot s'agrandit TOUJOURS en paysage, meme si en main il etait montre
   // en portrait pour tenir dans l'eventail (voir card-model : isLandscape).
   const estComplot = carte.kind === 'main-scheme' || carte.kind === 'side-scheme'
@@ -703,39 +732,29 @@ export function CarteApercu({
   // La traduction se pose SUR le scan anglais quand sa zone de texte est
   // reconnue (portrait, et manigances en paysage) ; l'encadré sous la carte
   // reste le repli.
-  const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const texteSurCarte = useTexteSurCarte(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const erratum = carte.facedown ? undefined : erratumDeCarte(carte.codeCarte)
   const [traductionPosee, setTraductionPosee] = useState(false)
   const paysage = carteAgrandie.isLandscape ? coteDuTexte(carte.kind === 'main-scheme' ? 'MainScheme' : carte.kind === 'side-scheme' ? 'SideScheme' : undefined) : undefined
-  const surcouche =
-    traduction && carteAgrandie.imageUrl && (!carteAgrandie.isLandscape || paysage) ? (
+  const voile =
+    texteSurCarte && carteAgrandie.imageUrl && (!carteAgrandie.isLandscape || paysage) ? (
       <TraductionPosee
         url={carteAgrandie.imageUrl}
-        texte={traduction}
+        texte={texteSurCarte.texte}
         traits={carteAgrandie.traits}
         paysage={paysage}
+        langue={texteSurCarte.langue}
         onPose={setTraductionPosee}
       />
     ) : undefined
+  const surcouche =
+    voile || erratum ? (
+      <>
+        {voile}
+        {erratum ? <PastilleErrata erratum={erratum} cote={paysage} /> : null}
+      </>
+    ) : undefined
 
-  // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
-  // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
-  // large — sans cette regle il mangeait le centre de la table pendant qu'on
-  // choisissait. Il reste ancre a droite tant que la place y est libre.
-  // L'aperçu NE BOUGE PAS. Une seule position candidate, donc toujours la même
-  // place, quoi qu'il y ait dessous.
-  //
-  // C'est l'inverse de la règle des panneaux de décision, et c'est voulu. Une
-  // décision est rare et il faut lire la carte qu'elle recouvre : elle esquive.
-  // Un agrandissement, lui, s'ouvre à CHAQUE survol : s'il change de coin selon
-  // ce qui est libre, l'œil doit le rechercher à chaque fois. Essayé, et c'est
-  // franchement désagréable — la prévisibilité vaut plus ici que la place
-  // gagnée. Il passe simplement devant (z-index 400) : il est transitoire et
-  // voulu, alors que le panneau, lui, reste.
-  //
-  // On garde le hook malgré tout, pour la seule chose qu'il apporte encore ici :
-  // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
-  // images finissent de charger. Il sortait de l'écran par la droite sur une
-  // carte recto-verso paysage, qui fait près de 930 px de large.
   // Rien sous la carte quand elle n'a ni jeton ni statut : le bloc vide
   // decalerait l'apercu sans rien dire.
   const aQuelqueChoseDessous =
@@ -744,51 +763,16 @@ export function CarteApercu({
     !!carte.jetonDegats ||
     (carte.counters?.length ?? 0) > 0
 
-  const apercu = useRef<HTMLDivElement | null>(null)
-  const { style: stylePlacement } = usePlacement(apercu, {
-    preferee: 'droite',
-    candidats: ['droite'],
-    // Une carte SEULE est étroite (~345 px) : elle se range à gauche de la
-    // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
-    // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
-    // sur le panneau de décision — pour elle, mieux vaut la colonne.
-    //
-    // ⚠ SANS LA BANDE DES MANIGANCES SEULEMENT (signalement du 04/10/2026,
-    // « avant c'etait a droite »). Avec la bande, la manigance principale est
-    // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
-    // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
-    // ancre a droite comme avant.
-    borneDroite: borneDroite ?? (nbFaces === 1 ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : undefined),
-    signature: `${carte.id}|${nbFaces}`,
-  })
-
-  // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
-  // le fait passer DEVANT les boutons de decision.
-  //
-  // Sans ce portail il vivait a l'interieur de `.plateau`, qui est un contexte
-  // d'empilement a `z-index: 1`. Son propre `z-index: 400` ne valait alors que
-  // DANS ce contexte : compare aux panneaux, c'est le 1 du parent qui comptait,
-  // et 1 perd contre 92. La carte agrandie passait donc sous les boutons quoi
-  // qu'on ecrive comme z-index — signale en jeu, et c'est bien ce qu'on voyait.
-  return createPortal(
-    <div
-      ref={apercu}
-      className={`carte-apercu${nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}`}
-      style={stylePlacement}
-      aria-hidden="true"
-    >
-      {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
-          pastilles), juste beaucoup plus grand. Jamais agissant.
-          `est-paysage` sert au CSS a caler les blocs de texte sous la carte sur
-          la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
-          elle-meme, qui est leur soeur, pas leur ancetre. */}
+  return (
       <div className={`apercu-face${carteAgrandie.isLandscape ? ' est-paysage' : ''}`}>
+        {avecLabel ? <span className="apercu-face-label">{t('Face en jeu')}</span> : null}
         {/* En GRAND, les jetons quittent l'illustration : ils cachaient le
             texte de la carte, qui est justement ce qu'on vient y lire. Ils se
             rangent sous la carte, avec les cartes de statut. Demande de
             l'utilisateur, 09/09/2026. */}
         <ScanCard
           {...carteAgrandie}
+          panorama={panorama}
           jetonMenace={undefined}
           jetonDegats={undefined}
           counters={undefined}
@@ -797,6 +781,27 @@ export function CarteApercu({
           taille="grande"
           surcouche={surcouche}
         />
+        {/* Les traits qu'a le heros EN CE MOMENT, sous la carte (reglage « Traits du heros »). */}
+        <PastillesTraits carte={carte} />
+        {/* UN ART ALTERNATIF : le texte posé sur le scan est parfois trop petit pour se lire. On le
+            répète ici, en police normale, sous la carte en grand. Français seulement. */}
+        {carte.artAlternatif && !carte.facedown && texteSurCarte?.langue === 'fr' ? (
+          <div className="apercu-texte-art" lang="fr" dangerouslySetInnerHTML={{ __html: texteEnHtml(texteSurCarte.texte) }} />
+        ) : null}
+        {/* Scan français d'un pack fan-made : on crédite son traducteur (Blade, Dazzler, Moon Knight ; 14/11/2026). */}
+        {!carte.facedown && traducteurDuScanFr(carteAgrandie.imageUrl) ? (
+          <p className="apercu-traducteur">
+            {t('Traduction faite par')} <b>{traducteurDuScanFr(carteAgrandie.imageUrl)}</b>
+          </p>
+        ) : null}
+        {/* Image maison en attendant le scan officiel : on dit que c'est un proxy (14/11/2026). */}
+        {!carte.facedown && estUnProxy(carteAgrandie.imageUrl) ? (
+          <p className="apercu-traducteur apercu-proxy">
+            <b>{t('Proxy')}</b> {t(': image non officielle, en attendant le scan')}
+          </p>
+        ) : null}
+        {/* L'ERRATA, en clair sous la carte : la souris n'atteint pas la pastille de l'aperçu. */}
+        {erratum ? <NoteErrata erratum={erratum} /> : null}
         {/* POURQUOI ON NE PEUT PAS LA JOUER, juste sous la carte : place apres
             les mots-cles, en petit, on ne le voyait pas (30/09/2026). Une ligne
             par action refusee : le joueur doit savoir LAQUELLE il peut
@@ -866,12 +871,179 @@ export function CarteApercu({
         ) : null}
         {!carte.facedown ? <ApercuMarvelcdb codeCarte={carte.codeCarte} artAlternatif={carte.artAlternatif} masquerRepli={traductionPosee && !!surcouche} /> : null}
       </div>
+  )
+}
+
+export function CarteApercu({
+  carte,
+  statuts,
+  raisons,
+  classe,
+  borneDroite,
+  jumelles,
+  tenu,
+}: {
+  /**
+   * TABLETTE : l'apercu de la carte TOUCHEE, qui reste ouvert. Il se pose toujours au
+   * meme endroit (en haut a droite) et porte, sous la carte, la place des boutons
+   * d'action (`.apercu-actions-tablette`, que `MenuActionsCarte` remplit). Un bouton
+   * touche le referme (`fermer`).
+   */
+  tenu?: { fermer: () => void }
+  carte: ScanCardProps
+  /**
+   * Paire jumelle EN JEU sur la table (`APERCU_JUMELLES_DOUBLE`) : les deux moities, dans l'ordre de l'illustration
+   * (gauche puis droite), montrees collees bord a bord. Absent = apercu d'UNE carte, comme avant.
+   */
+  jumelles?: readonly ApercuJumelle[]
+  /** Cartes de statut posees sur ce personnage : montrees comme sur la table. */
+  statuts?: ScanCardProps[]
+  /**
+   * Pourquoi cette carte est injouable, une ligne par action refusee.
+   * Deja mises en phrase (voir `raisons-refus.ts`) : l'apercu ne fait que les
+   * poser. Vide ou absent quand la carte est jouable, ou quand le moteur n'a
+   * rien a dire.
+   */
+  raisons?: string[]
+  /**
+   * Classe en plus sur l'apercu. Sert a un appelant qui vit PLUS HAUT que la
+   * table : l'apercu est monte dans <body> avec un z-index taille pour passer
+   * devant le plateau (400), pas devant un panneau plein ecran. Le bilan de la
+   * phase du mechant (540) le recouvrirait sans cela.
+   */
+  classe?: string
+  /** Panneaux a ne pas recouvrir, a la place de la colonne des manigances (le volet du journal). */
+  borneDroite?: readonly string[]
+}) {
+  const autresFaces = carte.autresFaces ?? []
+  const nbFaces = 1 + autresFaces.length
+  // L'apercu est le DERNIER servi : il cede la place a tout panneau de decision
+  // deja ouvert. Sur une carte recto-verso paysage il fait pres de 930 px de
+  // large — sans cette regle il mangeait le centre de la table pendant qu'on
+  // choisissait. Il reste ancre a droite tant que la place y est libre.
+  // L'aperçu NE BOUGE PAS. Une seule position candidate, donc toujours la même
+  // place, quoi qu'il y ait dessous.
+  //
+  // C'est l'inverse de la règle des panneaux de décision, et c'est voulu. Une
+  // décision est rare et il faut lire la carte qu'elle recouvre : elle esquive.
+  // Un agrandissement, lui, s'ouvre à CHAQUE survol : s'il change de coin selon
+  // ce qui est libre, l'œil doit le rechercher à chaque fois. Essayé, et c'est
+  // franchement désagréable — la prévisibilité vaut plus ici que la place
+  // gagnée. Il passe simplement devant (z-index 400) : il est transitoire et
+  // voulu, alors que le panneau, lui, reste.
+  //
+  // On garde le hook malgré tout, pour la seule chose qu'il apporte encore ici :
+  // l'aperçu est borné à la fenêtre et re-mesuré quand elle change ou quand les
+  // images finissent de charger. Il sortait de l'écran par la droite sur une
+  // carte recto-verso paysage, qui fait près de 930 px de large.
+  const apercu = useRef<HTMLDivElement | null>(null)
+  const { style: stylePlacement } = usePlacement(apercu, {
+    preferee: 'droite',
+    candidats: ['droite'],
+    // Une carte SEULE est étroite (~345 px) : elle se range à gauche de la
+    // colonne des manigances, qu'elle n'a aucune raison de recouvrir. Une carte
+    // recto-verso fait près de 930 px : la borner la pousserait jusqu'au centre,
+    // sur le panneau de décision — pour elle, mieux vaut la colonne.
+    //
+    // ⚠ SANS LA BANDE DES MANIGANCES SEULEMENT (signalement du 04/10/2026,
+    // « avant c'etait a droite »). Avec la bande, la manigance principale est
+    // EN HAUT A GAUCHE : la borner a son bord gauche rejetait l'apercu a
+    // gauche de l'ecran. Le selecteur ne trouve alors rien, et l'apercu reste
+    // ancre a droite comme avant.
+    borneDroite: [
+      ...(borneDroite ?? (nbFaces === 1 && !jumelles ? ['.plateau-scene:not(.avec-bande) .zone-complot-principal'] : [])),
+      ...bornesDuVoletAide(),
+    ],
+    signature: `${carte.id}|${nbFaces}|${jumelles ? 'j' : ''}`,
+  })
+
+  // CARTE A QUATRE FACES OU PLUS (Conan, Warriors Three) : l'apercu tient sur DEUX rangees et doit rentrer ENTIER dans la fenetre
+  // (demande du 09/11/2026 : la rangee du bas sortait de l'ecran). Sous chaque carte se lisent des blocs de hauteur libre
+  // (pastilles, PV, mots-cles, traduction) que la formule CSS en `vh` ne peut pas connaitre : on mesure, puis on borne la
+  // largeur des cartes. Seule la part qui suit la largeur (le cadre, rapport 176/127) est reduite, le reste (textes) est fixe.
+  // Le voile de traduction suit ce changement de taille (TraductionPosee observe sa carte).
+  const [largeurAjustee, setLargeurAjustee] = useState<{ id: ScanCardProps["id"]; largeur: number } | null>(null)
+  const largeurFit = largeurAjustee?.id === carte.id ? largeurAjustee.largeur : null
+  useLayoutEffect(() => {
+    const el = apercu.current
+    if (!el || nbFaces < 4) return
+    const RAPPORT = 176 / 127
+    const LARGEUR_MAX = 345
+    const ajuster = () => {
+      const carteDom = el.querySelector('.scan-card') as HTMLElement | null
+      if (!carteDom) return
+      const largeur = carteDom.getBoundingClientRect().width
+      if (!largeur) return
+      const dispo = window.innerHeight - 24
+      const fixe = el.offsetHeight - 2 * largeur * RAPPORT
+      const voulue = Math.round(Math.min(LARGEUR_MAX, Math.max(140, (dispo - fixe) / (2 * RAPPORT))))
+      if (Math.abs(voulue - largeur) < 2) return
+      setLargeurAjustee({ id: carte.id, largeur: voulue })
+    }
+    ajuster()
+    window.addEventListener('resize', ajuster)
+    const observateur = new ResizeObserver(ajuster)
+    observateur.observe(el)
+    return () => {
+      window.removeEventListener('resize', ajuster)
+      observateur.disconnect()
+    }
+  }, [carte.id, nbFaces, largeurFit])
+
+  // Un bouton d'action touche referme l'apercu, APRES son propre clic. Ecoute du DOM et
+  // non de React : les boutons y arrivent par un portail de la page, dont l'arbre React
+  // ne passe pas par ici.
+  const actions = useRef<HTMLDivElement | null>(null)
+  const fermerTenu = tenu?.fermer
+  useEffect(() => {
+    const zone = actions.current
+    if (!zone || !fermerTenu) return
+    const surClic = (evenement: MouseEvent) => {
+      const bouton = (evenement.target as HTMLElement | null)?.closest('button')
+      if (!bouton || bouton.getAttribute('aria-disabled') === 'true' || bouton.hasAttribute('data-garde-apercu')) return
+      window.setTimeout(fermerTenu, 0)
+    }
+    // En CAPTURE : le clic du bouton redessine la page avant la fin de sa propre propagation.
+    zone.addEventListener('click', surClic, true)
+    return () => zone.removeEventListener('click', surClic, true)
+  }, [fermerTenu])
+
+  // L'agrandissement est monte DANS <body>, pas dans la table, et c'est ce qui
+  // le fait passer DEVANT les boutons de decision.
+  //
+  // Sans ce portail il vivait a l'interieur de `.plateau`, qui est un contexte
+  // d'empilement a `z-index: 1`. Son propre `z-index: 400` ne valait alors que
+  // DANS ce contexte : compare aux panneaux, c'est le 1 du parent qui comptait,
+  // et 1 perd contre 92. La carte agrandie passait donc sous les boutons quoi
+  // qu'on ecrive comme z-index — signale en jeu, et c'est bien ce qu'on voyait.
+  return createPortal(
+    <div
+      ref={apercu}
+      className={`carte-apercu${jumelles ? ' a-jumelles' : nbFaces > 1 ? ` a-plusieurs-faces a-faces-${nbFaces}` : ''}${classe ? ` ${classe}` : ''}${tenu ? ' est-tenu' : ''}`}
+      style={tenu ? undefined : largeurFit ? ({ ...stylePlacement, '--largeur-face': `${largeurFit}px`, '--largeur-face-paysage': `${(largeurFit * 506) / 345}px` } as CSSProperties) : stylePlacement}
+      aria-hidden={tenu ? undefined : 'true'}
+    >
+      {/* Meme composant que sur la table : l'apercu est fidele (cadre, stats,
+          pastilles), juste beaucoup plus grand. Jamais agissant.
+          `est-paysage` sert au CSS a caler les blocs de texte sous la carte sur
+          la LARGEUR de cette carte : l'orientation ne se lit que sur la carte
+          elle-meme, qui est leur soeur, pas leur ancetre. */}
+      {jumelles ? (
+        <>
+          {jumelles.map((j) => (
+            <FaceCarteApercu key={j.carte.id} carte={j.carte} statuts={j.statuts} raisons={j.raisons} panorama={j.panorama} />
+          ))}
+        </>
+      ) : (
+        <FaceCarteApercu carte={carte} statuts={statuts} raisons={raisons} avecLabel={autresFaces.length > 0} />
+      )}
       {/* Carte multi-faces (recto-verso, ou 3 formes comme Ant-Man) : on montre
           AUSSI les autres faces (image seule, badges masques par le CSS car ils
           ne valent pas pour ces faces-la). */}
       {autresFaces.map((face) => (
-        <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={!!carteAgrandie.isLandscape} />
+        <ApercuAutreFace key={face.url} carte={carte} face={face} paysageVisible={carte.kind === 'main-scheme' || carte.kind === 'side-scheme' ? true : !!carte.isLandscape} />
       ))}
+      {tenu ? <div className="apercu-actions-tablette" ref={actions} /> : null}
     </div>,
     document.body
   )
@@ -966,6 +1138,12 @@ export type BoardProps = {
    */
   glisser?: ReglagesGlisser
   /**
+   * LA TABLETTE (24/10/2026, board/tablette/) : pas de survol. Un toucher sur une
+   * carte ouvre son apercu, qui reste ouvert, avec les boutons d'action de la carte
+   * dessous (`MenuActionsCarte`, qui s'y range) ; un toucher a cote le ferme.
+   */
+  tablette?: boolean
+  /**
    * La BANDE DES MANIGANCES (plateau PC) : le mechant colle au deck rencontre,
    * puis la manigance principale et les annexes sur toute la largeur du haut.
    * Voir `bande-manigances.css`.
@@ -1006,6 +1184,12 @@ export type BoardProps = {
   joueurRegarde?: number
   /** Force la vue sur cet id (memes id que `joueursAffichables`). */
   choisirJoueurRegarde?: (id: number) => void
+  /**
+   * Un CHOIX ATTEND (telephone, 26/10/2026) : la fenetre de choix a ete fermee SANS annuler l'action. L'onglet « Piles »
+   * clignote, le tiroir met en evidence les piles ou l'on peut choisir (representant de pile -> nombre de cartes), et un tap
+   * dessus rouvre le choix.
+   */
+  choixEnAttente?: { titre: string; piles: ReadonlyMap<number, number>; rouvrir: () => void }
 }
 
 export type ReglagesGlisser = {
@@ -1099,7 +1283,12 @@ export function Board({
   disposition = DISPOSITION_ORIGINE,
   superposition,
   identitePartie,
+  tablette = false,
 }: BoardProps) {
+  // Inverser le deck et la defausse (reglage Apparence) : pose `data-piles-inversees` sur <html>, que lit board.css. Une seule fois, ici.
+  useInversionPiles()
+  // Le zoom de l'apercu agrandi (reglage Apparence, 05/11/2026) : pose `--zoom-apercu` sur <html>. Une seule fois, ici.
+  useZoomApercuSync()
   const cadre = useRef<HTMLDivElement>(null)
   const { echelle, largeur, hauteur } = useEchelle(cadre)
 
@@ -1146,7 +1335,8 @@ export function Board({
   const enGlisserRef = useRef(false)
 
   const survol = useCallback((evenement: ReactMouseEvent) => {
-    if (enGlisserRef.current) return
+    // Au doigt, le navigateur imite la souris au toucher : ce survol-la n'en est pas un.
+    if (enGlisserRef.current || tablette) return
     const carte = (evenement.target as HTMLElement).closest<HTMLElement>('.scan-card')
     const id = carte?.dataset.cardId ?? null
     if (id === pointee.current) return
@@ -1157,7 +1347,7 @@ export function Board({
       return
     }
     minuteur.current = window.setTimeout(() => setApercuId(id), 200)
-  }, [])
+  }, [tablette])
 
   const quitter = useCallback(() => {
     pointee.current = null
@@ -1182,6 +1372,47 @@ export function Board({
   )
 
   useEffect(() => () => window.clearTimeout(minuteur.current), [])
+
+  // LA TABLETTE (decisions 3 a 5) : la carte touchee reste en apercu, avec ses
+  // actions dessous. Une carte que le moteur demande de CHOISIR (cible, ressource,
+  // carte a defausser) ne s'ouvre pas : le toucher la choisit, comme au telephone.
+  const [tenuId, setTenuId] = useState<string | null>(null)
+  const tenuStable = useMemo(() => ({ fermer: () => setTenuId(null) }), [])
+  const toucherTablette = useCallback(
+    (evenement: ReactPointerEvent<HTMLDivElement>) => {
+      if (!tablette) return
+      const cible = evenement.target
+      if (!(cible instanceof HTMLElement) || cible.closest('button, a, input, select, textarea')) return
+      const element = cible.closest<HTMLElement>('.scan-card')
+      const id = element?.dataset.cardId
+      if (!element || !id || element.closest('.plateau-unite[data-pile]')) {
+        setTenuId(null)
+        return
+      }
+      const role = interactifs.get(Number(id))?.role
+      if (role === 'cible' || role === 'ressource') {
+        setTenuId(null)
+        return
+      }
+      setTenuId(id)
+    },
+    [tablette, interactifs]
+  )
+  // Un toucher hors de l'apercu et hors des cartes le ferme (les cartes, elles, en changent).
+  useEffect(() => {
+    if (tenuId === null) return
+    const fermer = (evenement: PointerEvent) => {
+      const cible = evenement.target
+      if (!(cible instanceof HTMLElement)) return
+      if (cible.closest('.carte-apercu.est-tenu, .scan-card')) return
+      setTenuId(null)
+    }
+    document.addEventListener('pointerdown', fermer)
+    return () => document.removeEventListener('pointerdown', fermer)
+  }, [tenuId])
+  useEffect(() => {
+    if (!tablette) setTenuId(null)
+  }, [tablette])
 
   // Alt : l'aperçu tout de suite, sans le délai du survol. Convention
   // Tabletop Simulator, et le seul raccourci qui ne change pas l'état de la
@@ -1265,6 +1496,7 @@ export function Board({
     window.clearTimeout(minuteur.current)
     pointee.current = null
     setApercuId(null)
+    setTenuId(null)
   }, [enGlisser])
 
   const ciblesDuGlisser = useMemo(
@@ -1341,14 +1573,28 @@ export function Board({
   // fiche Ctrl+I), agrandie chez le spectateur et en relecture au meme moment.
   const loupeDuJoueur = useVuDuJoueur<{ a: string | null; f: string | null } | null>('loupe', regarde ? playerId : undefined)
   useEffect(() => {
-    if (!regarde) publierVu(playerId, 'loupe', { a: apercuIdLocal, f: ficheIdLocal })
-  }, [regarde, playerId, apercuIdLocal, ficheIdLocal])
+    if (!regarde) publierVu(playerId, 'loupe', { a: tablette ? tenuId : apercuIdLocal, f: ficheIdLocal })
+  }, [regarde, playerId, apercuIdLocal, ficheIdLocal, tablette, tenuId])
   const apercuId = regarde ? (loupeDuJoueur?.a ?? null) : apercuIdLocal
   const ficheId = regarde ? (loupeDuJoueur?.f ?? null) : ficheIdLocal
   const carteFiche = ficheId ? cartesParId.get(ficheId) : undefined
 
-  const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
-  const statutsApercu = apercuId ? statutsParId.get(apercuId) : undefined
+  // En tablette, l'apercu est celui de la carte TOUCHEE (`tenuId`), jamais celui du survol.
+  const idApercu = tablette && !regarde ? tenuId : apercuId
+  const carteApercu = idApercu ? cartesParId.get(idApercu) : undefined
+  const statutsApercu = idApercu ? statutsParId.get(idApercu) : undefined
+  // Paire jumelle dont les DEUX moities sont sur la table : l'apercu les montre ensemble.
+  const jumellesApercu = useMemo(() => {
+    if (!APERCU_JUMELLES_DOUBLE || !idApercu) return undefined
+    const paire = jumellesPourApercu(plateau.emplacements, idApercu)
+    if (!paire) return undefined
+    return paire.map(({ carte, panorama }): ApercuJumelle => ({
+      carte,
+      panorama,
+      statuts: statutsParId.get(carte.id),
+      raisons: raisonsRefus?.get(Number(carte.id)),
+    }))
+  }, [idApercu, plateau, statutsParId, raisonsRefus])
 
   // Pile publique ouverte pour etre regardee (defausse, victoire, retirees...).
   const [pileOuverte, setPileRegardee] = useState<PileRegardee | null>(null)
@@ -1469,6 +1715,7 @@ export function Board({
               return
             }
           }
+          toucherTablette(evenement)
           cliquerCarte(evenement)
         }}
         onPointerCancel={() => {
@@ -1535,6 +1782,10 @@ export function Board({
         </div>
       </div>
 
+      {/* La carte touchee, entouree de jaune tant que son apercu est ouvert (tablette). */}
+      {tablette && tenuId !== null ? (
+        <style>{`.plateau-cadre .scan-card[data-card-id="${CSS.escape(tenuId)}"] .scan-frame { box-shadow: 0 0 0 3px #f3c623, 0 0 16px rgba(243, 198, 35, 0.7); }`}</style>
+      ) : null}
       {carteFiche ? (
         <>
           <div
@@ -1553,7 +1804,10 @@ export function Board({
           // `apercuId` vient de `data-card-id`, donc une CHAINE ; les cartes
           // sont indexees par leur identifiant d'objet NUMERIQUE partout
           // ailleurs (`interactifs`, `effets`). On convertit ici, une fois.
-          raisons={apercuId === null ? undefined : raisonsRefus?.get(Number(apercuId))}
+          raisons={idApercu === null ? undefined : raisonsRefus?.get(Number(idApercu))}
+          jumelles={jumellesApercu}
+          tenu={tablette && !regarde ? tenuStable : undefined}
+          key={tablette ? (idApercu ?? undefined) : undefined}
         />
       ) : null}
 

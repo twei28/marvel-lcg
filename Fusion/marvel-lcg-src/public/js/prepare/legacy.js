@@ -21,6 +21,12 @@
 /** Le Set de base, toujours ouvert : c'est le point de départ, pas une marche. */
 export const VAGUE_DEPART = 0;
 
+/** Les vagues dont les HÉROS sont libres dès le départ, comme le Set de base.
+ *  Décision du 11/11/2026 : la vague 1 se joue avec le core set, sans jetons.
+ *  Ne concerne que les héros : les scénarios de la vague 1 restent gardés par
+ *  la progression (franchir le Set de base). */
+export const VAGUES_HEROS_LIBRES = new Set([VAGUE_DEPART, 1]);
+
 /** Compare deux noms de scénario sans se laisser arrêter par la casse, les
  *  espaces ou les accents.
  *

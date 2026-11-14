@@ -6,7 +6,7 @@
 // feuilles de style lisent : aucun rechargement n'est nécessaire.
 "use strict";
 
-import { CLE_AFFICHAGE, PAR_DEFAUT, migrerAffichage, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
+import { CLE_AFFICHAGE, PAR_DEFAUT, migrerAffichage, normaliser, suivant, reconcilier, doitProposerLeChoix, poserAttributs, valeurPermise, epurePermis, verifierEpurePermis, coloreEstActif, NORMAL, SOBRE, EPURE } from "/public/js/prepare/affichage-choix.js";
 import { t } from "/public/js/prepare/langue.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
 
@@ -106,15 +106,22 @@ function dessinerBouton(bouton) {
         mode === EPURE ? t("Affichage normal") : mode === NORMAL ? t("Affichage coloré") : t("Affichage sobre"));
 }
 
-/** Bouton Normal / Coloré / Sobre, à poser à côté du bouton FR / EN. */
+/**
+ * Bouton Normal / Coloré / Sobre, à poser à côté du bouton FR / EN.
+ * COLORÉ RETIRÉ (07/11/2026) : le cycle saute l'état Coloré (valeur `normal`) tant que
+ * `coloreEstActif()` est faux -- Normal <-> Sobre seulement. Rien n'est supprimé (le bouton, `suivant`
+ * et `data-affichage` restent inchangés), juste un état qu'on ne propose plus en cliquant.
+ */
 export function boutonAffichage(classe) {
     const bouton = document.createElement("button");
     bouton.type = "button";
     bouton.className = (classe || "") + " btn-affichage";
     dessinerBouton(bouton);
     bouton.addEventListener("click", () => {
-        const prochain = suivant(affichageActuel());
-        choisirAffichage(prochain === EPURE && !epurePermis() ? NORMAL : prochain);
+        let prochain = suivant(affichageActuel());
+        if (prochain === EPURE && !epurePermis()) prochain = NORMAL;
+        if (prochain === NORMAL && !coloreEstActif()) prochain = epurePermis() ? EPURE : SOBRE;
+        choisirAffichage(prochain);
     });
     return bouton;
 }

@@ -60,6 +60,11 @@ class CanDefense(CardFace):
         if would_defense_message.property.is_basic_power:
             use_basic_power_message = Message.WhenUnitUseBasicPower(self.card.CastTo(Unit2), "DEF", would_defense_message)
             use_basic_power_message.Send()
+
+            # AJOUT (13/11/2026, Elektra) : meme chose pour la DEFENSE de base d'un heros villainous (voir `CanBoost.HeroBoostForBasicPower`).
+            from game.card.face.attribute.can_boost import CanBoost
+            if CanBoost.IsType(self):
+                self.HeroBoostForBasicPower(would_defense_message, "DEF")
         else:
             use_basic_power_message = None
 
@@ -159,7 +164,7 @@ class CanDefense(CardFace):
     #     )
 
     @final
-    def IsCanDefense(self, attacker: 'Unit2') -> bool:
+    def IsCanDefense(self, attacker: 'Unit2', attacked_targets: 'Sequence[Unit2]|None'=None) -> bool:
         from game.card.face.card_type import Hero
         from game.card.face.card_type import Ally
 
@@ -167,7 +172,7 @@ class CanDefense(CardFace):
             return False
         if not isinstance(self, Ally|Hero):
             return False
-        check_message = Message.CheckIfUnitCanDefendAgainstAttack(self, attacker)
+        check_message = Message.CheckIfUnitCanDefendAgainstAttack(self, attacker, attacked_targets)
         check_message.Send()
         return check_message.can_defend
 

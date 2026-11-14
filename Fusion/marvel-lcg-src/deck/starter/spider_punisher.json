@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Spider-Punisher",
+    "metadata": {
+        "url": "",
+        "auteur": "T-Wrecks",
+        "note": "Deck de depart reconstruit depuis le zip de l'auteur (15 cartes de heros numerotees X/15 sur les scans : Enhanced Combat Sense x2, Point Blank x2, Web Snatch x2, Neighborhood Watch, With Great Firepower, Concrete Perch, Armor-Piercing, EMP, High Explosive, Incendiary x2, Swing and Reload ; aucune decklist d'aspect fournie : player_deck VIDE, decision utilisateur du 06/09/2026). Revealed Identity est une OBLIGATION du set nemesis (5/5, sans « Give to »)."
+    },
+    "hero": [
+        "sq001a,sq001b"
+    ],
+    "hero_deck": [
+        "sq002",
+        "sq002",
+        "sq003",
+        "sq003",
+        "sq004",
+        "sq004",
+        "sq005",
+        "sq006",
+        "sq007",
+        "sq008",
+        "sq009",
+        "sq010",
+        "sq011",
+        "sq011",
+        "sq012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "sq013"
+    ],
+    "nemesis_set": [
+        "sq014",
+        "sq015",
+        "sq016",
+        "sq016",
+        "sq017"
+    ],
+    "player_deck": []
+}

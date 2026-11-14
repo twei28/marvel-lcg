@@ -85,3 +85,10 @@ identités liées Cloak & Dagger (`linked_identity`).
 Forces Combined, mais cet identifiant est périmé (ancien schéma de
 numérotation). La carte réelle utilise l'identifiant `cd003` du pack
 `cloak_dagger`.
+
+**Variante `cr016` Shi'ar Battle Cruiser (26/10/2026)** : « Alliance. » imprimé sur un ENVIRONNEMENT de rencontre. Une clé `desc.Alliance`
+y planterait la partie (`HasAlliance` est réservé aux événements, `KeyError: 'Alliance'` au montage). Règle (RR « Alliance » : « While paying
+costs for this card, any player may contribute to paying those costs ») : TOUS les coûts de la carte, donc aussi les `[energy][energy]` de sa
+Hero Action. Rendu : la capacité de jeu est marquée `ability.cout_en_groupe = True` (même marque que `sk280`), lue par `CheckAnyPlayerMayHelpPay`.
+Seule l'inclinaison de l'identité reste au joueur actif. Cas `[cr] cr016 ... ALLIANCE (2 joueurs)` (le joueur 2 paie les YY avec une Energy
+de SA main) : rouge avant, vert après.

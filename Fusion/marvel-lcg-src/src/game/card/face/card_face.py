@@ -74,6 +74,21 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, scenario TMNT Bebop & Rocksteady, prefixe `tk`).
         # ALERT / K.O. / ENRAGED / ROWDY / TEMPER / HOG / RHINO sont LUS par les
         # scripts du pack (etat des vilains, attachements Temper).
+        # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav, prefixe `gs`) : trait imprime
+        # sur gs099q Maelstrom (« DEVIANT. INHUMAN. »).
+        "DEVIANT",
+        # AJOUT (26/10/2026, campagne Hellfire Hunt, scenario White Queen, prefixe `hf`) : forme DIAMOND de White Queen
+        # (hf101b, hf301...), LUE par les scripts du pack (« if White Queen is in DIAMOND form »).
+        "DIAMOND",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Cassandra Nova, prefixe `hf`) : trait imprime sur hf601-hf603 (« MUMMUDRAI. PSIONIC. »),
+        # purement declaratif.
+        "MUMMUDRAI",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Torn, prefixe `hf`) : face « FRAGMENT » de hf504b Nova's Psychic Puppetry
+        # (purement declaratif).
+        "FRAGMENT",
+        # AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Black Queen + module Darkhold, prefixe `hf`) : traits imprimes sur hf362 Darkhold
+        # (« MAGICAL BOOK »), hf363-hf366 (« SPELL OF DARKHOLD », cherche par hf361 Darkhold Dwarf) et hf409-hf412 Little Demon (« HELL »).
+        "SPELL OF DARKHOLD", "MAGICAL BOOK", "HELL",
         "WARTHOG", "RHINOCEROS", "ALERT", "K.O.", "HOG", "RHINO", "ROWDY",
         "TEMPER", "ENRAGED", "BESTIES", "BERSERK", "FERAL", "SUNGLASSES",
         "HELMET", "STREETS", "VELOCIRAPTOR",
@@ -99,8 +114,27 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "EXTREMIS", "INDIVIDUAL",
         # CORRECTIF : trait du pack custom harry_osborn (Dipsome).
         "EARTH-6160",
+        # CORRECTIF (25/10/2026) : traits du pack custom new_ultimate_winter_soldier (Dipsome, prefixe `uw`).
+        "OPPOSITION", "DIRECTORATE X",
+        # CORRECTIF (26/10/2026) : traits du pack custom batgirl (ES, prefixe `bg`).
+        "BAT FAMILY", "BIRD OF PREY",
+        # CORRECTIF (25/10/2026) : trait du pack custom roz (jakxin, prefixe `rz`), Dario Agger.
+        "ROXXON",
+        # AJOUT (03/11/2026, pack rr Sentry) : traits imprimes absents de la liste.
+        "DARK SENTRY", "SPLIT", "THERAPIST",
+        # AJOUT (04/11/2026, pack mm Multiple Man) : trait imprime sans effet propre (RRG, Traits), absent de la liste.
+        "DUPLICATE",
+        # CORRECTIF (25/10/2026) : traits du pack custom spider_punisher (T-Wrecks, prefixe `sq`).
+        "EARTH-71928", "WEB-SHOOTER",
+        # CORRECTIF (26/10/2026) : trait du pack custom smasher (Phenexian, prefixe `sz`), les ameliorations Exospex.
+        "EXOSPEX",
+        # CORRECTIF (26/10/2026) : trait du pack custom rachel_summers (Dipsome, prefixe `rm`), Ahab et ses Hounds.
+        "HOUNDS",
         # CORRECTIF : trait du pack custom agatha_harkness (Ripper3).
         "COSMIC ENTITY",
+        # CORRECTIF (24/10/2026) : trait COSMIC du pack custom silver_surfer (DesignHacker) ; il existait deja
+        # sur des cartes de cards.json sans figurer dans l'enum.
+        "COSMIC",
         # CORRECTIF : traits du pack custom iron_patriot (Neptune).
         # `REGISTERED` est le coeur du pack : le trait que Norman Osborn donne
         # aux sbires qu'il recrute depuis son deck secondaire, et que sept
@@ -181,9 +215,13 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "PSYCHIATRIST",  # CORRECTIF : trait du pack custom agent_13 (Rainy)
         "REPTILIAN", "A.I.M. SCIENTIST", "MULTIVERSE", "CORRUPT", "TRAP!", "UNDERLING",  # CORRECTIF : traits du pack custom web_of_deceit (Ripper3)
         "CLONE",  # CORRECTIF : trait du pack custom scarlet_spider (CptScorp)
+        "SLAYER", "WATCHER", "HELLMOUTH",  # CORRECTIF : traits du pack custom buffy (RyCoRan, prefixe `bf`)
+        "OFFICER", "CREEP",  # CORRECTIF : traits du pack custom robocop (MissSugarPink, prefixe `rc`)
+        "OUTLAW", "COTATI",  # CORRECTIF : traits du pack custom mantis (BlueHG, prefixe `mt`)
         "DUCK", "ELDER", "VAMPIRE",  # CORRECTIF : traits du pack custom howard_the_duck (RyCoRan)
         "YOUNG AVENGER", "KREE", "FAMILY", "WIZARD",  # CORRECTIF : traits du pack custom wiccan (CptScorp)
         "ANTI HERO", "ART",  # CORRECTIF : traits du pack custom speed (CptScorp)
+        "ARMAMENT", "SYNDICATE", "CAPO", "FIST", "MARINE", "SOLDIER", "CONFRONTATION",  # AJOUT 21/10/2026 : traits du pack Punisher MC×DC 2026 (Armory, Syndicate, Capo of the Past, Marko)
         "MAGGIA", "POLICE",  # CORRECTIF : traits du pack officiel Fear No Evil (Hammerhead, Cops), 18/09/2026
         "INFLUENCED", "HAND", "NINJA",  # CORRECTIF : Fear No Evil bloc 2 (Purple Man, Lady Bullseye, Hand Lookout), 18/09/2026
         "DECEIVED", "DISASTER", "DAILY BUGLE", "TRACKSUIT", "PRISONER", "BADOON", "MARTIAL ARTIST",  # CORRECTIF : Fear No Evil blocs 3-4 (Baron Zemo, Disasters, Stop the Presses!, Tracksuit Mafia, The Raft Breakout, Drang, Kingpin), 18/09/2026
@@ -198,10 +236,21 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # mutuellement des qu'une carte ROTATION entre en jeu.
         "RANGER", "ROTATION", "DEMON",
         "CYBORG",  # CORRECTIF : trait du pack custom beta_ray_bill (Rainy)
+        "STARJAMMER", "SHI'AR",  # CORRECTIF : traits du scenario Majestrix's Verdict, Galactic Storm (Kajislav), lot GS-5
         # AJOUT (25/09/2026) : traits des packs custom conan et red_sonja (RyCoRan).
         # THIEF, KING et TITLE existaient deja. Lus par cn002 Belit, cn009 et la
         # remise « Discount 1 (KING) ».
         "ADVENTURER", "CIMMERIA", "PIRATE", "BARBARIAN",
+        # AJOUT (25/10/2026) : traits du pack custom predator (RyCoRan). XENOMORPH est lu par `desc.Teamwork` (assert `IsTrait` a la
+        # construction : un trait absent de cette liste fait PLANTER le setup du deck, constate par verifier_tous_les_decks).
+        "XENOMORPH", "YAUTJA",
+        # AJOUT (25/10/2026) : trait du scenario custom The Vault (Kajislav) : Corrupted Guardsman est « TRAITOR. ».
+        "TRAITOR",
+        # AJOUT (09/11/2026) : trait du scenario custom Mephisto (Neptune) : les attachements « BARGAIN. », que le joueur
+        # accepte ou refuse a la revelation. Les regles du scenario les comptent partout (« each BARGAIN attachment »).
+        "BARGAIN",
+        # AJOUT (25/10/2026) : face « vaincue » des deux mechants d'Alien vs Predator (RyCoRan) : « DEFEATED. XENOMORPH. ».
+        "DEFEATED",
         # (15/10/2026) Cartes de campagne de Skrull Menace (Kajislav, sk263-sk288) : traits imprimes sur les allies
         # et soutiens (Crusader « INITIATIVE », Paibok « S.W.O.R.D. », Skymax « SQUADRON SUPREME », Xavin
         # « RUNAWAYS », Skrull Kill Krew « CREW »). Purement declaratif, comme les autres.
@@ -239,8 +288,38 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # deja sur tj006) et SENPAI (Sosaiken tj011, The Last Ronin se005), lus par « OATH upgrades you
         # control » (Samurai, Way of the Warrior). Declaratifs a l'execution.
         "OATH", "SENPAI",
+        # AJOUT (13/11/2026, heros Elektra MC63) : ACROBATIC n'est PAS decoratif, Elektra's Sai (63012) cherche
+        # « the next ACROBATIC or ATTACK event » par ce trait (Acrobatic Prowess 63006, Move Unseen 63008).
+        "ACROBATIC",
         # Les Paths Shinobi (se001-se011) impriment leur(s) type(s) Shinobi en ligne de traits.
         "BUSHIDO", "KUJI-KIRI", "NINJUTSU", "TAIJUTSU",
+        # AJOUT (20/10/2026) : pack officiel Iron Fist (MC64EN). « K'UN-LUN » est imprime sur le
+        # heros 64001a, Lei Kung 64006 et Book of the Iron Fist 64007. Les autres traits du pack
+        # (DEFENDER, MARTIAL ARTIST, TECHNIQUE, PERSONA, SKILL, SUPERPOWER, ITEM...) existaient deja.
+        # Declaratif a l'execution, comme les autres.
+        "K'UN-LUN",
+        # AJOUT (22/10/2026) : cartes d'aspect du pack Iron Fist. « AGENT OF ATLAS » est imprime sur
+        # Iron Fist (Lin Lie, 64014). Declaratif a l'execution.
+        "AGENT OF ATLAS",
+        # AJOUT (20/10/2026) : heros custom Binary (Galactic Storm, Kajislav, prefixe `gs`). STARJAMMER
+        # est imprime sur la face heros gs001a, ASTRONAUT sur l'alter ego gs001b. Declaratifs.
+        "STARJAMMER", "ASTRONAUT",
+        # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : trait STARFORCE (sbires gs204, gs209-gs216).
+        # PAS decoratif : gs198a/gs198b/gs199a/gs208/gs217 mettent de cote, comptent et cherchent par ce trait.
+        "STARFORCE",
+        # AJOUT (20/10/2026, Galactic Storm GS-6, scenario Hala Ultimatum, Kajislav) : HIDDEN (faces gs138a/
+        # gs139a/gs140a, mechant Kree Leader) et TARGETED (reserve, Punisher MC x DC 2026 p183 In the Crosshairs,
+        # pas encore porte). PAS decoratifs : HIDDEN est lu par AbilityFactory.CannotBeAffectedByPlayerCards
+        # (while_fn=lambda face: face.HasTrait("HIDDEN"), deja en place, voir mots-cles/immunite-cartes-joueur.md)
+        # et par la moitie « attaque » codee dans ce lot (mots-cles/hidden.md).
+        "HIDDEN", "TARGETED",
+        # AJOUT (27/10/2026, scenario custom The Hunger Core, prefixe `hg`) : « Metazombie »
+        # (les versions zombifiees des heros, hg007-hg071), « Hive » (le vilain Hunger Core
+        # et quelques cartes de rencontre), « Survivor », « Flerken » (Chewie), « Hunter »
+        # (Blade), « Fantastic » au singulier (distinct de FANTASTIC FOUR, deja pris) et
+        # « Web-Slinger » au singulier (distinct de WEB-WARRIOR, deja pris). Purement
+        # declaratif, comme les autres.
+        "METAZOMBIE", "HIVE", "SURVIVOR", "FLERKEN", "HUNTER", "FANTASTIC", "WEB-SLINGER",
     ]
 
     TRAITS_LIST: List[TRAITS] = Types.LiteralToList(TRAITS)
@@ -254,6 +333,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
 
     COUNTER = Literal[
         'counter',
+        # AJOUT (03/11/2026, pack rr Sentry) : « balance counter » (Duality Aspect, set heros) et « overwhelm counter » (Merged Sentry).
+        'balance', 'overwhelm',
+        # AJOUT (25/10/2026, pack hp Wasp Hank Pym) : compteurs imprimes « crisis counter » (hp013 Identity Crisis)
+        # et « seize counter » (hp014 Return of the Prodigal Son). Sans ces entrees `IsCounter` refuse le nom.
+        'crisis', 'seize',
         # AJOUT (16/10/2026, scenario Bebop & Rocksteady) : compteur imprime
         # « knucklehead counter » des attachements Temper.
         'knucklehead',
@@ -264,9 +348,28 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, aspects TMNT Dual-Aspect, Inkwire) : « amp counter »
         # de ud003 Heavy Metal (« enters play with 2 amp counters on her »).
         'amp',
+        # AJOUT (20/10/2026, heros Quasar de Galactic Storm, Kajislav) : « Uses (3 duty counters) »
+        # de l'obligation gs065 Protector of the Universe.
+        'duty',
+        # AJOUT (21/10/2026, set Hobgoblin MC×DC 2026) : « Rabble enters play with 2 drone counters on her » (pu076).
+        'drone',
+        # AJOUT (21/10/2026, set SWAT Team MC×DC 2026) : les « wanted counters » de la manigance SWAT (pu119).
+        'wanted',
+        'king_damage',   # Le Roi (pu151, Kingsfall multi-tables) : degats communs de l'assemblee
+        'king_threat',   # Le Roi : menace commune de l'assemblee
+        # AJOUT (22/10/2026, The Big Apple pu007 Burning Building) : « acceleration token » posee sur un ATTACHEMENT (les manigances ont leurs
+        # propres jetons `acceleration_token`).
+        'acceleration',
+        # AJOUT (22/10/2026, campagne Punisher MC×DC 2026) : les « intelligence counters » de pu145 S.H.I.E.L.D. Support Team.
+        'intelligence',
+        # AJOUT (04/11/2026, pack dm 3-D Man) : « skull counter » de dm012 Secret Initiative (imprime « skrull
+        # counter ») et « apostasy counter » de dm011 Arrival of the Triple-Evil!.
+        'skrull', 'apostasy',
 
         'attack', 'web', 'glory', 'damage', 'infamy', 'madness', 'arrow',
         'snoop', 'medical', 'pym', 'size', 'mystic', 'psionic', 'warrior',
+        'darkspell',  # AJOUT (01/11/2026) : compteur « Darkspell » de hf362 Darkhold (Uses 2), module Darkhold, Hellfire Hunt
+        'cassandra_controls',  # AJOUT (01/11/2026, scenario Cassandra Nova, Hellfire Hunt) : « Cassandra Controls counter » sur l'IDENTITE des joueurs (hf601-hf603, hf607...)
         'time', 'test', 'active', 'energy', 'glider', 'bomb', 'mental',
         'vengeance', 'physical', 'ammo', 'charge', 'toon', 'training', 'chime',
         'rage', 'delay',
@@ -280,8 +383,16 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'psionic web',
         'steel', 'reflection', 'command', 'growth', 'poison', 'barrage', 'evasion',
         'fury', 'sand',
+        # AJOUT (25/10/2026, scenario custom Lady Deathstrike, Mysteltainn) : les « bleed counters » de Bleeding Out (ld005).
+        'bleed',
+        # AJOUT (25/10/2026, pack custom Predator, RyCoRan) : les « skull counters » de Yautja Trophy Room (pd010) et les « glyph counters »
+        # de Self Destruct (pd011).
+        'skull', 'glyph',
+        # AJOUT (25/10/2026, scenario custom Alien vs. Predator, RyCoRan) : les « plasma counters » de Plasmacaster (ap011).
+        'plasma',
         'drain',         # CORRECTIF : Fear No Evil, Drained of Power (60080), Uses (3 drain counters), 18/09/2026
         'civilian', 'stamina', 'grip', 'spot', 'stilt', 'support',  # CORRECTIF : Fear No Evil blocs 3-4 (Disasters, Daily Bugle, Bear Hug, Spot, Stilt-Man, Public Support), 18/09/2026
+        'infection',     # AJOUT (27/10/2026, scenario custom The Hunger Core, prefixe `hg`) : les « Infection counters » places par le vilain et plusieurs cartes de rencontre.
         'threat',        # CORRECTIF : compteur du pack custom superior_spider_man
                          # (Rainy). Le mot-cle maison `track` DEPLACE de la menace
                          # d'une manigance vers un SBIRE ; la menace posee sur un
@@ -302,7 +413,10 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         'reactor',  # CORRECTIF : compteur du pack custom iron_man_model_42 (Rainy)
         'metal', 'sense', 'article',  # CORRECTIF : compteurs du pack custom armored_spidey (Kajislav)
         'wound',  # CORRECTIF : compteur du pack custom yondu (BLUEHG + DESIGNHACKER)
+        'agent',  # CORRECTIF (25/10/2026) : compteur du pack custom roz (jakxin), rz007 Agent of Wakanda
+        'solar',  # CORRECTIF (26/10/2026) : compteurs solaires du pack custom sunspot_hellfire (Dipsome), so001a/b, stock de l'identite
         'hunter',  # CORRECTIF (16/10/2026) : compteur du pack custom alopex (TMNT, Inkwire), ta008 Kitsune Kabuki
+        'ring', 'shuriken',  # AJOUT (22/10/2026, pack Elektra Natchios) : Shang-Chi (10 ring counters), Shuriken (Uses 3 shuriken counters)
         'dagger', 'pistol',  # AJOUT (16/10/2026) : aspect TMNT Aggression (Inkwire), ua040 Ujigami (10 dagger), ua033 Pete (Uses 3 pistol)
         'pep',  # CORRECTIF (16/10/2026) : compteur de ub037 Pepperoni, aspect TMNT Basic (Inkwire), Uses (3 pep)
         'hate',  # CORRECTIF : compteur du pack custom doctor_druid (Kajislav), max 5 sur Nekra
@@ -330,6 +444,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         "tic_tac_toe_1_3", "tic_tac_toe_2_3", "tic_tac_toe_3_3",
 
         'shift', 'pursuit', 'chi', 'ratings', 'clue', 'stake',
+        'sanity', # CORRECTIF (31/10/2026) : compteur « sanity » de l'obligation bf025 Normal Again (pack custom buffy).
         'blood', 'thirst', # CORRECTIF : compteurs du pack custom blade (Rainy), 07/09/2026. 'blood' sur l'identite, 'thirst' sur l'obligation (Uses). 'stake' existait deja (Mojo 39048).
         'invocation', 'teleport', 'sword', 'mangetic',
         'power', 'backup', 'soul', 'fatigue', 'research', 'psi', 'leadership', 'boom',
@@ -337,6 +452,11 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # AJOUT (16/10/2026, aspect TMNT Justice) : « scorch counter » de uj039 Zebulon, « rope counters »
         # de uj034 Turtle Line (Uses 3).
         'scorch', 'rope',
+        # AJOUT (20/10/2026, Galactic Storm GS-8, Kajislav) : « integrity counters » de gs200
+        # Holding Tank (Uses 7 par joueur). `time` (gs222a Nega-Bomb) existait deja.
+        'integrity',
+        # AJOUT (02/11/2026, pack custom beast_proust, Proust) : `tracer` (bs005 Peter's Spider-Tracers, 4) et `psy` (bs008 Xavier's Cerebro, 2).
+        'tracer', 'psy',
 
         'progress', 'sym', 'luck', 'deploy', 'supply', 'missile', 'operation', 'speed', 
         'staff', 'mission', 'leap', 'lock', 'parley', 'bystander', 'doubt', 'target', 
@@ -468,6 +588,32 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
         # (tx013 Superfly). `swarm` existe deja (td016/td017). Sans ces entrees `IsCounter` refuse
         # le nom et le sbire tombe a la mise en place.
         'cable', 'shield', 'ooze',
+        # AJOUT (20/10/2026) : scenario Hala Ultimatum (Galactic Storm, Kajislav, GS-6). 'hideout' :
+        # jetons de REPLI de l'environnement gs143 Hala (« Enters play with 2 hideout counters, plus
+        # 2[per_hero] additional hideout counters »), retires par gs141b et les cartes annexes du
+        # scenario (gs150-gs152) via « Remove 1 hideout counter from Hala ». Sans cette entree
+        # `IsCounter` refuse le nom et la pose du jeton echoue.
+        'hideout',
+        # AJOUT (20/10/2026) : scenario Earth Under Siege (Galactic Storm, Kajislav, GS-7). 'safety' :
+        # jetons de SECURITE de la manigance principale gs161a/b Earthfall (« Place 6 safety counters
+        # here », puis « remove 1 safety counter from here »). Sans cette entree `IsCounter` refuse le
+        # nom et la pose du jeton echoue.
+        'safety',
+        # AJOUT (20/10/2026) : scenario Earth Under Siege (Galactic Storm, Kajislav, GS-7). 'plate'
+        # (gs178 Uru Armor Plating : « Uses (3 plate counters) ») et 'duration' (gs183 Induced Mutation :
+        # « Uses (3 duration counters) »). Sans ces entrees `IsCounter` refuse le nom.
+        'plate', 'duration',
+        # AJOUT (22/10/2026) : pack Punisher MC×DC 2026, scenario 1 The Big Apple. Compteurs nommes des 9 pistes (bouncer, culture,
+        # curse, rent, stock, takeout), des 3 pistes Uptown (dojo, hustle) et 'quell' (Silence the City, « place 1 quell counter on
+        # them »). Sans ces entrees `IsCounter` refuse le nom.
+        'bouncer', 'culture', 'curse', 'rent', 'stock', 'takeout', 'dojo', 'hustle', 'quell',
+        # AJOUT (22/10/2026) : pack Shadowland (MC65) : « corruption counter » (Creeping Corruption) et « passage counter » (Shadow Labyrinth).
+        'corruption', 'passage',
+        # AJOUT (09/11/2026) : scenario custom Mephisto (Neptune) : « corrupt counter » (modulaire Corruptive Offers, sur les
+        # attachements BARGAIN) et « scorned counter » (side scheme Culling the Damned). Sans ces entrees `IsCounter` refuse le nom.
+        'corrupt', 'scorned',
+        # AJOUT (09/11/2026) : modulaire Damned (Neptune) : « damned counter » (Demon Amalgam).
+        'damned',
     ]
 
     COUNTER_LIST: List[COUNTER] = Types.LiteralToList(COUNTER)
@@ -793,7 +939,19 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             if not ignore_identity:
                 assert not Identity.IsType(self)
             if HasPermanent.IsType(self):
-                if self.permanent:
+                if self.permanent and self.card.state.is_attached:
+                    # CORRECTIF (04/11/2026, pack dm 3-D Man, dm011 Arrival of the Triple-Evil!) : cette
+                    # branche ("Fix 46002"/"51036") ne doit porter que sur une carte REELLEMENT attachee
+                    # (`self.card.state.is_attached`, meme garde que `attached_face` plus haut dans ce
+                    # fichier). Avant ce correctif, le test lisait `self.bind_face` NU : pour un SOUTIEN
+                    # ordinaire, jamais accroche a rien, `Support.bind_face` (card_type/support.py) rend
+                    # quand meme l'identite du joueur par simple rangement de zone (correctif st010,
+                    # 12/09/2026) -- un soutien Permanent ORDINAIRE tombait donc TOUJOURS dans cette branche
+                    # et `return False` l'empechait d'etre JAMAIS defausse, meme par un effet de son PROPRE
+                    # set (le vrai controle de set vit dans `HasPermanent.OnWhenCardLeavePlay`, plus bas dans
+                    # `self.card.Discard(..)`, jamais atteint tant qu'on sortait ici). Sans carte NI
+                    # attachee NI eliminee, cette branche ne s'applique simplement plus : on laisse
+                    # `self.card.Discard(..)` statuer (son `OnWhenCardLeavePlay` compare les sets).
                     bind_face = self.bind_face
                     if bind_face:
                         # Fix "46002" and "51036"
@@ -974,8 +1132,17 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
     def RemoveThreatFromSchemesTotal(self, schemes: Sequence['TC'], value: int, by_effect: 'Effect') -> int|None:
         return self.RemoveThreatFromSchemes(schemes[:value], 1, by_effect)
 
+    # `thwart_in_event` (AJOUT 04/11/2026, pack dm 3-D Man, dm004 Triple the Heroics) : meme principe que
+    # `attack_in_event` sur `DealDamage` -- force une VRAIE resolution de contre (`CanThwart.SpecialThwart`,
+    # via `OnRemoveSchemeThreat`) sans dependre du label `thwart` de L'ABILITE QUI APPELLE. Necessaire pour
+    # un evenement « Remove X threat from a scheme. Remove X threat from ANOTHER scheme » : `SetLabel
+    # ('thwart')` POSE SUR L'ABILITE force le moteur a n'offrir qu'UNE SEULE cible au `SetTarget` (constate
+    # en test : `target_num_range` tombe a [1,1] au lieu du [1,2] demande, DES QUE l'ability porte ce label)
+    # -- il faut donc retirer le label de l'ability et resoudre `RemoveThreatFromSchemes` UNE FOIS PAR CIBLE,
+    # chaque appel portant `thwart_in_event=True` pour garder le VRAI contre (et les cartes qui y reagissent)
+    # malgre l'absence du label. Defaut `False` : additif, aucun appel existant ne change de comportement.
     @final
-    def RemoveThreatFromSchemes(self, schemes: Sequence['TC']|Literal["MainScheme", "EachScheme", "YourLeaderMainScheme"], value: int|Literal["All", "1*", "3*", "5*"], by_effect: 'Effect', *, if_this_remove_last_threat: Callable[[], None]|None=None, ignore_crisis: bool=False) -> int|None:
+    def RemoveThreatFromSchemes(self, schemes: Sequence['TC']|Literal["MainScheme", "EachScheme", "YourLeaderMainScheme"], value: int|Literal["All", "1*", "3*", "5*"], by_effect: 'Effect', *, if_this_remove_last_threat: Callable[[], None]|None=None, ignore_crisis: bool=False, thwart_in_event: bool=False) -> int|None:
         from game.card.face.base import Scheme2
         from game.ability.factory import AbilityFactory
         from game.ability import AbilityType
@@ -1051,7 +1218,7 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             else:
                 from game.operate.worlds import Worlds
                 value = Worlds.ConvertPerPlayerIconToInt(value, by_effect)
-                remove_counter = self.OnRemoveSchemeThreat(schemes2, value, by_effect)
+                remove_counter = self.OnRemoveSchemeThreat(schemes2, value, by_effect, thwart_in_event=thwart_in_event)
 
             Effects.UnRegister(temp_effects)
 

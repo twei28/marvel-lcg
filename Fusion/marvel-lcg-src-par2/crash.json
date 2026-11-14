@@ -1,0 +1,159 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 42,
+        "time": "2026-10-22 11-46",
+        "playtime": "1.2"
+    },
+    "rules": [],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Rhino",
+        "villain": [
+            "01094",
+            "01095"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "01097a,01097b"
+        ],
+        "set_aside": [],
+        "encounters": [
+            "01098",
+            "01099",
+            "01099",
+            "01100",
+            "01101",
+            "01101",
+            "01102",
+            "01103",
+            "01104",
+            "01104",
+            "01105",
+            "01105",
+            "01106",
+            "01106",
+            "01106",
+            "01107",
+            "01108"
+        ],
+        "encounter_sets": [
+            "standard",
+            "bomb_scare"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.8",
+            "name": "Spider-Man (Rainy)",
+            "hero": [
+                "sr001a,sr001b"
+            ],
+            "hero_deck": [
+                "sr002",
+                "sr003",
+                "sr003",
+                "sr003",
+                "sr004",
+                "sr004",
+                "sr005",
+                "sr005",
+                "sr006",
+                "sr006",
+                "sr007",
+                "sr008",
+                "sr009",
+                "sr010",
+                "sr011"
+            ],
+            "obligations": [
+                "sr013"
+            ],
+            "nemesis_set": [
+                "sr015",
+                "sr014",
+                "sr016",
+                "sr016",
+                "sr017"
+            ],
+            "player_deck": [
+                "01058",
+                "01059",
+                "01060",
+                "01060",
+                "01061",
+                "01061",
+                "01062",
+                "01062",
+                "01063",
+                "01063",
+                "01064",
+                "01064",
+                "01065",
+                "01065",
+                "01083",
+                "01084",
+                "01085",
+                "01086",
+                "01087",
+                "01088",
+                "01089",
+                "01090",
+                "01091",
+                "01092",
+                "01093"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [
+        {
+            "step": 0,
+            "event": "m119 WhenPlayerChooseAbility",
+            "effect": {
+                "id": "e1 Choose c1 sr001b",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:39,2:-3,16:-2,23:-2,27:-2,28:-4,29:-2,31:-3,37:-2,47:-2,49:9,50:34,60:-3,67:-4}"
+        },
+        {
+            "step": 1,
+            "event": "m383 WhenUnitWouldAttack",
+            "effect": {
+                "id": "e32 Spider-Sense_(draw) c22 sr010",
+                "targets": [
+                    "c22 sr010"
+                ],
+                "resources": []
+            },
+            "crc": "{1:41,2:2,13:-2,22:2,27:-3,28:-4,31:-3,47:-4,49:9,50:34,60:-3,67:-4}"
+        }
+    ],
+    "checksum": "fe263fc9dde4c2597ad8c60a8a24fd55e1104f7189bfcecf7be165ffee135f2f"
+}

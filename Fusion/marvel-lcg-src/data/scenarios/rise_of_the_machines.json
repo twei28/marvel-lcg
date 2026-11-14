@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Vision",
+    "villain": [
+        "57040",
+        "57041"
+    ],
+    "expert": false,
+    "schemes": [
+        "56199a,56199b",
+        "56173a,56173b"
+    ],
+    "set_aside": [
+        "57054",
+        "57046a,57046b"
+    ],
+    "encounters": [
+        "57047",
+        "57048",
+        "57049",
+        "57050",
+        "57051",
+        "57051",
+        "57052",
+        "57053"
+    ],
+    "encounter_sets": [
+        "standard",
+        "standard_pvp"
+    ],
+    "modular_sets": [
+        "sentinels",
+        "future_past",
+        "the_doomsday_chair",
+        "vision_nemesis",
+        "super_strength_attachments"
+    ],
+    "challenges": [
+        "pu279"
+    ]
+}

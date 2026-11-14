@@ -790,6 +790,22 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-corps {
   background: var(--menace, #f0b95f);
 }
 
+/* Deux tons : la pastille remplie porte l'icone de la ressource (fond de sa
+   couleur + picto voisin), sans le disque ambre autour. */
+.deroule-phase.est-scene .deroule-cout-pastille.est-rempli:has(.icone-res.deux-tons) {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.deroule-phase.est-scene .deroule-cout-pastille .icone-res.deux-tons {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  vertical-align: 0;
+}
+
 /* --- Les choix en vignettes (D7, D8, D18, D32, D37) -------------------------
    La vignette ENTIERE est le bouton : la carte, son numero « (1) » pour le
    clavier, son nom, et dessous son texte. */
@@ -1317,4 +1333,31 @@ html[data-affichage='sobre'] .deroule-phase.est-scene .deroule-chaine-annulee {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(248, 250, 252, 0.8);
+}
+
+/* Le texte du résultat ne déborde JAMAIS de l'écran : le bloc peut rétrécir et ses lignes passent à la ligne
+   (30/10/2026, « Défausse remélangée : un nouveau paquet » coupé des deux côtés sur téléphone). */
+.deroule-phase.est-scene .deroule-resultat-gros {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.deroule-phase.est-scene .deroule-resultat-texte,
+.deroule-phase.est-scene .deroule-resultat-note,
+.deroule-phase.est-scene.est-essai .essai-boite .deroule-resultat-texte,
+.deroule-phase.est-scene.est-essai .essai-resultat-ligne,
+.deroule-phase.est-scene.est-essai .essai-raison {
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.deroule-phase.est-scene.est-essai .essai-boite,
+.deroule-phase.est-scene.est-essai .essai-resultat {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }

@@ -30,6 +30,12 @@ function buildRules(state) {
     const rules = [];
     if (state.difficulty.skirmish) rules.push("mode_skirmish");
     if (state.mode.id === "campaign") rules.push("mode_campaign");
+    // Kingsfall multi-tables (assemblees, 22/10/2026) : le serveur du moteur s'inscrit dans l'assemblee AVANT de lancer la partie et remplace cette demande
+    // par la regle `assemblee_<CODE>_<TABLE>` (server_new_game.py). Une demande sans code ne part pas.
+    if (state.assemblee && state.assemblee.mode === "creer") rules.push("assemblee_creer");
+    if (state.assemblee && state.assemblee.mode === "rejoindre" && String(state.assemblee.code || "").trim()) {
+        rules.push("assemblee_rejoindre_" + String(state.assemblee.code).trim().toUpperCase());
+    }
     const h = state.difficulty.heroic | 0;
     if (h > 0) rules.push("mode_heroic_" + h);
     // Règles v16 débrayables depuis le bloc « Avancé » (actives par défaut).
@@ -41,6 +47,9 @@ function buildRules(state) {
     // `rules`, donc il est inscrit dans la scene et survit au chargement
     // d'une sauvegarde — on saura toujours si une victoire comptait.
     if (state.mode && state.mode.id === "sandbox") rules.push("mode_sandbox");
+    // Le mode « Puzzle » : un plateau d'EDITEUR. Bac a sable (commandes `Puzzle.*`, catalogue) + table manuelle (le moteur se tait, rien ne
+    // se declenche quand on deplace une carte) + `mode_createur_puzzle` (le bouton « Enregistrer le puzzle » du plateau).
+    if (state.mode && state.mode.id === "puzzle") rules.push("mode_sandbox", "mode_manuel", "mode_createur_puzzle");
     // Partie manuelle : apres la mise en place, le moteur ne conduit plus et ne
     // declenche plus rien. Comme les autres modes, le drapeau passe par `rules`
     // et survit donc au chargement d'une sauvegarde.
@@ -221,13 +230,25 @@ async function proposerEchangesTeamUp(state) {
     return { ...state, players };
 }
 
-/** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local). */
-export async function launch(state) {
+/** Crée la scène puis rejoint la partie (hot-seat = joue tous les héros en local).
+ *
+ *  `redirect: false` (campagne en ligne, plusieurs héros, 27/10/2026) : la partie
+ *  est créée côté serveur (le moteur passe en `mode_campaign`) mais le navigateur
+ *  de l'hôte NE PART PAS tout de suite sur le plateau — `campagne/app.js` montre
+ *  d'abord un écran d'invitation (liens de siège), puis rejoint lui-même quand
+ *  l'hôte clique « Rejoindre ». Sans cette option, l'hôte atterrirait seul sur le
+ *  plateau avant d'avoir pu donner les liens à qui que ce soit. */
+export async function launch(state, { redirect = true } = {}) {
     state = await proposerEchangesTeamUp(state);
     const descriptor = await buildDescriptor(state);
     const cmd = encodeURIComponent(JSON.stringify(descriptor));
     const res = await fetch("new?data=" + cmd);
-    if (!res.ok) throw new Error("Failed to create the game (HTTP " + res.status + ")");
+    if (!res.ok) {
+        // Un refus du serveur qui dit POURQUOI (assemblee inconnue, pleine...) : on montre son message plutot qu'un code HTTP.
+        let message = "Failed to create the game (HTTP " + res.status + ")";
+        try { const corps = await res.json(); if (corps && corps.error) message = corps.error; } catch (e) { /* corps absent : le code HTTP suffit */ }
+        throw new Error(message);
+    }
 
     // Mode Decouverte : on arme le coach du plateau, et on le DESARME pour tout
     // autre mode. La cle est lue par ui-app/src/board/CoucheCoach.tsx
@@ -252,6 +273,9 @@ export async function launch(state) {
 
     // Rejoint la partie : la racine "/?hot_seat" sert le jeu (marvel.html),
     // pas "?hot_seat" qui resterait sur /prepare.html.
-    window.location.href = "/app/board.html";
+    if (redirect) window.location.href = "/app/board.html";
     return descriptor;
 }
+
+/** La racine vers laquelle `launch({redirect: false})` renvoie une fois l'hôte prêt. */
+export const URL_PLATEAU = "/app/board.html";

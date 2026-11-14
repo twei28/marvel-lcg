@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Throg",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 05/09/2026).",
         "frogjolnir_note": "TOUT LE SET HEROS LIT tg009 FROGJOLNIR, unique et Restreinte. CINQ cartes la citent nommement : tg001a la renvoie en main pour redresser Throg, tg001b va la chercher ou qu'elle soit, tg002 la redresse avec le heros, tg004 l'incline et la rappelle pour frapper a 6, et elle-meme s'incline pour +1 a un pouvoir de base. Le marteau fait l'aller-retour main <-> jeu en permanence.",

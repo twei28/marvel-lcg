@@ -12,6 +12,7 @@ import { nomAffiche } from './noms-cartes-fr'
 import { t } from './langue'
 import { picIdAffiche } from './variantes'
 import { picIdFr } from './scans-fr'
+import { estFormeEnergieSpectrum } from './formes-energie-spectrum'
 import { referenceMenace } from './jauge-reference'
 
 /**
@@ -169,7 +170,7 @@ function pvAffiches(card: WorldCard, catalogue: Catalogue): string | undefined {
   // invulnerable (Collector, Hela), ce qu'il n'est pas.
   if ((card.info.pv_sur_environnement ?? 0) > 0) return undefined
 
-  if (card.info.is_infinite_health) return 'INF'
+  if (card.info.is_infinite_health) return '∞'
 
   const courants = nombre(card.info.health)
   if (courants === undefined) return undefined
@@ -222,7 +223,7 @@ function borne(part: number): number {
  */
 function jaugeAffichee(card: WorldCard, catalogue: Catalogue): CardGauge | undefined {
   if (porteDesPv(card)) {
-    // Des PV infinis ne se jaugent pas : la pastille dit deja « INF ».
+    // Des PV infinis ne se jaugent pas : la pastille dit deja « ∞ ».
     if (card.info.is_infinite_health) return undefined
     const courants = nombre(card.info.health)
     if (courants === undefined) return undefined
@@ -307,6 +308,20 @@ function statsAffichees(
   return badges
 }
 
+/** Toutes les stats du personnage, avec leur valeur imprimee (le plateau en ronds les ecrit sous le rond). */
+function statsToutes(card: WorldCard, catalogue: Catalogue): Array<{ label: string; value: number; base?: number }> {
+  if (!isUnit(card)) return []
+  if (['player', 'encounter', 'villain', 'no_image'].includes(card.pic_id)) return []
+  const info = card.info
+  const stats: Array<{ label: string; value: number; base?: number }> = []
+  for (const [cle, code] of STATS_BASE) {
+    const courante = info[cle]
+    if (typeof courante !== 'number') continue
+    stats.push({ label: code, value: courante, base: catalogue.statImprimee(card.card_id, code) })
+  }
+  return stats
+}
+
 export type ContexteCarte = {
   /** Numero du joueur dont on regarde le plateau. */
   playerId: number
@@ -333,6 +348,13 @@ export type ContexteCarte = {
   herosArt?: string
   /** Force la pastille de hauteur de pile (voir toPileCard). */
   pileCount?: number
+  /**
+   * Resout `info.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`) vers
+   * la carte visee : nom + image, pour l'infobulle « lié à » (pastille,
+   * `ScanCard.tsx`). `undefined` = aucune carte ne connait cet object_id (pas
+   * encore en jeu, hors du champ de visibilité de ce joueur).
+   */
+  planetesParId?: ReadonlyMap<number, { nom: string; picId: string }>
 }
 
 /**
@@ -480,7 +502,10 @@ function compteursAffiches(card: WorldCard): Array<{ label: string; value: numbe
 }
 
 export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardProps {
-  const visible = isVisibleFor(card, contexte.playerId)
+  // Une forme d'énergie connue reste physiquement face cachée tant qu'elle est inactive.
+  // Les autres cartes conservent leur aperçu « connue / face cachée » habituel.
+  const visible = isVisibleFor(card, contexte.playerId) &&
+    (!estFormeEnergieSpectrum(card) || card.is_face_up || contexte.dansLaMain === true)
   const dos = card.down_card_ids[0]
 
   // Une carte visible mais posee face cachee sur la table : le cadre en
@@ -555,10 +580,12 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     proprietaire: contexte.proprietaire,
     camp: campDe(card),
     stats: statsAffichees(card, contexte.catalogue),
+    statsComplets: statsToutes(card, contexte.catalogue),
     peeking,
     // Mots-cles (Guard, Piercing...) pour les tooltips de l'apercu.
     keywords: contexte.catalogue.motsCles(card.card_id),
     traits: contexte.catalogue.traits?.(card.card_id),
+    traitsActuels: card.traits ? Object.keys(card.traits) : undefined,
     codeCarte: card.card_id,
     premierJoueur: (nombre(card.info.k_first_player_token) ?? 0) > 0 ? true : undefined,
     aspect: contexte.catalogue.aspect(card.card_id),
@@ -567,7 +594,26 @@ export function toScanCard(card: WorldCard, contexte: ContexteCarte): ScanCardPr
     lisereHeros: card.card_type === 'Hero' || card.card_type === 'AlterEgo' ? degradeDeHeros(couleursDeHeros(card.card_id)) : undefined,
     pileCount: contexte.pileCount,
     highlight: contexte.actives.has(card.id),
+    environnementMarque: environnementMarqueDe(card, contexte),
   }
+}
+
+/**
+ * Personnage marque « a une planete » (pack maison Silver Surfer « Power
+ * Cosmic ») : `info.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`,
+ * PAS un champ specifique a ce pack) donne l'object_id de la carte PLANET.
+ * Resolu ICI, au SEUL point par lequel toute carte visible passe, pour ne
+ * pas repeter la resolution a chaque zone (allies, sbires engages,
+ * identite...). `undefined` = pas marque, ou carte visee hors de portee de
+ * `contexte.planetesParId` (jamais vu : pas d'infobulle plutot qu'une
+ * infobulle fausse).
+ */
+function environnementMarqueDe(card: WorldCard, contexte: ContexteCarte): { nom: string; imageUrl: string } | undefined {
+  const idPlanete = card.info.ui_marker_object_id
+  if (!idPlanete) return undefined
+  const planete = contexte.planetesParId?.get(idPlanete)
+  if (!planete) return undefined
+  return { nom: planete.nom, imageUrl: scanUrl(planete.picId) }
 }
 
 /**

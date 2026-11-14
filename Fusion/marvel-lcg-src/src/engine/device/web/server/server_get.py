@@ -148,6 +148,35 @@ class GameServerGet(GameServerBase):
 
         return web.json_response({'result': 'queued', 'count': len(commands)})
 
+    async def puzzle_objectif(self, request: web.Request) -> web.Response:
+        """Le joueur coche un objectif LIBRE d'un puzzle (E3, 23/10/2026).
+
+        Route dediee, et non `/sandbox_command` : un puzzle publie ne doit pas ouvrir toute l'API `Puzzle.*` a celui qui le resout. Elle
+        n'accepte que `{"index": n}` sur une partie de puzzle, pour un objectif de type `free_text`, et depose la seule commande
+        `Puzzle.ValidateObjective(n)`.
+        """
+        from game.puzzle.puzzle import PuzzleHelper
+
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+        data = await request.json()
+        index = data.get('index', None)
+        if not isinstance(index, int) or isinstance(index, bool):
+            return web.json_response({'error': 'index must be an integer'}, status=400)
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.scene.is_puzzle:
+            return web.json_response({'error': 'not a puzzle'}, status=409)
+        objectifs = world.puzzle_objectives.items
+        if not 0 <= index < len(objectifs) or objectifs[index].get('kind') != 'free_text':
+            return web.json_response({'error': 'not a free objective'}, status=400)
+        jeu = self.game
+        manager = self.device_manager
+        manager.sandbox_executor = lambda cmds: PuzzleHelper.Exec(cmds, jeu.world)
+        manager.QueueSandboxCommands([f"Puzzle.ValidateObjective({index})"])
+        return web.json_response({'result': 'queued'})
+
     async def manuel_pause(self, request: web.Request) -> web.Response:
         """Bascule la pause manuelle EN COURS DE PARTIE (tache 1).
 
@@ -1030,6 +1059,125 @@ class GameServerGet(GameServerBase):
             'scenario': hote.get('scenario', ''),
         })
 
+    # --- Echange de sieges avant le lancement (06/11/2026) -------------------
+    # Demande utilisateur : avant de demarrer, les joueurs doivent pouvoir
+    # choisir qui est joueur 1, 2, 3 ou 4 — ca n'existait pas du tout.
+    #
+    # ⚠ `seat_token_<p>` N'EST PAS UN JETON DE SESSION, C'EST
+    # `seat_hash(SEAT_PASSWORDS[p])` (voir `server_base.seat_hash`) : une
+    # empreinte DETERMINISTE du mot de passe du siege p. Le serveur peut donc
+    # la recalculer pour n'importe quel siege a tout moment — nul besoin d'un
+    # lien `claim_seat` ni d'une cle a usage unique pour « transferer » un
+    # siege : il suffit de poser le bon cookie sur le bon navigateur.
+    #
+    # Le vrai probleme est que CHAQUE navigateur ne peut recevoir un cookie
+    # que dans la reponse a SA PROPRE requete. Un echange est donc en deux
+    # temps : celui qui accepte (`repondre_echange_siege`) recoit son nouveau
+    # cookie immediatement dans la reponse de son clic ; celui qui a demande
+    # le recoit au prochain sondage (`get_echange_siege`), qui est deja le
+    # mecanisme de polling existant du salon. Aucun nouveau protocole de
+    # cookie : on reutilise `PoserCookie`/`seat_hash` tels quels.
+    #
+    # Une seule proposition a la fois (`self.echange_siege`), par table — il
+    # n'y a jamais qu'une table par processus moteur. Refusee d'office une
+    # fois la partie demarree (`self.game.world is not None`), verifie a
+    # CHAQUE etape (demande, reponse, application) : rien n'empeche une
+    # partie de demarrer entre deux sondages.
+
+    def _echange_possible(self) -> bool:
+        return self.game.world is None
+
+    def _siege_occupe(self, seat: int) -> bool:
+        """Un client est-il reellement present a ce siege, pas seulement
+        protege par un mot de passe configure (qui peut etre libre)."""
+        return not self.seat_orphelin(seat)
+
+    async def post_demander_echange_siege(self, request: web.Request) -> web.Response:
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        if not self._echange_possible():
+            return web.json_response({'error': 'partie demarree'}, status=409)
+        try:
+            data = await request.json()
+            p_demande = int(data['p_demande'])
+            p_cible = int(data['p_cible'])
+        except Exception:
+            return web.json_response({'error': 'p_demande et p_cible requis'}, status=400)
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'error': 'table sans sieges proteges'}, status=400)
+        if not (0 <= p_demande < len(passwords)) or not (0 <= p_cible < len(passwords)) \
+                or p_demande == p_cible:
+            return web.json_response({'error': 'sieges invalides'}, status=400)
+        if not self.tient_le_siege(request, p_demande):
+            return web.json_response({'error': 'pas votre siege'}, status=403)
+        if not self._siege_occupe(p_demande) or not self._siege_occupe(p_cible):
+            return web.json_response({'error': 'siege vide'}, status=400)
+        en_cours = getattr(self, 'echange_siege', None)
+        if en_cours and en_cours.get('statut') == 'attente':
+            return web.json_response({'error': 'echange deja en cours'}, status=409)
+        self.echange_siege = {
+            'demande': p_demande, 'cible': p_cible, 'statut': 'attente',
+            'applique_demande': False, 'applique_cible': False,
+        }
+        return web.json_response({'result': 'ok'})
+
+    def _appliquer_echange(self, response: web.Response, request: web.Request,
+                            siege_actuel: int, nouveau_siege: int) -> None:
+        """Donne a CE navigateur le cookie du nouveau siege et retire celui de
+        l'ancien — sans ca, un meme navigateur finirait par tenir les deux a
+        la fois."""
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        self.PoserCookie(response, request, f'seat_token_{nouveau_siege}',
+                         self.seat_hash(passwords[nouveau_siege]), max_age=31536000)
+        self.PoserCookie(response, request, f'seat_token_{siege_actuel}', '', max_age=0)
+
+    async def get_echange_siege(self, request: web.Request) -> web.Response:
+        echange = getattr(self, 'echange_siege', None)
+        if not echange:
+            return web.json_response({})
+        demande, cible = echange['demande'], echange['cible']
+        if self.tient_le_siege(request, cible) and echange['statut'] == 'attente':
+            return web.json_response({'proposition': {'de': demande, 'vers': cible},
+                                      'role': 'cible'})
+        if self.tient_le_siege(request, demande):
+            if echange['statut'] == 'accepte' and not echange['applique_demande'] \
+                    and self._echange_possible():
+                reponse = web.json_response({'resultat': 'echange', 'nouveau_siege': cible})
+                self._appliquer_echange(reponse, request, demande, cible)
+                echange['applique_demande'] = True
+                if echange['applique_cible']:
+                    self.echange_siege = None
+                return reponse
+            return web.json_response({'role': 'demande', 'statut': echange['statut']})
+        return web.json_response({})
+
+    async def post_repondre_echange_siege(self, request: web.Request) -> web.Response:
+        echange = getattr(self, 'echange_siege', None)
+        if not echange or echange['statut'] != 'attente':
+            return web.json_response({'error': 'aucune proposition'}, status=404)
+        demande, cible = echange['demande'], echange['cible']
+        if not self.tient_le_siege(request, cible):
+            return web.json_response({'error': 'pas votre siege'}, status=403)
+        try:
+            data = await request.json()
+            accepte = bool(data.get('accepte'))
+        except Exception:
+            accepte = False
+        if not accepte:
+            self.echange_siege = None
+            return web.json_response({'result': 'refuse'})
+        if not self._echange_possible():
+            self.echange_siege = None
+            return web.json_response({'error': 'partie demarree'}, status=409)
+        reponse = web.json_response({'result': 'accepte'})
+        self._appliquer_echange(reponse, request, cible, demande)
+        echange['statut'] = 'accepte'
+        echange['applique_cible'] = True
+        if echange['applique_demande']:
+            self.echange_siege = None
+        return reponse
+
     # --- L'equipe reste ensemble entre deux manches (13/10/2026) -------------
     # Demande de l'utilisateur : « en fin de partie, que les joueurs qu'on a
     # invites restent dans le meme lobby, et des qu'on cree une partie, qu'ils
@@ -1294,6 +1442,61 @@ class GameServerGet(GameServerBase):
         self.table_ordinaire = True
         return web.json_response({'multi': True, 'cles': list(passwords)})
 
+    async def get_liens_sieges_campagne(self, request: web.Request) -> web.Response:
+        """Jumelle de `get_liens_sieges`, pour l'ecran des campagnes.
+
+        Memes cles (`SEAT_PASSWORDS`), meme garde « reserve au siege 0 » —
+        mais SANS poser `self.table_ordinaire = True` : cette marque dirait a
+        `get_campagne_en_cours` (server_campagne.py) qu'une table ORDINAIRE se
+        monte, et elle se tairait aupres des invites qui rejoignent par leur
+        lien. Ajoutee en reponse au commentaire laisse dans `get_liens_sieges`
+        le 07/10/2026 : "Si un jour l'ecran des campagnes distribue ses propres
+        liens, il ne doit PAS passer par cette route."
+
+        Reservee en plus a une partie de campagne reellement en cours
+        (`mode_campaign`) : l'ecran des campagnes ne l'appelle qu'APRES avoir
+        lance le scenario (`/new`), jamais avant — voir `lancerScenario` et
+        `vueInvitationCampagne` dans public/js/campagne/app.js.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        from engine.device.web.server.server_campagne import _partie_du_moteur_est_de_campagne
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'multi': False, 'cles': []})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        if not _partie_du_moteur_est_de_campagne(self):
+            return web.json_response({'error': 'no campaign game running'}, status=409)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
+    async def get_liens_sieges_campagne_salon(self, request: web.Request) -> web.Response:
+        """Cles de siege pour inviter l'equipe AVANT le lancement, en campagne.
+
+        L'ecran de preparation d'equipe de campagne (prepare.html?campagne)
+        invite les joueurs pendant qu'ils composent l'equipe, pour que CHACUN
+        choisisse son heros et son deck (comme le mode en ligne classique),
+        avant que l'hote ne fige le roster. A ce moment aucune partie n'est
+        encore lancee : ni `get_liens_sieges` ni `get_liens_sieges_campagne` ne
+        conviennent.
+
+        - PAS `get_liens_sieges` : il pose `table_ordinaire = True`, ce qui
+          ferait taire `get_campagne_en_cours` aupres des invites (table
+          declaree ordinaire). On le laisse donc a `False` ici.
+        - PAS `get_liens_sieges_campagne` : il exige une partie de campagne
+          DEJA lancee (409 avant /new). On retire cette garde : en lobby de
+          campagne, le monde n'existe pas encore, et c'est normal.
+
+        Memes cles que les deux autres (`SEAT_PASSWORDS`, independantes de toute
+        partie) et meme garde stricte « reserve au siege 0 ».
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return web.json_response({'multi': False, 'cles': []})
+        if not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
+        return web.json_response({'multi': True, 'cles': list(passwords)})
+
     async def get_site_admin(self, request: web.Request) -> web.Response:
         """L'adresse d'administration du site, s'il y en a une et si c'est l'hote.
 
@@ -1314,6 +1517,28 @@ class GameServerGet(GameServerBase):
         from engine.device.web.server.server_base import SEAT_PASSWORDS
         passwords = SEAT_PASSWORDS.value
         return not (passwords and any(passwords) and not self.tient_le_siege(request, 0))
+
+    async def puzzle_capture(self, request: web.Request) -> web.Response:
+        """Le plateau courant sous forme de puzzle v2 (mode « Puzzle » de la preparation, 24/10/2026).
+
+        Reservee a la table du createur : la partie doit porter la regle `mode_createur_puzzle`, et le client doit tenir un siege
+        (la capture lit tout le plateau, mains et decks compris). Ne modifie rien. Rend `{"puzzle": ..., "avertissements": [...]}`
+        (`game.puzzle.puzzle_capture.CapturePuzzle`) : ce que la capture ne sait pas rendre est dit, jamais tu.
+        """
+        from game.puzzle.puzzle_capture import CapturePuzzle
+
+        world = self.game.world
+        if world is None:
+            return web.json_response({'error': 'no game in progress'}, status=409)
+        if not world.rule.mode_createur_puzzle:
+            return web.json_response({'error': 'not a puzzle creation table'}, status=409)
+        # Pendant la mise en place (mulligans, choix de heros) les mains et le deck rencontre ne sont pas encore poses : une capture
+        # d'alors est fausse (essai reel du 24/10/2026, deck rencontre vide). `manuel_actif` = le moteur s'est tu, la table est prete.
+        if not world.manuel_actif:
+            return web.json_response({'error': 'setup not finished'}, status=409)
+        if not self.prouve_un_siege(request):
+            return web.json_response({'error': 'aucun siege'}, status=403)
+        return web.json_response(CapturePuzzle(world))
 
     async def get_mes_parties(self, request: web.Request) -> web.Response:
         """Les dernieres parties terminees de l'hote (08/10/2026), pour « Revoir une partie »."""
@@ -1512,6 +1737,182 @@ class GameServerGet(GameServerBase):
         PalettesHeros.Recharger()
         return web.json_response({'ok': True, 'corrigees': len(donnees['palettes'])})
 
+    # ------------------------------------------------------------------ #
+    # Export ZIP de toutes les images de cartes (27/10/2026). Reserve a
+    # l'administrateur, comme le releve et les palettes : bouton
+    # « 📦 Export ZIP cartes » de public/js/prepare/lien-admin.js.
+    #
+    # ⚠ LA CONSTRUCTION NE TOURNE PAS DANS CE PROCESSUS. Elle dure de longues
+    # minutes (telechargements espaces, rendu du voile, ecriture du ZIP) : un
+    # processus DETACHE (`tools/exporter_images_cartes.py`, nouvelle session,
+    # priorite abaissee) la fait, et survit a la fermeture de cette table. Le
+    # moteur ne fait que le lancer, lire son etat et servir le fichier pret.
+    #
+    # ⚠ UNE SEULE GENERATION A LA FOIS, POUR TOUTES LES TABLES : le verrou est
+    # un FICHIER (assets/export-cartes/generation.lock, pid dedans), pas une
+    # variable, puisque chaque table est un processus a part.
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _export_cartes_dossiers():
+        """(racine du moteur, dossier de l'export), ou (None, None) si l'outil manque.
+
+        Le moteur tourne depuis `.game/`, ou `assets` est un lien vers le vrai
+        dossier : sa cible donne la racine, ou vit `tools/`.
+        """
+        import os
+        candidats = [os.path.dirname(os.path.realpath('./assets')), os.path.realpath('..'), os.path.realpath('.')]
+        for racine in candidats:
+            if os.path.isfile(os.path.join(racine, 'tools', 'exporter_images_cartes.py')):
+                return racine, os.path.join(racine, 'assets', 'export-cartes')
+        return None, None
+
+    @staticmethod
+    def _export_cartes_verrou(dossier: str):
+        """Le contenu du verrou s'il est tenu par un processus vivant, sinon None."""
+        import json as json_lib
+        import os
+        try:
+            with open(os.path.join(dossier, 'generation.lock'), encoding='utf-8') as f:
+                info = json_lib.load(f)
+            pid = int(info.get('pid') or 0)
+        except Exception:
+            return None
+        if pid <= 0:
+            return None
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return None
+        except PermissionError:
+            pass
+        return info
+
+    async def get_export_cartes(self, request: web.Request) -> web.Response:
+        """Ou en est l'export : ZIP pret (taille, date), generation en cours (depuis quand, progression)."""
+        import json as json_lib
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not dossier:
+            return web.json_response({'disponible': False, 'en_cours': False, 'zip': None, 'etat': None})
+        etat = None
+        try:
+            with open(os.path.join(dossier, 'etat.json'), encoding='utf-8') as f:
+                etat = json_lib.load(f)
+        except Exception:
+            etat = None
+        verrou = self._export_cartes_verrou(dossier)
+        zip_info = None
+        chemin = os.path.join(dossier, 'cartes-images.zip')
+        if os.path.isfile(chemin):
+            st = os.stat(chemin)
+            zip_info = {'taille': st.st_size, 'date': st.st_mtime}
+        return web.json_response({
+            'disponible': True,
+            'en_cours': verrou is not None,
+            'depuis': (verrou or {}).get('debut'),
+            'maintenant': time.time(),
+            'etat': etat,
+            'zip': zip_info,
+        })
+
+    async def post_export_cartes_regenerer(self, request: web.Request) -> web.Response:
+        """Lance la construction du ZIP en tache de fond. 409 si une generation tourne deja.
+
+        Corps facultatif : {"packs": "the_hunger_core,winter"} pour un sous-ensemble
+        (essais) ; sans lui, tout le catalogue.
+        """
+        import json as json_lib
+        import os
+        import subprocess
+        import sys
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        racine, dossier = self._export_cartes_dossiers()
+        if not racine:
+            return web.json_response({'error': 'outil d export absent (tools/exporter_images_cartes.py)'}, status=500)
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        packs = str((data or {}).get('packs') or '').strip()
+        if packs and not all(p.replace('_', '').replace('-', '').isalnum() for p in packs.split(',') if p):
+            return web.json_response({'error': 'packs mal formes'}, status=400)
+
+        os.makedirs(dossier, exist_ok=True)
+        chemin_verrou = os.path.join(dossier, 'generation.lock')
+        # Prise ATOMIQUE du verrou (O_EXCL) ; un verrou orphelin (processus mort) est repris.
+        for _ in range(2):
+            try:
+                fd = os.open(chemin_verrou, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+                break
+            except FileExistsError:
+                if self._export_cartes_verrou(dossier) is not None:
+                    return web.json_response({'error': 'generation deja en cours'}, status=409)
+                try:
+                    os.unlink(chemin_verrou)
+                except FileNotFoundError:
+                    pass
+        else:
+            return web.json_response({'error': 'generation deja en cours'}, status=409)
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': os.getpid(), 'debut': time.time(), 'packs': packs or None}, f)
+
+        # La configuration de CE moteur : ses catalogues et ses serveurs d'images.
+        from cards.database import CardsDB
+        from engine.file.cache import IMAGE_SERVERS
+        commande = [sys.executable, os.path.join(racine, 'tools', 'exporter_images_cartes.py'), '--verrou-pris']
+        for catalogue in [CardsDB.cards_json_file] + list(CardsDB.cards_custom_files):
+            if catalogue:
+                commande += ['--catalogue', os.path.realpath(catalogue)]
+        serveurs = list(IMAGE_SERVERS.value or [])
+        if serveurs:
+            for serveur in serveurs:
+                commande += ['--serveur-images', serveur]
+        else:
+            commande.append('--sans-telechargement')
+        if packs:
+            commande += ['--packs', packs]
+        try:
+            journal = open(os.path.join(dossier, 'processus.log'), 'w', encoding='utf-8')
+            processus = subprocess.Popen(commande, cwd=racine, stdin=subprocess.DEVNULL, stdout=journal,
+                                         stderr=subprocess.STDOUT, start_new_session=True, close_fds=True)
+            journal.close()
+        except Exception as e:
+            try:
+                os.unlink(chemin_verrou)
+            except FileNotFoundError:
+                pass
+            return web.json_response({'error': f'lancement impossible : {e}'}, status=500)
+        # Le verrou porte desormais le pid du processus qui travaille (il le reecrit aussi en demarrant).
+        with open(chemin_verrou, 'w', encoding='utf-8') as f:
+            json_lib.dump({'pid': processus.pid, 'debut': time.time(), 'packs': packs or None}, f)
+        # Un processus fini est ramasse sans bloquer, pour ne pas laisser de zombie (qui passerait pour vivant).
+        import threading
+        threading.Thread(target=processus.wait, daemon=True).start()
+        return web.json_response({'ok': True, 'pid': processus.pid, 'packs': packs or None})
+
+    async def telecharger_export_cartes(self, request: web.Request) -> web.StreamResponse:
+        """Le ZIP deja construit, tel quel : aucun calcul ici."""
+        import os
+        import time
+        if not self._est_administrateur(request):
+            return web.json_response({'error': 'reserve a l administrateur'}, status=403)
+        _, dossier = self._export_cartes_dossiers()
+        chemin = os.path.join(dossier, 'cartes-images.zip') if dossier else ''
+        if not chemin or not os.path.isfile(chemin):
+            return web.json_response({'error': 'aucun ZIP genere'}, status=404)
+        date = time.strftime('%Y%m%d-%H%M', time.localtime(os.path.getmtime(chemin)))
+        return web.FileResponse(chemin, headers={
+            'Content-Type': 'application/zip',
+            'Content-Disposition': f'attachment; filename="narwhal-cartes-images-{date}.zip"',
+            'Cache-Control': 'no-store',
+        })
+
     async def save_images_cartes(self, request: web.Request) -> web.Response:
         """Ecrit le releve d'UNE carte. Reserve a l'administrateur.
 
@@ -1605,18 +2006,58 @@ class GameServerGet(GameServerBase):
             # continue. Rien ici ne doit pouvoir interrompre une partie.
             return rendre(0, None)
 
+    def _acces_salon_table(self, request: web.Request) -> bool:
+        """Le fil de TABLE (chantier du 06/11/2026) est ouvert a TOUT siege de
+        la table, spectateur compris — a la difference de general/prive,
+        reserves au siege 0 titulaire du compte.
+
+        ⚠ LA GARANTIE TIENT ICI, PAS CHEZ LE CLIENT. `est_spectateur` lit un
+        cookie pose par le serveur (`/spectateur`), jamais par le navigateur
+        de son propre chef ; `tient_le_siege` exige le jeton du siege,
+        cookie en main. Les deux se falsifient aussi peu que le reste de
+        l'authentification par siege.
+        """
+        from engine.device.web.server.server_base import SEAT_PASSWORDS
+        if self.est_spectateur(request):
+            return True
+        passwords = SEAT_PASSWORDS.value
+        if not passwords or not any(passwords):
+            return True
+        return any(self.tient_le_siege(request, s) for s in range(len(passwords)))
+
+    def _pseudo_table(self, request: web.Request, siege: int) -> str:
+        """Le nom a afficher dans le fil de table pour CE client.
+
+        Un titulaire de compte connecte (cookie `nc_session` relaye) garde
+        son pseudo ; sinon, un nom generique par siege ou par role, sans
+        jamais usurper un pseudo de compte.
+        """
+        if self.est_spectateur(request):
+            return 'Spectateur'
+        return f'Invité {siege}' if siege else 'Hôte'
+
     async def get_salon_joueurs(self, request: web.Request) -> web.Response:
         """Qui est connecte avec un compte, et les derniers messages.
 
-        ⚠ RESERVE AU SIEGE 0. Le tchat est celui des titulaires de compte ; un
-        invite arrive par un lien de siege n'en fait pas partie, et n'a pas a
-        lire ce qu'ils s'ecrivent.
+        `salon` choisit le fil : `general`/`prive` (defaut, inchange, reserve
+        au siege 0 titulaire de compte) ou `table` (ouvert a tout siege, y
+        compris un spectateur — voir `_acces_salon_table`).
         """
         from engine.device.web.server.server_base import SEAT_PASSWORDS
+        salon = request.rel_url.query.get('salon', 'general')
+        depuis = request.rel_url.query.get('depuis', '0')
+        if salon == 'table':
+            if not self._acces_salon_table(request):
+                return web.json_response({'actif': False})
+            donnees = await self._appeler_site('/api/vue',
+                                               {'salon': 'table', 'depuis': depuis})
+            if donnees is None:
+                return web.json_response({'actif': False})
+            donnees['actif'] = True
+            return web.json_response(donnees)
         passwords = SEAT_PASSWORDS.value
         if passwords and any(passwords) and not self.tient_le_siege(request, 0):
             return web.json_response({'actif': False})
-        depuis = request.rel_url.query.get('depuis', '0')
         # `avec` vide = tchat general ; un pseudo = conversation privee.
         avec = request.rel_url.query.get('avec', '')
         donnees = await self._appeler_site('/api/vue',
@@ -1628,16 +2069,31 @@ class GameServerGet(GameServerBase):
 
     async def post_salon_message(self, request: web.Request) -> web.Response:
         from engine.device.web.server.server_base import SEAT_PASSWORDS
-        passwords = SEAT_PASSWORDS.value
-        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
-            return web.json_response({'error': 'not the host'}, status=403)
         data = await request.json()
         texte = str(data.get('texte', '') or '')
         if not texte.strip():
             return web.json_response({'error': 'texte vide'}, status=400)
+        langues = str(data.get('langues', '') or '')
+        if data.get('salon') == 'table':
+            if not self._acces_salon_table(request):
+                return web.json_response({'error': 'pas a cette table'}, status=403)
+            try:
+                siege = int(data.get('siege', 0) or 0)
+            except (TypeError, ValueError):
+                siege = 0
+            donnees = await self._appeler_site(
+                '/api/dire', {'salon': 'table', 'texte': texte, 'langues': langues,
+                             'pseudo_table': self._pseudo_table(request, siege)})
+            if donnees is None:
+                return web.json_response({'error': 'site injoignable'}, status=503)
+            return web.json_response({'ok': True})
+        passwords = SEAT_PASSWORDS.value
+        if passwords and any(passwords) and not self.tient_le_siege(request, 0):
+            return web.json_response({'error': 'not the host'}, status=403)
         donnees = await self._appeler_site('/api/dire',
                                            {'texte': texte,
-                                            'a': str(data.get('a', '') or '')})
+                                            'a': str(data.get('a', '') or ''),
+                                            'langues': langues})
         if donnees is None:
             return web.json_response({'error': 'site injoignable'}, status=503)
         return web.json_response({'ok': True})
@@ -1757,6 +2213,76 @@ class GameServerGet(GameServerBase):
             return web.json_response({'invite': '', 'decks': []})
         donnees = await self._appeler_site('/api/decks_invite', {'siege': p}, secondes=5)
         return web.json_response(donnees or {'invite': '', 'decks': []})
+
+    async def get_mes_decks(self, request: web.Request) -> web.Response:
+        """Les decks du COMPTE de l'invite DEJA CONNECTE au site (28/10/2026).
+
+        `get_decks_invite` ci-dessus ne rend des decks que si le siege a ete
+        pris par une invitation acceptee : un invite venu par un simple lien
+        copie n'a aucun deck. Mais s'il est connecte a SON compte dans ce
+        navigateur, son cookie de session du site (`nc_session`, pose sur
+        `Domain=.<domaine>`, donc envoye jusqu'a ce moteur par siege) arrive
+        ici. On le relaie au site, seul a savoir lire une session, qui rend les
+        decks de ce compte. Meme patron que `post_rapport_bug` (nc_session
+        relaye tel quel). Sans cookie (invite jamais connecte) : liste vide.
+
+        ⚠ Le navigateur ne peut envoyer que SON PROPRE cookie de session : on
+        ne rend donc jamais que les decks du compte qui tient cette session.
+        """
+        nc = request.cookies.get('nc_session', '')
+        if not nc:
+            return web.json_response({'pseudo': '', 'decks': []})
+        donnees = await self._appeler_site('/api/decks_compte', {'nc_session': nc}, secondes=5)
+        return web.json_response(donnees or {'pseudo': '', 'decks': []})
+
+    async def post_connexion_invite(self, request: web.Request) -> web.Response:
+        """L'invite se CONNECTE a son compte depuis le salon (cas B, 28/10/2026).
+
+        Un invite venu par un simple lien, PAS deja connecte, tape son
+        identifiant et son mot de passe dans le salon pour retrouver ses decks
+        (voir get_mes_decks). On relaie au site, seul a verifier un mot de passe
+        et a ouvrir une session ; en cas de succes le site rend un jeton, qu'on
+        POSE ICI en cookie `nc_session` (Domain=.<domaine parent>), exactement
+        comme /connexion du site. Les requetes suivantes (get_mes_decks) le
+        porteront alors.
+
+        ⚠ Le mot de passe transite par CE moteur (celui du siege de l'invite)
+        le temps du relais vers le site, en 127.0.0.1 : HTTPS de bout en bout
+        (Caddy), jamais journalise ici. L'anti-flood vit cote site, sur
+        l'adresse reelle du navigateur, relayee ci-dessous.
+        """
+        import re
+        try:
+            data = await request.json()
+        except Exception:
+            data = {}
+        pseudo = str(data.get('pseudo', '') or '').strip()
+        mdp = str(data.get('mdp', '') or '')
+        if not pseudo or not mdp:
+            return web.json_response({'ok': False, 'erreur': 'identifiants requis'}, status=400)
+        adresse = (request.headers.get('X-Forwarded-For', '').split(',')[0].strip()
+                   or (request.remote or ''))
+        _, donnees = await self._appeler_site(
+            '/api/connexion', {'pseudo': pseudo, 'mdp': mdp, 'adresse': adresse},
+            secondes=8, avec_statut=True)
+        if not donnees:
+            return web.json_response({'ok': False, 'erreur': 'Service de connexion indisponible.'})
+        if not donnees.get('ok'):
+            return web.json_response({'ok': False,
+                                      'erreur': str(donnees.get('erreur') or 'Identifiant ou mot de passe incorrect.')})
+        jeton = str(donnees.get('jeton', '') or '')
+        reponse = web.json_response({'ok': True, 'pseudo': donnees.get('pseudo', '')})
+        # Domaine PARENT, derive de l'hote pN.<domaine> : le cookie doit couvrir
+        # le site ET ce moteur, comme celui pose par /connexion du site.
+        hote = (request.headers.get('Host', '') or '').split(':')[0]
+        m = re.match(r'^p\d+\.(.+)$', hote)
+        parent = m.group(1) if m else hote
+        secure = "; Secure" if (request.headers.get('X-Forwarded-Proto', '') == 'https'
+                                or getattr(request, 'secure', False)) else ""
+        cookie = ("nc_session=%s; HttpOnly; Path=/; Max-Age=%d; SameSite=Lax%s%s"
+                  % (jeton, 90 * 86400, (("; Domain=.%s" % parent) if parent else ""), secure))
+        reponse.headers['Set-Cookie'] = cookie
+        return reponse
 
     async def post_quitter_la_table(self, request: web.Request) -> web.Response:
         """L'HOTE a fini : la table doit cesser d'exister.
@@ -2069,6 +2595,75 @@ class GameServerGet(GameServerBase):
                     return False
         return True
 
+    # LES REGLAGES DU PLATEAU (14/11/2026, demande des joueurs : retrouver ses
+    # reglages sur un autre appareil). Chaque reglage est une cle du
+    # localStorage du plateau, gardee TELLE QUELLE sur le compte. Liste FERMEE
+    # de cles (la meme que `REGLAGES_DU_COMPTE`, ui-app/src/board/reglages-compte.ts :
+    # un test de l'UI compare les deux) ; la valeur est un texte court, sans
+    # caractere de controle, que seul le navigateur du titulaire relira.
+    # Restent hors du compte : ce qui tient a l'APPAREIL (positions de boites,
+    # mode telephone force, jeu au doigt), la langue, l'image de fond (trop
+    # lourde) et ce qui n'est pas un reglage (historique, rapports, succes).
+    REGLAGES_CLES = frozenset((
+        'marvel-board-action-mode', 'marvel-board-animations', 'marvel-board-annuler-explique',
+        'marvel-board-auto-cible', 'marvel-board-avance-auto', 'marvel-board-curseurs',
+        'marvel-board-delai-pas-a-pas', 'marvel-board-dos-cartes', 'marvel-board-facon-de-jouer',
+        'marvel-board-fin-tour-auto', 'marvel-board-meteo', 'marvel-board-mode-phase-mechant',
+        'marvel-board-musique', 'marvel-board-paiement-auto', 'marvel-board-phase-auto',
+        'marvel-board-phase-rapide', 'marvel-board-piste-phases', 'marvel-board-revelation',
+        'marvel-board-sauvegarde-auto', 'marvel-board-scans-fr', 'marvel-board-sons',
+        'marvel-board-tutoriel', 'marvel-board-validation-courte', 'marvel-board-volume-musique',
+        'marvel-board-volume-sons',
+        'marvel-encoche-gauche',
+        'marvel-tel-aide-debut', 'marvel-tel-colonnes-zones', 'marvel-tel-plateau',
+        'marvel-tel-plateau-choisi', 'marvel-tel-plateau-memorise', 'marvel-tel-taille-texte',
+        'marvel-tel-verrou-portrait', 'marvel-tel-vibrations', 'marvel-tel-visite-piles',
+        'mc_aide_bulle_table', 'mc_ameliorations_chevauchement', 'mc_ameliorations_cote',
+        'mc_apercu_zoom', 'mc_barre_avantage', 'mc_card_art_v1', 'mc_etiquettes_table',
+        'mc_noms_zones_v1', 'mc_phase_bis', 'mc_phase_presentation', 'mc_piles_inversees',
+        'mc_resource_art_v1', 'mc_traits_pastilles',
+        # 2e versement (14/11/2026, « tout suit le compte » sauf l'image de fond) :
+        # la langue, la place des boites, le tchat, les reglages propres a
+        # l'appareil, les puzzles crees et les preferences des pages classiques.
+        'marvel-langue', 'marvel-langue-choisie',
+        'marvel-board-succes', 'marvel-board-marvelcdb', 'marvel-board-design-essai',
+        'marvel-board-ambiance-demande',
+        'marvel-boite-phase-mechant', 'marvel-tchat-position', 'marvel-tchat-taille',
+        'marvel-tsm-bandeau-place',
+        'marvel-tchat-pseudo-play', 'marvel-tchat-langues', 'marvel-tchat-fermees',
+        'mc-puzzles-crees', 'mc-puzzle-pseudo',
+        'mc_prepare_prefs_v1', 'mc_ext_groupe_v1', 'mc_roue_fanmade', 'mc_phase_choix_vu',
+        'mc_phase_mode_vu_v1', 'mc_card_art_noask_v1', 'marvel-legacy-explique',
+        'marvelcdb_favoris', 'mc-deckbuilder-filtres-replies', 'mc-deckbuilder-drafts',
+        'mc_sandbox_garnir', 'mc-campagne-brouillon',
+    ))
+    # Hors compte, EXPRES : l'image de fond (trop lourde), l'historique de la
+    # partie (sessionStorage, propre a l'onglet), le rapport en attente (une
+    # capture de 4 Mo, et il partirait en double depuis un autre appareil),
+    # `mc-campagne-partie` et `mc-puzzle-courant` (des pointeurs vers LA table en
+    # cours : sur un autre appareil ils afficheraient un panneau de recompenses
+    # ou d'enonce sans partie), les marqueurs de migration `*_migre*`, la vue
+    # joueur de l'admin. Campagnes, hauts faits, historique des parties, Legacy
+    # et decks vivent deja sur le serveur, par emplacement.
+    REGLAGE_LONGUEUR_MAX = 2000
+    # Les cles qui portent une liste ou un brouillon : plus de place, mais bornee.
+    REGLAGE_LONGUEUR_PAR_CLE = {
+        'mc-deckbuilder-drafts': 65536,
+        'mc-campagne-brouillon': 32768,
+        'mc-puzzles-crees': 16384,
+        'mc_prepare_prefs_v1': 16384,
+        'marvelcdb_favoris': 16384,
+    }
+    # Tout ce qui est range ici pour UN compte tient dans 256 Ko : au-dela
+    # l'ecriture est refusee (413), le navigateur garde sa valeur.
+    REGLAGES_TOTAL_MAX = 262144
+
+    @classmethod
+    def _reglage_valide(cls, cle, valeur) -> bool:
+        return (isinstance(valeur, str)
+                and len(valeur) <= cls.REGLAGE_LONGUEUR_PAR_CLE.get(cle, cls.REGLAGE_LONGUEUR_MAX)
+                and all(c >= ' ' and c != '\x7f' for c in valeur))
+
     @staticmethod
     def _chemin_preferences() -> str:
         """Le fichier de preferences du compte, a cote de son fichier d'arts
@@ -2091,6 +2686,9 @@ class GameServerGet(GameServerBase):
                         propres[cle] = valeur
                 elif cle in cls.TABLE_CLES:
                     if cls._table_valide(valeur):
+                        propres[cle] = valeur
+                elif cle in cls.REGLAGES_CLES:
+                    if cls._reglage_valide(cle, valeur):
                         propres[cle] = valeur
                 elif valeur in cls.PREFERENCES_PERMISES.get(cle, ()):
                     propres[cle] = valeur
@@ -2124,7 +2722,8 @@ class GameServerGet(GameServerBase):
             return web.json_response({'error': 'reserve au titulaire du compte'}, status=403)
         data = await request.json()
         changements = data.get('changements') if isinstance(data, dict) else None
-        if not isinstance(changements, dict) or len(changements) > 20:
+        # 100 : le premier versement des reglages (une quatre-vingtaine de cles).
+        if not isinstance(changements, dict) or len(changements) > 100:
             return web.json_response({'error': 'changements invalides'}, status=400)
         chemin = self._chemin_preferences()
         if not chemin:
@@ -2138,6 +2737,8 @@ class GameServerGet(GameServerBase):
             if valeur is None:
                 preferences.pop(cle, None)
         preferences.update(self._preferences_valides(changements))
+        if sum(len(v) for c, v in preferences.items() if c in self.REGLAGES_CLES) > self.REGLAGES_TOTAL_MAX:
+            return web.json_response({'error': 'trop de reglages pour ce compte'}, status=413)
         dossier = os.path.dirname(chemin)
         if dossier:
             os.makedirs(dossier, exist_ok=True)
@@ -2355,6 +2956,7 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/save_deck', self.save_deck)
         self.AddPostSecurity('/delete_deck', self.delete_deck)
         self.AddPostSecurity('/sandbox_command', self.sandbox_command)
+        self.AddPostSecurity('/puzzle_objectif', self.puzzle_objectif)
         self.AddPostSecurity('/manuel_undo', self.manuel_undo)
         self.AddPostSecurity('/manuel_pause', self.manuel_pause)
         self.AddPostSecurity('/manuel_passer', self.manuel_passer)
@@ -2403,11 +3005,15 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_marques', self.get_marques)
         self.AddAwaitGetSecurity('/get_enregistrement', self.get_enregistrement)
         self.AddAwaitGetSecurity('/get_mes_parties', self.get_mes_parties)
+        self.AddAwaitGetSecurity('/puzzle_capture', self.puzzle_capture)
         self.AddAwaitGetSecurity('/get_ma_partie', self.get_ma_partie)
         self.AddPostSecurity('/set_choix_siege', self.set_choix_siege)
         self.AddAwaitGetSecurity('/get_choix_sieges', self.get_choix_sieges)
         self.AddPostSecurity('/set_equipe_hote', self.set_equipe_hote)
         self.AddAwaitGetSecurity('/get_equipe_salon', self.get_equipe_salon)
+        self.AddPostSecurity('/demander_echange_siege', self.post_demander_echange_siege)
+        self.AddAwaitGetSecurity('/get_echange_siege', self.get_echange_siege)
+        self.AddPostSecurity('/repondre_echange_siege', self.post_repondre_echange_siege)
         self.AddPostSecurity('/annoncer_preparation', self.annoncer_preparation)
         self.AddAwaitGetSecurity('/get_connectes', self.get_connectes)
         self.AddPostSecurity('/post_inviter', self.post_inviter)
@@ -2415,11 +3021,14 @@ class GameServerGet(GameServerBase):
         self.AddPostSecurity('/post_invitation_reponse', self.post_invitation_reponse)
         self.AddAwaitGetSecurity('/get_invitations_envoyees', self.get_invitations_envoyees)
         self.AddAwaitGetSecurity('/get_decks_invite', self.get_decks_invite)
+        self.AddAwaitGetSecurity('/get_mes_decks', self.get_mes_decks)
         self.AddAwaitGetSecurity('/get_preparation', self.get_preparation)
         self.AddPostSecurity('/set_roue', self.set_roue)
         self.AddAwaitGetSecurity('/get_roue', self.get_roue)
         self.AddAwaitGetSecurity('/get_heros_du_siege', self.get_heros_du_siege)
         self.AddAwaitGetSecurity('/get_liens_sieges', self.get_liens_sieges)
+        self.AddAwaitGetSecurity('/get_liens_sieges_campagne', self.get_liens_sieges_campagne)
+        self.AddAwaitGetSecurity('/get_liens_sieges_campagne_salon', self.get_liens_sieges_campagne_salon)
         self.AddAwaitGetSecurity('/get_site_admin', self.get_site_admin)
         self.AddAwaitGetSecurity('/get_salon_joueurs', self.get_salon_joueurs)
         self.AddAwaitGetSecurity('/get_documents', self.get_documents)
@@ -2437,6 +3046,9 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_palettes_heros', self.get_palettes_heros)
         self.AddPostSecurity('/save_palette_heros', self.save_palette_heros)
         self.AddPostSecurity('/save_images_cartes', self.save_images_cartes)
+        self.AddAwaitGetSecurity('/get_export_cartes', self.get_export_cartes)
+        self.AddPostSecurity('/post_export_cartes_regenerer', self.post_export_cartes_regenerer)
+        self.AddAwaitGetSecurity('/telecharger_export_cartes', self.telecharger_export_cartes)
         self.AddAwaitGetSecurity('/get_legacy', self.get_legacy)
         self.AddPostSecurity('/save_legacy', self.save_legacy)
         self.AddAwaitGetSecurity('/get_arts_heros', self.get_arts_heros)
@@ -2449,6 +3061,7 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/sauver_pour_le_site', self.sauver_pour_le_site,
                                  need_auth=False, need_check_version=False)
         self.AddPostSecurity('/post_rapport_bug', self.post_rapport_bug)
+        self.AddPostSecurity('/post_connexion_invite', self.post_connexion_invite)
         self.AddAwaitGetSecurity('/set_language', self.set_language)
         self.AddAwaitGetSecurity('/get_language', self.get_language)
         self.AddAwaitGetSecurity('/get_gamers', self.get_gamers)

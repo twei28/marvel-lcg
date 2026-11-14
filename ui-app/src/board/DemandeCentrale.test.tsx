@@ -157,6 +157,25 @@ describe('DemandeCentrale — la carte au survol', () => {
   })
 })
 
+describe('DemandeCentrale — le lot d\'un choix (Role: Brawler, 22/10/2026)', () => {
+  it('montre les cartes du lot au survol, et PAS la carte porteuse', () => {
+    const lot = [1, 2, 3].map((n) => ({ ...scan, id: `lot${n}` }))
+    rendre({ carteAuSurvol: () => scan, cartesDuLot: () => lot })
+    fireEvent.mouseOver(screen.getByRole('button', { name: /Play|Jouer/ }))
+    expect(document.querySelectorAll('.apercu-lot .scan-card').length).toBe(3)
+    expect(document.querySelector('.carte-apercu')).toBeNull()
+  })
+
+  it('referme le lot quand le pointeur quitte le bouton', () => {
+    rendre({ cartesDuLot: () => [scan] })
+    const bouton = screen.getByRole('button', { name: /Play|Jouer/ })
+    fireEvent.focus(bouton)
+    expect(document.querySelector('.apercu-lot')).not.toBeNull()
+    fireEvent.blur(bouton)
+    expect(document.querySelector('.apercu-lot')).toBeNull()
+  })
+})
+
 describe('DemandeCentrale — le nom de la carte porteuse', () => {
   it('prend le nom français fourni par le plateau', () => {
     rendre({ nomPorteur: () => 'Salto arrière' })
@@ -421,6 +440,45 @@ describe('DemandeCentrale — la question « combien de fois » nomme la carte e
   })
 })
 
+// Rapport de bug du 08/11/2026 (J. Jonah Jameson, sr009) : le moteur ne sait
+// pas lire une image, il pose donc la question au joueur (`AskChooseOneText`).
+// Cette question-la n'a pas de carte-modele a imiter et restait en anglais.
+describe('DemandeCentrale — la carte demande si l image montre tel personnage (sr009, 08/11/2026)', () => {
+  const choix = (id: number, name: string): Option => ({ ...option(), id, name, bind_id: 0 })
+  const question = (prompt_text: string): Demande =>
+    ({
+      options: [choix(1, 'Yes'), choix(2, 'No')],
+      prompt_text,
+      event_name: 'WhenPlayerChooseAbility',
+      show_cancel: false,
+      ability_type: 'ChooseAbility',
+    }) as unknown as Demande
+
+  beforeEach(() => window.localStorage.setItem('marvel-langue', 'fr'))
+  afterEach(() => window.localStorage.clear())
+
+  it('traduit la question, et garde le nom de la carte tiree tel quel', () => {
+    const d = question('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('J. Jonah Jameson : la carte « Web Strike » montre-t-elle une image de Spider-Man ?')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Oui')).toBeInTheDocument()
+    expect(screen.getByText('Non')).toBeInTheDocument()
+  })
+
+  it('en anglais, rien n est traduit', () => {
+    window.localStorage.setItem('marvel-langue', 'en')
+    const d = question('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    rendre({ demande: d, options: d.options })
+    expect(
+      screen.getByText('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')
+    ).toBeInTheDocument()
+    expect(screen.getByText('Yes')).toBeInTheDocument()
+    expect(screen.getByText('No')).toBeInTheDocument()
+  })
+})
+
 // Sonic Boom, heros incline et ressources incompletes (rapport Yarro, 11/10/2026) :
 // aucune option n'est faisable en entier, le moteur impose celle qu'on peut faire
 // au maximum. Le joueur doit lire POURQUOI, et voir laquelle est imposee.
@@ -492,5 +550,42 @@ describe('améliorations superposées pendant une décision sur table', () => {
     expect(document.querySelector('.carte-apercu')).toBeNull()
     fireEvent.click(generateur)
     expect(choisir).toHaveBeenCalledWith(options[1])
+  })
+})
+
+describe('DemandeCentrale — la demande a un autre joueur ne prend pas le nom d’une capacite (21/10/2026)', () => {
+  // Capture du 21/10/2026 : Captain America attaque, la seule option est « Ask »
+  // (Laura Kinney peut defendre a sa place). Le bouton disait « I Can Do This All
+  // Day! », le refus « Ne pas utiliser I Can Do This All Day! » : « Ask » etait
+  // pris pour un nom de capacite, et le nom imprime sur la carte du porteur suivait.
+  const cartesCap = new Map<number, WorldCard>([
+    [20, { id: 20, name: 'Captain America', card_type: 'Hero', card_id: '03001a' } as unknown as WorldCard],
+    [30, { id: 30, name: 'Laura Kinney', card_type: 'Hero', card_id: '43001a' } as unknown as WorldCard],
+  ])
+  const ask = (): Option => ({ ...option(), id: 3, name: 'Ask', bind_id: 20, all_legal_targets: [30] })
+  const attaque = (): Demande =>
+    ({
+      options: [ask()],
+      prompt_text: 'Captain America is being attacked by Ancient Warrior',
+      event_name: 'WhenUnitBeingAttack',
+      show_cancel: true,
+      ability_type: 'Interrupt',
+    }) as unknown as Demande
+  const texteCap = () => '« I Can Do This All Day! » — Action : défaussez 1 carte de votre main → redressez Captain America.'
+
+  it('le bouton dit qui on sollicite et pour quoi', () => {
+    rendre({ demande: attaque(), options: [ask()], cartesParId: cartesCap, texteCapacite: texteCap })
+    expect(screen.getByRole('button', { name: /Demander à Laura Kinney de défendre/ })).toBeInTheDocument()
+    expect(screen.queryByText(/I Can Do This All Day/)).toBeNull()
+  })
+
+  it('le refus dit que personne ne defend', () => {
+    expect(libelleRefus([ask()], true, cartesCap, undefined, texteCap)).toBe('Ne pas défendre')
+  })
+
+  it('sur la table aussi', () => {
+    rendre({ demande: attaque(), options: [ask()], cartesParId: cartesCap, texteCapacite: texteCap, surLaTable: true })
+    expect(screen.getAllByText(/Demander à Laura Kinney de défendre/).length).toBeGreaterThan(0)
+    expect(screen.queryByText(/I Can Do This All Day/)).toBeNull()
   })
 })

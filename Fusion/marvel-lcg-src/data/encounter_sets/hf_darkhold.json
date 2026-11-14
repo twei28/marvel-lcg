@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Darkhold",
+  "encounters": [
+    "hf361",
+    "hf362",
+    "hf363",
+    "hf364",
+    "hf365",
+    "hf366"
+  ]
+}

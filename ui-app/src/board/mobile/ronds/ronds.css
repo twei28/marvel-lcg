@@ -1,0 +1,1269 @@
+/* La table en RONDS (24/10/2026 ; disposition « grilles par zone » 27/10/2026, maquette dispo-ronds.html).
+   Trois rangees de deux zones cote a cote (Mechant | Manigances, Allies | Sbires, Heros | Cartes en jeu). Chaque zone a sa
+   grille (TableRonds / disposition-ronds.ts) : ses ronds se rangent en COLONNES (`.ronds-colonne`), remplies de haut en bas,
+   posees cote a cote. Les ronds sont de taille FIXE (`--d` depend de la largeur de l'ecran, jamais du nombre de ronds) ;
+   le surplus defile par les fleches ◂ ▸ du titre. Une zone vide est masquee (TableRonds ne la rend pas) ; une rangee sans
+   aucune zone pleine disparait ; sinon les zones sont collees a gauche (space-between) : le vilain et le heros restent a
+   gauche meme quand leur zone voisine est vide. Les couleurs viennent des jetons de
+   l'Epure (--ep-*) avec une valeur de secours. Hors couche : memes raisons que portrait.css. */
+.table-ronds {
+  /* Diametre fixe par rapport au contenu : il ne suit QUE la largeur de l'ecran, jamais le nombre de ronds. La rangee la
+     plus large (Mechant 2 col a 1,22x | Manigances 2 col) occupe ~ 73 + 4,44 x d px ; le diviseur (4,6) et la reserve
+     (84 px) laissent une marge pour que rien ne defile horizontalement, meme si un parent ajoute un peu de rembourrage. */
+  --d: clamp(44px, calc((100vw - 84px) / 4.6), 64px);
+  --ronds-ligne: var(--ep-bord, #383e49);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 14px;
+}
+.ronds-rangee {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 10px 8px;
+  border-bottom: 1px solid var(--ronds-ligne);
+}
+/* Chaque zone se dimensionne a son contenu (pas en 50/50) : Heros (1 rond) est etroite, Cartes en jeu (jusqu'a 3 de large)
+   est plus large. Pas de `min-width: 0` : la zone ne se reduit jamais sous la largeur de son titre (sinon « MANIGANCES »
+   deborderait d'une zone a un seul rond). Jamais de debordement de rangee : au plus 4 colonnes de ronds (grilles choisies
+   pour cela), et le diametre `--d` laisse la marge necessaire. */
+.ronds-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.ronds-separateur {
+  align-self: stretch;
+  width: 1px;
+  background: var(--ronds-ligne);
+  margin: 0 2px;
+}
+.ronds-titre {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 22px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fbcf5;
+  white-space: nowrap;
+}
+/* Les fleches de surplus, a droite du titre : font defiler la zone d'UNE colonne a la fois (pagination par zone). */
+.ronds-fleches {
+  display: inline-flex;
+  gap: 4px;
+}
+.ronds-fleches button {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  border: 1px solid var(--ronds-ligne);
+  background: #1b2942;
+  color: #cdd9ee;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.ronds-fleches button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+/* Les colonnes de ronds d'une zone, cote a cote et centrees ; chaque colonne empile ses ronds de haut en bas. */
+.ronds-colonnes {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+}
+.ronds-colonne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+/* Les stats des ronds disparaissent quand le diametre descend sous 54 px (ecran etroit). */
+@media (max-width: 360px) {
+  .table-ronds .rond-stats {
+    display: none;
+  }
+}
+.table-ronds .rond-nom {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: clamp(0.62rem, calc(var(--d) * 0.0135), 0.78rem);
+}
+.table-ronds .rond-pastille {
+  font-size: clamp(0.58rem, calc(var(--d) * 0.0125), 0.72rem);
+}
+
+/* ---- un rond ---- */
+.rond {
+  position: relative;
+  width: calc(var(--d) + 6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.rond-bouton {
+  position: relative;
+  width: var(--d);
+  height: var(--d);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  color: inherit;
+}
+.rond-vilain .rond-bouton,
+.rond-heros .rond-bouton {
+  width: calc(var(--d) * 1.22);
+  height: calc(var(--d) * 1.22);
+}
+.rond-art {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-color: #1c2028;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.rond-art-tourne {
+  overflow: hidden;
+}
+.rond-art-tourne img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* Scan portrait d'une carte paysage : largeur = hauteur de la carte tournee. Le dessin est a droite de la carte
+     redressee (60 % de sa largeur environ) ; on le ramene au centre du rond. */
+  width: calc(var(--d) * 1.57);
+  height: auto;
+  max-width: none;
+  margin-left: calc(var(--d) * -0.785);
+  margin-top: calc(var(--d) * -1.1);
+  transform: translate(calc(var(--d) * -0.4), calc(var(--d) * -0.03)) rotate(90deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+.rond-art-tourne.est-dessin-gauche img {
+  /* Manigance annexe : le dessin est a GAUCHE de la carte redressee (texte a droite), symetrique de la principale. */
+  transform: translate(calc(var(--d) * 0.55), calc(var(--d) * -0.1)) rotate(90deg);
+}
+.rond-anneau {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.rond-fond-anneau,
+.rond-part-anneau {
+  fill: none;
+  stroke-width: 7;
+}
+.rond-fond-anneau {
+  stroke: #0c0e12;
+}
+.rond-part-anneau {
+  stroke-linecap: round;
+}
+.rond-pastille {
+  position: absolute;
+  right: -8%;
+  bottom: -6%;
+  z-index: 2;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1.5px solid #0c0e12;
+  font: 800 0.72rem/1.3 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+  color: #fff;
+  white-space: nowrap;
+}
+.rond-ordre {
+  position: absolute;
+  left: -4%;
+  top: -4%;
+  z-index: 3;
+  min-width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #3f86e0;
+  color: #fff;
+  font: 800 0.8rem var(--ep-police, Inter, system-ui, sans-serif);
+  border: 2px solid #0c0e12;
+}
+.rond-nom {
+  max-width: 100%;
+  font-size: 0.66rem;
+  line-height: 1.05;
+  text-align: center;
+  color: var(--ep-doux, #9da5b3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rond-stats {
+  display: flex;
+  gap: 4px;
+  font: 800 0.62rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+}
+.rond-stats .stat-ATK {
+  color: #ff8a80;
+}
+.rond-stats .stat-THW,
+.rond-stats .stat-SCH {
+  color: #8fbcf5;
+}
+.rond-stats .est-augmentee {
+  color: #7be08b !important;
+}
+.rond-stats .est-reduite {
+  color: #ff5a4d !important;
+}
+.rond-stats .stat-DEF,
+.rond-stats .stat-REC {
+  color: #cbd5e1;
+}
+
+/* etats : etiquettes au-dessus du rond ; jetons : pastilles par type, a gauche */
+.rond-etats {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: -10px;
+  z-index: 6;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 2px;
+  pointer-events: none;
+}
+.rond-etats i {
+  padding: 0 4px;
+  border-radius: 5px;
+  border: 1.5px solid #fae514;
+  font: 800 0.58rem/1.35 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+  white-space: nowrap;
+}
+.rond-jetons {
+  position: absolute;
+  left: -2px;
+  bottom: 22px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+.rond-jetons i {
+  padding: 0 5px;
+  border-radius: 999px;
+  border: 1.5px solid #0c0e12;
+  background: #2c63b0;
+  color: #fff;
+  font: 800 0.6rem/1.35 var(--ep-police, Inter, system-ui, sans-serif);
+  font-style: normal;
+}
+/* ameliorations attachees (decisions Q4 / Q74 / Q75 / Q76, 24/10/2026) : un rond de la MEME taille que sa carte hote, pose
+   derriere elle et decale sur le COTE, les deux tiers du rond depassant ; plusieurs se suivent a droite. La carte garde
+   la place de ses ameliorations (largeur du .rond), la pastille de PV descend sous le rond. */
+.rond {
+  --dh: var(--d);
+  --nb-amelio: 0;
+  width: calc(var(--dh) + 6px + var(--nb-amelio) * var(--dh) * 0.7);
+  align-items: flex-start;
+}
+.rond-vilain,
+.rond-heros {
+  --dh: calc(var(--d) * 1.22);
+}
+.rond > .rond-bouton {
+  z-index: 5;
+}
+.rond-attachees {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.rond-mini {
+  position: absolute;
+  top: 0;
+  left: calc(var(--dh) * 0.7 * (var(--rang) + 1));
+  z-index: calc(4 - var(--rang));
+  width: var(--dh);
+  height: var(--dh);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  background-size: 190% auto;
+  background-position: 50% 40%;
+  box-shadow: 0 0 0 3px #6a7280;
+  /* Touchable (25/10/2026) : le conteneur laisse passer le doigt, chaque rond le prend. */
+  pointer-events: auto;
+  cursor: pointer;
+}
+/* Cartes empilees sous une carte (State of Flow, cartes glissees ; 26/10/2026) : une pile, pas des ameliorations. Meme contour et meme
+   pastille que le plateau en bandes (board.css `.est-empilee`, `.pile-sous-carte`). */
+.rond-mini.est-empilee {
+  outline: 3px dashed rgba(242, 201, 76, 0.95);
+  outline-offset: 1px;
+}
+.rond-pile {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: calc(var(--dh) - 9px);
+  transform: translateX(-50%);
+  z-index: 8;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 900;
+  line-height: 1.35;
+  white-space: nowrap;
+  color: #0e1116;
+  background: var(--gold, #f2c94c);
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+.rond-nom,
+.rond-stats {
+  align-self: flex-start;
+  width: calc(var(--dh) + 6px);
+}
+.rond-nom {
+  margin-top: 8px;
+}
+.rond-pastille {
+  right: auto;
+  left: calc(var(--dh) / 2);
+  transform: translateX(-50%);
+  bottom: -2px;
+}
+.rond-etiquette {
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  z-index: 7;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #b3261e;
+  color: #fff;
+  font: 800 0.58rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* epuisee : grisee ; cible : halo jaune ; bloquee (Crise) : assombrie */
+.rond.est-epuise .rond-art {
+  filter: grayscale(1) brightness(0.65);
+}
+.rond.est-epuise .rond-part-anneau {
+  stroke: #6a7280 !important;
+}
+.rond.est-cible .rond-bouton {
+  box-shadow: 0 0 0 3px #f3c623, 0 0 16px 4px rgba(243, 198, 35, 0.7);
+}
+.rond.est-choisi .rond-bouton {
+  box-shadow: 0 0 0 3px #3f86e0, 0 0 16px 4px rgba(63, 134, 224, 0.7);
+}
+.rond.est-bloquee .rond-art {
+  filter: brightness(0.5);
+}
+.rond.est-cachee .rond-art {
+  background: linear-gradient(160deg, #a8321c, #5a1209);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rond-part-anneau {
+    transition: stroke-dasharray 0.4s ease;
+  }
+}
+
+/* ---- le choix du plateau, au debut de la partie ---- */
+.choix-plateau-voile {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(3, 4, 7, 0.78);
+}
+.choix-plateau {
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #3f86e0;
+  background: linear-gradient(180deg, #1f2a44, #141a29);
+  color: #f2f3f5;
+}
+.choix-plateau h2 {
+  margin: 0;
+  font: 400 1.7rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.04em;
+  color: #8fbcf5;
+}
+.choix-plateau p {
+  margin: 0;
+  color: #9da5b3;
+  font-size: 0.9rem;
+}
+.choix-plateau-boutons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.choix-plateau-boutons button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #383e49;
+  background: #292e38;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.choix-plateau-boutons button.est-propose {
+  border-color: #3f86e0;
+  box-shadow: 0 0 0 2px rgba(63, 134, 224, 0.5);
+}
+.choix-plateau-boutons b {
+  font: 400 1.35rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.04em;
+}
+.choix-plateau-boutons b small {
+  font: 800 0.6rem var(--ep-police, Inter, system-ui, sans-serif);
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #e8730c;
+  color: #fff;
+  vertical-align: middle;
+  letter-spacing: 0;
+}
+.choix-plateau-boutons span {
+  font-size: 0.8rem;
+  color: #9da5b3;
+}
+
+.choix-plateau-garder {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+.choix-plateau-garder input {
+  width: 22px;
+  height: 22px;
+  accent-color: #3f86e0;
+}
+
+/* ---- la main sous les zones ---- */
+.plateau-portrait.avec-main-dock {
+  --main-dock-h: clamp(118px, 31vh, 210px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.main-dock {
+  grid-row: 3;
+  --main-dock-h: clamp(118px, 31vh, 210px);
+  height: var(--main-dock-h);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 10px 6px;
+  background: var(--ep-surface, #171b23);
+  border-top: 2px solid #3f86e0;
+  z-index: 30;
+  min-height: 0;
+}
+.main-dock-entete {
+  padding-left: 30px; /* la languette « Piles » (a gauche) passe devant */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+}
+.main-dock-boutons {
+  display: flex;
+  gap: 6px;
+}
+.main-dock-boutons button {
+  min-width: 44px;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #383e49;
+  background: #292e38;
+  color: #f2f3f5;
+  font-weight: 700;
+}
+.main-dock-boutons .main-dock-jouer {
+  background: #f3c623;
+  color: #14161a;
+  border-color: #b88f00;
+}
+.main-dock-rangee {
+  flex: 1 1 auto;
+  min-height: 0;
+  --card-w: calc((var(--main-dock-h) - 84px) / 1.4);
+}
+/* la main sous les zones : pas d'etiquette de type au-dessus des cartes (le type est imprime sur la carte), pour
+   que la rangee tienne dans la hauteur reservee */
+.main-dock .main-portrait-carte .kind-pill,
+.main-dock .main-portrait-carte .top-strip {
+  display: none;
+}
+
+/* carte d'un camp dans la zone de l'autre : anneau rouge (rencontre chez le joueur) ou vert (joueur chez le mechant) */
+.rond.est-etranger-rouge .rond-bouton {
+  outline: 2px solid #e0524a;
+  outline-offset: 3px;
+}
+.rond.est-etranger-vert .rond-bouton {
+  outline: 2px solid #4cc46a;
+  outline-offset: 3px;
+}
+
+/* carte PRETE (pas encore utilisee) : un anneau dore fin autour du rond ; utilisee (epuisee) : le rond est grise (decisions du 24/10/2026) */
+.rond.est-prete .rond-bouton::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid #e8b83a;
+  pointer-events: none;
+}
+.rond.est-epuise .rond-bouton::after {
+  display: none;
+}
+
+/* ---- le glisser au doigt ---- */
+.glisse-rond-couche {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+}
+.glisse-rond-fantome {
+  position: fixed;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  width: 78px;
+  height: 78px;
+  margin: -39px 0 0 -39px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 25%;
+  box-shadow: 0 0 0 4px #f3c623, 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+.glisse-rond-fantome.est-refuse {
+  box-shadow: 0 0 0 4px #e0524a, 0 6px 12px rgba(0, 0, 0, 0.6);
+}
+.glisse-rond-libelle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  max-width: 80vw;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #1c2028;
+  border: 1px solid #f3c623;
+  color: #f2f3f5;
+  font: 700 0.78rem var(--ep-police, Inter, system-ui, sans-serif);
+  white-space: nowrap;
+}
+.glisse-rond-libelle:empty {
+  display: none;
+}
+.glisse-rond-libelle.est-refuse {
+  border-color: #e0524a;
+  color: #ffb4ab;
+}
+.rond.est-cible-glisse .rond-bouton {
+  box-shadow: 0 0 0 3px #f3c623, 0 0 16px 4px rgba(243, 198, 35, 0.7);
+}
+.rond.est-assombri {
+  opacity: 0.4;
+}
+.rond.est-source-glisse {
+  opacity: 0.5;
+}
+/* un rond qu'on peut glisser n'est pas defile par la page ; la main ne defile que de cote */
+.rond.est-glissable .rond-bouton {
+  touch-action: none;
+}
+.main-dock .main-dock-rangee {
+  touch-action: pan-x;
+}
+
+/* degats / menace flottants (Q19, Q20) */
+.rond-delta {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: 0;
+  z-index: 8;
+  transform: translateX(-50%);
+  font: 400 1.7rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.03em;
+  text-shadow: 0 2px 0 #000, 0 0 8px #000;
+  pointer-events: none;
+  animation: rond-delta-monte 1.6s ease-out forwards;
+}
+.rond-delta-damage {
+  color: #ff5a4d;
+}
+.rond-delta-heal {
+  color: #7be08b;
+}
+.rond-delta-threat {
+  color: #f3c623;
+}
+@keyframes rond-delta-monte {
+  0% { opacity: 0; transform: translate(-50%, 8px) scale(0.8); }
+  15% { opacity: 1; transform: translate(-50%, -6px) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -30px) scale(1); }
+}
+/* etiquette Garde (Q30) et ressource (Q35) */
+.rond-etiquette-garde {
+  background: #4b5361;
+}
+.rond-etiquette-riposte {
+  left: auto;
+  right: -6px;
+  top: 16px;
+  transform: none;
+  background: #7a2a1d;
+}
+.rond-etiquette-ressource {
+  background: #2c63b0;
+}
+/* separation « EN JEU » dans la rangee de la main, quand on paie avec des cartes de la table */
+.main-dock-separation {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  margin: 0 6px;
+  padding-left: 8px;
+  border-left: 3px solid #3f86e0;
+}
+.main-dock-separation b {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 800 0.7rem var(--ep-police, Inter, system-ui, sans-serif);
+  letter-spacing: 0.12em;
+  color: #6fa8f0;
+}
+/* retournement d'un rond (Q36, Q39) */
+.rond.se-retourne .rond-bouton {
+  animation: rond-retourne 0.6s ease-in-out;
+}
+@keyframes rond-retourne {
+  0% { transform: rotateY(0); }
+  50% { transform: rotateY(90deg); }
+  100% { transform: rotateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rond-delta { animation-duration: 0.01s; }
+  .rond.se-retourne .rond-bouton { animation: none; }
+}
+/* un rond qui vient d'etre vaincu (Q44) : grise, « VAINCU », puis il part */
+.rond-vaincu {
+  animation: rond-vaincu 1.1s ease-in forwards;
+}
+.rond-vaincu .rond-art {
+  filter: grayscale(1) brightness(0.55);
+}
+.rond-vaincu .rond-vaincu-etiquette {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: 38%;
+  z-index: 9;
+  transform: translateX(-50%) rotate(-10deg);
+  padding: 0 8px;
+  background: #c4453c;
+  color: #fff;
+  font: 400 1.1rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 0 #000;
+}
+@keyframes rond-vaincu {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* ---- « ROUND N » en grand (Q27) ---- */
+.round-en-grand {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(3, 4, 7, 0.62);
+  pointer-events: none;
+  animation: round-en-grand 1.3s ease-out forwards;
+}
+.round-en-grand b {
+  font: 400 5.2rem/1 var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.05em;
+  color: #f3c623;
+  text-shadow: 4px 4px 0 #000;
+}
+.round-en-grand span {
+  font: 400 1.5rem var(--ep-titres, 'Bangers', Impact, sans-serif);
+  letter-spacing: 0.08em;
+  color: #8fbcf5;
+}
+@keyframes round-en-grand {
+  0% { opacity: 0; transform: scale(0.85); }
+  18% { opacity: 1; transform: scale(1.05); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .round-en-grand { display: none; }
+}
+/* ---- la fleche ↶ permanente dans la barre du haut (Q45) ---- */
+.portrait-annuler {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid #383e49;
+  background: #1c2028;
+  color: #f2f3f5;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+.portrait-annuler:disabled {
+  opacity: 0.35;
+}
+
+/* Le panneau de phase en ronds (decisions 17, 18, 23, 24, 39, 24/10/2026) : quand il montre une carte (boost, carte
+   rencontre revelee, nouveau stade), il monte et la carte passe en GRANDE, au lieu d'une vignette de 60 px. */
+@media (max-width: 767px) {
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai:has(.tris-boost, .deroule-revelee, .deroule-stade),
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai.est-tris:has(.tris-boost, .deroule-revelee, .deroule-stade) {
+    --grande-h: min(34dvh, 300px);
+    --essai-carte-h: min(34dvh, 300px);
+    --vignette-h: min(34dvh, 300px);
+    height: 78dvh;
+    max-height: 78dvh;
+  }
+  /* Deux boosts (Klaw) : cote a cote, un peu plus petits. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boosts:has(.tris-boost + .tris-boost) {
+    --essai-carte-h: min(26dvh, 220px);
+    --vignette-h: min(26dvh, 220px);
+  }
+  /* La carte revelee au centre, son texte dessous (au lieu d'une colonne de 60 px a cote). */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .deroule-revelee {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .deroule-revelee-texte {
+    max-width: 100%;
+  }
+  /* Un boost : la grande carte au centre, son nom et son apport dessous. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost-detail {
+    align-items: center;
+    width: 100%;
+  }
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boost-detail strong {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  /* Deux boosts (Klaw) : cote a cote. */
+  body[data-plateau='ronds'] .deroule-phase.est-scene.est-essai .tris-boosts:has(.tris-boost + .tris-boost) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* « K.O. ! » : ecran rouge plein, au-dessus de tout (decision Q65). */
+.ecran-ko {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  background: radial-gradient(circle at 50% 40%, #c4191f 0%, #6a0a10 70%, #2a0407 100%);
+}
+.ecran-ko b {
+  font-family: 'Bangers', 'Impact', sans-serif;
+  font-size: clamp(72px, 26vw, 140px);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-shadow: 0 4px 0 #000, 0 0 30px #ff5a4a;
+  transform: rotate(-4deg);
+}
+.ecran-ko-nom {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.ecran-ko-texte {
+  opacity: 0.9;
+}
+.ecran-ko-continuer {
+  min-height: 48px;
+  min-width: 200px;
+  margin-top: 12px;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* La feuille d'une carte « avec tout » (Q71, Q72). */
+.feuille-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(320px, 86vw);
+  color: #fff;
+}
+.feuille-barre {
+  position: relative;
+  height: 22px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.feuille-barre-plein {
+  position: absolute;
+  inset: 0 auto 0 0;
+}
+.feuille-barre b {
+  position: relative;
+  display: block;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 22px;
+  text-shadow: 0 1px 2px #000;
+}
+.feuille-stats,
+.feuille-jetons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 700;
+}
+.feuille-stats li span {
+  opacity: 0.7;
+  font-weight: 600;
+}
+.feuille-stats .est-plus {
+  color: #6fdc8c;
+}
+.feuille-stats .est-moins {
+  color: #ff7b72;
+}
+.feuille-jetons {
+  /* Les jetons dimensionnent leur chiffre en fraction de --card-w : hors d'une carte, on la leur donne (comme le PC). */
+  --card-w: 120px;
+  align-items: center;
+}
+.feuille-detail .apercu-mots-cles {
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+
+/* Plusieurs faces (24/10/2026, « les mettre l'une sous l'autre, sans defiler, en laissant la place des boutons »).
+   --h-faces : la hauteur que prennent les faces = l'ecran moins 190 px (le libelle, les boutons, ce qui se lit dessous).
+   2 faces : l'une sous l'autre ; 3 faces : deux puis une ; 4 et plus : une grande, les autres en miniatures a toucher. */
+.carte-ouverte-scan.a-deux-faces {
+  --h-faces: calc(100dvh - 190px);
+  --l-ecran: calc(100vw - 32px);
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.carte-ouverte-scan.a-faces-2 {
+  flex-direction: column;
+  align-items: center;
+}
+.carte-ouverte-scan.a-faces-2 .scan-card {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-2 .scan-card.is-landscape {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 176 / 127));
+}
+.carte-ouverte-scan.a-faces-3 {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  justify-items: center;
+}
+.carte-ouverte-scan.a-faces-3 .scan-card {
+  --card-w: min(calc((var(--l-ecran) - 8px) / 2), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-3 .scan-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+.carte-ouverte-scan.a-faces-plus .scan-card {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 127 / 176));
+}
+.carte-ouverte-scan.a-faces-plus .scan-card.is-landscape {
+  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 176 / 127));
+}
+.carte-ouverte-miniatures {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.carte-ouverte-miniature {
+  padding: 2px;
+  background: transparent;
+  border: 2px solid #3f86e0;
+  border-radius: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.carte-ouverte-miniature .scan-card {
+  --card-w: 72px;
+}
+.carte-ouverte-miniature .scan-card.is-landscape {
+  --card-w: 104px;
+}
+
+/* ---- PAYSAGE (Q48) : les memes zones en largeur, la main dans un panneau a droite ---- */
+@media (orientation: landscape) and (max-width: 767px) {
+  .plateau-portrait.avec-main-dock {
+    grid-template-columns: minmax(0, 1fr) clamp(150px, 34vw, 240px);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .plateau-portrait.avec-main-dock > .portrait-bandeau {
+    grid-column: 1 / -1;
+  }
+  .plateau-portrait.avec-main-dock .main-dock {
+    grid-column: 2;
+    grid-row: 2;
+    height: auto;
+    border-top: 0;
+    border-left: 2px solid #3f86e0;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-entete {
+    padding-left: 0;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-rangee {
+    --card-w: calc((34vw - 36px) / 2);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 6px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    touch-action: pan-y;
+  }
+  .plateau-portrait.avec-main-dock .main-dock-rangee .scan-card {
+    --card-w: calc((clamp(150px, 34vw, 240px) - 56px) / 2);
+  }
+  .table-ronds {
+    --d: clamp(44px, calc((66vw - 40px) / 5.4), 64px);
+  }
+  .barre-manuelle {
+    bottom: 0;
+    right: clamp(150px, 34vw, 240px);
+  }
+}
+
+/* ---- mode manuel au doigt (Q52) : la barre d'outils du rond choisi ---- */
+.barre-manuelle {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: var(--main-dock-h, 0px);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  background: #1c2330;
+  border-top: 2px solid #f3c623;
+}
+.barre-manuelle-nom {
+  font-weight: 800;
+  font-size: 0.8rem;
+  color: #f3c623;
+}
+.barre-manuelle-boutons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.barre-manuelle-boutons button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #4a5366;
+  background: #292e38;
+  color: #f2f3f5;
+  font-weight: 700;
+}
+.rond.est-choisi-manuel .rond-bouton {
+  box-shadow: 0 0 0 3px #f3c623, 0 0 14px 3px rgba(243, 198, 35, 0.65);
+}
+
+/* ---- la visite guidee (Q57) ---- */
+.visite {
+  position: fixed;
+  inset: 0;
+  z-index: 880;
+  pointer-events: auto;
+  background: transparent;
+}
+.visite-halo {
+  position: fixed;
+  border-radius: 12px;
+  box-shadow: 0 0 0 9999px rgba(8, 10, 16, 0.78), 0 0 0 3px #f3c623;
+  pointer-events: none;
+}
+.visite-bulle {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #1c2330;
+  border: 2px solid #f3c623;
+  color: #f2f3f5;
+}
+.visite-bulle.est-en-haut {
+  top: 60px;
+  bottom: auto;
+}
+.visite-bulle h2 {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+  color: #f3c623;
+}
+.visite-bulle p {
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.visite-bulle .visite-compte {
+  margin: 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+/* Mini-illustration de l'etape « Cartes empilees » : un rond porteur, une carte empilee (contour pointille dore), la pastille. */
+.visite-pile-exemple {
+  position: relative;
+  height: 74px;
+  margin: 0 0 10px;
+}
+.visite-pile-porteur,
+.visite-pile-mini {
+  position: absolute;
+  top: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.visite-pile-porteur {
+  left: 6px;
+  z-index: 2;
+  background: #3a4458;
+  border: 3px solid #f2c94c;
+}
+.visite-pile-mini {
+  left: 36px;
+  z-index: 1;
+  background: #5a6580;
+  box-shadow: 0 0 0 3px #6a7280;
+}
+.visite-pile-exemple .est-empilee {
+  outline: 3px dashed rgba(242, 201, 76, 0.95);
+  outline-offset: 1px;
+}
+.visite-pile-exemple .pile-sous-carte {
+  position: absolute;
+  left: 60px;
+  top: 50px;
+  transform: translateX(-50%);
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1.35;
+  white-space: nowrap;
+  color: #0e1116;
+  background: #f2c94c;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+}
+.visite-boutons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.visite-boutons button {
+  min-height: 46px;
+  min-width: 110px;
+  border-radius: 8px;
+  border: 1px solid #4a5366;
+  background: #292e38;
+  color: #f2f3f5;
+  font-weight: 700;
+}
+.visite-boutons .visite-suivant {
+  background: #f3c623;
+  color: #14161a;
+  border-color: #b88f00;
+}
+
+/* ---- Peril en multijoueur (Q68) ---- */
+.bandeau-peril {
+  position: fixed;
+  left: 8px;
+  right: 8px;
+  top: 52px;
+  z-index: 60;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #7a2a1d;
+  border: 1px solid #ff9a85;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+  pointer-events: none;
+}
+.portrait-onglet.est-verrouille {
+  opacity: 0.55;
+}
+
+/* ---- Couleurs du heros et du mechant (24/10/2026, variante B) : les MEMES bandes nettes en biais que le PC en Epure
+   (--marque-mechant / --marque-heros, poses par board.tsx), en plus petit. Le mechant : COLLE au coin haut gauche de sa zone ;
+   le heros : COLLE au coin bas droit de SA zone (celle de son rond « Heros »), plus dans « Cartes en jeu ». Jamais de couleur
+   diffuse.
+   « Colle » = jusqu'aux traits qui bornent la case : la zone s'etire sur toute la hauteur de la rangee, le triangle sort de ses
+   marges d'autant que le remplissage de la rangee (10 px a gauche, 6 px en haut, 8 px en bas) et que l'ecart au separateur
+   (8 px), et la zone rogne le tout a cette case. ---- */
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain,
+html[data-epure] body.a-marque-heros .ronds-zone-heros {
+  position: relative;
+  isolation: isolate;
+  align-self: stretch;
+  clip-path: inset(-6px -8px -8px -10px);
+}
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before,
+html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
+  content: '';
+  position: absolute;
+  /* Les bandes du PC font 224 px le long de la diagonale : une boite de 224 x sqrt(2) = 317 px les arrete pile au
+     milieu, ce qui dessine un TRIANGLE de coin (comme le PC) ; reduite pour le telephone. */
+  width: 317px;
+  height: 317px;
+  transform: scale(0.36);
+  pointer-events: none;
+  z-index: -1;
+}
+html[data-epure] body.a-marque-mechant .ronds-zone-vilain::before {
+  left: -10px;
+  top: -6px;
+  transform-origin: 0 0;
+  background: var(--marque-mechant);
+}
+html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
+  right: -8px;
+  bottom: -8px;
+  transform-origin: 100% 100%;
+  background: var(--marque-heros);
+}
+
+/* Un rond de groupe (« La ville », « Environnements ») : en pile, avec le nombre de cartes qu'il garde. */
+.rond-groupe .rond-bouton {
+  box-shadow: 4px 4px 0 -1px #2a2540, 8px 8px 0 -2px #221e36;
+  border-radius: 50%;
+}
+.rond .rond-compte {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 99px;
+  background: #f3c623;
+  color: #14161a;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+
+/* Traits du heros (28/10/2026) : sur le bas du rond, au-dessus de la pastille de PV. Le dessous (nom, valeurs) n'a pas de place. */
+.rond .pastilles-traits.est-sur-rond {
+  position: absolute;
+  left: calc(var(--dh) / 2);
+  top: calc(var(--dh) * 0.62);
+  transform: translateX(-50%);
+  width: calc(var(--dh) * 0.96);
+  z-index: 6;
+  gap: 2px;
+}
+.rond .pastilles-traits.est-sur-rond .pastille-trait {
+  font-size: 0.5rem;
+  padding: 0 4px;
+  border-width: 1px;
+}

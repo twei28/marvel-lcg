@@ -24,20 +24,27 @@ import {
   type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
+import { chargerReglagesDuCompte } from './board/reglages-compte'
 import { createRoot, type Root } from 'react-dom/client'
 import '../styles/tokens.css'
 import '../styles/palette.css'
 import '../styles/affichage-sobre.css'
 import '../styles/affichage-epure.css'
 import '../styles/teinte.css'
+import '../styles/fond-image.css'
 import { PlusieursJoueurs, ScanCard, type CardEffectDelta, type ScanCardProps } from './components/ScanCard'
 import { AssistantAction } from './board/AssistantAction'
+import { consigne, phraseEtat } from './board/phrase-etat'
 import { CartesDuJournal, type AccesCartesJournal } from './board/NomsDeCartes'
 import { estModeManuel, leMoteurSeTait } from './board/manuel/mode'
 import { SelecteurHeros } from './board/manuel/SelecteurHeros'
 import { InterrupteurFacon } from './board/manuel/InterrupteurFacon'
+import { PisteDesPhases } from './board/manuel/PisteDesPhases'
+import { indexDepuisMoteur } from './board/manuel/phases-manuel'
 import { aideSOuvreSeule, VoletAideManuel } from './board/manuel/VoletAideManuel'
 import { VoletAideAuto } from './board/VoletAideAuto'
+import { VoletFeuillets } from './board/VoletFeuillets'
+import { feuilletsDeLaPartie } from './board/feuillets'
 import { reglagesGlisserManuel } from './board/manuel/glisser-manuel'
 import { carteDeLaTrame, contexteDePose, estCacheePourLeJoueur, origineDe } from './board/manuel/poser-en-jeu'
 import { peutBouger, proprietaireDe, siegesControles } from './board/manuel/proprietaire'
@@ -68,6 +75,10 @@ import { useModeMobile, type ReglageMode } from './board/mobile/useModeMobile'
 import { useEcranAllume, useEstTelephone, useVerrouPortrait, useVibrationsDePartie } from './board/mobile/telephone'
 import { useReglagesTelephone } from './board/mobile/reglages-telephone'
 import { EcranTourne } from './board/mobile/EcranTourne'
+import { ciblesDeLaFeuille } from './board/mobile/cibles-feuille'
+import { cibleAEchanger } from './board/mobile/echange-cible'
+import { cartesPayantesParGroupe } from './board/mobile/paiement-feuille'
+import { useEstTablette, useMarqueTablette, useTabletteDebout } from './board/tablette/tablette'
 import { CoucheAnimations } from './board/CoucheAnimations'
 import { CoucheCharge } from './board/CoucheCharge'
 import { CoucheRevelation } from './board/CoucheRevelation'
@@ -93,7 +104,8 @@ import {
   type Site,
 } from './board/quitter-la-table'
 import { adresseApresPartie, estInviteDeTable, useRetourAuSalon } from './board/retour-salon'
-import { estFenetreDeReaction } from './board/DemandeCentrale'
+import { estFenetreDeReaction, texteDemande } from './board/DemandeCentrale'
+import { SelecteurChoixTexte } from './board/SelecteurChoixTexte'
 import {
   narrationAuCentre,
   questionDansLaScene,
@@ -105,7 +117,7 @@ import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
-import { carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
+import { cartesDuLotParOption, carteDeCampagneParOption, carteDuSchemaCampagneParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
   EvenementCentrale,
@@ -138,6 +150,9 @@ import {
 import { BandeauAbsent } from './board/BandeauAbsent'
 import { BandeauAnnonce } from './board/BandeauAnnonce'
 import { BandeauMiseAJour } from './board/BandeauMiseAJour'
+import { BilanObjectifs, PanneauObjectifs } from './board/PanneauObjectifs'
+import { PanneauEnonce } from './board/PanneauEnonce'
+import { CreateurPuzzle } from './board/CreateurPuzzle'
 import { BoutonVoirLaTable } from './board/BoutonVoirLaTable'
 import { useMiseAJour } from './board/maj'
 import { cheminEmplacement, dossierSauvegardes } from './board/sauvegardes'
@@ -154,11 +169,16 @@ import { CoupHorsPhase, CoupHorsPhaseSurTable, DansLeCadre, EspaceDeLaQuestion }
 import { CartoucheHorsPhase, RelectureJournal } from './board/CartouchePhase'
 import type { QuestionDuMoteur } from './board/sous-cadre'
 import './board/fin-partie-bd.css'
+import './board/action-annulee.css'
+import './board/languettes-communes.css'
+import { useActionAnnulee } from './board/action-annulee'
+import { choixEnAttente as choixAttend, groupeDeLaPile, ouvertureDePile, pileAOuvrirSeule, pilesToutesALaFois, type SorteDePile } from './board/pile-auto'
+import './board/choix-en-attente.css'
 import { RevuePhase } from './board/RevuePhase'
 import { EditeurTable } from './board/EditeurTable'
 import { DISPOSITION_DE_DEPART, DISPOSITION_ORIGINE, type Disposition } from './board/table-briques'
 import { enregistrerDisposition, useDispositionTable } from './board/table-perso'
-import { detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
+import { boostsAttaches, detailAttaqueComplet, ligneAttaqueConnue } from './board/ligne-attaque'
 import { useCoupsEnVol } from './board/JetonsCoups'
 import { avecCompteursFiges } from './board/coups-sur-table'
 import { avecEcranStadeRevele, avecEtapesRiposte } from './board/etapes-essai'
@@ -171,6 +191,7 @@ import {
   lireTeinteDuNavigateur,
   type Teinte,
 } from './board/teinte'
+import { appliquerFondImage, baseDuFondImage, EVENEMENT_FOND_IMAGE, lireFondImage } from './board/fond-image'
 import { texteTempsParDecision } from './board/deroule-textes'
 import { SplashTour } from './board/SplashTour'
 import {
@@ -187,7 +208,9 @@ import { poserVitre } from './board/vitre-spectateur'
 import { CadreJoueur } from './board/CadreJoueur'
 import { suivreDefilements, useDefilementsDuJoueur } from './board/defilement-partage'
 import { phraseDuRefus } from './board/raisons-refus'
+import { choixRefuses } from './board/choix-refuses'
 import { CoucheRefusEffets } from './board/refus-effets'
+import { CoucheChoixUniques } from './board/choix-uniques'
 import { MenuActionsCarte } from './board/MenuActionsCarte'
 import { CiblageSurTable } from './board/TableSansModale'
 import { FournisseurConfirmation, useConfirmation } from './board/ConfirmationJeu'
@@ -217,9 +240,11 @@ import {
   ReglagesApercuAmbiance,
 } from './board/CoucheMeteo'
 import { ModaleAmbiance } from './board/ModaleAmbiance'
+import { ModaleAnnuler } from './board/ModaleAnnuler'
 import { CoucheCurseurs, CLE_CURSEURS, lireCurseursActifs } from './board/CoucheCurseurs'
 import { publierEtape, useSuiviDuJoueur } from './board/etape-partagee'
 import { appliquerEtiquettesTable, lireEtiquettesTable } from './board/etiquettes-table'
+import { BarreAvantage } from './board/BarreAvantage'
 import { lecteurActif, estRelecture, type Lecteur } from './board/relecture/lecteur'
 import { PageRelecture } from './board/relecture/PageRelecture'
 import { PanneauRecompenses } from './board/campagne/PanneauRecompenses'
@@ -235,6 +260,7 @@ import {
   ecrireSauvegardeAuto,
   estSpectateur,
   libelleModePhase,
+  lireAnnulerExplique,
   lireFinTourAuto,
   lireModePhaseMechant,
   lireReponseAmbiance,
@@ -246,12 +272,32 @@ import {
   type ModeRevelation,
   type ReponseAmbiance,
 } from './board/moteur'
+import {
+  CLE_ANIMATIONS,
+  CLE_MODE_ACTIONS,
+  CLE_REVELATION,
+  CLE_SONS,
+  DUREES_REVELATION,
+  lireAnimations,
+  lireModeActions,
+  lireRevelation,
+  lireSons,
+} from './board/reglages-divers'
 import { BarreSpectateur } from './board/BarreSpectateur'
 import { FenetreReglages } from './board/FenetreReglages'
 import { essaiPhaseMechant, essaisOuverts } from './board/essais'
+import { signalerModePhase, valeurCompteurPhase } from './board/compteur-phase'
+import { estTelephoneMaintenant } from './board/mobile/useModeMobile'
 import { PHASE_BIS_POUR_TOUS, lirePresentationPhase, phaseTrisUtilisable, suivrePresentationPhase } from './board/phase-presentation'
 import { cadresDesJoueurs, joueurDeLaCarte } from './board/couleur-joueur'
 import { VoletJournal } from './board/VoletJournal'
+import { VoletTchat } from './board/VoletTchat'
+import { ecrirePseudoPlay, lirePseudoPlay, transportSiteDirect } from './board/tchat'
+import { VoletVille } from './board/VoletVille'
+import { VoletAssemblee } from './board/VoletAssemblee'
+import { useAssembleeEnDirect } from './board/use-assemblee-en-direct'
+import { VerdictAssembleeFin } from './board/VerdictAssembleeFin'
+import { optionSeDeplacer, villeDuMonde } from './board/ville-etat'
 import { JournalConsole } from './board/JournalConsole'
 import {
   appliquerAffichage,
@@ -269,16 +315,17 @@ import { SelecteurCibles } from './board/SelecteurCibles'
 import { transformDecalage, useGlisserPanneau } from './board/placement/useGlisserPanneau'
 import { installerGlisserPartout } from './board/placement/glisserPartout'
 import { cibleDeLaTouche, SELECTEURS_BLOQUANTS } from './board/clavier-cartouche'
-import { nomLisible } from './board/BarreAction'
+import { nomLisible, nomLisibleParlant } from './board/BarreAction'
 import { construirePlateau, type Plateau } from './board/zones'
 import type { Demande, Option, Reponse } from './board/ask'
 import {
   chargerEtat,
 } from './board/sources'
+import { avecVues, idsRegardes, lotDejaVu } from './board/lots-regardes'
 import { estRegardeePar, isScheme, isUnit, isVisibleFor, type World, type WorldCard } from './board/world'
 
 /** Ce qui, ouvert par-dessus le plateau, garde Echap pour se fermer. */
-const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond`
+const OUVERT_PAR_DESSUS = `${SELECTEURS_BLOQUANTS}, .plateau-regardees-voile, .menu-triche, .pile-triche, .pile-triche-voile, .volet-aide, .editeur-table-barre, .modale-menu, .reglages-fond, .annuler-modale`
 
 // Migration EXPLICITE des anciens reglages de la phase du mechant (voir
 // moteur.ts, `migrerReglagesPhase`), faite UNE FOIS, ici, a l'evaluation du
@@ -297,51 +344,6 @@ migrerReglagesPhase()
 
 /** Table pas encore decoupee : aucune carte dessinee. */
 const AUCUN_ID: Set<number> = new Set()
-const CLE_MODE_ACTIONS = 'marvel-board-action-mode'
-const CLE_ANIMATIONS = 'marvel-board-animations'
-
-// `ModeActions` et `ModeRevelation` vivent dans board/moteur.ts (14/09/2026) :
-// la fenetre des reglages en a besoin et ne peut pas importer ce fichier.
-
-function lireModeActions(): ModeActions {
-  try {
-    return window.localStorage.getItem(CLE_MODE_ACTIONS) === 'detailed' ? 'detailed' : 'simple'
-  } catch {
-    return 'simple'
-  }
-}
-
-/** Animations de deplacement activees ? Par defaut oui, sauf choix contraire. */
-function lireAnimations(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_ANIMATIONS) !== 'off'
-  } catch {
-    return true
-  }
-}
-
-const CLE_SONS = 'marvel-board-sons'
-const CLE_REVELATION = 'marvel-board-revelation'
-
-/** Sons du moteur actifs ? Par defaut oui, comme le client d'origine. */
-function lireSons(): boolean {
-  try {
-    return window.localStorage.getItem(CLE_SONS) !== 'off'
-  } catch {
-    return true
-  }
-}
-
-const DUREES_REVELATION: Record<ModeRevelation, number> = { off: 0, court: 2600, long: 5000 }
-
-function lireRevelation(): ModeRevelation {
-  try {
-    const valeur = window.localStorage.getItem(CLE_REVELATION)
-    return valeur === 'off' || valeur === 'long' ? valeur : 'court'
-  } catch {
-    return 'court'
-  }
-}
 
 function parametres() {
   const url = new URLSearchParams(window.location.search)
@@ -601,6 +603,18 @@ function libelleDeLaPile(id: number, monde: World | undefined): string {
   return t('Ouvrir la pile')
 }
 
+/** La nature de la pile qui tient cette carte (deck, defausse, paquet ou defausse rencontre), pour l'intitule d'un groupe. */
+function sorteDePile(id: number, monde: World | undefined): SorteDePile {
+  const dans = (cartes: readonly WorldCard[] | undefined) => cartes?.some((c) => c.id === id) ?? false
+  if (dans(monde?.encounter_discard_pile)) return 'defausse-rencontre'
+  if (dans(monde?.encounter_deck)) return 'rencontre'
+  for (const joueur of monde?.players ?? []) {
+    if (dans(joueur.player_discard_pile) || dans(joueur.additional_discard_pile)) return 'defausse'
+    if (dans(joueur.player_deck) || dans(joueur.additional_deck)) return 'deck'
+  }
+  return 'autre'
+}
+
 function ciblesHorsTablePourOption(
   option: Option,
   cartesParId: Map<number, WorldCard>,
@@ -745,9 +759,17 @@ function signatureCartesRegardees(groupes: GroupeCartesRegardees[]): string {
     .join('|')
 }
 
-function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }) {
+function ModaleCartesRegardees({
+  groupes,
+  vues,
+  onFermee,
+}: {
+  groupes: GroupeCartesRegardees[]
+  /** Les cartes deja fermees : la memoire vit chez le parent, qui reste monte (voir lots-regardes.ts). */
+  vues: ReadonlySet<string>
+  onFermee: (ids: readonly string[]) => void
+}) {
   const signature = useMemo(() => signatureCartesRegardees(groupes), [groupes])
-  const [signatureFermee, setSignatureFermee] = useState<string | undefined>(undefined)
   const [apercuId, setApercuId] = useState<string | null>(null)
 
   const cartesParId = useMemo(() => {
@@ -783,17 +805,13 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
     setApercuId(null)
   }, [])
 
-  useEffect(() => {
-    if (!signature) setSignatureFermee(undefined)
-  }, [signature])
-
   // Deplacement volontaire, a la poignee -- meme mecanisme que
   // `DemandeCentrale`/`AssistantAction` (demande de l'utilisateur, 28/09/2026,
   // « toutes les fenetres, tous les panneaux »). Les hooks se declarent AVANT
   // le retour anticipe ci-dessous.
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
 
-  if (!signature || signatureFermee === signature) return null
+  if (!signature || lotDejaVu(idsRegardes(groupes), vues)) return null
 
   const total = groupes.reduce((somme, groupe) => somme + groupe.cartes.length, 0)
   const carteApercu = apercuId ? cartesParId.get(apercuId) : undefined
@@ -823,7 +841,7 @@ function ModaleCartesRegardees({ groupes }: { groupes: GroupeCartesRegardees[] }
               {total} card{total > 1 ? 's' : ''}
             </strong>
           </div>
-          <button type="button" onClick={() => setSignatureFermee(signature)}>
+          <button type="button" onClick={() => onFermee(idsRegardes(groupes))}>
             {t('Fermer')}
           </button>
         </header>
@@ -934,6 +952,11 @@ function ModaleCiblesMenu({
             {t('Fermer')}
           </button>
         </header>
+        {/* Cette fenetre MONTRE les cartes que l'action pourrait viser ; elle n'en choisit aucune (rapport du 26/10/2026 :
+            on y cliquait un sbire en croyant le choisir). */}
+        <p className="plateau-cibles-menu-note">
+          {t('Aperçu seulement : pour choisir une carte, lance l’action puis clique sur la pile.')}
+        </p>
         <div className="plateau-regardees-corps">
           <div className="plateau-regardees-cartes">
             {cartes.map((carte) => (
@@ -1758,7 +1781,7 @@ function EcranFinPartie({
     ? bataille.nul
       ? t('Aucun camp ne l\u2019emporte')
       : gagne
-        ? t('Votre camp l\u2019emporte !')
+        ? t('Ton camp l\u2019emporte !')
         : t('Le camp adverse l\u2019emporte')
     : gagne
       ? t('Les héros l\u2019emportent !')
@@ -1766,6 +1789,11 @@ function EcranFinPartie({
   const rounds = monde?.round_id
   const mechants = (monde?.area_villain ?? []).map((carte) => nomAffiche(carte)).filter(Boolean)
   const [onglet, setOnglet] = useState<'resultat' | 'stats'>('resultat')
+  // Le lien Buy Me a Coffee (25/10/2026, choix de l'utilisateur) : discret, une
+  // victoire sur deux au hasard, jamais en defaite ni en relecture. Tire une
+  // seule fois a l'ouverture de l'ecran, pour ne pas clignoter d'un rendu a l'autre.
+  const [cafeTire] = useState(() => Math.random() < 0.5)
+  const avecCafe = gagne && cafeTire && !estRelecture()
   return (
     <div
       className={`fin-partie ${gagne ? 'est-victoire' : 'est-defaite'}${bataille?.nul ? ' est-nul' : ''}${langueActuelle() === 'en' ? ' avec-image-en' : ''}`}
@@ -1816,6 +1844,8 @@ function EcranFinPartie({
         {raison ? (
           <span className="fin-partie-raison">{traduireMoteur(raison)}</span>
         ) : null}
+        <VerdictAssembleeFin monde={monde} siege={siege} />
+        <BilanObjectifs objectifs={monde?.puzzle_objectives} />
         {heros.length || mechants.length ? (
           <span className="fin-partie-detail">
             {heros.join(', ')}
@@ -1832,9 +1862,26 @@ function EcranFinPartie({
           monde={monde}
           gagne={gagne}
           siege={siege}
-          onTermine={(retourCampagne) => {
-            if (retourCampagne) window.location.href = '/campagne.html'
-            else onMenu()
+          resume={{
+            heros: (monde?.players ?? [])
+              .map((joueur) => ({
+                nom: joueur.area_hero?.[0]?.name?.replace(/^\W*/, '') ?? '',
+                pic: joueur.area_hero?.[0]?.pic_id,
+              }))
+              .filter((h) => h.nom),
+            vilains: (monde?.area_villain ?? [])
+              .map((carte) => ({ nom: nomAffiche(carte), pic: carte.pic_id }))
+              .filter((v) => v.nom),
+            rounds,
+          }}
+          onTermine={(retourCampagne, suite) => {
+            if (retourCampagne) {
+              const demande = new URLSearchParams()
+              if (suite?.campagne) demande.set('campagne', suite.campagne)
+              if (suite?.lancer) demande.set('lancer', suite.lancer)
+              const requete = demande.toString()
+              window.location.href = requete ? `/campagne.html?${requete}` : '/campagne.html'
+            } else onMenu()
           }}
         />
         {/* Dans le cadre, l'ecran de fin est celui que le joueur a vu (ses boutons, inertes). */}
@@ -1857,6 +1904,22 @@ function EcranFinPartie({
             </button>
           </div>
         )}
+        {avecCafe ? (
+          <p className="fin-partie-cafe">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" />
+              <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17" />
+              <path d="M8 2.5v2.5M12 2.5v2.5" />
+            </svg>
+            <span>
+              {t('Si vous voulez aider à garder le site en vie (serveurs, outils…),')}{' '}
+              <a href="https://buymeacoffee.com/narwhalchampions" target="_blank" rel="noopener noreferrer">
+                {t('c’est par ici')}
+              </a>
+              . {t('Aucune obligation, évidemment.')}
+            </span>
+          </p>
+        ) : null}
         </div>
       </div>
     </div>
@@ -1878,7 +1941,7 @@ const DELAI_SUIVI_VUE = 800
 export function PagePartie({
   playerId,
   catalogue,
-  modeActions,
+  modeActions: modeActionsChoisi,
   changerModeActions,
 }: {
   playerId: number
@@ -1897,6 +1960,13 @@ export function PagePartie({
   const reglagesTelephone = useReglagesTelephone()
   useEcranAllume(telephone)
   const { tourner: tournerLeTelephone } = useVerrouPortrait(telephone, reglagesTelephone.verrouPortrait)
+  // LA TABLETTE (24/10/2026, board/tablette/) : le plateau PC au doigt, en paysage.
+  const tablette = useEstTablette() && !telephone
+  useMarqueTablette(tablette)
+  const tabletteDebout = useTabletteDebout(tablette)
+  // Au doigt, les actions d'une carte sont des boutons sous son apercu (decision 3) :
+  // la presentation simple, sans action unique jouee d'un toucher.
+  const modeActions: ModeActions = tablette ? 'simple' : modeActionsChoisi
   // ⚠ LUE UNE FOIS, AU MONTAGE, ET JAMAIS AU CLIC. L'adresse du site ne change
   // pas de la vie d'une page, et la lire au moment où l'on quitte la mettait
   // dans le chemin d'un clic : fenêtre qui ne s'ouvre pas si le moteur traîne,
@@ -2080,10 +2150,19 @@ export function PagePartie({
   // sélection que le spectateur et la relecture montrent (vu-partage.ts).
   const siegeQuiCompose = etat.joueurDemande ?? joueurActif
   const selectionDuJoueur = useVuDuJoueur<SelectionPartagee | null>('sel', spectateur ? siegeQuiCompose : undefined)
+  // Une reponse partie au moteur n'est PAS une action abandonnee : `useActionAnnulee` (plus bas) le sait par ce suivi.
+  const noterReponseRef = useRef<() => void>(() => {})
+  const repondreSuivi = useCallback(
+    (reponse: Reponse | null, bindPlayerId: number) => {
+      noterReponseRef.current()
+      return repondre(reponse, bindPlayerId)
+    },
+    [repondre]
+  )
   const interaction = useInteraction(
     etat.monde,
     demandeOrdinaire,
-    repondre,
+    repondreSuivi,
     plateau?.idsAffiches ?? AUCUN_ID,
     joueurActif,
     catalogue,
@@ -2099,6 +2178,16 @@ export function PagePartie({
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),
     [etat.monde, joueurActif, catalogue]
   )
+  // La memoire de la fenetre « Cartes regardees » vit ICI et non dans la fenetre : celle-ci est demontee a chaque fenetre
+  // de choix, et perdait ce qu'on venait de fermer (Gambit, 29/10/2026). Remise a zero quand plus rien n'est regarde.
+  const [cartesRegardeesVues, setCartesRegardeesVues] = useState<ReadonlySet<string>>(() => new Set())
+  const fermerCartesRegardees = useCallback(
+    (ids: readonly string[]) => setCartesRegardeesVues((vues) => avecVues(vues, ids)),
+    []
+  )
+  useEffect(() => {
+    if (groupesRegardes.length === 0) setCartesRegardeesVues((vues) => (vues.size === 0 ? vues : new Set()))
+  }, [groupesRegardes])
   const cartesMondeParId = useMemo(() => indexerCartesMonde(etat.monde), [etat.monde])
   const cartesAfficheesParId = useMemo(() => indexerCartesAffichees(plateau), [plateau])
   const cartesMondeParNom = useMemo(
@@ -2106,10 +2195,40 @@ export function PagePartie({
     [cartesMondeParId]
   )
   // Un choix textuel (« quelle chanson ? ») montre le SCAN de la carte nommee.
+  // A defaut, une option « Put "X" into play » (mise en place de campagne) nomme
+  // une manigance pas encore posee : on la construit depuis son identifiant,
+  // sinon le survol retomberait sur la manigance principale porteuse.
   const carteDeLOption = useCallback(
-    (option: Option) => carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue),
+    (option: Option) =>
+      carteNommeeParOption(option, cartesMondeParNom, joueurActif, catalogue)
+      ?? carteDuSchemaCampagneParOption(option, joueurActif, catalogue)
+      ?? carteDeCampagneParOption(option, cartesMondeParNom, joueurActif, catalogue),
     [cartesMondeParNom, joueurActif, catalogue]
   )
+  // Un choix de LOT (« Role: Brawler ») montre les cartes du lot, pas la carte porteuse.
+  const cartesDuLot = useCallback(
+    (option: Option) => cartesDuLotParOption(option, joueurActif, catalogue),
+    [joueurActif, catalogue]
+  )
+  // CHOIX PAR NOM (AskChooseOneText cote moteur, ex. Dazzler "Too Good to be
+  // True" qui fait choisir une carte de sa defausse) : grille de vraies
+  // cartes (SelecteurChoixTexte) plutot que le menu de boutons generique
+  // (demande utilisateur du 07/11/2026, rapport nicodede62 — ce menu
+  // retombait sur l'identite du joueur quand la carte nommee n'etait pas
+  // retrouvee). Les lots de role (`cartesDuLot` non vide) gardent l'ancien
+  // menu : ce ne sont pas des choix "une carte parmi plusieurs", mais "un
+  // lot de plusieurs cartes par option".
+  // ⚠ IL FAUT AU MOINS DEUX OPTIONS. `is_choose_ability` sert aussi a de
+  // simples CONFIRMATIONS a une seule option (« Resolve Mulligans ») qui ne
+  // nomment aucune carte : la grille y affichait une case grise bizarre,
+  // juste du texte, pour un cas qui n'est pas un choix entre plusieurs
+  // cartes (constate le 07/11/2026). Une seule option garde l'ancien bouton.
+  const estChoixTexte =
+    interaction.options.length > 1 &&
+    interaction.options.every((o) => o.is_text_choice && cartesDuLot(o) === undefined) &&
+    // Aucune option ne nomme une vraie carte (« Exhaust Greer Nelson », « Each minion
+    // engaged... ») : ce sont des EFFETS, pas des cartes -> menu de boutons (08/11/2026).
+    interaction.options.some((o) => carteDeLOption(o) !== undefined)
   // Au SURVOL d'un bouton de decision : la carte nommee si l'option en nomme
   // une, sinon la carte qui PORTE l'option (« Spider-Sense » sur une
   // interruption). Face visible forcee : c'est notre carte, on doit la lire.
@@ -2165,6 +2284,46 @@ export function PagePartie({
     },
     [cartesMondeParId, catalogue, etat.demande?.ability_type, textesFrComplets]
   )
+  // Le texte imprime d'une carte (francais quand le plateau l'a, anglais de cards.json sinon) et le nom d'une OPTION qui s'en sert : une carte qui
+  // offre deux actions du meme type les nomme par leur paragraphe (demande du 22/10/2026 : jamais « Action » / « Action 1 »).
+  const texteImprimeDeLaCarte = useCallback(
+    (cardId: string | undefined): string | undefined => {
+      if (!cardId) return undefined
+      const francais = scansFrActifs()
+        ? (TEXTES_FR[cardId] ?? TEXTES_FR_FANMADE[cardId] ?? textesFrComplets?.[cardId])
+        : undefined
+      return francais ?? catalogue.texte(cardId)
+    },
+    [catalogue, textesFrComplets]
+  )
+  const nomActionDe = useCallback(
+    (option: Option): string => {
+      const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
+      return nomLisibleParlant(option, texteImprimeDeLaCarte(porteuse?.card_id))
+    },
+    [cartesMondeParId, texteImprimeDeLaCarte]
+  )
+  // Fermer ou abandonner une action avant de la valider ne disait rien (26/10/2026) : le message le dit, quelques secondes.
+  const { message: actionAnnulee, noterReponse } = useActionAnnulee(
+    interaction.option ? nomActionDe(interaction.option) : undefined,
+    etat.demande
+  )
+  useEffect(() => {
+    noterReponseRef.current = noterReponse
+  }, [noterReponse])
+  // L'onglet « Ville » (campagne MC×DC 2026) : l'etat exporte par le moteur, ouvert ou non, et le nom de chaque joueur (son heros).
+  const [villeOuverte, setVilleOuverte] = useState(false)
+  // L'onglet « Assemblée » (Kingsfall multi-tables) : l'etat commun relu par le moteur a chaque rendu.
+  const [assembleeOuverte, setAssembleeOuverte] = useState(false)
+  const assembleeExportee = useAssembleeEnDirect(etat.monde, joueurActif)
+  const villeExportee = useMemo(() => villeDuMonde(etat.monde), [etat.monde])
+  const nomsJoueursVille = useMemo(() => {
+    const noms: Record<number, string> = {}
+    ;(etat.monde?.players ?? []).forEach((p, i) => {
+      noms[i] = p?.area_hero?.[0]?.name?.replace(/^\W*/, '') || `${t('Joueur')} ${i + 1}`
+    })
+    return noms
+  }, [etat.monde])
   // L'EFFET BOOST ★ d'une carte rencontre, en une phrase (D10) : la ligne
   // « ★ Sweeping Swoop : … » sous la rangee du cartouche du bas. Meme source
   // que le texte d'une capacite : le francais quand le plateau l'a, l'anglais
@@ -2213,6 +2372,26 @@ export function PagePartie({
     [etat.monde]
   )
   const estEnMain = useCallback((bindId: number) => idsEnMain.has(bindId), [idsEnMain])
+  // CHOIX PAR NOM resolu a une vraie carte DEJA VISIBLE EN MAIN (07/11/2026,
+  // retour utilisateur : « on tire trois cartes, on voit la main, pourquoi
+  // un carre a part ? »). Si CHAQUE option nomme une carte presente dans la
+  // main locale, pas besoin de la grille : on fait pulser les vraies cartes
+  // de la main et on clique dessus (voir `interactifsFinal` plus bas). Sinon
+  // (ex. Showtime de Dazzler, qui choisit dans la defausse — jamais visible
+  // carte par carte), `SelecteurChoixTexte` prend le relais.
+  const choixTexteParCarteId = useMemo(() => {
+    const carte = new Map<number, Option>()
+    if (!estChoixTexte) return carte
+    for (const option of interaction.options) {
+      const resolue = carteDeLOption(option)
+      const id = resolue ? Number(resolue.id) : undefined
+      if (id !== undefined && idsEnMain.has(id)) carte.set(id, option)
+    }
+    return carte
+  }, [estChoixTexte, interaction.options, carteDeLOption, idsEnMain])
+  const estChoixTexteEnMain = estChoixTexte && choixTexteParCarteId.size === interaction.options.length
+  // La grille ne s'affiche que si CE N'EST PAS entierement resolu en main.
+  const estChoixTexteGrille = estChoixTexte && !estChoixTexteEnMain
   // Les cartes de la scene du deroule detaille : lues dans l'index du MONDE,
   // jamais sur la table. Face visible sur demande : la carte revelee et les
   // boosts sont encore face cachee dans le monde de la trame retenue (le fait
@@ -2311,10 +2490,13 @@ export function PagePartie({
   // afficher qu'un jargon anglais. Ce silence n'est pas un repli tolere, c'est
   // un defaut : `tools/verifier_raisons_refus.py` echoue des qu'un code
   // atteint le plateau sans phrase.
+  const optionsRefusees = useMemo(() => choixRefuses(etat.demande ?? undefined), [etat.demande])
   const raisonsRefus = useMemo(() => {
     const parCarte = new Map<number, string[]>()
     for (const refus of etat.demande?.refus ?? []) {
       if (!refus.bind_id) continue
+      // Un CHOIX sans cible (bug 129) n'est pas une carte injouable : il se montre grise dans la question.
+      if (refus.is_text_choice && etat.demande?.event_name === 'WhenPlayerChooseAbility') continue
       const phrase = phraseDuRefus(refus.failure_reason)
       if (phrase === undefined) continue
       const deja = parCarte.get(refus.bind_id) ?? []
@@ -2348,12 +2530,25 @@ export function PagePartie({
     [interaction, plateau]
   )
 
+  // Superpose, PAR-DESSUS les interactions normales, un halo pulsant + un
+  // clic direct sur les vraies cartes de main que `choixTexteParCarteId`
+  // vient de relier a une option de choix par nom (voir ce commentaire plus
+  // haut) : la carte de main EST le bouton, pas une case dans une grille.
+  const interactifsFinal = useMemo(() => {
+    if (choixTexteParCarteId.size === 0) return interactifsAvecPulse
+    const fusion = new Map(interactifsAvecPulse)
+    for (const [id, option] of choixTexteParCarteId) {
+      fusion.set(id, { role: 'cible', choisie: false, pulse: true, agir: () => choisirOptionDepuisMenu(option) })
+    }
+    return fusion
+  }, [interactifsAvecPulse, choixTexteParCarteId, choisirOptionDepuisMenu])
+
   const ouvrirCiblesHorsTable = useCallback(
     (option: Option | undefined) => {
       if (!option || !plateau) return false
       const cartes = ciblesHorsTablePourOption(option, cartesMondeParId, plateau, joueurActif, catalogue)
       if (cartes.length === 0) return false
-      setCiblesMenu({ titre: nomLisible(option), cartes })
+      setCiblesMenu({ titre: nomActionDe(option), cartes })
       return true
     },
     [cartesMondeParId, catalogue, plateau, joueurActif]
@@ -2480,6 +2675,12 @@ export function PagePartie({
   // publie avec son etape (etape-partagee.ts) ; son propre reglage ne change pas.
   const modeDuJoueurSuivi = useSuiviDuJoueur(spectateur).mode
   const modePhase = spectateur && modeDuJoueurSuivi ? modeDuJoueurSuivi : modePhaseChoisi
+  // COMPTEUR ANONYME du mode de phase (Play seulement) : une fois par partie, a l'ouverture du plateau, jamais bloquant.
+  useEffect(() => {
+    if (spectateur) return
+    signalerModePhase(valeurCompteurPhase(lireModePhaseMechant(), lirePresentationPhase(), estTelephoneMaintenant()))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const etapesPhaseMechant = useMemo(() => {
     const mechantIds = new Set<number>()
@@ -2925,6 +3126,16 @@ export function PagePartie({
     () => detailAttaqueComplet(etat.demande?.options ?? [], cartesMondeParId, nomPorteurFr, idsDecksSupplementaires),
     [etat.demande, cartesMondeParId, nomPorteurFr, idsDecksSupplementaires]
   )
+  // Le meme compte de boosts, pour le TRAIT de phase (attaque ET manigance,
+  // demande du 07/11/2026 : « idem pour la manigance ») : le badge « 2 dégâts »
+  // gagne une seconde ligne « + N carte(s) boost » tant que le coup n'est pas
+  // résolu, même mécanique que la ligne sous « Ne pas défendre » ci-dessus,
+  // mais par identifiant d'ennemi plutôt que par l'option « Defense » (une
+  // manigance n'en a pas).
+  const compterBoostsDuTrait = useCallback(
+    (enemyId: number) => boostsAttaches(enemyId, cartesMondeParId, idsDecksSupplementaires),
+    [cartesMondeParId, idsDecksSupplementaires]
+  )
   /* ---- Le glisser-deposer : les REGLES (8 septembre 2026) -----------------
      Le plateau tient le geste et le dessin ; ici vivent les regles, parce que
      seule cette page connait les options du moteur. Rien n'est devine : tout
@@ -3040,7 +3251,7 @@ export function PagePartie({
         if (cible.carteId !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, cible.carteId, idIdentiteGlisser)
           const nomCible = nomPorteurFr(cible.carteId) ?? ''
-          if (actions.length === 1) return `${nomLisible(actions[0]!)} · ${nomCible}`
+          if (actions.length === 1) return `${nomActionDe(actions[0]!)} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
           // ⚠ Le code brut du moteur ne se montre JAMAIS au joueur : il passe
           // par la meme table que l'agrandissement (`phraseDuRefus`), sinon on
@@ -3057,14 +3268,14 @@ export function PagePartie({
         if (parZone !== undefined) {
           const actions = optionsDuDepot(optionsCourantes, sourceId, parZone, idIdentiteGlisser)
           const nomCible = nomPorteurFr(parZone) ?? ''
-          if (actions[0] && actions.length === 1) return `${nomLisible(actions[0])} · ${nomCible}`
+          if (actions[0] && actions.length === 1) return `${nomActionDe(actions[0])} · ${nomCible}`
           if (actions.length > 1) return `${actions.length} ${t('actions possibles')} · ${nomCible}`
         }
         // La carte ne vise rien : c'est le TERRAIN qui l'accueille, et on
         // annonce l'action elle-meme, sans nom de cible puisqu'il n'y en a pas.
         if (cible.zone && zonesSansCible(optionsCourantes, sourceId, idIdentiteGlisser).has(cible.zone)) {
           const sansCible = optionsSansCible(optionsCourantes, sourceId, idIdentiteGlisser)
-          if (sansCible[0] && sansCible.length === 1) return nomLisible(sansCible[0])
+          if (sansCible[0] && sansCible.length === 1) return nomActionDe(sansCible[0])
           if (sansCible.length > 1) return `${sansCible.length} ${t('actions possibles')}`
         }
         return cible.zone ? t('Pas ici') : undefined
@@ -3166,7 +3377,7 @@ export function PagePartie({
         const refus = refusPourJouer(sourceId)
         if (refus !== undefined) return traduireRefusGlisser(refus) ?? t('Pas maintenant')
         const option = jouer(sourceId)
-        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) return nomLisible(option)
+        if (option && surLaTable(cible) && !viseUneCible(sourceId, cible)) return nomActionDe(option)
         return regles.libelle(sourceId, cible)
       },
       onDepot: (sourceId, cible) => {
@@ -3641,6 +3852,39 @@ export function PagePartie({
   // Lots 3 et 4 du 07/10/2026 : cibles, flèches et surlignages du manuel, vus de tous (spectateur compris).
   const marquesManuel = useMarques(manuel)
   const [aideAutoOuverteLocale, setAideAutoOuverte] = useState(false)
+  // Le tchat (chantier du 06/11/2026) : pas encore synchronise au spectateur
+  // (menusDuJoueur), chaque client decide seul s'il l'a ouvert.
+  const [tchatOuverteLocale, setTchatOuverte] = useState(false)
+  // Sur Play (chantier du 06/11/2026) : pas de moteur derriere, donc pas de
+  // relais possible vers le tchat normal (`transportMoteur`, voir tchat.ts).
+  // `window.__playInvite` est pose par `navigateur/src/shim.js`, UNIQUEMENT
+  // sur Play, avec l'origine du site principal. On y parle en DIRECT
+  // (`transportSiteDirect`), avec un pseudo demande une seule fois (Play n'a
+  // pas de compte). Le pseudo se demande dans un petit formulaire DANS le
+  // volet (`pseudoPlay`, voir VoletTchat.tsx) — PAS `window.prompt()` : la
+  // vraie boite native du navigateur n'est stylable par rien, « hyper
+  // moche » (retour direct de l'utilisateur apres l'avoir vue en apercu).
+  const origineSitePlay = typeof window !== 'undefined' ? window.__playInvite?.origine : undefined
+  const [pseudoPlayEtat, setPseudoPlayEtat] = useState(() => lirePseudoPlay())
+  const transportPlay = useMemo(
+    () => (origineSitePlay ? transportSiteDirect(origineSitePlay, () => pseudoPlayEtat) : undefined),
+    [origineSitePlay, pseudoPlayEtat]
+  )
+  const pseudoPlayProp = useMemo(
+    () =>
+      origineSitePlay
+        ? {
+            valeur: pseudoPlayEtat,
+            definir: (pseudo: string) => {
+              ecrirePseudoPlay(pseudo)
+              setPseudoPlayEtat(pseudo)
+            },
+          }
+        : undefined,
+    [origineSitePlay, pseudoPlayEtat]
+  )
+  const ouvrirTchat = useCallback(() => setTchatOuverte(true), [])
+  const fermerTchat = useCallback(() => setTchatOuverte(false), [])
   // SES MENUS (08/10/2026) : Reglages, Menu, journal, volets d'aide, ouverts
   // chez le spectateur et en relecture comme chez lui (genre « menu »).
   const menusDuJoueur = useVuDuJoueur<MenusOuverts | null>('menu', spectateur ? joueurActif : undefined)
@@ -3674,6 +3918,9 @@ export function PagePartie({
   // Ses defilements (main, journal, piles...) : defilement-partage.ts.
   useEffect(() => (spectateur ? undefined : suivreDefilements(joueurActif)), [spectateur, joueurActif])
   useDefilementsDuJoueur(spectateur ? joueurActif : undefined)
+  const [feuilletsOuverts, setFeuilletsOuverts] = useState(false)
+  const ouvrirFeuillets = useCallback(() => setFeuilletsOuverts(true), [])
+  const fermerFeuillets = useCallback(() => setFeuilletsOuverts(false), [])
   const ouvrirAideAuto = useCallback(() => setAideAutoOuverte(true), [])
   const fermerAideAuto = useCallback(() => setAideAutoOuverte(false), [])
   const ouvrirAideManuel = useCallback(() => setAideManuelOuverte(true), [])
@@ -3748,6 +3995,13 @@ export function PagePartie({
   // Le méchant en jeu : ses cartes (toutes les phases partagent la même palette), jointes en une
   // clé simple pour ne repartir que quand le méchant change.
   const clesMechant = identitesMechants(etat.monde).join(',')
+  // Image de fond et choix « garder les couleurs » (board/fond-image.ts) : un changement recalcule les halos.
+  const [fondTick, setFondTick] = useState(0)
+  useEffect(() => {
+    const surChangement = () => setFondTick((n) => n + 1)
+    window.addEventListener(EVENEMENT_FOND_IMAGE, surChangement)
+    return () => window.removeEventListener(EVENEMENT_FOND_IMAGE, surChangement)
+  }, [])
   useEffect(() => {
     const racine = document.documentElement
     const corps = document.body
@@ -3785,7 +4039,7 @@ export function PagePartie({
         '--fond-plateau',
         fondDe(
           couleurs,
-          'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))',
+          baseDuFondImage() ?? 'var(--fond-halo-base, linear-gradient(180deg, rgba(14,18,24,0.96), rgba(6,6,8,0.98)))',
           couleursMechant
         )
       )
@@ -3794,7 +4048,7 @@ export function PagePartie({
     return () => {
       vivant = false
     }
-  }, [essais, identite, clesMechant, affichage])
+  }, [essais, identite, clesMechant, affichage, fondTick])
   const cyclerRevelation = useCallback(() => {
     setRevelation((r) => {
       const suivant: ModeRevelation = r === 'off' ? 'court' : r === 'court' ? 'long' : 'off'
@@ -4059,6 +4313,13 @@ export function PagePartie({
   useHaloStatut(etat.monde, animations)
 
   const annulerGesteManuel = triche.annulerDernierGeste
+  // UN SEUL « /debug?/undo ... » A LA FOIS (06/11/2026, bug remonte par un
+  // joueur) : plusieurs clics rapproches sur Annuler (touche U tenue, double
+  // clic, bandeau telephone) envoyaient autant de requetes concurrentes, et le
+  // moteur a deja montre une desynchronisation de ce genre apres un Undo
+  // (e75e4f7f). Le ref est partage entre `annulerCoup` et `annulerAction` :
+  // les deux tapent le meme `/debug?/undo ...`, jamais deux a la fois.
+  const annulationEnCours = useRef(false)
   const annulerCoup = useCallback(() => {
     // En manuel, on défait le dernier GESTE, comme Ctrl+Z (lot 1, 06/10/2026) :
     // « /undo auto » rejouerait la partie jusqu'au dernier coup du moteur.
@@ -4066,18 +4327,37 @@ export function PagePartie({
       annulerGesteManuel()
       return
     }
+    if (annulationEnCours.current) return
+    annulationEnCours.current = true
     // « /undo auto » remonte au dernier point de decision, comme le bouton Undo
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
-    fetch('/debug?/undo auto').catch(() => undefined)
+    fetch('/debug?/undo auto')
+      .catch(() => undefined)
+      .finally(() => { annulationEnCours.current = false })
   }, [manuel, annulerGesteManuel])
-  annulerClavier.current = annulerCoup
+  // LE BOUTON DE LA BARRE ET LA TOUCHE U expliquent d'abord (ModaleAnnuler), tant que le joueur n'a pas coche « ne plus
+  // me montrer ça ». Le bandeau du telephone et le menu « … » gardent l'annulation directe : le bandeau est lui-meme
+  // la question, cinq secondes apres l'action. En manuel, c'est le Ctrl+Z des gestes, que la fenetre ne decrit pas.
+  const [annulerOuvert, setAnnulerOuvert] = useState(false)
+  const demanderAnnulation = useCallback(() => {
+    if (manuel || lireAnnulerExplique()) {
+      annulerCoup()
+      return
+    }
+    setAnnulerOuvert(true)
+  }, [manuel, annulerCoup])
+  annulerClavier.current = demanderAnnulation
 
   // ANNULER L'ACTION EN COURS (croix de la boite de question, touche Echap).
   // `/undo action` remonte a la question du tour ou la carte a ete choisie,
   // quel que soit le nombre de sous-questions deja repondues ; U, lui, ne
   // remonte que d'une decision.
   const annulerAction = useCallback(() => {
-    fetch('/debug?/undo action').catch(() => undefined)
+    if (annulationEnCours.current) return
+    annulationEnCours.current = true
+    fetch('/debug?/undo action')
+      .catch(() => undefined)
+      .finally(() => { annulationEnCours.current = false })
   }, [])
   echapClavier.current = () => {
     if (manuel || spectateur || telephone) return
@@ -4232,7 +4512,16 @@ export function PagePartie({
   // qu'on y fait (« Chercher dans le deck »), et c'est le clic sur la pile qui ouvre la fenêtre, avec
   // les seules cartes de cette pile. Changer d'action referme la pile.
   const [pileFouillee, setPileFouillee] = useState<number | undefined>()
-  useEffect(() => setPileFouillee(undefined), [interaction.option])
+  // TELEPHONE, recherche sur PLUSIEURS piles (Suit Up : deck + defausse, 26/10/2026) : toutes les cartes s'ouvrent d'un coup.
+  const [toutesLesPiles, setToutesLesPiles] = useState(false)
+  // FENETRE REDUITE SANS ANNULER (26/10/2026) : croix, Echap ou tap sur le voile. L'action reste en attente ; sur telephone
+  // l'onglet « Piles » clignote et un bandeau propose de rouvrir ; sur PC la porte de la pile se rallume.
+  const [selecteurReduit, setSelecteurReduit] = useState(false)
+  useEffect(() => {
+    setPileFouillee(undefined)
+    setToutesLesPiles(false)
+    setSelecteurReduit(false)
+  }, [interaction.option])
   const pilesARechercher = useMemo(() => {
     const piles = new Map<number, string>()
     if (!(ciblageSurTable || rechercheEnCours) || !plateau) return piles
@@ -4244,12 +4533,123 @@ export function PagePartie({
     }
     return piles
   }, [ciblageSurTable, rechercheEnCours, plateau, interaction.ciblesHorsTable, etat.monde])
-  const porteDePileFermee = pilesARechercher.size > 0 && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
-  const ciblesHorsTableVisibles = porteDePileFermee
+  // Sur TELEPHONE le deck n'est pas a l'ecran, donc sa porte non plus : la pile seule s'ouvre d'office (pile-auto.ts).
+  const pileOuverteDOffice = pileAOuvrirSeule({
+    telephone: modePlateau === 'mobile',
+    rechercheEnCours: rechercheEnCours && !selecteurReduit,
+    piles: pilesARechercher,
+    pileOuverte: pileFouillee,
+  })
+  useEffect(() => {
+    if (pileOuverteDOffice !== undefined) setPileFouillee(pileOuverteDOffice)
+  }, [pileOuverteDOffice])
+  const toutesLesPilesDOffice = pilesToutesALaFois({
+    telephone: modePlateau === 'mobile',
+    rechercheEnCours: rechercheEnCours && !selecteurReduit,
+    piles: pilesARechercher,
+    pileOuverte: pileFouillee,
+  })
+  useEffect(() => {
+    if (toutesLesPilesDOffice) setToutesLesPiles(true)
+  }, [toutesLesPilesDOffice])
+  const toutesOuvertes = toutesLesPiles && pilesARechercher.size > 1
+  const porteDePileFermee =
+    pilesARechercher.size > 0 && !toutesOuvertes && (pileFouillee === undefined || !pilesARechercher.has(pileFouillee))
+  const ciblesHorsTableVisibles = selecteurReduit || porteDePileFermee
     ? []
-    : pilesARechercher.size > 1
+    : pilesARechercher.size > 1 && !toutesOuvertes
       ? interaction.ciblesHorsTable.filter((c) => plateau?.representantsDePile.get(Number(c.props.id)) === pileFouillee)
       : interaction.ciblesHorsTable
+  // Cliquer une pile (sa porte sur la table, ou sa ligne du tiroir) : avec PLUSIEURS piles a chercher, la MEME fenetre s'ouvre,
+  // deck et defausse cote a cote ; avec une seule, c'est cette pile (demande de l'utilisateur, 26/10/2026).
+  const ouvrirPile = (clic: number) => {
+    const ouverture = ouvertureDePile(pilesARechercher, clic)
+    setSelecteurReduit(false)
+    if (ouverture.toutes) setToutesLesPiles(true)
+    else setPileFouillee(ouverture.pile)
+  }
+  const reduireLeSelecteur = () => {
+    setPileFouillee(undefined)
+    setToutesLesPiles(false)
+    setSelecteurReduit(true)
+  }
+  // Le choix attend : recherche en cours et fenetre fermee sans annuler.
+  const choixAttend_ = choixAttend({ rechercheEnCours, reduit: selecteurReduit })
+  const pilesAChoisir = useMemo(() => {
+    const comptes = new Map<number, number>()
+    if (!plateau) return comptes
+    for (const cible of interaction.ciblesHorsTable) {
+      const representant = plateau.representantsDePile.get(Number(cible.props.id))
+      if (representant !== undefined) comptes.set(representant, (comptes.get(representant) ?? 0) + 1)
+    }
+    return comptes
+  }, [plateau, interaction.ciblesHorsTable])
+  // L'intitule de chaque groupe, quand les cartes de plusieurs piles sont montrees ensemble : d'abord le deck, puis la defausse.
+  const ciblesParPile = useMemo(() => {
+    if (!toutesOuvertes) return { cibles: ciblesHorsTableVisibles, groupes: undefined }
+    const rang: Record<SorteDePile, number> = { deck: 0, defausse: 1, rencontre: 2, 'defausse-rencontre': 3, autre: 4 }
+    const sorte = (c: (typeof ciblesHorsTableVisibles)[number]) => sorteDePile(Number(c.props.id), etat.monde)
+    const triees = [...ciblesHorsTableVisibles].sort((a, b) => rang[sorte(a)] - rang[sorte(b)])
+    return {
+      cibles: triees,
+      groupes: new Map(triees.map((c) => [Number(c.props.id), groupeDeLaPile(sorte(c))] as const)),
+    }
+  }, [toutesOuvertes, ciblesHorsTableVisibles, etat.monde])
+
+  // ⚠ AVANT le retour anticipe ci-dessous : un hook place apres lui change le nombre de hooks quand la partie apparait (erreur React 310).
+  // TELEPHONE (26/10/2026, maquette approuvee) : la question « choisis la cible » se pose dans une FEUILLE qu'on glisse au doigt, avec
+  // DEDANS les ronds des cibles de la table (PV, statuts) ; un toucher choisit, comme sur la table. Cibles dans une pile : le selecteur
+  // a deux colonnes s'en charge, la feuille n'en montre pas (liste vide : l'assistant garde sa forme d'avant).
+  // Toucher une AUTRE cible legale quand le moteur n'en veut qu'une l'echange : la choisie est retiree, puis la nouvelle prise des que
+  // l'interaction l'a rendue choisissable (un cycle de rendu plus tard).
+  const echangeEnAttente = useRef<number | undefined>(undefined)
+  useEffect(() => {
+    const id = echangeEnAttente.current
+    if (id === undefined) return
+    const etatCarte = interaction.cartes.get(id)
+    if (etatCarte?.role === 'cible' && !etatCarte.choisie && etatCarte.agir) {
+      echangeEnAttente.current = undefined
+      etatCarte.agir()
+    }
+  }, [interaction.cartes])
+  const feuilleCibles = useMemo(() => {
+    const etapeCible =
+      interaction.assistant.etape === 'target' || (interaction.assistant.etape === 'confirm' && interaction.cibles.length > 0)
+    if (!plateau || modePlateau !== 'mobile' || !etapeCible) return undefined
+    const unites = ciblesDeLaFeuille(plateau, interaction.cartes, interaction.option?.all_legal_targets)
+    if (unites.length === 0) return undefined
+    return {
+      unites,
+      decor: {
+        interactifs: interaction.cartes,
+        effets: new Map<number, CardEffectDelta>(),
+        ouvrirPile: () => undefined,
+        // Une cible legale qu'on ne peut plus ajouter (maximum atteint) : la toucher ECHANGE (voir `cibleAEchanger`).
+        ouvrirCarte: (carte: ScanCardProps) => {
+          const id = Number(carte.id)
+          const retirer = cibleAEchanger({
+            id,
+            maximum: interaction.option?.target_num_range[1] ?? 0,
+            legales: interaction.option?.all_legal_targets ?? [],
+            interactifs: interaction.cartes,
+          })
+          if (retirer === undefined) return
+          echangeEnAttente.current = id
+          interaction.cartes.get(retirer)?.agir?.()
+        },
+        agir: (carte: ScanCardProps) => carte.onSelect?.(),
+      },
+    }
+  }, [modePlateau, interaction.assistant.etape, interaction.cibles.length, interaction.cartes, interaction.option, plateau])
+  // TELEPHONE (26/10/2026) : « PAY 2 TO PLAY » cachait la main, on ne pouvait plus toucher les cartes a depenser. A l'etape du
+  // paiement, la feuille porte la rangee des cartes qui peuvent payer (main, puis table). Meme regle que ci-dessus : AVANT le retour
+  // anticipe, jamais apres (erreur React 310).
+  const feuillePaiement = useMemo(() => {
+    if (!plateau || modePlateau !== 'mobile' || interaction.assistant.etape !== 'payment') return undefined
+    const { main, table } = cartesPayantesParGroupe(plateau, interaction.cartes, effets)
+    const cartes = [...main, ...table]
+    return cartes.length > 0 ? { cartes, nbMain: main.length } : undefined
+  }, [modePlateau, interaction.assistant.etape, interaction.cartes, plateau, effets])
 
   if (!etat.monde || !plateau || voile) {
     return (
@@ -4363,6 +4763,42 @@ export function PagePartie({
     ciblesHorsTableVisibles.length > 0 &&
     !(ciblageEnScene && nouvelleScenePC) &&
     interaction.ciblesHorsTable.length >= interaction.assistant.ciblePossibles
+  // LE BANDEAU COLLE (fiche du 07/10/2026) : des cibles aussi sur la table, donc pas de fenetre modale. Le panneau
+  // d'action ne flotte plus a cote du selecteur hors table, il en devient le haut, et les deux se deplacent ensemble.
+  // Le paiement, lui, garde le panneau d'action (le selecteur n'est la que pour choisir).
+  const bandeauColleActif =
+    !fenetreChoix &&
+    ciblesHorsTableVisibles.length > 0 &&
+    !(ciblageEnScene && nouvelleScenePC) &&
+    interaction.option !== undefined &&
+    interaction.assistant.etape === 'target' &&
+    etat.connecte &&
+    etat.aNous &&
+    etat.demande !== undefined &&
+    !manuel &&
+    !porteHorsPhase &&
+    !ciblageSurTable &&
+    !(nouvelleScenePC && phaseMechantEnCours)
+  const bandeauColle = (() => {
+    if (!bandeauColleActif || !interaction.option) return undefined
+    const option = interaction.option
+    const nomAction = nomActionDe(option)
+    const porteur = cartesMondeParId.get(option.bind_id)
+    const porteurEstIdentite = porteur?.card_type === 'Hero' || porteur?.card_type === 'AlterEgo'
+    const nomDuPorteur =
+      designEssai && option.bind_id !== 0 && !porteurEstIdentite
+        ? (nomPorteurFr(option.bind_id) ?? (porteur ? nomAffiche(porteur) : undefined))
+        : undefined
+    return {
+      surtitre: nomDuPorteur ?? nomAction,
+      consigne: consigne(interaction.assistant, nomAction),
+      phrase: phraseEtat(interaction.assistant, interaction.prete) || undefined,
+      libelleValider: (nomDuPorteur ? `${nomAction} ${nomDuPorteur}` : nomAction) || t('Confirmer'),
+      prete: interaction.prete,
+      valider: interaction.valider,
+      annuler: interaction.annuler,
+    }
+  })()
   // LA QUESTION STRUCTUREE du cartouche du bas (scene PC, lots 4 et 5) : la
   // defense et le choix d'une carte revelee dans sa rangee, le reste dans son
   // sous-cadre. Pendant la phase, c'est DeroulePhase qui la porte ; hors
@@ -4473,10 +4909,17 @@ export function PagePartie({
           {etat.erreur}
         </p>
       ) : null}
+      {actionAnnulee ? (
+        <p className="plateau-annulation" role="status">
+          {actionAnnulee}
+        </p>
+      ) : null}
+
 
       {/* En mode detaille, BandeauPhase (plus bas) annonce deja la phase du
           mechant, plus fort : ce splash-ci ne doit pas la doubler. */}
       <SplashTour monde={etat.monde} annonceMechantAilleurs={unCartouche} saut={etat.saut === true} />
+      <BarreAvantage monde={etat.monde} />
 
 
       {/* Le cartouche du bas (scene PC, lot 4) montre les cibles hors table
@@ -4484,9 +4927,11 @@ export function PagePartie({
           hors du cartouche (piege 29). */}
       {ciblageEnScene && nouvelleScenePC ? null : (
         <SelecteurCibles
-          cibles={ciblesHorsTableVisibles}
-          titre={interaction.option ? nomLisible(interaction.option) : ''}
+          cibles={ciblesParPile.cibles}
+          groupes={ciblesParPile.groupes}
+          titre={interaction.option ? nomActionDe(interaction.option) : ''}
           survoler={setApercuSelecteur}
+          bandeau={bandeauColle}
           fenetre={
             fenetreChoix
               ? {
@@ -4495,33 +4940,40 @@ export function PagePartie({
                   maximum: interaction.assistant.cibleMaximum,
                   valider: interaction.valider,
                   annuler: interaction.annuler,
+                  // Fermer sans annuler : TELEPHONE seulement (bandeau « Rouvrir », onglet « Piles » qui clignote, tiroir). Sur PC, la
+                  // reouverture par la porte de la pile apres Echap n'est pas verifiee (26/10/2026) : la fenetre garde son Annuler.
+                  reduire: modePlateau === 'mobile' ? reduireLeSelecteur : undefined,
                 }
               : undefined
           }
         />
       )}
       {porteHorsPhase && interaction.option ? (
-        <CiblageSurTable
-          titre={nomLisible(interaction.option)}
-          choisies={interaction.cibles.length}
-          maximum={interaction.option.target_num_range[1]}
-          cibles={[...pilesARechercher].map(([id, libelle]) => ({
-            id,
-            choisie: false,
-            etiquette: libelle,
-            agir: () => setPileFouillee(id),
-          }))}
-          prete={interaction.prete}
-          raison={interaction.raison}
-          valider={interaction.valider}
-          annuler={interaction.annuler}
-        />
+        // Dans le cadre du plateau : les cadres verts se placent dans SON repere (la barre du haut
+        // le decale de 42 px du haut de la page), sinon ils flottent au-dessus des piles.
+        <DansLeCadre>
+          <CiblageSurTable
+            titre={nomActionDe(interaction.option)}
+            choisies={interaction.cibles.length}
+            maximum={interaction.option.target_num_range[1]}
+            cibles={[...pilesARechercher].map(([id, libelle]) => ({
+              id,
+              choisie: false,
+              etiquette: libelle,
+              agir: () => ouvrirPile(id),
+            }))}
+            prete={interaction.prete}
+            raison={interaction.raison}
+            valider={interaction.valider}
+            annuler={interaction.annuler}
+          />
+        </DansLeCadre>
       ) : null}
       {apercuSelecteur ? (
         <CarteApercu carte={apercuSelecteur} classe={fenetreChoix ? 'au-dessus-de-la-fenetre' : undefined} />
       ) : null}
       {interaction.ciblesHorsTable.length === 0 && !interaction.option ? (
-        <ModaleCartesRegardees groupes={groupesRegardes} />
+        <ModaleCartesRegardees groupes={groupesRegardes} vues={cartesRegardeesVues} onFermee={fermerCartesRegardees} />
       ) : null}
 
       {ciblesMenu ? (
@@ -4532,18 +4984,20 @@ export function PagePartie({
         />
       ) : null}
 
-      {defenseHorsPhaseSurTable && etat.demande ? (
+      {defenseHorsPhaseSurTable && etat.demande && !estChoixTexteGrille ? (
         <DansLeCadre>
           <EspaceDeLaQuestion />
           <DemandeCentrale
             demande={etat.demande}
             options={interaction.options}
+            optionsRefusees={optionsRefusees}
             cartesParId={cartesMondeParId}
             choisirOption={choisirOptionDepuisMenu}
             annuler={interaction.annuler}
             survolerOption={setOptionSurvolee}
             carteDeLOption={carteDeLOption}
             carteAuSurvol={carteAuSurvol}
+            cartesDuLot={cartesDuLot}
             nomPorteur={nomPorteurFr}
             texteCapacite={texteCapaciteDeLOption}
             estEnMain={estEnMain}
@@ -4556,16 +5010,28 @@ export function PagePartie({
         </DansLeCadre>
       ) : null}
 
-      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene ? (
+      {manuel ? null : estChoixTexteGrille && etat.demande ? (
+        <SelecteurChoixTexte
+          titre={texteDemande(etat.demande) || t('Choisis une carte')}
+          options={interaction.options}
+          carteDeLOption={carteDeLOption}
+          choisir={choisirOptionDepuisMenu}
+          annuler={etat.demande.show_cancel ? interaction.annuler : undefined}
+        />
+      ) : null}
+
+      {manuel ? null : afficherDemandeCentrale && etat.demande && !questionEnScene && !estChoixTexteGrille ? (
         <DemandeCentrale
           demande={etat.demande}
           options={interaction.options}
+          optionsRefusees={optionsRefusees}
           cartesParId={cartesMondeParId}
           choisirOption={choisirOptionDepuisMenu}
           annuler={interaction.annuler}
           survolerOption={setOptionSurvolee}
           carteDeLOption={carteDeLOption}
           carteAuSurvol={carteAuSurvol}
+          cartesDuLot={cartesDuLot}
           nomPorteur={nomPorteurFr}
           texteCapacite={texteCapaciteDeLOption}
           estEnMain={estEnMain}
@@ -4597,8 +5063,10 @@ export function PagePartie({
           toutes refusees par le moteur : l'ouvrir serait promettre ce qu'on ne
           peut pas tenir. L'agrandissement au survol, lui, reste : c'est
           precisement ce qu'on vient faire. */}
-      {carteMenu && !interaction.option ? (
+      {/* Tablette en manuel : les gestes manuels prennent seuls la place sous l'apercu. */}
+      {carteMenu && !interaction.option && !(tablette && manuel) ? (
         <MenuActionsCarte
+          texteDeCarte={texteImprimeDeLaCarte}
           carte={carteMenu}
           carteMonde={cartesMondeParId.get(Number(carteMenu.id))}
           options={interaction.options}
@@ -4618,10 +5086,11 @@ export function PagePartie({
           mode={modeMenu}
           ciblePreselectionnee={interaction.cibleFocus}
           affichage={modeActions}
+          dansApercu={tablette && modePlateau !== 'mobile'}
         />
       ) : null}
 
-      {manuel || fenetreChoix || porteHorsPhase ? null : (
+      {manuel || fenetreChoix || porteHorsPhase || bandeauColleActif ? null : (
         <AssistantAction
           demande={etat.demande}
           interaction={interaction}
@@ -4635,10 +5104,21 @@ export function PagePartie({
           choixDansLaScene={ciblageEnScene}
           // Le sous-cadre du cartouche du bas porte tout, paiement compris (D6).
           sousCadre={(nouvelleScenePC && phaseMechantEnCours && interaction.option !== undefined) || ciblageSurTable}
+          feuilleCibles={feuilleCibles}
+          feuillePaiement={feuillePaiement}
         />
       )}
 
       <CoucheMeteo world={etat.monde} active={meteo} apercu={apercuMeteo} />
+      {annulerOuvert ? (
+        <ModaleAnnuler
+          onConfirmer={() => {
+            setAnnulerOuvert(false)
+            annulerCoup()
+          }}
+          onFermer={() => setAnnulerOuvert(false)}
+        />
+      ) : null}
       {/* Explique l'ambiance qui s'allume, au lieu de la subir sans un mot.
           Reglage PERSONNEL : elle ne change rien pour les autres joueurs et
           ne retient pas le moteur, la partie continue derriere. */}
@@ -4663,6 +5143,13 @@ export function PagePartie({
           l'annonce previent d'une coupure a venir, celle-ci constate qu'on
           tourne sur du vieux code. Les deux peuvent se produire ensemble. */}
       <BandeauMiseAJour visible={majDisponible} />
+      <CreateurPuzzle
+        actif={etat.monde?.mode_createur_puzzle === true}
+        pret={etat.monde?.manuel_actif === true}
+        nomsDesJoueurs={(etat.monde?.players ?? []).map((j, i) => j?.area_hero?.[0]?.name?.replace(/^\W*/, '') || `${t('Joueur')} ${i + 1}`)}
+      />
+      <PanneauObjectifs objectifs={etat.monde?.puzzle_objectives} />
+      <PanneauEnonce info={etat.monde?.puzzle_info} objectifs={etat.monde?.puzzle_objectives} termine={Boolean(etat.monde?.game_over)} />
       {etat.joueurDemande !== undefined &&
       etat.siegesAbsents.includes(etat.joueurDemande) ? (
         <BandeauAbsent
@@ -4824,6 +5311,7 @@ export function PagePartie({
             carteScene={carteScene}
             dosRencontre={dosRencontre}
             nomFr={nomPorteurFr}
+            compterBoosts={compterBoostsDuTrait}
             // LA QUESTION STRUCTUREE du cartouche du bas, pendant la phase
             // (voir `questionDuMoteurPC`).
             questionDuMoteur={phaseMechantEnCours ? questionDuMoteurPC : undefined}
@@ -4836,7 +5324,7 @@ export function PagePartie({
                     options: (etat.demande?.options ?? []).map((option) => ({
                       id: option.id,
                       bindId: option.bind_id,
-                      nom: nomPorteurFr(option.bind_id) ?? nomLisible(option),
+                      nom: nomPorteurFr(option.bind_id) ?? nomActionDe(option),
                     })),
                   }
                 : undefined
@@ -4847,7 +5335,7 @@ export function PagePartie({
             question={
               nouvelleScenePC ? undefined : ciblageEnScene && interaction.option ? (
                 <CiblesScene
-                  titre={nomLisible(interaction.option)}
+                  titre={nomActionDe(interaction.option)}
                   cibles={[
                     ...[...interaction.cartes.entries()]
                       .filter(([, e]) => e.role === 'cible')
@@ -4863,6 +5351,7 @@ export function PagePartie({
                         ordre: e.ordre,
                         ordreReculer: e.ordreReculer,
                         ordreAvancer: e.ordreAvancer,
+                        permuterAvec: e.permuterAvec,
                         assignerReste: e.assignerReste,
                         assignerResteQuantite: e.assignerResteQuantite,
                         agir: e.agir,
@@ -4879,7 +5368,7 @@ export function PagePartie({
                 />
               ) : ciblageSurTable ? (
                 <CiblageSurTable
-                  titre={nomLisible(interaction.option!)}
+                  titre={nomActionDe(interaction.option!)}
                   choisies={interaction.cibles.length}
                   maximum={interaction.option!.target_num_range[1]}
                   cibles={[
@@ -4891,7 +5380,7 @@ export function PagePartie({
                           id,
                           choisie: false,
                           etiquette: libelle,
-                          agir: () => setPileFouillee(id),
+                          agir: () => ouvrirPile(id),
                         }))
                       : []),
                   ]}
@@ -4901,16 +5390,18 @@ export function PagePartie({
                   annuler={interaction.annuler}
                   ordreDeLaTable={interaction.option?.name === 'Minion_Activates_Order' || interaction.option?.name === 'Players_Activation_Order'}
                 />
-              ) : questionEnScene && etat.demande ? (
+              ) : questionEnScene && etat.demande && !estChoixTexteGrille ? (
                 <DemandeCentrale
                   demande={etat.demande}
                   options={interaction.options}
+                  optionsRefusees={optionsRefusees}
                   cartesParId={cartesMondeParId}
                   choisirOption={choisirOptionDepuisMenu}
                   annuler={interaction.annuler}
                   survolerOption={setOptionSurvolee}
                   carteDeLOption={carteDeLOption}
                   carteAuSurvol={carteAuSurvol}
+                  cartesDuLot={cartesDuLot}
                   nomPorteur={nomPorteurFr}
                   texteCapacite={texteCapaciteDeLOption}
                   estEnMain={estEnMain}
@@ -5026,6 +5517,7 @@ export function PagePartie({
       />
 
       {tournerLeTelephone ? <EcranTourne /> : null}
+      {tabletteDebout ? <EcranTourne tablette /> : null}
 
       {/* 13/10/2026 (encadré ⑧) : ton héros est éliminé, les autres jouent encore.
           Tu regardes la suite ; tu gagnes ou tu perds avec ton équipe (Rules
@@ -5045,6 +5537,7 @@ export function PagePartie({
         // Le bandeau « Annuler » du telephone (zone 3) appelle la MEME
         // annulation que le bouton « ↶ Annuler » de la barre.
         annulerCoup={spectateur ? undefined : annulerCoup}
+        tablette={tablette && modePlateau !== 'mobile'}
         bandeManigances={modePlateau !== 'mobile'}
         disposition={editionTable?.d ?? dispositionTable}
         identitePartie={etat.partieId}
@@ -5082,6 +5575,12 @@ export function PagePartie({
         joueursAffichables={joueursAffichables}
         joueurRegarde={joueurActif}
         choisirJoueurRegarde={setVueForcee}
+        // Fenetre de choix fermee sans annuler : l'onglet « Piles » clignote (PlateauPortrait).
+        choixEnAttente={
+          choixAttend_
+            ? { titre: interaction.option ? nomActionDe(interaction.option) : '', piles: pilesAChoisir, rouvrir: () => setSelecteurReduit(false) }
+            : undefined
+        }
         // Meme condition que le rendu de MenuActionsCarte ci-dessus : le rendu
         // mobile empile une couche tant que ce menu est affiche, pour que le
         // Retour d'Android le ferme au lieu de sortir de la partie.
@@ -5151,8 +5650,11 @@ export function PagePartie({
             <button
               type="button"
               className="bh-bouton bh-undo"
-              onClick={annulerCoup}
-              title={t('Annuler la dernière action')}
+              onClick={demanderAnnulation}
+              aria-label={t('Annuler la dernière action')}
+              data-infobulle={t(
+                'Annule ta dernière action et remet la partie comme avant (cartes, jetons, pioche). Instantané pendant ton tour ; ailleurs, la partie est rejouée et peut prendre quelques secondes. Raccourci : U.'
+              )}
             >
               {/* « Annuler » se traduit ici « Undo » (le dictionnaire réserve
                   « Annuler » -> « Cancel » pour l'assistant d'action). */}
@@ -5246,6 +5748,7 @@ export function PagePartie({
               manuel={manuel}
               commenceEnManuel={modeManuelDeclare}
               lectureSeule={spectateur}
+              questionOuverte={moteurAttendLeJoueur}
               onManuel={() => basculerPause(true)}
               onReprendre={() => basculerPause(false)}
               onReprendreA={reprendreEnAuto}
@@ -5300,7 +5803,7 @@ export function PagePartie({
             )}
           </div>
         }
-        interactifs={interactifsAvecPulse}
+        interactifs={interactifsFinal}
         raisonsRefus={raisonsRefus}
         glisser={reglagesGlisser}
         bloquerActionsPassives={interaction.option !== undefined}
@@ -5341,7 +5844,7 @@ export function PagePartie({
                   demandeOrdinaire?.options ?? [],
                   id
                 )
-                if (actionsVersCible.length === 1) {
+                if (actionsVersCible.length === 1 && !tablette) {
                   choisirOptionDepuisMenu(actionsVersCible[0]!, [id])
                   return
                 }
@@ -5449,7 +5952,7 @@ export function PagePartie({
         cyclerReponseAmbiance={cyclerReponseAmbiance}
         designEssai={designEssai}
         basculerDesignEssai={basculerDesignEssai}
-        modeActions={modeActions}
+        modeActions={modeActionsChoisi}
         changerModeActions={changerModeActions}
         curseurs={curseurs}
         basculerCurseurs={basculerCurseurs}
@@ -5457,6 +5960,7 @@ export function PagePartie({
         reglageMode={reglageMode}
         cyclerReglageMode={cyclerReglageMode}
         telephone={telephone}
+        tablette={tablette}
       />
       {/* Les trois modales de la refonte du header (24/09/2026), HORS DE LA
           BARRE pour la meme raison que `FenetreReglages` juste au-dessus :
@@ -5470,18 +5974,60 @@ export function PagePartie({
       />
       {manuel ? (
         <>
+          <PisteDesPhases round={etat.monde?.round_id} />
           <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
           <CoucheMarques marques={marquesManuel} />
           <CoucheSelection />
         </>
       ) : (
-        <VoletAideAuto
-          ouvert={aideAutoOuverte}
-          ouvrir={ouvrirAideAuto}
-          fermer={fermerAideAuto}
-          telephone={modePlateau === 'mobile'}
-        />
+        <>
+          {/* Plateau animé et Accéléré n'ont pas le cartouche du bas : la piste des phases, en lecture
+              seule, dit où en est la partie (round + étape), comme en manuel. Guidé a déjà son cartouche. */}
+          {modePhaseChoisi !== 'detaille' && etat.monde?.round_id ? (
+            <PisteDesPhases
+              round={etat.monde.round_id}
+              lecture={{ round: etat.monde.round_id, index: indexDepuisMoteur(etat.monde.phase) }}
+            />
+          ) : null}
+          <VoletAideAuto
+            ouvert={aideAutoOuverte}
+            ouvrir={ouvrirAideAuto}
+            fermer={fermerAideAuto}
+            telephone={modePlateau === 'mobile'}
+          />
+        </>
       )}
+      <VoletFeuillets
+        feuillets={feuilletsDeLaPartie([
+          ...(etat.monde.players ?? []).map((joueur) => joueur.area_hero?.[0]?.pic_id),
+          ...(etat.monde.area_villain ?? []).map((carte) => carte.pic_id),
+          ...(etat.monde.area_schemes_main ?? []).map((carte) => carte.pic_id),
+        ])}
+        ouvert={feuilletsOuverts}
+        ouvrir={ouvrirFeuillets}
+        fermer={fermerFeuillets}
+      />
+      {assembleeExportee ? (
+        <VoletAssemblee
+          assemblee={assembleeExportee}
+          ouvert={assembleeOuverte}
+          ouvrir={() => setAssembleeOuverte(true)}
+          fermer={() => setAssembleeOuverte(false)}
+        />
+      ) : null}
+      {villeExportee ? (
+        <VoletVille
+          ville={villeExportee}
+          moi={joueurActif}
+          nomsJoueurs={nomsJoueursVille}
+          optionDeplacement={optionSeDeplacer(etat.demande?.options)}
+          seDeplacer={(option, objetLieu) => choisirOptionDepuisMenu(option, [objetLieu], true)}
+          catalogue={catalogue}
+          ouvert={villeOuverte}
+          ouvrir={() => setVilleOuverte(true)}
+          fermer={() => setVilleOuverte(false)}
+        />
+      ) : null}
       <VoletJournal ouvert={partieOuverte} ouvrir={ouvrirVolet} fermer={fermerVolet}>
         <CartesDuJournal.Provider value={cartesDuVolet}>
         <MessageRapport message={rapport.message} />
@@ -5519,6 +6065,15 @@ export function PagePartie({
         />
         </CartesDuJournal.Provider>
       </VoletJournal>
+      <VoletTchat
+        ouvert={tchatOuverteLocale}
+        ouvrir={ouvrirTchat}
+        fermer={fermerTchat}
+        tableId={estMultijoueur() ? 'table' : undefined}
+        spectateur={spectateur}
+        transport={transportPlay}
+        pseudoPlay={pseudoPlayProp}
+      />
       <BandeauConnexion
         etat={etat}
         reconnecter={reconnecter}
@@ -5537,9 +6092,9 @@ export function PagePartie({
           phaseMechantEnCours,
           enMiseEnPlace,
         })}
-        essais={essais}
       />
       <CoucheRefusEffets refus={etat.monde.refus_effets} />
+      <CoucheChoixUniques choix={etat.monde.choix_uniques} />
       <CoucheTriche
         actif={triche.actif}
         manuel={triche.manuel}
@@ -5591,6 +6146,7 @@ export function PagePartie({
       <PlacesEnAttente ids={attenteMep.cachees} />
       <CoucheMiseEnPlace
         etape={panneauPrioritaire || mechantRetenu ? undefined : miseEnPlace.etape}
+        paire={miseEnPlace.paire}
         restantes={miseEnPlace.restantes}
         suivant={miseEnPlace.suivant}
         animations={animationsActives}
@@ -5764,6 +6320,9 @@ function Page() {
 declare global {
   interface Window {
     racinePlateau?: Root
+    // Pose par navigateur/src/shim.js, UNIQUEMENT sur Play : l'origine du
+    // site principal, pour parler au tchat en direct (voir transportSiteDirect).
+    __playInvite?: { origine: string }
   }
 }
 
@@ -5780,6 +6339,12 @@ if (!import.meta.env.VITEST) {
   appliquerAffichage(lireAffichage())
   appliquerEtiquettesTable(lireEtiquettesTable())
   appliquerTeinte(lireTeinteDuNavigateur())
-  window.racinePlateau ??= createRoot(cible)
-  window.racinePlateau.render(<Page />)
+  appliquerFondImage(lireFondImage())
+  // Les reglages gardes sur le compte arrivent AVANT le premier rendu (attente
+  // bornee) : chaque composant lit alors la bonne valeur des son montage.
+  void chargerReglagesDuCompte().then(() => {
+    appliquerEtiquettesTable(lireEtiquettesTable())
+    window.racinePlateau ??= createRoot(cible)
+    window.racinePlateau.render(<Page />)
+  })
 }

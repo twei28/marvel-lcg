@@ -40,6 +40,23 @@ permanente ET un `WhenCardBecomeBoost`.
   `AbilityType.NonKeywordStar`, voir [[special]].
 - Les icônes de boost d'un SBIRE comptent quand ce sbire est retourné comme
   carte de boost, pas quand il est en jeu.
+- **Tester « une carte de boost supplémentaire »** : les cartes de boost sont
+  défaussées en fin d'activation, l'état final n'en garde rien. Clé de
+  harnais `boosts_sur: [[card_id, n]]` (ajoutée le 20/10/2026, Nyx `ze013`,
+  Total Eclipse `ze016`), avec un deck Rencontre réduit à une carte à boost
+  connu (Shocker `01103`) pour que les dégâts soient déterministes. Détail :
+  `RECETTES-MOTEUR.md` §7.
+
+- **Un ★ Boost ne vaut que pour la carte RETOURNÉE** (correctif moteur du
+  14/11/2026, `boost.py`, `check_cette_carte_est_le_boost`).
+  `WhenBoostCardTurnedFaceUp` part pour toutes les cartes, et une capacité
+  Boost reste valide sur une carte EN JEU : avant le correctif, un permanent
+  en jeu résolvait son ★ Boost à chaque AUTRE carte de boost retournée
+  (`62029` Cottonmouth et `63029` Aka se distribuaient eux-mêmes et
+  quittaient le jeu ; `62030`, `62032`, `60062` rejouaient leur effet). Les
+  Interruptions / Réponses qui écoutent les boosts des autres ne sont pas
+  touchées. Cas dédiés : `tools/cas/boost_carte_en_jeu.py` (verts avec,
+  rouges sans).
 
 **Variantes maison** : `gb010` (Necro-Raven, pack `gorr`) : le ★ Boost met le
 sbire en jeu engagé avec le joueur au lieu de l'envoyer à la défausse, et se

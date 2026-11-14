@@ -16,11 +16,14 @@
 //   <body>. Dans `.plateau-portrait` (position fixed, donc son propre
 //   contexte d'empilement), son z-index de 650 ne valait qu'a l'interieur du
 //   plateau, et l'assistant (541, dans <body>) la recouvrait.
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { ScanCard, type ScanCardProps } from '../../components/ScanCard'
 import { t } from '../langue'
+import { PastillesTraits } from '../PastillesTraits'
+import { typeDeBoite, useSurcoucheTraduction } from '../traduction-carte'
 import { useAppuiLong } from './useAppuiLong'
+import { FeuilleDetail } from './ronds/FeuilleDetail'
 import './portrait.css'
 
 /** Distance horizontale d'un glisser qui change de carte. */
@@ -29,6 +32,24 @@ export const SEUIL_GLISSER_CARTE = 50
 /** Au-dela, le doigt glisse : ce n'est plus un maintien. */
 const SEUIL_MOUVEMENT = 10
 
+/**
+ * Un ScanCard qui porte, posés dessus, le voile (traduction ou ERRATA officiel) et la pastille « Errata » : les mêmes que sur
+ * ordinateur (traduction-carte.tsx). `code` : la carte dont c'est la face (celle de CETTE face, pas de la carte ouverte).
+ * Sans lui, le téléphone affichait le scan imprimé nu : aucun errata (retour d'un joueur, 09/11/2026).
+ */
+function ScanCardAvecVoile({ code, type, artAlternatif, ...props }: ScanCardProps & { code?: string; type?: string }) {
+  const surcouche = useSurcoucheTraduction({
+    codeCarte: code,
+    artAlternatif,
+    imageUrl: props.imageUrl,
+    traits: props.traits,
+    paysage: props.isLandscape,
+    type: type ?? (props.kind === 'main-scheme' ? 'MainScheme' : props.kind === 'side-scheme' ? 'SideScheme' : undefined),
+    facedown: props.facedown,
+  })
+  return <ScanCard {...props} artAlternatif={artAlternatif} surcouche={props.surcouche ?? surcouche} />
+}
+
 export function CarteOuverte({
   carte,
   attachees = [],
@@ -36,6 +57,8 @@ export function CarteOuverte({
   onFermer,
   libelleAction,
   voisines,
+  detail = false,
+  apercuSeul = false,
 }: {
   carte: ScanCardProps
   attachees?: ScanCardProps[]
@@ -43,6 +66,10 @@ export function CarteOuverte({
   onFermer: () => void
   /** Le libelle du bouton d'action : « Jouer » pour une carte de la main. */
   libelleAction?: string
+  /** Plateau en ronds (Q71, Q72) : PV, valeurs ajustees, jetons sous la carte, et les deux faces COTE A COTE. */
+  detail?: boolean
+  /** Appui long sur un rond (Q51) : la carte en grand tant que le doigt reste, sans boutons ; elle part au relacher. */
+  apercuSeul?: boolean
   /** Les cartes voisines (la main) : un glisser horizontal passe de l'une a l'autre. */
   voisines?: {
     position: number
@@ -59,10 +86,25 @@ export function CarteOuverte({
         }
       : undefined
   )
+  // Un apercu tenu au doigt se ferme des que le doigt se leve.
+  useEffect(() => {
+    if (!apercuSeul) return
+    window.addEventListener('pointerup', onFermer)
+    window.addEventListener('pointercancel', onFermer)
+    return () => {
+      window.removeEventListener('pointerup', onFermer)
+      window.removeEventListener('pointercancel', onFermer)
+    }
+  }, [apercuSeul, onFermer])
   // L'autre face : 0 = la face en jeu, 1.. = les autres (Ant-Man en a deux).
   const autresFaces = carte.autresFaces ?? []
   const [face, setFace] = useState(0)
   const faceMontree = face > 0 ? autresFaces[face - 1] : undefined
+  // Plusieurs faces en detail (ronds, 24/10/2026) : 2 = l'une sous l'autre, 3 = deux puis une, 4 et plus = une grande
+  // et les autres en miniatures a toucher (Conan en a cinq).
+  const nbFaces = 1 + autresFaces.length
+  const enFocus = !!detail && nbFaces >= 4
+  const classeFaces = detail && nbFaces >= 2 ? (nbFaces === 2 ? ' a-faces-2' : nbFaces === 3 ? ' a-faces-3' : ' a-faces-plus') : ''
   // Statuts (Tough, Stunned...) d'abord, en petit, puis les ameliorations.
   const statuts = attachees.filter((a) => a.kind === 'status')
   const ameliorations = attachees.filter((a) => a.kind !== 'status')
@@ -106,15 +148,21 @@ export function CarteOuverte({
           depart.current = undefined
         }}
       >
-        <div className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}`} {...appui.gestes}>
+        <div
+          className={`carte-ouverte-scan${faceMontree ? ' est-autre-face' : ''}${detail && autresFaces.length > 0 ? ' a-deux-faces' : ''}${classeFaces}`}
+          {...appui.gestes}
+        >
           {/* Sans onSelect, ScanCard ne rend pas de bouton : la carte est ici
               une image à lire, l'action vit dans le maintien et dans le
               bandeau du dessous. */}
           {/* Le scan COMPLET, pas la vignette de la table : agrandie a
               320 px sur un ecran 3x, la vignette etait floue (zone 3). */}
           {faceMontree ? (
-            <ScanCard
+            <ScanCardAvecVoile
               {...carte}
+              code={faceMontree.code}
+              artAlternatif={faceMontree.artAlternatif}
+              type={typeDeBoite(faceMontree.type)}
               imageUrl={faceMontree.url}
               isLandscape={faceMontree.isLandscape ?? carte.isLandscape}
               stats={undefined}
@@ -126,15 +174,82 @@ export function CarteOuverte({
               taille="grande"
             />
           ) : (
-            <ScanCard {...carte} onSelect={undefined} taille="grande" />
+            <ScanCardAvecVoile
+              {...carte}
+              code={carte.codeCarte}
+              onSelect={undefined}
+              taille="grande"
+              {...(detail ? { jetonMenace: undefined, jetonDegats: undefined, counters: undefined } : {})}
+            />
           )}
+          {/* Les traits du heros en ce moment (reglage « Traits du heros ») : le tap est le geste de lecture du telephone. */}
+          {!detail && !faceMontree ? <PastillesTraits carte={carte} surGrande /> : null}
+          {/* Q72 : l'autre face a COTE de la premiere, comme sur le PC (un peu plus petites). */}
+          {detail && !faceMontree && !enFocus
+            ? autresFaces.map((autre) => (
+                <ScanCardAvecVoile
+                  key={autre.url}
+                  {...carte}
+                  code={autre.code}
+                  artAlternatif={autre.artAlternatif}
+                  type={typeDeBoite(autre.type)}
+                  imageUrl={autre.url}
+                  isLandscape={autre.isLandscape ?? carte.isLandscape}
+                  stats={undefined}
+                  allyHp={undefined}
+                  schemeThreat={undefined}
+                  exhausted={false}
+                  onSelect={undefined}
+                  highlight={false}
+                  jauge={undefined}
+                  taille="grande"
+                />
+              ))
+            : null}
         </div>
 
-        {carte.onSelect && !faceMontree ? (
-          <span className="carte-ouverte-aide">{t('Maintenir pour utiliser')}</span>
+        {/* Ronds : les deux faces sont cote a cote, les pastilles se lisent donc SOUS elles. Cartes : sur la carte (voir plus haut),
+            sinon le bandeau d'action du dessous les recouvre. */}
+        {detail && !faceMontree ? <PastillesTraits carte={carte} /> : null}
+
+        {enFocus ? (
+          <div className="carte-ouverte-miniatures">
+            {Array.from({ length: nbFaces }, (_, i) => i)
+              .filter((i) => i !== face)
+              .map((i) => {
+                const autre = i > 0 ? autresFaces[i - 1] : undefined
+                return (
+                  <button
+                    type="button"
+                    className="carte-ouverte-miniature"
+                    key={autre?.url ?? 'en-jeu'}
+                    aria-label={i === 0 ? t('Face en jeu') : t('Autre face')}
+                    onClick={() => setFace(i)}
+                  >
+                    <ScanCard
+                      {...carte}
+                      imageUrl={autre ? autre.url : carte.imageUrl}
+                      isLandscape={autre ? autre.isLandscape ?? carte.isLandscape : carte.isLandscape}
+                      stats={undefined}
+                      allyHp={undefined}
+                      schemeThreat={undefined}
+                      exhausted={false}
+                      onSelect={undefined}
+                      highlight={false}
+                      jauge={undefined}
+                      jetonMenace={undefined}
+                      jetonDegats={undefined}
+                      counters={undefined}
+                    />
+                  </button>
+                )
+              })}
+          </div>
         ) : null}
 
-        {voisines && voisines.total > 1 ? (
+        {detail && !faceMontree ? <FeuilleDetail carte={carte} /> : null}
+
+        {voisines && voisines.total > 1 && !apercuSeul ? (
           <div className="carte-ouverte-voisines">
             <button
               type="button"
@@ -177,8 +292,8 @@ export function CarteOuverte({
           </div>
         ) : null}
 
-        <div className="carte-ouverte-actions">
-          {autresFaces.length > 0 ? (
+        {apercuSeul ? null : <div className="carte-ouverte-actions">
+          {autresFaces.length > 0 && !detail ? (
             <button
               type="button"
               className="carte-ouverte-face"
@@ -202,7 +317,7 @@ export function CarteOuverte({
           <button type="button" className="carte-ouverte-fermer" onClick={onFermer}>
             {t('Fermer')}
           </button>
-        </div>
+        </div>}
       </section>
     </div>,
     document.body

@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mojo.campaign import CampaignSetup
 
 # Melee in the Mojo-seum
 
@@ -20,6 +21,7 @@ def GetAbilities() -> Sequence['Ability']:
         )
 
     return [
+        *CampaignSetup(1),
         AbilityFactory.WhenCardSetup(
             "This",
             melee_in_the_mojo_seum_revealed

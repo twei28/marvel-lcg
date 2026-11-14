@@ -26,6 +26,7 @@
 // Riposte, Renfort, Ténacité, Collaboration, Incitation).
 
 import { langueActuelle } from './langue'
+import { TRAITS_FR } from './traits-fr'
 
 /**
  * Anglais du moteur → français officiel.
@@ -34,6 +35,22 @@ import { langueActuelle } from './langue'
  * soulignés quand la recherche a lieu.
  */
 const MOTEUR_FR: Record<string, string> = {
+  // — Avis du moteur (`choix_uniques.texte`) —
+  'No minion in the encounter deck: no card is drawn.': 'Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.',
+  'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
+  'The Kraken was not found: Cultist is not discarded.': 'Le Kraken est introuvable : Cultist n’est pas défaussé.',
+  'No Web-Warrior ally in your discard pile: no player is chosen.': 'Aucun allié Web-Warrior dans votre défausse : aucun joueur n’est choisi.',
+  // — pack blade (scans FR déposés 04/11/2026, signalement mobile 05/11/2026) —
+  'Heal 2 damage from Blade': 'Soigner 2 dégâts de Blade',
+  'Place 1 blood counter on Blade': 'Placer 1 jeton Sang sur Blade',
+  'Exhaust a WEAPON upgrade you control to stun that enemy': 'Incliner une amélioration ARME que vous contrôlez pour sonner cet ennemi',
+  // — pack silver_surfer_power_cosmic (prefixe pc, mecanique PLANET, 05/11/2026) —
+  'Character Arrive Planet': 'Le personnage arrive à la planète',
+  'Character Depart Planet': 'Le personnage part de la planète',
+  // Reponse Oui/Non posee au joueur (J. Jonah Jameson sr009, 08/11/2026) :
+  // les boutons d'un `AskChooseOneText([True, False], ["Yes", "No"], ...)`.
+  Yes: 'Oui',
+  No: 'Non',
   // — Pouvoirs de base et gestes de tour —
   Attack: 'Attaquer',
   Defense: 'Défendre',
@@ -54,6 +71,25 @@ const MOTEUR_FR: Record<string, string> = {
   'Discard one': 'En défausser une',
   // Robbie Robertson 60156 : meme defaut, meme correctif (04/10/2026).
   'Discard it and deal another': 'La défausser et en distribuer une autre',
+  // Recherche sans résultat dans un deck (Carquois de Hawkeye 04003 et toutes les
+  // recherches « top N ») : on propose de voir les cartes avant le mélange
+  // (demande du 09/11/2026, search_internal.py).
+  'No Matching Card Found': 'Aucune carte ne correspond',
+  'Continue Without Looking': 'Continuer sans regarder',
+  'Look At The Cards': 'Regarder les cartes',
+  'Cards Searched': 'Cartes parcourues',
+  // Scénario Mephisto (Neptune) : les choix des cartes de rencontre et des pactes BARGAIN (mephisto/__init__.py et mp0xx.py).
+  'Attach this card to your identity': 'Attacher cette carte à ton identité',
+  'Discard this card and Mephisto activates against you': 'Défausser cette carte et Mephisto s’active contre toi',
+  'This card gains surge': 'Cette carte gagne Renfort',
+  'Mephisto attacks you': 'Mephisto t’attaque',
+  'Mephisto schemes against you': 'Mephisto manigance contre toi',
+  'Shuffle a BARGAIN attachment you control into the encounter deck': 'Mélanger dans le deck Rencontre un attachement BARGAIN que tu contrôles',
+  'Shuffle a BARGAIN attachment into the encounter deck and give Blackheart a tough status': 'Mélanger un attachement BARGAIN dans le deck Rencontre et donner une carte d’état Tenace à Blackheart',
+  'Search the encounter deck and discard pile for a BARGAIN attachment and attach it to your identity': 'Chercher un attachement BARGAIN dans le deck Rencontre et la défausse et l’attacher à ton identité',
+  'Ready your identity, draw 1 card, heal 4 damage and resolve the Hidden Clause': 'Redresser ton identité, piocher 1 carte, soigner 4 dégâts et résoudre la Hidden Clause',
+  'Discard your hand, shuffle your discard pile into your deck, draw up to your hand size, ready your identity and attach a BARGAIN attachment': 'Défausser ta main, mélanger ta défausse dans ton deck, piocher jusqu’à ta taille de main, redresser ton identité et attacher un attachement BARGAIN',
+  'Discard a BARGAIN attachment to cancel this activation and put Blackheart into play engaged with you': 'Défausser un attachement BARGAIN pour annuler cette activation et mettre Blackheart en jeu engagé avec toi',
   // Mot-clé Starting (60038, 61034, 61036, 61037), signalement Yarro n°70.
   'Add this card to your starting hand': 'Ajouter cette carte à ta main de départ',
 
@@ -86,6 +122,12 @@ const MOTEUR_FR: Record<string, string> = {
   // — Types de capacité (`AbilityType`), utilisés quand la carte n'a pas nommé
   //   la sienne, et affichés en surtitre du panneau de décision —
   Action: 'Action',
+  // The City (pu005, 22/10/2026) : UNE action « se déplacer », puis le choix du coût.
+  Move: 'Se déplacer',
+  // Kingsfall multi-tables (assemblées) : l'Action de Longue vie / À bas.
+  'Pod Action': 'Action d’assemblée',
+  'Exhaust a character you control': 'Épuiser un personnage que vous contrôlez',
+  'Spend 1 resource of any type': 'Dépenser 1 ressource de n’importe quel type',
   'Forced Action': 'Action forcée',
   'Hero Action': 'Action de héros',
   'Alter-Ego Action': 'Action d’alter ego',
@@ -137,6 +179,8 @@ const MOTEUR_FR: Record<string, string> = {
   'The Final Stage of the Main Scheme was Completed':
     'Le dernier stade de la manigance principale a été achevé',
   'The Main Scheme was Completed': 'La manigance principale a été achevée',
+  // — Fin d'un puzzle (`src/game/puzzle/puzzle_objectives.py`) —
+  'The Puzzle Objectives were not Met': 'Le round est fini et les objectifs du puzzle ne sont pas atteints',
   // — Fins d'une partie en mode Bataille (`src/game/world/competitive.py`) —
   'The Registration Team Won': 'Le camp Registration l’emporte',
   'The Resistance Team Won': 'Le camp Résistance l’emporte',
@@ -179,6 +223,8 @@ const MOTEUR_FR: Record<string, string> = {
   'Cards Paid Order_Text': 'Ordre de paiement',
   'Card Apply_Text': 'Carte appliquée',
   'Card Attach To': 'Carte attachée',
+  // AJOUT (26/10/2026, pack hp Wasp Hank Pym, hp010 Huge Surprise) : une carte d'état est posée sur une carte.
+  'Card Place Status On': "Carte d'état posée",
   'Card Be Created': 'Carte créée',
   'Card Be Spend As Resource': 'Carte dépensée comme ressource',
   'Card Become Boost': 'Carte devenue boost',
@@ -293,14 +339,24 @@ const MOTEUR_FR: Record<string, string> = {
   'Phase Begin': 'Début de phase',
   'Phase End': 'Fin de phase',
   'Choose Ability Only Option_Text': 'Seul choix possible',
+  'No Result Notice_Text': 'Recherche sans résultat',
   'Player Choose Ability': 'Choix d’une capacité',
   'Player Deal Encounter Card': 'Carte rencontre distribuée',
   'Player Drew Cards': 'Cartes piochées',
+  'Player Resolve Flow': 'Flow résolu',
   'Player Eliminated': 'Joueur éliminé',
   'Player End Phase': 'Fin de la phase du joueur',
+  'Player Moved In City': 'Déplacement en ville',
+  'Player Would Enter Location': 'Entrée dans un lieu',
+  'Player Would Leave Location': 'Sortie d’un lieu',
   'Player Gain Cards_Text': 'Cartes gagnées',
   'Player In Turn': 'Tour du joueur',
   'Player Like In Turn': 'Considéré comme son tour',
+  // AJOUT (04/11/2026, pack custom three_d_man, dm012 Secret Initiative) :
+  // `AbilityFactory.AfterPlayerLookedAtEncounterDeck` (factory/deck.py),
+  // primitive sans nom donné -> le libellé par défaut du moteur, sans
+  // traduction, s'affichait en anglais dans le surtitre de narration.
+  'Player Looked At Encounter Deck': 'Le joueur regarde le deck Rencontre',
   'Player On Event_Text': 'Événement de jeu',
   'Player Paying Resources': 'Paiement des ressources',
   'Player Play Card': 'Le joueur joue une carte',
@@ -395,6 +451,12 @@ const MOTEUR_FR: Record<string, string> = {
  */
 const SUFFIXE_INDEX = /^(.*?) (\d+)$/
 
+/** « Action 1 » -> « Action » : retire l'index interne du moteur d'un type de capacité (Action, Hero Action, Interrupt...). */
+export function sansIndexDeCapacite(libelle: string): string {
+  const m = /^((?:.+ )?(?:Action|Interrupt|Response))[ _]\d+$/.exec(libelle)
+  return m ? m[1]! : libelle
+}
+
 const degats = (n: string) => `${n} ${Number(n) > 1 ? 'dégâts' : 'dégât'}`
 const menaces = (n: string) => `${n} ${Number(n) > 1 ? 'menaces' : 'menace'}`
 
@@ -415,16 +477,30 @@ const TYPES_ZONE_FR: Record<string, string> = {
 }
 
 const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
+  // Famished Power (mp112) : « Combine ATK and DEF (7) » -> la somme de deux pouvoirs de base remplace la valeur utilisée.
+  [/^Combine (ATK|THW|DEF) and (ATK|THW|DEF) \((\d+)\)$/,
+    (m) => `Combiner ${m[1] === 'ATK' ? 'ATQ' : m[1] === 'THW' ? 'CTR' : 'DEF'} et ${m[2] === 'ATK' ? 'ATQ' : m[2] === 'THW' ? 'CTR' : 'DEF'} (${m[3]})`],
+  // Changer de forme vers une forme NOMMEE (player_setup.py) : « Change To Spider-Man », ou, pour deux formes du meme
+  // nom, le trait qui les distingue (« Change To GIANT » -> « Passer en forme Géant », Ant-Man, 24/10/2026).
+  [/^Change To (.+)$/, (m) => `Passer en ${formeNommee(m[1]!)}`],
   // Bebop & Rocksteady (`tk006a`, enemies.py OrdreDesVilainsActives) : le premier
   // joueur choisit, pour chaque joueur, le vilain qui s'active d'abord (Q8, 16/10/2026).
   [/^Choose which villain activates first against (.+)$/,
     (m) => `Choisis le méchant qui s’active d’abord contre ${m[1]}`],
   [/^Choose Bebop or Rocksteady$/, () => 'Choisis Bebop ou Rocksteady'],
+  // Build Support (51026, rapport BL-Stark du 23/10/2026) : « Search their deck and discard pile for a support with a cost of 3 or less... ».
+  [/^Search (?:their|your) deck and discard pile for an? (support|ally|upgrade) with a cost of (\d+) or less and put it into play$/,
+    (m) => `Chercher ${({ support: 'un soutien', ally: 'un allié', upgrade: 'une amélioration' } as Record<string, string>)[m[1]!]} de coût ${m[2]} ou moins dans ton deck ou ta défausse et le mettre en jeu`],
   // Pack TMNT Venus (`venus/__init__.py`, ProposerRetraitDragage) : retrait facultatif de compteurs de dragage.
   [/^Remove (\d+) dredge counters to draw (\d+) cards$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour piocher ${m[2]} cartes`],
   [/^Remove (\d+) dredge counters to confuse and stun an enemy$/,
     (m) => `Retirer ${m[1]} compteurs de dragage pour désorienter et sonner un ennemi`],
+  // Campagne MojoMania (`mojo/campaign.py`, 28/10/2026) : Longshot revele ou melange au scenario suivant, et la carte que le
+  // joueur avait gardee au carnet (le nom de la carte reste en anglais : le scan sous les yeux l'est).
+  [/^Reveal Longshot$/, () => 'Révéler Longshot'],
+  [/^Shuffle Longshot into the encounter deck$/, () => 'Mélanger Longshot dans le deck de rencontre'],
+  [/^Put (.+) into play under your control$/, (m) => `Mettre ${m[1]} en jeu sous ton contrôle`],
   // Campagne Skrull Menace (`skrull_menace/campaign.py`) : la règle de coopération, la zone, la campagne experte.
   [/^Discard the top card of your deck to place (.+) in the victory display$/,
     (m) => `Défausser le dessus de ton deck pour placer ${m[1]} dans la pile de victoire`],
@@ -460,6 +536,17 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Heal (\d+) damage from an identity$/, (m) => `Soigner ${degats(m[1]!)} d’une identité`],
   [/^Stun an enemy$/, () => 'Rendre un ennemi sonné'],
   [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
+  // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
+  // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
+  [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
+  [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],
+  [/^Heal (\d+) damage from a friendly character$/, (m) => `Soigner ${degats(m[1]!)} d’un personnage allié`],
+  [/^Take 1 damage to shuffle this card into your deck$/, () => 'Subir 1 dégât pour mélanger cette carte dans ton deck'],
+  [/^Deal 1 additional damage to that enemy$/, () => 'Infliger 1 dégât supplémentaire à cet ennemi'],
+  [/^Discard a confused status card from that enemy to draw 1 card$/, () => 'Défausser une carte d’état Désorienté de cet ennemi pour piocher 1 carte'],
+  [/^Exhaust your alter ego → remove Psychic Tremor from the game$/, () => 'Incliner ton alter ego → retirer Psychic Tremor de la partie'],
+  [/^Discard 1 card from your hand for each confused character you control and each confused enemy\. Discard this obligation$/,
+    () => 'Défausser 1 carte de ta main par personnage désorienté que tu contrôles et par ennemi désorienté. Défausser cette obligation'],
   [/^Stun a minion$/, () => 'Rendre un sbire sonné'],
   [/^Ready your hero$/, () => 'Redresser ton héros'],
   [/^Ready your identity$/, () => 'Redresser ton identité'],
@@ -468,10 +555,29 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   // Choix « payer un coût » (`ForChoiceAbilityWithCost`, Sonic Boom 01123) : les
   // jetons [[energy]] restent, ils deviennent des icônes à l'affichage.
   [/^Spend (\[\[.+)$/, (m) => `Dépenser ${m[1]}`],
+  // Action d'assemblée : « <heros> (<table>) - this table » -> le groupe de cette table.
+  [/^(.+) - this table$/, (m) => `${m[1]} (cette table)`],
   [/^Exhaust each character you control$/, () => 'Incliner chacun de tes personnages'],
+  // Pack new_ultimate_winter_soldier (`uw`, 25/10/2026) : les choix de Wild Slash (uw005), Berserker Fury (uw006),
+  // Mission Objective (uw011), Live with the Burden (uw013), Desperate Regenerate (uw008), Phoenix Specimen Brainwashing (uw016).
+  [/^Take (\d+) damage → deal (\d+) damage to an enemy$/, (m) => `Subir ${degats(m[1]!)} → infliger ${degats(m[2]!)} à un ennemi`],
+  [/^Take (\d+) damage → repeat this ability$/, (m) => `Subir ${degats(m[1]!)} → répéter cette capacité`],
+  [/^Take (\d+) damage → attach this card to another minion$/, (m) => `Subir ${degats(m[1]!)} → attacher cette carte à un autre sbire`],
+  [/^Exhaust your identity → prevent (\d+) of that damage$/, (m) => `Incliner ton identité → prévenir ${m[1]} de ces dégâts`],
+  [/^Discard each stunned and confused status card from your identity$/, () => 'Défausser chaque carte d’état Sonné et Désorienté de ton identité'],
+  [/^Place (\d+) threat on a scheme$/, (m) => `Placer ${menaces(m[1]!)} sur une manigance`],
   // « Combien de fois ce choix ? » (player_action.py, `ChooseAbilities(repeat=...)`).
   [/^(\d+) times?$/, (m) => `${m[1]} fois`],
   [/^No repeat$/, () => 'Aucun'],
+  // Scenario 5 « Cassandra Nova » de Hellfire Hunt (`hf`, 01/11/2026) : les choix de Cassandra Domination (hf607), des trois complots (hf604b-hf606b),
+  // de Wild Sentinel (hf382-hf385) et d'Exploding Their Head (hf608).
+  [/^Place (\d+) threat on each scheme$/, (m) => `Placer ${menaces(m[1]!)} sur chaque manigance`],
+  [/^Stun and confuse your identity$/, () => 'Rendre ton identité sonnée et désorientée'],
+  [/^Deal (\d+) indirect damage to another friendly character$/, (m) => `Infliger ${m[1]} ${Number(m[1]) > 1 ? 'dégâts indirects' : 'dégât indirect'} à un autre personnage ami`],
+  [/^Deal yourself (\d+) facedown encounter cards?$/, (m) => `Te distribuer ${m[1]} ${Number(m[1]) > 1 ? 'cartes rencontre' : 'carte rencontre'} face cachée`],
+  [/^Discard (\d+) cards? from your hand$/, (m) => `Défausser ${m[1]} ${Number(m[1]) > 1 ? 'cartes' : 'carte'} de ta main`],
+  [/^Place this card on the bottom of the encounter deck instead of the discard pile$/, () => 'Placer cette carte sous le deck rencontre au lieu de la défausse'],
+  [/^Discard \(total resource cost at least (\d+)\)$/, (m) => `Défausser (coût total d’au moins ${m[1]})`],
 ]
 
 /**
@@ -479,6 +585,17 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
  * rendue INCHANGÉE : c'est le cas des noms de capacités imprimés sur les
  * cartes, qui doivent rester alignés sur le scan affiché.
  */
+/** « GIANT » -> « forme Géant » (traits connus, en majuscules) ; un nom de carte reste tel quel. */
+function formeNommee(brut: string): string {
+  const mots = brut.trim().split(/\s+/)
+  const traits = mots.map((mot) => TRAITS_FR[mot.replace(/\.$/, '').toUpperCase()])
+  if (mots.every((mot) => mot === mot.toUpperCase()) && traits.every(Boolean)) {
+    const fr = traits.map((trait) => trait!.charAt(0) + trait!.slice(1).toLowerCase()).join(' ')
+    return `forme ${fr}`
+  }
+  return brut
+}
+
 export function traduireMoteur(libelle: string): string {
   if (langueActuelle() !== 'fr') return libelle
 
@@ -490,10 +607,12 @@ export function traduireMoteur(libelle: string): string {
     if (trouve) return rendre(trouve)
   }
 
+  // « Action 1 », « Hero Action 2 »... : l'index interne du moteur n'a aucun sens pour un joueur
+  // (demande du 22/10/2026 : plus jamais « Action 1 / Action 2 ») ; on garde le nom du type seul.
   const numerote = SUFFIXE_INDEX.exec(libelle)
   if (numerote) {
     const base = MOTEUR_FR[numerote[1]!]
-    if (base) return `${base} (${Number(numerote[2]) + 1})`
+    if (base) return base
   }
 
   return libelle
@@ -519,6 +638,56 @@ export function traduireTitreRepetition(texte: string): string {
   if (enPlus) {
     return `${enPlus[1]} : ${traduireMoteur(enPlus[2]!)} fait (${enPlus[3]} sur ${enPlus[4]}). Combien de fois en plus ?`
   }
+  return texte
+}
+
+/**
+ * Les cartes qui, apres une pioche, demandent au JOUEUR de juger un dessin
+ * (le moteur ne sait pas lire une image) : J. Jonah Jameson (sr009, rapport
+ * de bug du 08/11/2026), et d'autres a venir sur le meme modele.
+ * `AskChooseOneText` construit ce texte lui-meme (il n'a pas de carte-modele
+ * a imiter), d'ou cette traduction a part, plutot qu'une entree fixe de
+ * `MOTEUR_FR`.
+ *
+ * ⚠ LE NOM DE LA CARTE TIREE ENTRE GUILLEMETS RESTE EN ANGLAIS, comme un nom
+ * de capacite imprime sur une carte (voir l'en-tete du fichier) : son scan
+ * sous les yeux l'est, et aucune carte fan-made n'a encore son NOM traduit
+ * (seulement son texte, `textes-fr-fanmade.ts`).
+ */
+/**
+ * « your identity », « their identity »… : des PRONOMS, pas des noms propres
+ * (contrairement à un nom de personnage comme « Spider-Man »), que le moteur
+ * écrit tels quels dans ces questions. Sans ce passage, la phrase mélangeait
+ * les deux langues (« combien montrent une image de your identity ? »).
+ */
+const QUI_FR: Record<string, string> = {
+  'your identity': 'ton identité',
+  'their identity': 'son identité',
+}
+const nomDeQui = (brut: string): string => QUI_FR[brut] ?? brut
+
+export function traduireQuestionImage(texte: string): string {
+  if (langueActuelle() !== 'fr') return texte
+  const image = /^(.+): does "(.+)" have a picture of (.+) on it\?$/.exec(texte)
+  if (image) return `${image[1]} : la carte « ${image[2]} » montre-t-elle une image de ${nomDeQui(image[3]!)} ?`
+  // Muse (mu001 Art Imitates Death, 08/11/2026) : un NOMBRE plutôt qu'un
+  // Oui/Non par carte, sur les cartes qu'on vient de défausser.
+  const combienDefaussees = /^(.+): of the (\d+) cards? just discarded \((.+)\), how many have a picture of (.+) on them\?$/.exec(
+    texte
+  )
+  if (combienDefaussees) {
+    return `${combienDefaussees[1]} : parmi les ${combienDefaussees[2]} cartes qui viennent d’être défaussées (${combienDefaussees[3]}), combien montrent une image de ${nomDeQui(combienDefaussees[4]!)} ?`
+  }
+  // Muse (mu006 Obsession, 08/11/2026) : un NOMBRE sur les cartes de la main.
+  const combienEnMain = /^(.+): how many cards in your hand \((\d+) card\(s\)\) have a picture of (.+) on them\?$/.exec(
+    texte
+  )
+  if (combienEnMain) {
+    return `${combienEnMain[1]} : parmi les ${combienEnMain[2]} cartes de ta main, combien montrent une image de ${nomDeQui(combienEnMain[3]!)} ?`
+  }
+  // Recherche sans résultat dans un deck (search_internal.py, 09/11/2026) : le titre de la fenêtre est le `titre` de
+  // `AskChooseOneText`, qui n'a pas d'autre chemin de traduction que celui-ci (égalité exacte, jamais une sous-chaîne).
+  if (texte === 'No Matching Card Found') return MOTEUR_FR[texte]!
   return texte
 }
 

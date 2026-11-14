@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « MAQUETTE À FAIRE, pas codé » »). Preuve : Dépassée : refonte déployée le 05/10 (`397331a5`), essai « Étape par étape » retiré le 11/10 (`940a01ba` annulé par `7eb795d6`), schéma du 12/10, puis trois choix (« Guidée », « Plateau animé », « Accéléré ») déployés le 19/10 d'après `2026-10-19-restes-apres-deploiement.md` (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°19).
+
 # Phase du méchant : refonte (50 questions le 09/10/2026, MAQUETTE À FAIRE, pas codé)
 
 Origine : rapports 60, 61, 71 et 72 de Yarro. Les trois problèmes pèsent autant : enchaînement illisible (Surge,

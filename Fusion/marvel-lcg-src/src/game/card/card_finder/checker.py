@@ -19,6 +19,7 @@ from game.card.face.attribute.has_temporary import HasTemporary
 from game.card.face.attribute.has_form import HasForm
 from game.card.face.attribute.has_stage import HasStage
 from game.card.face.attribute.can_attach import CanAttach
+from game.card.face.attribute.can_health import CanHealth
 from game.card.face.base import ClassCard
 from game.card.face.base import Scheme2
 from game.card.face.base import Unit2
@@ -177,7 +178,13 @@ def Check(self: 'CardFinder', face: 'CardFace', effect: 'Effect|None'=None) -> b
     ################################################################################
     # Unit
     if self.canbe_heal != None:
-        if not Unit2.IsType(face) or self.canbe_heal != face.CanHeath():
+        # `Unit2.IsType` accepte une face « consider_as » Unit2/Enemy sans
+        # mixin reel (`gs082` Sentry's Grasp, Attachment traite comme
+        # ennemi pour l'attaque de base) : sans le `isinstance`, l'appel a
+        # `CanHeath()` plante (AttributeError, trouve par autoplay le
+        # 21/10/2026, campagne Galactic Storm).
+        if not (Unit2.IsType(face) and isinstance(face, CanHealth)) \
+                or self.canbe_heal != face.CanHeath():
             return False
     if self.sustained != None:
         if not Unit2.IsType(face) or self.sustained != face.sustained:

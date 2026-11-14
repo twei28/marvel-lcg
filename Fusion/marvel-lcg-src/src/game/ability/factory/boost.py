@@ -266,12 +266,20 @@ class AbilityFactoryBoost:
         def check_activate_target(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
             if not activate_target:
                 return True
+            # CORRECTIF (04/11/2026, pack custom three_d_man, dm020) : `activate_target="You"` plantait
+            # (`AssertionError` dans `card_type.py:247`, "You" n'etant jamais reconnu par `invoke_check_card`,
+            # tombant jusqu'au `assert not isinstance(check_rule, Sequence)` -- une str EST une Sequence).
+            # `WhenBoostCardWouldTurnedFaceUp.check_activate_target` (ligne 219 ci-dessus) convertit deja
+            # "You" via `Condition.GetYouRule(.., identity=True)` avant d'appeler `CheckWhichCard` ; cette
+            # fonction-ci, pour le meme parametre documente de la meme facon (fabrique soeur), ne le faisait
+            # pas. Touche aussi `sr010` Spider-Sense (cancel boost), meme `activate_target="You"`.
+            rule = Condition.GetYouRule(activate_target, identity=True)
             if isinstance(message.would_message, AttackerMessageInternal):
                 targets = message.would_message.attacked_targets
             else:
                 assert False
                 # targets = message.would_message.targets
-            return Condition.CheckWhichCard(activate_target, targets, effect)
+            return Condition.CheckWhichCard(rule, targets, effect)
 
         def check_activate_message(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
             if activate_message == None:
@@ -288,10 +296,22 @@ class AbilityFactoryBoost:
                     return False
                 return not message.cancel_boost_ability
 
+        # CORRECTIF (14/11/2026, set nemesis d'Elektra, 63029 Aka) : une capacite de type BOOST ne vaut que lorsque la carte
+        # EST la carte de boost retournee. Ce message part pour TOUTES les cartes, et une capacite Boost reste valide sur une
+        # carte EN JEU (effect_checker.py:300) : sans cette condition, un permanent en jeu resolvait son [star] Boost a chaque
+        # AUTRE carte de boost retournee. `62029` Cottonmouth et `63029` Aka se distribuaient eux-memes au joueur et quittaient
+        # le jeu ; `62030`, `62032` et `60062` rejouaient leur effet. Les autres types (Interrupt, Response...) ecoutent bien
+        # les cartes de boost des AUTRES : ils ne sont pas touches. Cas dedies : tools/cas/boost_carte_en_jeu.py.
+        def check_cette_carte_est_le_boost(effect: 'Effect', message: 'Message.WhenBoostCardTurnedFaceUp') -> bool:
+            if ability_type != AbilityType.Boost:
+                return True
+            return message.trigger == effect.this
+
         return Ability(
             ability_type,
             Message.WhenBoostCardTurnedFaceUp,
             [
+                check_cette_carte_est_le_boost,
                 check_while_attack,
                 check_while_scheme,
                 check_boost_for_card,

@@ -1,5 +1,14 @@
 # Showtime!
 
+> **Mise à jour du 20/10/2026 (backlog 12, vérification du pack).** Lu sur
+> pièce : `dz003` est en `in_this="Round"` depuis le 06/10/2026 (l'extrait
+> ci-dessous, en `"Phase"`, est périmé). `dz017b` résout désormais les
+> Showtime! **dans l'ordre choisi par le joueur** (« in any order ») et efface
+> les compteurs `sound` avant de défausser la Setlist (`OublierLaSetlist`).
+> Les cartes de la Setlist se posent dans un cas de test par
+> `Puzzle.PlaceUnder('<chanson>', 'dz017a', face_up=True)` puis Rehearsal
+> (`Puzzle.Action('dz001a', 'HeroAction')`) : `tools/cas/dazzler.py`.
+
 **Texte imprimé / définition** : mot-clé maison du pack `dazzler` (héroïne
 custom **Dazzler**, contenu de « Lord Havok »), imprimé littéralement comme
 titre de seconde capacité sur les événements de trait [[SONG]] du pack,

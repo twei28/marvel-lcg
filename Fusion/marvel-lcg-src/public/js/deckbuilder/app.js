@@ -30,12 +30,14 @@ import { urlNarval } from "/public/js/prepare/narval.js";
 import { nomFr, texteFr } from "/public/js/prepare/cartes-fr.js";
 import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { correspondRecherche } from "/public/js/deckbuilder/recherche.js";
+import { passeLaVoie, reglesDuPath, reglesDuPathPropre, estPath } from "/public/js/deckbuilder/paths-shinobi.js";
 import { versionsDe, versionDansLeDeck, changerVersion } from "/public/js/deckbuilder/arts-reeditions.js";
 // Arts alternatifs (TMNT) : même carte, seule l'image change. Choix dans mc_card_art_v1.
 import { artsDe, origine, codeAffiche, STANDARD, exclusiveRefusee } from "/public/js/prepare/arts-cartes-choix.js";
 import { ecrireChoixCartes, lireChoixCartes, picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
+import { estTablette, marquerTablette } from "/public/js/tablette.js";
 import {
     filtresVides, passeFiltres, aspectsParDefaut, comparateur, grouperDeck, courbeDesCouts,
     nombreFiltresActifs, COUTS, PALIERS_STAT, STATS, cleStat,
@@ -172,6 +174,8 @@ const etat = {
     kitOuvert: false,
     problemesOuverts: false,
     sectionsOuvertes: new Set(["aspects", "types", "couts"]),
+    // Héros pour lequel le joueur a répondu « Sans Voie » (le panneau se tait pour lui seulement).
+    voieRefuseePour: null,
     apercu: null,
     epingle: null,
     pioche: { mode: "alter", main: [], reste: [], signature: "" },
@@ -424,7 +428,7 @@ function rendreEnTete() {
             el("span", { class: "db-hero-changer" }, (h ? t("Changer") : t("Choisir")) + " ›"));
     }
     const retour = el("a", { class: "brand", href: "/prepare.html", title: t("Préparation"), "aria-label": t("Préparation") },
-        el("span", { class: "brand-back" }, "<"),
+        el("span", { class: "brand-back" }, t("Retour")),
         el("span", { class: "brand-lockup logo" }, el("img", { class: "brand-narwhal", src: urlNarval(), alt: "" })));
     // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin à burger,
     // le héros sur sa propre ligne, pleine largeur. L'en-tête du PC reste dans
@@ -708,7 +712,10 @@ const cleImpression = (c) => `${c.name}|${c.class}|${c.type}`;
 
 async function rendreGrille() {
     // Cartes EXCLUSIVES à une série (TMNT) : absentes de la grille hors de ses héros.
-    const pool = (await poolJoueur(estStanLee(etat.hero))).filter((x) => !exclusiveRefusee(x.carte.set_name, refHeros()));
+    const voie = voieDuDeck();
+    const pool = (await poolJoueur(estStanLee(etat.hero)))
+        .filter((x) => !exclusiveRefusee(x.carte.set_name, refHeros()))
+        .filter((x) => passeLaVoie(x.carte, voie));
     if (!document.querySelector("#db-filtres .db-chip")) rendreFiltres();
     const tri = comparateur(etat.triGrille, nomCarte);
     const passent = pool.filter((x) => passeFiltres(x.carte, etat.filtres, ctxFiltres))
@@ -806,6 +813,14 @@ function installerGrille() {
         const id = tuile.getAttribute("data-carte");
         const bouton = e.target.closest("button[data-action]");
         if (bouton) { if (bouton.dataset.action === "moins") retirer(id); else ajouter(id); return; }
+        // Tablette (24/10/2026, decision 11) : pas de survol ni de clic droit. Toucher la carte
+        // la montre en grand ; ses boutons − / + changent le deck.
+        if (estTablette()) {
+            etat.apercu = id;
+            rendreApercu();
+            if (etat.onglet === "pioche") rendreDeck();
+            return;
+        }
         ajouter(id);
     });
     grille.addEventListener("contextmenu", (e) => {
@@ -967,7 +982,7 @@ function rendreListe(v) {
         [["type", "type"], ["cout", "coût"], ["aspect", "aspect"], ["nom", "nom"], ["pack", "pack"]].map(([cle, lib]) =>
             el("option", { value: cle, selected: etat.triDeck === cle }, t(lib))));
     return [
-        el("div", { class: "db-liste-barre" }, el("label", {}, `${t("Tri :")} `, tri), el("span", {}, t("survol = aperçu"))),
+        el("div", { class: "db-liste-barre" }, el("label", {}, `${t("Tri :")} `, tri), el("span", {}, estTablette() ? t("toucher = aperçu") : t("survol = aperçu"))),
         totalKit ? el("button", { type: "button", class: "db-kit", "aria-expanded": etat.kitOuvert ? "true" : "false",
             onclick: () => { etat.kitOuvert = !etat.kitOuvert; rendreDeck(); } },
             el("span", {}, `+${totalKit} ${t("cartes du héros")}`), el("span", {}, etat.kitOuvert ? `▾ ${t("masquer")}` : `▸ ${t("voir")}`)) : null,
@@ -1073,10 +1088,71 @@ function rendreMobile() {
     $("#db-mob-deck").textContent = `${t("Deck")} (${v.total || 0}) ${v.ok ? "✓" : ""}`.trim();
 }
 
+/* ---------------- Voie Shinobi (Path) ---------------- */
+
+/** Le Path choisi dans le deck (carte `{ id, c }`), ou null. */
+function pathChoisi() {
+    for (const [id] of etat.choisies) {
+        const c = cards.get(id);
+        if (c && estPath(c)) return { id, c };
+    }
+    return null;
+}
+
+/** La Voie qui gouverne la grille : le Path choisi, sinon la Voie propre du héros (Jennika), sinon aucune. */
+function voieDuDeck() {
+    const choisi = pathChoisi();
+    if (choisi) return reglesDuPath(choisi.c, choisi.id);
+    return etat.hero ? reglesDuPathPropre(etat.hero) : null;
+}
+
+/** Le panneau Voie : propre au héros, Path déjà choisi, ou proposition des 11 Paths (« Sans Voie » possible). */
+function rendreVoie() {
+    const zone = $("#db-voie");
+    if (!zone) return;
+    if (!etat.hero) { remplacer(zone); zone.hidden = true; return; }
+    zone.hidden = false;
+    const propre = reglesDuPathPropre(etat.hero);
+    if (propre) {
+        remplacer(zone, el("p", { class: "db-voie-texte" },
+            `${t("Voie propre")} : ${propre.nom} — ${t("cartes Shinobi de n’importe quelle combinaison, aucun aspect, cartes Basic.")}`));
+        return;
+    }
+    const choisi = pathChoisi();
+    if (choisi) {
+        const r = reglesDuPath(choisi.c, choisi.id);
+        remplacer(zone,
+            el("p", { class: "db-voie-texte" },
+                `${t("Voie")} : ${nomCarte(choisi.c)} — ${r.types.join(", ")}${r.aspects.max === 0 ? "" : ` · ${t("un aspect")}`}`),
+            el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.choisies.delete(choisi.id); changement(); } },
+                t("Changer de Voie")));
+        return;
+    }
+    if (etat.voieRefuseePour === refHeros()) {
+        remplacer(zone, el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.voieRefuseePour = null; rendreTout(); } },
+            t("Choisir une Voie Shinobi")));
+        return;
+    }
+    const paths = cards.ids().filter((id) => estPath(cards.get(id)))
+        .sort((a, b) => nomCarte(cards.get(a)).localeCompare(nomCarte(cards.get(b))));
+    remplacer(zone,
+        el("p", { class: "db-voie-texte" },
+            t("Ce deck suit-il une Voie Shinobi ? Sans Voie, aucune carte Shinobi n’est proposée.")),
+        el("div", { class: "db-voie-grille" }, paths.map((id) => {
+            const c = cards.get(id);
+            return el("button", { type: "button", class: "db-voie-carte", title: nomCarte(c), onclick: () => ajouter(id) },
+                el("img", { src: urlCarte(id), loading: "lazy", alt: nomCarte(c) }),
+                el("span", {}, nomCarte(c)));
+        })),
+        el("button", { type: "button", class: "db-voie-bouton", onclick: () => { etat.voieRefuseePour = refHeros(); rendreTout(); } },
+            t("Sans Voie")));
+}
+
 function rendreTout() {
     const v = valider();
     rendreResume(v);
     rendreDeck();
+    rendreVoie();
     rendreGrille();
     rendreMobile();
     const aspects = $("#db-heros-aspects");
@@ -1288,7 +1364,7 @@ function traduirePageStatique() {
     $("#db-tri-libelle").textContent = t("Tri :");
     remplacer($("#db-tri-grille"), [["aspect", "aspect puis coût"], ["nom", "nom"], ["cout", "coût"], ["type", "type"], ["pack", "pack"]]
         .map(([cle, lib]) => el("option", { value: cle, selected: etat.triGrille === cle }, t(lib))));
-    $("#db-astuce").textContent = t("Clic gauche +1 · clic droit −1");
+    $("#db-astuce").textContent = estTablette() ? t("Toucher = aperçu · − / + sur la carte") : t("Clic gauche +1 · clic droit −1");
     $("#db-nom").placeholder = t("Nom du deck…");
     $("#db-partir-libelle").textContent = t("Partir de :");
     const titre = (sel, texte) => { $(sel).title = texte; $(sel).setAttribute("aria-label", texte); };
@@ -1320,6 +1396,7 @@ function installerCommandes() {
 
 async function demarrer() {
     synchroniserLangueServeur();
+    marquerTablette();
     traduirePageStatique();
     installerCommandes();
     installerGrille();
@@ -1362,4 +1439,16 @@ async function demarrer() {
     statut("");
 }
 
-demarrer().catch((e) => statut(`${t("Échec du chargement :")} ${e.message}`, true));
+/** Réponse HTML au lieu des cartes (cookie de connexion ou de version refusé) :
+ *  dire quoi faire, avec un bouton, plutôt qu'un « Unexpected token < » muet. */
+function expliquerSession() {
+    const zone = $("#db-status");
+    zone.classList.add("est-erreur");
+    remplacer(zone,
+        el("span", {}, t("Le serveur n'a pas reconnu votre session (cookies bloqués, session expirée ou ancienne version en cache). Rechargez la page ; si cela persiste, reconnectez-vous depuis l'accueil et autorisez les cookies du site.")),
+        el("span", { class: "db-statut-actions" },
+            el("button", { type: "button", class: "btn ghost", onclick: () => window.location.reload() }, t("Recharger")),
+            el("a", { class: "btn ghost", href: "/" }, t("Accueil / reconnexion"))));
+}
+
+demarrer().catch((e) => (e && e.reponseHtml ? expliquerSession() : statut(`${t("Échec du chargement :")} ${e.message}`, true)));

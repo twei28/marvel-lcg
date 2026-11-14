@@ -46,6 +46,7 @@ export default async function globalSetup(_config: FullConfig) {
       // sinon elles interceptent le premier clic de tous les parcours.
       localStorage.setItem('mc_affichage_v1', 'normal');
       localStorage.setItem('mc_phase_mode_vu_v1', '1');
+      localStorage.setItem('mc_phase_choix_vu', '2026-10-20');
     });
 
     fs.mkdirSync('./.auth', { recursive: true });

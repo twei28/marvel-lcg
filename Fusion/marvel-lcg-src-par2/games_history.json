@@ -1,0 +1,4790 @@
+[
+ {
+  "time": 1792522803,
+  "scenario": "Art Museum Heist (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522806,
+  "scenario": "Art Museum Heist (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522807,
+  "scenario": "Crossbones",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522807,
+  "scenario": "Absorbing Man",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522807,
+  "scenario": "Art Museum Heist (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522810,
+  "scenario": "Crossbones",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522810,
+  "scenario": "Taskmaster",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522811,
+  "scenario": "Zola",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522811,
+  "scenario": "Zola",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522814,
+  "scenario": "Ebony Maw",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522815,
+  "scenario": "Ebony Maw",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522815,
+  "scenario": "Ebony Maw",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 1
+ },
+ {
+  "time": 1792522816,
+  "scenario": "The Tower Defense",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522819,
+  "scenario": "The Tower Defense",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522819,
+  "scenario": "The Tower Defense",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522820,
+  "scenario": "Thanos",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522821,
+  "scenario": "Thanos",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522823,
+  "scenario": "Thanos",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 1
+ },
+ {
+  "time": 1792522824,
+  "scenario": "Thanos",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522825,
+  "scenario": "Hela",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522826,
+  "scenario": "Hela",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522844,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522846,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522847,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522847,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522848,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522850,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522851,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522851,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522853,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522854,
+  "scenario": "Sandman",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522856,
+  "scenario": "Mysterio",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522857,
+  "scenario": "Sinister Six",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522857,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522859,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522861,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522861,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522864,
+  "scenario": "Sentinel",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522865,
+  "scenario": "Sentinel",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522865,
+  "scenario": "Sentinel",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522867,
+  "scenario": "Sentinel",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522869,
+  "scenario": "Master Mold",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522870,
+  "scenario": "Master Mold",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522871,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522872,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522873,
+  "scenario": "Sabretooth",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522873,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522876,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522877,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522878,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522879,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522882,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522882,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522883,
+  "scenario": "Morlock Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522885,
+  "scenario": "On the Run",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522886,
+  "scenario": "On the Run",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522887,
+  "scenario": "Juggernaut",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522887,
+  "scenario": "Juggernaut",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522892,
+  "scenario": "Mister Sinister",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522895,
+  "scenario": "Juggernaut",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522895,
+  "scenario": "Mister Sinister",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522895,
+  "scenario": "Juggernaut",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522898,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522900,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522902,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522902,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522905,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522906,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522908,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522909,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522911,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522912,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522915,
+  "scenario": "Unus",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522916,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522916,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522917,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522919,
+  "scenario": "Batroc",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 0
+ },
+ {
+  "time": 1792522919,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522923,
+  "scenario": "Batroc",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522923,
+  "scenario": "Batroc",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522924,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522926,
+  "scenario": "M.O.D.O.K.",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522930,
+  "scenario": "Thunderbolts",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522930,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522930,
+  "scenario": "Thunderbolts",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522932,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522936,
+  "scenario": "Batroc",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522936,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522936,
+  "scenario": "M.O.D.O.K.",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522937,
+  "scenario": "Thunderbolts",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522940,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522940,
+  "scenario": "Thunderbolts",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522941,
+  "scenario": "Black Widow",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Steve Rogers",
+    "card_id": "03001b",
+    "deck": "Captain America",
+    "aspects": [
+     "Leadership"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522943,
+  "scenario": "The Lizard",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522944,
+  "scenario": "Vulture",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522944,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522946,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792522948,
+  "scenario": "Vulture",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522948,
+  "scenario": "Vulture",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522949,
+  "scenario": "Vulture",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792522950,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522951,
+  "scenario": "Vermin",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522954,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522954,
+  "scenario": "Vermin",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522954,
+  "scenario": "Vermin",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522955,
+  "scenario": "Vermin",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522957,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522957,
+  "scenario": "Vermin",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522958,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522958,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522960,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522960,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792522960,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Wendell Vaughn",
+    "card_id": "gs300b",
+    "deck": "Quasar",
+    "aspects": [
+     "Protection"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "Players Won",
+  "rounds": 1
+ },
+ {
+  "time": 1792523082,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523097,
+  "scenario": "Majestrix's Verdict",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 9
+ },
+ {
+  "time": 1792523103,
+  "scenario": "Hala Ultimatum",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792523120,
+  "scenario": "Earth Under Siege",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 11
+ },
+ {
+  "time": 1792523132,
+  "scenario": "Supreme Intelligence",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792523261,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523264,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523267,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523286,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523296,
+  "scenario": "Majestrix's Verdict",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792523304,
+  "scenario": "Hala Ultimatum",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792523400,
+  "scenario": "Kree Sentry",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 1
+ },
+ {
+  "time": 1792523409,
+  "scenario": "Majestrix's Verdict",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792523417,
+  "scenario": "Hala Ultimatum",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792581668,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792581676,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792581682,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792581689,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792581698,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792581705,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792581711,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792581717,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792581728,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 7
+ },
+ {
+  "time": 1792581735,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792581741,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792581749,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792581758,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792581764,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792581769,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792581775,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585401,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585407,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792585413,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585419,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585429,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792585437,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585442,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 2
+ },
+ {
+  "time": 1792585447,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 2
+ },
+ {
+  "time": 1792585452,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585459,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585466,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585473,
+  "scenario": "Protection Racket (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585484,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 7
+ },
+ {
+  "time": 1792585490,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585497,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792585505,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792585513,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792585519,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585527,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585532,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585540,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585545,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585555,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792585561,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585570,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792585577,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792585584,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585592,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585598,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585608,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 6
+ },
+ {
+  "time": 1792585613,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585620,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792585627,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585633,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585639,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792585647,
+  "scenario": "Art Museum Heist (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585653,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585658,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792585669,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792585676,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585686,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 6
+ },
+ {
+  "time": 1792585694,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792585700,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585706,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792585713,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792585724,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 6
+ },
+ {
+  "time": 1792585732,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792585741,
+  "scenario": "The Getaway (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792586942,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792586951,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792586968,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792586986,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792586997,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587009,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587016,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "The Final Stage of the Villain was Defeated",
+  "rounds": 2
+ },
+ {
+  "time": 1792587023,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792587037,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "The Final Stage of the Villain was Defeated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587053,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "The Final Stage of the Villain was Defeated",
+  "rounds": 3
+ },
+ {
+  "time": 1792587071,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 2
+ },
+ {
+  "time": 1792587093,
+  "scenario": "Protection Racket (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587104,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587119,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792587141,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587212,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 12
+ },
+ {
+  "time": 1792587245,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 6
+ },
+ {
+  "time": 1792587275,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587298,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587321,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587341,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587366,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587390,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792587429,
+  "scenario": "Art Museum Heist (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 6
+ },
+ {
+  "time": 1792587452,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792587465,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792587497,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 6
+ },
+ {
+  "time": 1792587511,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587542,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792587559,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 5
+ },
+ {
+  "time": 1792587577,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792587589,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792587626,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792587650,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587687,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 6
+ },
+ {
+  "time": 1792587707,
+  "scenario": "The Getaway (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587733,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 4
+ },
+ {
+  "time": 1792587752,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792587774,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792587797,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587822,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792587845,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 4
+ },
+ {
+  "time": 1792587863,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": true,
+  "reason": "The Final Stage of the Villain was Defeated",
+  "rounds": 3
+ },
+ {
+  "time": 1792587875,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 2
+ },
+ {
+  "time": 1792587893,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 2
+ },
+ {
+  "time": 1792587915,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792587933,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792587953,
+  "scenario": "Stop the Presses! (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 3
+ },
+ {
+  "time": 1792587992,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 7
+ },
+ {
+  "time": 1792588015,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792588032,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792588060,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792588097,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792588122,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792588151,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792588171,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 3
+ },
+ {
+  "time": 1792588198,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792588215,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792588239,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792588256,
+  "scenario": "Protection Racket (Hammerhead)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792595406,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 6
+ },
+ {
+  "time": 1792595416,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 5
+ },
+ {
+  "time": 1792595429,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 7
+ },
+ {
+  "time": 1792595436,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792595442,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 2
+ },
+ {
+  "time": 1792595454,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "Players Lost",
+  "rounds": 7
+ },
+ {
+  "time": 1792595463,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 4
+ },
+ {
+  "time": 1792595473,
+  "scenario": "One Last Kill (Jigsaw)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Peter Parker",
+    "card_id": "01001b",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 4
+ },
+ {
+  "time": 1792595490,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 8
+ },
+ {
+  "time": 1792595497,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 3
+ },
+ {
+  "time": 1792595515,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 8
+ },
+ {
+  "time": 1792595530,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": false,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 8
+ },
+ {
+  "time": 1792595550,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "All players were eliminated",
+  "rounds": 9
+ },
+ {
+  "time": 1792595566,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 8
+ },
+ {
+  "time": 1792595594,
+  "scenario": "One Last Kill (Hobgoblin)",
+  "expert": true,
+  "heroes": [
+   {
+    "name": "Spider-Man",
+    "card_id": "01001a",
+    "deck": "Spider-Man",
+    "aspects": [
+     "Justice"
+    ]
+   }
+  ],
+  "won": false,
+  "reason": "The Final Stage of the Main Scheme was Completed",
+  "rounds": 7
+ }
+]

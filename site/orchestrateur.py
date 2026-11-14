@@ -64,7 +64,20 @@ DISCORD_CLIENT_ID = os.environ.get("DISCORD_CLIENT_ID", "")
 
 PORT_SITE = int(os.environ.get("PORT_SITE", "8080"))
 PORT_BASE = 2350                      # emplacement N -> port PORT_BASE + N
-NB_EMPLACEMENTS = int(os.environ.get("NB_EMPLACEMENTS", "30"))
+# Emplacements 1..N : les COMPTES (un emplacement fixe chacun). Emplacements
+# N+1..N+P : les tables INVITE de Play (voir `prendre_place_invite`), prêtées le
+# temps d'une partie, sans compte. ⚠ TROIS ENDROITS DOIVENT S'ACCORDER sur le
+# total : voir `site/test_places.py`.
+NB_EMPLACEMENTS_COMPTES = int(os.environ.get("NB_EMPLACEMENTS_COMPTES", "30"))
+NB_PLACES_INVITE = int(os.environ.get("NB_PLACES_INVITE", "15"))
+NB_EMPLACEMENTS = NB_EMPLACEMENTS_COMPTES + NB_PLACES_INVITE
+# Plafond de moteurs ALLUMES (comptes + invites) : une table coute ~220 Mo pour
+# 3,8 Go de RAM (deploiement/memoire-serveur.sh) ; releve du 03/11/2026 : 542 Mo pris au repos,
+# ~13 tables en RAM, le swap de 4 Go couvre jusqu'a ~18. Les 15 places invite ne
+# doivent jamais pouvoir affamer les comptes : au-dela, on refuse un NOUVEL invite.
+MAX_TABLES_VIVANTES = int(os.environ.get("MAX_TABLES_VIVANTES", "18"))
+# Tables invite creees par une meme adresse, par heure (frein, pas defense).
+INVITES_PAR_HEURE_ET_ADRESSE = int(os.environ.get("INVITES_PAR_HEURE_ET_ADRESSE", "3"))
 
 # Une partie est fauchee quand son moteur est mort, ou passe cette duree.
 # ⚠ CE N'EST PAS UNE MESURE D'INACTIVITE : le moteur n'expose rien qui
@@ -148,6 +161,17 @@ DOSSIER_ASSETS = os.environ.get(
     "DOSSIER_ASSETS", os.path.join(os.path.dirname(RACINE_SITE), "Fusion", "marvel-lcg-src", "assets"))
 
 
+# Les PROJETS DU CREATEUR DE CARTES (fichiers JSON, un dossier par compte).
+# HORS de site/ : le deploiement vide ce dossier (sauf base et rapports).
+DOSSIER_CREATEUR = os.environ.get(
+    "DOSSIER_CREATEUR", os.path.join(os.path.dirname(RACINE_SITE), "donnees-createur"))
+# Un projet porte des images en data URL : 25 Mo au plus, par PUT.
+MAX_PROJET_OCTETS = int(os.environ.get("MAX_PROJET_OCTETS", str(25 * 1024 * 1024)))
+# Quota par compte (projets + historique des versions).
+QUOTA_CREATEUR_OCTETS = int(os.environ.get("QUOTA_CREATEUR_OCTETS", str(500 * 1024 * 1024)))
+# La page et ses fichiers statiques sont ceux du jeu (public/).
+DOSSIER_PUBLIC_JEU = os.environ.get("DOSSIER_PUBLIC_JEU", os.path.join(RACINE_JEU, "public"))
+
 DOSSIER_PARTIES_JOUEURS = os.environ.get(
     "DOSSIER_PARTIES_JOUEURS", os.path.join(os.path.dirname(RACINE_SITE), "parties-joueurs"))
 
@@ -199,8 +223,8 @@ ETATS_RAPPORT = ("nouveau", "en cours", "traite", "refuse")
 LIBELLES_ETAT_RAPPORT = {
     "nouveau": "Nouveaux",
     "en cours": "En cours",
-    "traite": "Traites",
-    "refuse": "Refuses",
+    "traite": "Traités",
+    "refuse": "Refusés",
 }
 # Au-dela de ce delai, un rapport CLASSE « traite » n'a plus rien a apprendre a
 # personne et sa capture ne fait que peser. Le plafond de debit est de 12
@@ -232,6 +256,7 @@ FENETRE_CONNEXION = int(os.environ.get("FENETRE_CONNEXION", "900"))
 sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur
 import langue as lang
+import createur_cartes
 import narval as narval_du_moment  # noqa: E402  (dependant de sys.path ci-dessus)
 
 
@@ -323,7 +348,7 @@ JETONS_SITE: dict[str, str] = {}         # jeton -> pseudo (voir Partie.jeton_si
 VERROU = threading.Lock()
 
 # --------------------------------------------------------------------------
-# Activite Discord : une table par salon vocal (demande de l'utilisateur,
+# Activité Discord : une table par salon vocal (demande de l'utilisateur,
 # 28/09/2026 -- « jouer depuis Discord »).
 # --------------------------------------------------------------------------
 # instance_id (fourni par le SDK Discord embarque, un par lancement d'une
@@ -493,7 +518,7 @@ def _port_libre(port: int) -> bool:
 
 
 def _nettoyer_emplacement(emplacement: int) -> None:
-    """Efface les donnees de la partie precedente sur cet emplacement.
+    """Efface les donnees de la partie précédente sur cet emplacement.
 
     Sans ca, le groupe suivant heriterait des decks, des sauvegardes et des
     hauts faits du precedent. Les dossiers COMMUNS (images, catalogue, decks
@@ -509,6 +534,12 @@ def _nettoyer_emplacement(emplacement: int) -> None:
     for relatif in (f"../games_history-serveur-{emplacement}.json",
                     f"../statistics-serveur-{emplacement}.json",
                     f"../achievements-serveur-{emplacement}.json",
+                    # Ce qui suit le COMPTE (14/11/2026) : la fiche Legacy, les arts de heros
+                    # et les preferences (reglages, puzzles crees, brouillons). Oublies
+                    # jusque-la : le nouvel occupant de la place les heritait.
+                    f"../legacy-serveur-{emplacement}.json",
+                    f"../arts-heros-serveur-{emplacement}.json",
+                    f"../preferences-serveur-{emplacement}.json",
                     f"./campaign-log-last-serveur-{emplacement}.json"):
         chemin = os.path.normpath(os.path.join(racine_game, relatif))
         try:
@@ -642,7 +673,7 @@ def lancer_jeu(pseudo: str, joueurs: int = 1) -> Partie:
                     f"Le moteur s'est arrete au demarrage. Journal : "
                     f".site/moteur-{emplacement}.log")
             time.sleep(1)
-        raise RuntimeError("Le moteur n'a pas repondu a temps.")
+        raise RuntimeError("Le moteur n'a pas répondu à temps.")
     except Exception:
         eteindre_jeu(pseudo)
         raise
@@ -695,7 +726,7 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
     try:
         # ⚠ `/debug` EXIGE DEUX COOKIES, PAS SEULEMENT LE MOT DE PASSE
         # (25/09/2026, signale en jeu : « Reprendre cette partie » retombait
-        # toujours sur l'ecran de preparation). `session_token` ET
+        # toujours sur l'écran de preparation). `session_token` ET
         # `app_version` (IsAuthenticate/IsVersionMatch, web_server.py) : sans
         # eux, le moteur repond un simple 200 + page d'authentification —
         # PAS une erreur — et la commande /load n'est jamais executee.
@@ -718,7 +749,7 @@ def charger_partie_interrompue(partie: "Partie", pseudo: str) -> bool:
         #
         # ⚠ TOUTE LA COMMANDE PASSE PAR `quote()`, PAS SEULEMENT LE FICHIER
         # (25/09/2026, trouve APRES le correctif des cookies ci-dessus : le
-        # bouton retombait toujours sur l'ecran de preparation). L'espace
+        # bouton retombait toujours sur l'écran de preparation). L'espace
         # entre « /load » et le chemin restait litteral dans l'URL — Python
         # 3.10 le refuse net : `http.client.InvalidURL: URL can't contain
         # control characters ... (found at least ' ')`. Cette exception
@@ -926,6 +957,24 @@ def oublier_partie_interrompue(pseudo: str) -> None:
         cx.execute("DELETE FROM parties_interrompues WHERE pseudo = ?", (pseudo,))
 
 
+def _abandonner_les_assemblees(partie) -> None:
+    """KINGSFALL MULTI-TABLES (22/10/2026, decision 2 de l'utilisateur) : une table qui ferme avant la fin de sa partie compte comme une DEFAITE de son groupe
+    dans chaque assemblee ou elle joue encore. Le stockage commun est un petit fichier SQLite du jeu (`assemblees.db`, a la racine du moteur) ; le module
+    est autonome (stdlib), on le charge par son chemin. Ne bloque JAMAIS l'extinction d'une table."""
+    try:
+        import importlib.util
+        chemin_module = os.path.join(RACINE_JEU, "src", "game", "operate", "assemblee.py")
+        if not os.path.exists(chemin_module) or not os.path.exists(os.path.join(RACINE_JEU, "assemblees.db")):
+            return
+        os.environ["MCLCG_ASSEMBLEES"] = os.path.join(RACINE_JEU, "assemblees.db")
+        spec = importlib.util.spec_from_file_location("assemblee_site", chemin_module)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.Assemblee.AbandonnerTable(f"p{partie.emplacement}")
+    except Exception as souci:
+        sys.stderr.write("abandon d'assemblee non note : %r\n" % (souci,))
+
+
 def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     """Arrete le moteur. ⚠ NE TOUCHE PAS AUX DONNEES : elles appartiennent au
     compte et doivent etre la au prochain allumage.
@@ -939,6 +988,14 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
             return False
         EMPLACEMENTS.pop(partie.emplacement, None)
         JETONS_SITE.pop(partie.jeton_site, None)
+    # ⚠ LE FIL DE TABLE NE SURVIT PAS A LA TABLE. `code` EST le table_id
+    # (voir `dire_table`, qui le recoit via le meme jeton que celui-ci) : on
+    # le vide ici, pas avant (le tchat de la fin de partie doit rester lisible
+    # jusqu'au tout dernier moment).
+    try:
+        effacer_messages_table(code)
+    except Exception as souci:
+        sys.stderr.write("purge du fil de table non faite : %r\n" % (souci,))
     # ⚠ ICI, ET NULLE PART AILLEURS : c'est la derniere seconde ou l'on peut
     # encore demander au moteur ce qui se jouait. Une ligne plus bas il est
     # mort, et la partie n'aura jamais existe pour personne.
@@ -966,6 +1023,7 @@ def eteindre_jeu(code: str, cause: str = "extinction") -> bool:
     # `journal_partie_fermee` ne touche que les lignes encore ouvertes : la
     # rappeler est sans effet.
     journal_partie_fermee(partie.code)
+    _abandonner_les_assemblees(partie)
     processus = partie.processus
     if processus is not None:
         # `start_new_session` a mis le moteur dans son propre groupe : on tue
@@ -1117,6 +1175,10 @@ def faucheur() -> None:
                 else:
                     cause = "inactivite"
                 eteindre_jeu(code, cause)
+        try:
+            nettoyer_invites_perimes()
+        except Exception as souci:
+            print(f"  ⚠ nettoyage des tables invite en echec : {souci}")
         if time.time() >= prochaine_revue:
             prochaine_revue = time.time() + PERIODE_EXPIRATION_S
             try:
@@ -1175,6 +1237,11 @@ CREATE TABLE IF NOT EXISTS comptes (
     -- dont la clause WHERE laisse coexister plusieurs comptes sans
     -- emplacement.
     emplacement         INTEGER,
+    -- Les drapeaux de langues parlees, choisis dans le tchat (chantier du
+    -- 06/11/2026), ex. "fr,en" — reglage de profil, reconduit d'une table a
+    -- l'autre et d'une partie a l'autre. Un visiteur sans compte garde le
+    -- sien dans son navigateur (`localStorage`), pas ici.
+    langues             TEXT,
     -- ⚠ MOT DE PASSE DU MOTEUR, ET IL DOIT RESTER STABLE.
     -- Il etait tire au hasard a chaque allumage. Consequence : tout
     -- redemarrage du moteur (mise a jour, plantage, extinction volontaire)
@@ -1202,8 +1269,29 @@ CREATE TABLE IF NOT EXISTS messages (
     quand  TEXT NOT NULL,
     -- NULL = tchat general, lisible par tous les comptes. Un pseudo = message
     -- prive, visible du seul couple expediteur/destinataire.
-    destinataire TEXT
+    destinataire TEXT,
+    -- Les drapeaux de langues de l'AUTEUR au moment de l'envoi (chantier du
+    -- 06/11/2026), ex. "fr,en". Garde sur le message lui-meme, pas relu sur
+    -- le compte : un anonyme n'en a pas, et les langues affichees a cote d'un
+    -- vieux message ne doivent pas changer si l'auteur les modifie depuis.
+    langues TEXT
 );
+-- Le fil de TABLE (reconstruction du tchat, chantier du 06/11/2026) : un fil
+-- par partie en cours, lisible et inscriptible par tout siege de la table, y
+-- compris un spectateur. Ephemere par construction : `effacer_messages_table`
+-- le vide a l'extinction de la partie (`eteindre_jeu`), et une purge par age
+-- (`TABLE_MESSAGES_AGE_MAX_S`) rattrape les tables qui ne s'eteignent jamais
+-- proprement (plantage, faucheur). Jamais expose en relecture : la relecture
+-- lit le journal de la partie, pas cette table.
+CREATE TABLE IF NOT EXISTS messages_table (
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    table_id TEXT NOT NULL,
+    pseudo   TEXT NOT NULL,
+    texte    TEXT NOT NULL,
+    quand    TEXT NOT NULL,
+    langues  TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_messages_table_table ON messages_table(table_id);
 -- ⚠ LES SESSIONS SONT SUR DISQUE, ET C'EST TOUT L'INTERET.
 -- Elles vivaient dans un dictionnaire en memoire : le moindre redemarrage du
 -- service — donc chaque deploiement — deconnectait tout le monde, alors que le
@@ -1359,6 +1447,20 @@ CREATE TABLE IF NOT EXISTS parties_play (
     difficulte  TEXT
 );
 CREATE INDEX IF NOT EXISTS parties_play_jour ON parties_play(jour);
+-- Mode d'affichage de la phase du mechant choisi par les joueurs de play (compteur
+-- ANONYME : un nombre par jour et par valeur, rien d'autre). Table nouvelle : les
+-- donnees existantes ne sont pas touchees. `compteurs_depuis` garde le jour ou le
+-- comptage a commence (les parties d'avant ne sont pas comptees).
+CREATE TABLE IF NOT EXISTS phase_play (
+    jour    TEXT NOT NULL,
+    valeur  TEXT NOT NULL,
+    n       INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (jour, valeur)
+);
+CREATE TABLE IF NOT EXISTS compteurs_depuis (
+    nom   TEXT PRIMARY KEY,
+    jour  TEXT NOT NULL
+);
 -- LES DEMANDES DES CREATEURS (12/10/2026) : un createur (image, carte, contenu
 -- fan-made) qui n'a pas ete credite, ou qui veut que ses creations soient
 -- retirees, l'ecrit depuis le lien de l'accueil. Sans compte : `contact` est
@@ -1422,6 +1524,15 @@ def initialiser_base() -> None:
         # depuis /admin : 1 = la table de ce compte montre le nouveau panneau.
         if "essai_phase" not in colonnes:
             cx.execute("ALTER TABLE comptes ADD COLUMN essai_phase INTEGER NOT NULL DEFAULT 0")
+        # Le ROLE du compte : 'joueur' (defaut, tout l'existant) ou 'createur'
+        # (acces au seul createur de cartes, voir `Handler._refuser_createur`).
+        # Migration douce : les comptes deja en base deviennent 'joueur'.
+        if "role" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN role TEXT NOT NULL DEFAULT 'joueur'")
+        # Le role que l'invitation DONNE au compte qui l'utilise.
+        colonnes_inv = {r["name"] for r in cx.execute("PRAGMA table_info(invitations)")}
+        if "role" not in colonnes_inv:
+            cx.execute("ALTER TABLE invitations ADD COLUMN role TEXT NOT NULL DEFAULT 'joueur'")
         # Meme precaution pour les bases creees avant la purge des rapports.
         colonnes_rap = {r["name"] for r in cx.execute("PRAGMA table_info(rapports)")}
         if "traite_le" not in colonnes_rap:
@@ -1437,6 +1548,16 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE rapports ADD COLUMN compte_verifie TEXT")
             cx.execute("UPDATE rapports SET compte_verifie = hote"
                        " WHERE siege = 0 AND hote IS NOT NULL AND hote != ''")
+        # Drapeaux de langues (06/11/2026) : meme precaution pour les bases
+        # creees avant ce chantier.
+        if "langues" not in colonnes:
+            cx.execute("ALTER TABLE comptes ADD COLUMN langues TEXT")
+        colonnes_msg = {r["name"] for r in cx.execute("PRAGMA table_info(messages)")}
+        if "langues" not in colonnes_msg:
+            cx.execute("ALTER TABLE messages ADD COLUMN langues TEXT")
+        colonnes_table = {r["name"] for r in cx.execute("PRAGMA table_info(messages_table)")}
+        if "langues" not in colonnes_table:
+            cx.execute("ALTER TABLE messages_table ADD COLUMN langues TEXT")
     _migrer_depuis_json()
     _attribuer_emplacements_manquants()
 
@@ -1460,7 +1581,7 @@ def _prendre_un_emplacement(cx, pour: str = "") -> int:
     """
     pris = {r["emplacement"] for r in cx.execute(
         "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
-    libre = next((n for n in range(1, NB_EMPLACEMENTS + 1) if n not in pris), None)
+    libre = next((n for n in range(1, NB_EMPLACEMENTS_COMPTES + 1) if n not in pris), None)
     if libre is not None:
         return libre
     recyclable = cx.execute(
@@ -1497,7 +1618,8 @@ def _attribuer_emplacements_manquants() -> None:
         # meme table : parcourir un curseur ouvert dessus reviendrait a se lire
         # en train de s'ecrire.
         sans_place = [r["pseudo"] for r in cx.execute(
-            "SELECT pseudo FROM comptes WHERE emplacement IS NULL ORDER BY cree")]
+            "SELECT pseudo FROM comptes WHERE emplacement IS NULL"
+            " AND role NOT IN ('createur', 'invite_play') ORDER BY cree")]
         for pseudo in sans_place:
             libre = _prendre_un_emplacement(cx, pseudo)
             if libre < 0:
@@ -1544,6 +1666,103 @@ def revoquer_mot_de_passe_jeu(pseudo: str) -> None:
     """
     with _cx() as cx:
         cx.execute("UPDATE comptes SET mdp_jeu=NULL WHERE pseudo=?", (pseudo,))
+
+
+# ===========================================================================
+# TABLES INVITE DE PLAY (03/11/2026)
+#
+# Play (play.<domaine>) n'a pas de compte. Pour y jouer EN LIGNE, l'hote prend
+# une table invite : une vraie ligne `comptes` de role `invite_play`, avec un
+# emplacement du lot reserve (N+1..N+P), pour que TOUT le reste (session, mot de
+# passe du moteur, cles de siege, salon) serve tel quel. La ligne est jetable :
+# `liberer_invite` la supprime avec sa session et nettoie l'emplacement.
+#
+# ⚠ ELLE NE PEUT JAMAIS SE CONNECTER : mot de passe aleatoire que personne ne
+# connait. ⚠ ELLE NE COMPTE NI DANS `MAX_COMPTES` NI DANS LA LISTE DES JOUEURS.
+# ===========================================================================
+ROLE_INVITE = "invite_play"
+_INVITES_RECENTES: dict[str, list[float]] = {}
+_VERROU_INVITES = threading.Lock()
+DELAI_GRACE_INVITE_S = 300     # le moteur d'un invite fraichement cree n'est pas encore dans PARTIES
+
+
+def tables_invite_prises() -> int:
+    with _cx() as cx:
+        return cx.execute("SELECT COUNT(*) FROM comptes WHERE role = ?",
+                          (ROLE_INVITE,)).fetchone()[0]
+
+
+def invite_trop_souvent(adresse: str, maintenant: float | None = None) -> bool:
+    """Vrai si cette adresse a deja pris `INVITES_PAR_HEURE_ET_ADRESSE` tables dans
+    l'heure. Sinon, la note ET rend faux."""
+    maintenant = time.time() if maintenant is None else maintenant
+    with _VERROU_INVITES:
+        recentes = [q for q in _INVITES_RECENTES.get(adresse, []) if maintenant - q < 3600]
+        if len(recentes) >= INVITES_PAR_HEURE_ET_ADRESSE:
+            _INVITES_RECENTES[adresse] = recentes
+            return True
+        recentes.append(maintenant)
+        _INVITES_RECENTES[adresse] = recentes
+        return False
+
+
+def prendre_place_invite() -> "tuple[str | None, str]":
+    """Rend (pseudo, "") ou (None, raison) ; raison = "pleines" ou "memoire".
+
+    Sous `VERROU_COMPTES` : deux visiteurs simultanes ne recoivent jamais le meme
+    emplacement.
+    """
+    nettoyer_invites_perimes()
+    if sum(1 for p in list(PARTIES.values()) if p.vivant()) >= MAX_TABLES_VIVANTES:
+        return None, "memoire"
+    with VERROU_COMPTES, _cx() as cx:
+        pris = {r["emplacement"] for r in cx.execute(
+            "SELECT emplacement FROM comptes WHERE emplacement IS NOT NULL")}
+        libre = next((n for n in range(NB_EMPLACEMENTS_COMPTES + 1, NB_EMPLACEMENTS + 1)
+                      if n not in pris), None)
+        if libre is None:
+            return None, "pleines"
+        pseudo = "invite-" + secrets.token_hex(4)
+        cx.execute(
+            "INSERT INTO comptes (pseudo, email, sel, empreinte, statut, cree, emplacement, role)"
+            " VALUES (?, NULL, ?, ?, 'valide', ?, ?, ?)",
+            (pseudo, secrets.token_bytes(16).hex(), secrets.token_hex(32),
+             _maintenant(), libre, ROLE_INVITE))
+    # Un emplacement rendu est deja propre ; on le refait par prudence (reste d'un plantage).
+    _nettoyer_emplacement(libre)
+    return pseudo, ""
+
+
+def liberer_invite(pseudo: str) -> None:
+    """Rend la table invite : moteur eteint, session et ligne supprimees, dossiers nettoyes."""
+    ligne = compte(pseudo)
+    if ligne is None or ligne["role"] != ROLE_INVITE:
+        return
+    eteindre_jeu(pseudo, "invite termine")
+    with VERROU_COMPTES, _cx() as cx:
+        cx.execute("DELETE FROM sessions WHERE pseudo = ?", (pseudo,))
+        cx.execute("DELETE FROM comptes WHERE pseudo = ? AND role = ?", (pseudo, ROLE_INVITE))
+    if ligne["emplacement"]:
+        _nettoyer_emplacement(ligne["emplacement"])
+
+
+def nettoyer_invites_perimes(delai_grace_s: float = DELAI_GRACE_INVITE_S) -> int:
+    """Libere les tables invite dont le moteur n'existe plus (partie finie, faucheuse,
+    redemarrage du service). Rend le nombre libere."""
+    with _cx() as cx:
+        lignes = cx.execute("SELECT pseudo, cree FROM comptes WHERE role = ?",
+                            (ROLE_INVITE,)).fetchall()
+    n = 0
+    for l in lignes:
+        partie = PARTIES.get(l["pseudo"])
+        if partie is not None and partie.vivant():
+            continue
+        age = _secondes_depuis(l["cree"])
+        if age is not None and age < delai_grace_s:
+            continue
+        liberer_invite(l["pseudo"])
+        n += 1
+    return n
 
 
 def emplacement_de(pseudo: str):
@@ -1711,30 +1930,54 @@ def statut_de(pseudo: str) -> str:
     return ligne["statut"] if ligne else ""
 
 
+ROLES = ("joueur", "createur")
+
+
+def role_de(pseudo: str) -> str:
+    """Le role d'un compte ('joueur' si inconnu ou si la colonne manque)."""
+    ligne = compte(pseudo)
+    if ligne is None or "role" not in ligne.keys():
+        return "joueur"
+    return ligne["role"] or "joueur"
+
+
+def est_createur(pseudo: str) -> bool:
+    return bool(pseudo) and pseudo != ADMIN and role_de(pseudo) == "createur"
+
+
 def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str:
     pseudo = (pseudo or "").strip().lower()
     email = (email or "").strip().lower()
     if not (3 <= len(pseudo) <= 24) or not pseudo.replace("_", "").replace("-", "").isalnum():
-        raise ValueError(lang.t("Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _."))
+        raise ValueError(lang.t("Pseudo invalide : 3 à 24 caractères, lettres, chiffres, - et _."))
     # Controle volontairement minimal : on verifie qu'une adresse ressemble a
     # une adresse, pas qu'elle existe. Seule la validation manuelle fait foi.
     if "@" not in email or "." not in email.split("@")[-1] or len(email) < 6:
         raise ValueError(lang.t("Adresse e-mail invalide."))
     if len(mot_de_passe or "") < 8:
-        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
+        raise ValueError(lang.t("Mot de passe trop court : 8 caractères au minimum."))
     if not INSCRIPTION_LIBRE and not invitation_valide(jeton) and pseudo != ADMIN:
-        raise ValueError(lang.t("Il faut un lien d'invitation pour creer un compte ici."))
+        raise ValueError(lang.t("Il faut un lien d'invitation pour créer un compte ici."))
     with VERROU_COMPTES, _cx() as cx:
         if cx.execute("SELECT 1 FROM comptes WHERE pseudo = ?", (pseudo,)).fetchone():
-            raise ValueError(lang.t("Ce pseudo est deja pris."))
+            raise ValueError(lang.t("Ce pseudo est déjà pris."))
         if cx.execute("SELECT 1 FROM comptes WHERE email = ?", (email,)).fetchone():
-            raise ValueError(lang.t("Cette adresse est deja utilisee."))
+            raise ValueError(lang.t("Cette adresse est déjà utilisée."))
         # ⚠ LE PLAFOND NE COMPTE QUE LES COMPTES VALIDES. Sinon une vague
         # d'inscriptions en attente suffirait a bloquer les vraies demandes.
         valides = cx.execute(
-            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
-        if valides >= MAX_COMPTES and pseudo != ADMIN:
-            raise ValueError(f"Le site est complet ({MAX_COMPTES} comptes).")
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
+            " AND role NOT IN ('createur', 'invite_play')").fetchone()[0]
+        role_invitation = "joueur"
+        if jeton:
+            ligne_role = cx.execute(
+                "SELECT role, utilise_par FROM invitations WHERE jeton = ?", (jeton,)).fetchone()
+            if ligne_role is not None and ligne_role["utilise_par"] is None:
+                role_invitation = ligne_role["role"] or "joueur"
+        # Un compte createur n'occupe ni place de jeu ni rang dans le plafond.
+        if (valides >= MAX_COMPTES and pseudo != ADMIN
+                and role_invitation != "createur"):
+            raise ValueError(lang.t("Le site est complet ({n} comptes).").replace("{n}", str(MAX_COMPTES)))
         # ⚠ LE JETON EST RELU ET CONSOMME DANS LA MEME TRANSACTION que la
         # creation du compte. Le verifier avant puis le consommer apres
         # laisserait deux personnes cliquant en meme temps sur le meme lien
@@ -1751,15 +1994,20 @@ def inscrire(pseudo: str, email: str, mot_de_passe: str, jeton: str = "") -> str
         sel = secrets.token_bytes(16).hex()
         # Quitte a reprendre la place d'un compte expire : c'est tout l'objet
         # de l'expiration. Voir `_prendre_un_emplacement`.
-        libre = _prendre_un_emplacement(cx, pseudo)
-        if libre < 0:
-            raise ValueError(lang.t("Plus aucun espace de jeu disponible."))
+        role = "createur" if (invite and role_invitation == "createur"
+                              and pseudo != ADMIN) else "joueur"
+        if role == "createur":
+            libre = None       # aucune table de jeu pour un createur
+        else:
+            libre = _prendre_un_emplacement(cx, pseudo)
+            if libre < 0:
+                raise ValueError(lang.t("Plus aucun espace de jeu disponible."))
         cx.execute(
             "INSERT INTO comptes"
-            " (pseudo, email, sel, empreinte, statut, cree, emplacement)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?)",
+            " (pseudo, email, sel, empreinte, statut, cree, emplacement, role)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (pseudo, email, sel, _empreinte(mot_de_passe, sel), statut,
-             _maintenant(), libre))
+             _maintenant(), libre, role))
         if invite:
             cx.execute(
                 "UPDATE invitations SET utilise_par = ?, utilise_le = ? WHERE jeton = ?",
@@ -1855,8 +2103,8 @@ def verifier(identifiant: str, mot_de_passe: str) -> str:
         # aurait envoye quelqu'un attendre indefiniment quelque chose qui ne
         # viendra pas : personne ne sait, cote site, qu'il est revenu.
         raise ValueError(
-            "Ton compte a expire : plus de %d jours sans venir, et la place est "
-            "retournee au pot. Ecris-moi, je te la rends." % EXPIRATION_JOURS)
+            "Ton compte a expiré : plus de %d jours sans venir, et la place est "
+            "retournée au pot. Écris-moi, je te la rends." % EXPIRATION_JOURS)
     if ligne["statut"] != "valide":
         raise ValueError("Ton compte attend encore ma validation.")
     with _cx() as cx:
@@ -1884,7 +2132,8 @@ def changer_statut(pseudo: str, statut: str) -> None:
         return
     # Remettre en service un compte expire dont la place a ete recyclee : il
     # lui en faut une nouvelle, sinon il se connecte dans le vide.
-    rendre_une_place = (statut == "valide" and emplacement_de(pseudo) is None)
+    rendre_une_place = (statut == "valide" and emplacement_de(pseudo) is None
+                        and role_de(pseudo) != "createur")
     with VERROU_COMPTES, _cx() as cx:
         cx.execute("UPDATE comptes SET statut = ? WHERE pseudo = ?", (statut, pseudo))
     if statut != "valide":
@@ -1939,6 +2188,8 @@ def expirer_comptes_inactifs() -> list:
     for c in liste_comptes():
         if c["statut"] != "valide" or c["pseudo"] == ADMIN:
             continue
+        if c["role"] == "createur":
+            continue     # pas de place de jeu a rendre
         ecart = _secondes_depuis(derniere_activite(c))
         if ecart is None or ecart < seuil:
             continue
@@ -1954,17 +2205,27 @@ def expirer_comptes_inactifs() -> list:
 
 
 def liste_comptes():
+    """Les comptes de JOUEURS. Les createurs de cartes ont leur propre liste
+    (`liste_createurs`) : ils n'ont ni table, ni deck, ni presence."""
     with _cx() as cx:
         return cx.execute(
-            "SELECT * FROM comptes ORDER BY"
+            "SELECT * FROM comptes WHERE role NOT IN ('createur', 'invite_play') ORDER BY"
             " CASE statut WHEN 'attente' THEN 0 WHEN 'valide' THEN 1 ELSE 2 END,"
             " pseudo").fetchall()
 
 
 def nb_valides() -> int:
+    """Les comptes valides QUI JOUENT (les createurs ne comptent pas)."""
     with _cx() as cx:
         return cx.execute(
-            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'").fetchone()[0]
+            "SELECT COUNT(*) FROM comptes WHERE statut = 'valide'"
+            " AND role NOT IN ('createur', 'invite_play')").fetchone()[0]
+
+
+def liste_createurs():
+    with _cx() as cx:
+        return cx.execute(
+            "SELECT * FROM comptes WHERE role = 'createur' ORDER BY pseudo").fetchall()
 
 
 def journal_partie_ouverte(partie, hote: str) -> None:
@@ -2005,17 +2266,19 @@ def dernieres_parties(combien: int = 25):
             (combien,)).fetchall()
 
 
-def creer_invitation() -> str:
+def creer_invitation(role: str = "joueur") -> str:
     """Un jeton a USAGE UNIQUE qui vaut validation.
 
     C'est le chemin normal : celui qui recoit le lien entre directement, sans
     passer par la file d'attente. L'inscription libre reste possible, mais
     elle, elle attend une validation a la main.
     """
+    if role not in ROLES:
+        raise ValueError("role inconnu")
     jeton = secrets.token_urlsafe(16)
     with _cx() as cx:
-        cx.execute("INSERT INTO invitations (jeton, cree_le) VALUES (?, ?)",
-                   (jeton, _maintenant()))
+        cx.execute("INSERT INTO invitations (jeton, cree_le, role) VALUES (?, ?, ?)",
+                   (jeton, _maintenant(), role))
     return jeton
 
 
@@ -2068,14 +2331,14 @@ def reinitialiser_mot_de_passe(jeton: str, mot_de_passe: str) -> str:
     ouvertes du compte (un mot de passe change parce qu'on a un doute : les
     sessions d'avant ne doivent pas survivre). Rend le pseudo."""
     if len(mot_de_passe or "") < 8:
-        raise ValueError(lang.t("Mot de passe trop court : 8 caracteres au minimum."))
+        raise ValueError(lang.t("Mot de passe trop court : 8 caractères au minimum."))
     with _cx() as cx:
         l = cx.execute("SELECT pseudo, cree_le, utilise_le FROM reinitialisations WHERE jeton = ?",
                        (jeton or "",)).fetchone()
         # ⚠ Relu et consomme dans la MEME transaction, comme une invitation :
         # deux envois du formulaire ne doivent pas poser deux mots de passe.
         if l is None or l["utilise_le"] is not None or _age_secondes(l["cree_le"]) > REINITIALISATION_DUREE:
-            raise ValueError("Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur.")
+            raise ValueError("Ce lien n'est plus valable. Demande un nouveau lien à l'administrateur.")
         sel = secrets.token_bytes(16).hex()
         cx.execute("UPDATE comptes SET sel = ?, empreinte = ? WHERE pseudo = ?",
                    (sel, _empreinte(mot_de_passe, sel), l["pseudo"]))
@@ -2148,6 +2411,63 @@ def enregistrer_partie_play(brut: bytes) -> bool:
     return True
 
 
+COMPTEUR_PHASE_MAX_OCTETS = 256
+COMPTEUR_PHASE_MAX_PAR_JOUR = int(os.environ.get("COMPTEUR_PHASE_MAX_PAR_JOUR", "5000"))
+# Liste blanche : « guidee », « plateau_anime » et « accelere » sont les trois choix visibles du
+# reglage « Phase du mechant > Mode d'affichage » ; « etape » le mode cache (ancien choix gardé) ;
+# « telephone » = mode force par le telephone, a part pour ne pas gonfler « guidee ».
+_PHASE_VALEURS = ("guidee", "plateau_anime", "accelere", "etape", "telephone")
+_PHASE_LIBELLES = {"guidee": "Guidée", "plateau_anime": "Plateau animé", "accelere": "Accéléré",
+                   "etape": "Étape par étape (ancien choix)", "telephone": "Téléphone (Guidée d'office)"}
+
+
+def enregistrer_phase_play(brut: bytes) -> bool:
+    """Compte UN choix de mode de phase. Rend False si ignore (illisible, valeur
+    hors liste blanche, plafond du jour atteint). Ne stocke que (jour, valeur, n)."""
+    try:
+        donnees = json.loads(brut.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return False
+    valeur = donnees.get("phase") if isinstance(donnees, dict) else None
+    if valeur not in _PHASE_VALEURS:
+        return False
+    jour = time.strftime("%Y-%m-%d", time.gmtime())
+    with _cx() as cx:
+        deja = cx.execute("SELECT COALESCE(SUM(n), 0) FROM phase_play WHERE jour = ?", (jour,)).fetchone()[0]
+        if deja >= COMPTEUR_PHASE_MAX_PAR_JOUR:
+            return False
+        cx.execute("INSERT OR IGNORE INTO compteurs_depuis (nom, jour) VALUES ('phase_play', ?)", (jour,))
+        cx.execute("INSERT INTO phase_play (jour, valeur, n) VALUES (?, ?, 1)"
+                   " ON CONFLICT(jour, valeur) DO UPDATE SET n = n + 1", (jour, valeur))
+    return True
+
+
+def stats_phase_play() -> dict:
+    """Total par valeur depuis le debut du comptage, et ce jour de debut."""
+    with _cx() as cx:
+        par_valeur = {r["valeur"]: r["n"] for r in cx.execute(
+            "SELECT valeur, SUM(n) AS n FROM phase_play GROUP BY valeur")}
+        depuis = cx.execute("SELECT jour FROM compteurs_depuis WHERE nom = 'phase_play'").fetchone()
+    lignes = [(v, par_valeur[v]) for v in _PHASE_VALEURS if par_valeur.get(v)]
+    lignes.sort(key=lambda x: -x[1])
+    return {"lignes": lignes, "total": sum(n for _, n in lignes),
+            "depuis": depuis["jour"] if depuis else None}
+
+
+def bloc_phase_play() -> str:
+    st = stats_phase_play()
+    depuis = st["depuis"] or time.strftime("%Y-%m-%d", time.gmtime())
+    mention = ('<p class="sous">Compté depuis le %s (UTC), les parties passées ne sont pas comptées. '
+               'Une partie = un choix, relevé à l\'ouverture du plateau.</p>' % html.escape(depuis))
+    if not st["total"]:
+        return "<h3>Mode de la phase du méchant</h3>" + mention + '<p class="vide">Aucune donnée pour l\'instant.</p>'
+    corps = "".join(
+        '<tr><td data-label="Mode">%s</td><td data-label="Parties">%d</td><td data-label="Part">%d %%</td></tr>'
+        % (html.escape(_PHASE_LIBELLES[v]), n, round(100 * n / st["total"])) for v, n in st["lignes"])
+    return ("<h3>Mode de la phase du méchant</h3>" + mention
+            + "<table><tr><th>Mode</th><th>Parties</th><th>Part</th></tr>%s</table>" % corps)
+
+
 def stats_play(jours: int = 30, top: int = 10) -> dict:
     """Parties de play par jour (les `jours` derniers), et les plus joues."""
     depuis = time.strftime("%Y-%m-%d", time.gmtime(time.time() - (jours - 1) * 86400))
@@ -2217,11 +2537,15 @@ def presents_play(maintenant: float | None = None) -> int:
 
 
 def bloc_stats_play() -> str:
-    """Le sous-onglet « Play » de l'administration."""
+    """Le sous-onglet « Play » de l'administration : les parties, puis le mode de phase."""
+    return _bloc_parties_play() + bloc_phase_play()
+
+
+def _bloc_parties_play() -> str:
     st = stats_play()
     present = "<p class=\"sous\"><b>En ce moment sur play : %d</b></p>" % presents_play()
     if not st["total"]:
-        return present + '<p class="vide">Aucune partie lancee sur play ces %d derniers jours.</p>' % st["jours"]
+        return present + '<p class="vide">Aucune partie lancée sur play ces %d derniers jours.</p>' % st["jours"]
 
     def tableau(titre, lignes):
         corps = "".join('<tr><td data-label="%s">%s</td><td data-label="Parties">%d</td></tr>'
@@ -2229,7 +2553,7 @@ def bloc_stats_play() -> str:
         return "<h3>%s</h3><table><tr><th>%s</th><th>Parties</th></tr>%s</table>" % (
             html.escape(titre), html.escape(titre.split()[0]), corps)
 
-    return (present + "<p class=\"sous\">%d partie(s) lancee(s) sur play ces %d derniers jours.</p>"
+    return (present + "<p class=\"sous\">%d partie(s) lancée(s) sur play ces %d derniers jours.</p>"
             % (st["total"], st["jours"])
             + tableau("Jour (UTC)", st["par_jour"])
             + tableau("Mechants les plus joues", st["mechants"])
@@ -2294,7 +2618,7 @@ def _il_y_a(quand: str) -> str:
     if ecart is None:
         return ""
     if ecart < 90:
-        return "a l'instant"
+        return "à l'instant"
     if ecart < 5400:
         return "il y a %d min" % round(ecart / 60)
     if ecart < 172800:
@@ -2488,13 +2812,340 @@ def decks_de_l_invite(hote: str, siege: int) -> dict:
     return {"invite": invite, "decks": decks}
 
 
+def decks_du_compte(pseudo: str) -> dict:
+    """Les decks du COMPTE identifie par sa SESSION de site (28/10/2026).
+
+    Jumelle de `decks_de_l_invite`, mais l'identite ne vient pas d'une
+    invitation acceptee : elle vient du cookie de session (`nc_session`, resolu
+    par `pseudo_de_session` cote appelant). Un invite deja CONNECTE a son compte
+    dans ce navigateur retrouve ainsi SES decks dans le salon, meme venu par un
+    simple lien copie. Lecture seule, comme `decks_de_l_invite` : le salon
+    enregistre une copie du deck choisi chez l'hote.
+
+    ⚠ Le pseudo ARRIVE DEJA RESOLU et verifie (session valide) : on ne lit donc
+    que les decks du compte qui a prouve sa session, jamais « ceux de n'importe
+    qui ». `_dossier_decks_de` borne la lecture a `deck/` (pas de lien
+    symbolique qui sortirait du dossier).
+    """
+    if not pseudo:
+        return {"pseudo": "", "decks": []}
+    place = emplacement_de(pseudo)
+    dossier = _dossier_decks_de(place) if place is not None else None
+    if not dossier:
+        return {"pseudo": pseudo, "decks": []}
+    decks = []
+    try:
+        noms = sorted(n for n in os.listdir(dossier) if n.endswith(".json"))
+    except OSError:
+        noms = []
+    for nom in noms[:MAX_DECKS_INVITE]:
+        try:
+            with open(os.path.join(dossier, nom), encoding="utf-8") as f:
+                deck = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(deck, dict) and deck.get("hero"):
+            decks.append({"id": nom[:-5], "deck": deck})
+    return {"pseudo": pseudo, "decks": decks}
+
+
+# --------------------------------------------------------------------------
+# Decks des joueurs, consultes et importes par l'administrateur (19/10/2026)
+# --------------------------------------------------------------------------
+# Demande du proprietaire du site : voir les decks des autres comptes et en
+# importer UN, a la fois, dans son propre compte.
+#
+# ⚠ TOUT SE VERIFIE ICI, COTE SERVEUR (`pseudo == ADMIN` dans do_GET/do_POST),
+# jamais seulement dans l'interface. Les deux routes sont
+#   GET  /api/admin/decks-joueurs            : lister, par compte
+#   POST /api/admin/decks-joueurs/importer   : copier UN deck chez l'admin
+#
+# ⚠ LECTURE SEULE SUR LES DECKS DES AUTRES. Le code ne contient aucun
+# `remove`/`rename`/ecriture dans le dossier d'un autre compte : l'import LIT le
+# fichier d'origine et ECRIT UNE COPIE dans le dossier de l'admin, en mode `x`
+# (jamais d'ecrasement : un nom pris recoit un suffixe -2, -3...).
+#
+# ⚠ AUCUN CHEMIN N'EST PRIS DANS LA REQUETE. Le compte est cherche dans la base
+# (son emplacement est un entier), le deck est un identifiant [A-Za-z0-9_-]
+# retrouve dans le dossier ; le fichier est ensuite verifie (pas un lien, bien
+# dans `deck/serveur-<n>/`). `..`, `/`, les liens et les noms exotiques sont
+# refuses AVANT toute ouverture.
+#
+# Confidentialite : la liste ne rend que le NOM D'AFFICHAGE (le pseudo) : ni
+# adresse e-mail, ni mot de passe, ni empreinte. Chaque consultation et chaque
+# import est journalise dans `journal-decks-admin.log`.
+DECK_ADMIN_MAX_OCTETS = 256 * 1024          # au-dela, un « deck » n'en est plus un
+DECK_ADMIN_MAX_PAR_COMPTE = 200
+DECK_ADMIN_IMPORTS_PAR_HEURE = 30
+DECK_ADMIN_MAX_COPIES_ADMIN = 500           # decks du dossier de l'admin, au plus
+JOURNAL_DECKS_ADMIN = os.environ.get(
+    "JOURNAL_DECKS_ADMIN",
+    os.path.join(os.path.dirname(BASE), "journal-decks-admin.log"))
+_ID_DECK = re.compile(r"^[A-Za-z0-9_-]{1,60}$")
+_IMPORTS_ADMIN: list[float] = []
+_VERROU_DECKS_ADMIN = threading.Lock()
+_NOMS_HEROS: dict[str, str] = {}
+
+
+class ErreurDeckAdmin(Exception):
+    """Refus clair : `code` est le statut HTTP, `args[0]` le message."""
+
+    def __init__(self, code: int, message: str):
+        super().__init__(message)
+        self.code = code
+
+
+def journaliser_decks_admin(action: str, **champs) -> None:
+    """Une ligne JSON par evenement : qui, quoi, quand. Ne leve jamais."""
+    ligne = {"quand": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "qui": ADMIN, "action": action}
+    ligne.update(champs)
+    try:
+        with _VERROU_DECKS_ADMIN:
+            with open(JOURNAL_DECKS_ADMIN, "a", encoding="utf-8") as f:
+                f.write(json.dumps(ligne, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+
+
+def _racine_decks() -> str:
+    return os.path.realpath(os.path.join(RACINE_JEU, ".game", "deck"))
+
+
+def _dossier_decks_de(place) -> str | None:
+    """Le dossier `deck/serveur-<place>/` de ce compte, ou None s'il n'existe pas
+    ou s'il sort de `deck/` (lien symbolique)."""
+    if not isinstance(place, int) or isinstance(place, bool) or place < 0:
+        return None
+    racine = _racine_decks()
+    dossier = os.path.join(racine, "serveur-%d" % place)
+    if os.path.islink(dossier) or not os.path.isdir(dossier):
+        return None
+    if os.path.dirname(os.path.realpath(dossier)) != racine:
+        return None
+    return dossier
+
+
+def _fichier_deck_sur(dossier: str, identifiant: str) -> str | None:
+    """Le chemin du deck `identifiant` DANS `dossier`, ou None. Rien n'est pris
+    dans la requete a part l'identifiant, et celui-ci est filtre."""
+    if not isinstance(identifiant, str) or not _ID_DECK.match(identifiant):
+        return None
+    chemin = os.path.join(dossier, identifiant + ".json")
+    if os.path.islink(chemin) or not os.path.isfile(chemin):
+        return None
+    if os.path.dirname(os.path.realpath(chemin)) != os.path.realpath(dossier):
+        return None
+    return chemin
+
+
+def _nom_du_heros(ids) -> str:
+    """Le nom de la carte du heros, pour l'affichage ; l'identifiant sinon."""
+    cle = ids[0] if isinstance(ids, list) and ids else ""
+    cle = str(cle).split(",")[0].strip()
+    if not _NOMS_HEROS:
+        try:
+            with open(os.path.join(RACINE_JEU, "data", "cards.json"), encoding="utf-8") as f:
+                for cartes in json.load(f).values():
+                    for c in cartes if isinstance(cartes, list) else []:
+                        if isinstance(c, dict) and c.get("card_id") and c.get("name"):
+                            _NOMS_HEROS[str(c["card_id"])] = str(c["name"])
+        except (OSError, ValueError, AttributeError):
+            _NOMS_HEROS["_"] = ""
+    return _NOMS_HEROS.get(cle) or cle
+
+
+def _lire_deck_sur(chemin: str):
+    """Le deck (dict) ou None s'il est trop gros, illisible ou sans heros."""
+    try:
+        if os.path.getsize(chemin) > DECK_ADMIN_MAX_OCTETS:
+            return None
+        with open(chemin, encoding="utf-8") as f:
+            deck = json.load(f)
+    except (OSError, ValueError):
+        return None
+    return deck if isinstance(deck, dict) and deck.get("hero") else None
+
+
+def lister_decks_des_joueurs() -> list:
+    """Par compte (admin exclu) : pseudo et decks (nom, heros, nombre de cartes,
+    date). Aucun champ prive du compte n'est lu."""
+    sortie = []
+    for c in liste_comptes():
+        if c["pseudo"] == ADMIN:
+            continue
+        dossier = _dossier_decks_de(c["emplacement"])
+        decks = []
+        if dossier:
+            try:
+                noms = sorted(n for n in os.listdir(dossier) if n.endswith(".json"))
+            except OSError:
+                noms = []
+            for nom in noms[:DECK_ADMIN_MAX_PAR_COMPTE]:
+                identifiant = nom[:-5]
+                chemin = _fichier_deck_sur(dossier, identifiant)
+                deck = _lire_deck_sur(chemin) if chemin else None
+                if deck is None:
+                    continue
+                decks.append({
+                    "id": identifiant,
+                    "nom": str(deck.get("name") or identifiant)[:80],
+                    "heros": _nom_du_heros(deck.get("hero")),
+                    "cartes": len(deck.get("player_deck") or []),
+                    "date": time.strftime("%Y-%m-%d %H:%M",
+                                          time.localtime(os.path.getmtime(chemin))),
+                })
+        if decks:
+            sortie.append({"compte": c["pseudo"], "decks": decks})
+    return sortie
+
+
+def importer_deck_de_joueur(compte_source: str, identifiant: str) -> dict:
+    """Copie UN deck de `compte_source` dans le dossier de l'admin, sous
+    `de-<compte>-<deck>`. L'original n'est ni modifie ni supprime ; une copie
+    existante n'est jamais ecrasee. Leve ErreurDeckAdmin."""
+    source = compte(compte_source)
+    if source is None or source["pseudo"] == ADMIN or source["pseudo"] != compte_source:
+        raise ErreurDeckAdmin(404, "Compte introuvable.")
+    chez_lui = _dossier_decks_de(source["emplacement"])
+    chemin = _fichier_deck_sur(chez_lui, identifiant) if chez_lui else None
+    if chemin is None:
+        raise ErreurDeckAdmin(404, "Deck introuvable.")
+    deck = _lire_deck_sur(chemin)
+    if deck is None:
+        raise ErreurDeckAdmin(422, "Deck illisible ou trop volumineux.")
+    place_admin = emplacement_de(ADMIN)
+    if place_admin is None:
+        raise ErreurDeckAdmin(409, "Le compte administrateur n'a pas de place.")
+    chez_admin = os.path.join(_racine_decks(), "serveur-%d" % place_admin)
+    if os.path.islink(chez_admin):
+        raise ErreurDeckAdmin(409, "Dossier de l'administrateur invalide.")
+    os.makedirs(chez_admin, exist_ok=True)
+    try:
+        if sum(1 for n in os.listdir(chez_admin) if n.endswith(".json")) >= DECK_ADMIN_MAX_COPIES_ADMIN:
+            raise ErreurDeckAdmin(409, "Trop de decks dans le compte administrateur.")
+    except OSError:
+        raise ErreurDeckAdmin(500, "Dossier illisible.")
+    with _VERROU_DECKS_ADMIN:
+        maintenant = time.time()
+        _IMPORTS_ADMIN[:] = [t for t in _IMPORTS_ADMIN if maintenant - t < 3600]
+        if len(_IMPORTS_ADMIN) >= DECK_ADMIN_IMPORTS_PAR_HEURE:
+            raise ErreurDeckAdmin(429, "Trop d'imports cette heure-ci.")
+        _IMPORTS_ADMIN.append(maintenant)
+    # Meme alphabet que /save_deck : le moteur relit ce dossier tel quel.
+    pseudo_net = re.sub("[^a-zA-Z0-9_-]+", "_", source["pseudo"]).strip("_")[:20] or "joueur"
+    base = ("de-%s-%s" % (pseudo_net, re.sub("[^a-zA-Z0-9_-]+", "_", identifiant).strip("_")))[:56]
+    copie = dict(deck)
+    copie["name"] = ("%s (de %s)" % (deck.get("name") or identifiant, source["pseudo"]))[:100]
+    contenu = json.dumps(copie, ensure_ascii=False, indent=4)
+    for rang in range(1, 100):
+        nom = base if rang == 1 else "%s-%d" % (base, rang)
+        try:
+            with open(os.path.join(chez_admin, nom + ".json"), "x", encoding="utf-8") as f:
+                f.write(contenu)
+            return {"ok": True, "fichier": nom, "compte": source["pseudo"], "deck": identifiant}
+        except FileExistsError:
+            continue
+    raise ErreurDeckAdmin(409, "Trop de copies portant ce nom.")
+
+
 # On ne garde pas l'historique complet : un tchat de salon sert a se retrouver,
 # pas a archiver. Au-dela, les plus anciens partent.
 MESSAGES_GARDES = 200
 # Les conversations privees sont plus nombreuses et plus lentes a defiler :
 # une seule generale se partage entre tous, les privees se multiplient.
 PRIVES_GARDES = 500
+# Filet par AGE, en plus du filet par NOMBRE ci-dessus (06/11/2026, demande de
+# l'utilisateur : rouvrir une conversation privee doit retrouver les derniers
+# jours, pas repartir de zero). `PRIVES_GARDES` protege le disque d'un pic de
+# messages ; celui-ci protege une conversation calme contre un AUTRE pic
+# ailleurs (les deux partagent la meme table `messages`, voir `dire()`).
+# Purge hebdomadaire, voir `purger_messages_anciens` et `deploiement/purge.sh`.
+JOURS_MESSAGES_GARDES = int(os.environ.get("JOURS_MESSAGES_GARDES", "30"))
 TAILLE_MESSAGE = 500
+# Le fil d'UNE table reste court : une partie dure quelques heures, pas des
+# semaines.
+MESSAGES_TABLE_GARDEES = 300
+# Filet de securite pour les tables qui ne s'eteignent jamais proprement
+# (plantage, faucheur) : au-dela de ce temps, meme sans extinction notee, un
+# message de table n'a plus rien a dire a personne.
+TABLE_MESSAGES_AGE_MAX_S = 60 * 60 * 24 * 2
+
+# Un visiteur SANS COMPTE qui parle dans le tchat general, par adresse et par
+# heure. Memoire volontairement en memoire, comme `_ENVOIS_RAPPORTS` : la
+# limite protege d'une boucle, pas d'un adversaire patient, et un redemarrage
+# qui la remet a zero est sans consequence.
+ANONYMES_PAR_HEURE = int(os.environ.get("ANONYMES_PAR_HEURE", "30"))
+_ENVOIS_ANONYMES: dict[str, list[float]] = {}
+
+# Les drapeaux de langues parlees, affiches a cote du pseudo dans le tchat
+# (chantier du 06/11/2026). Liste COURTE ET FIXE (decision utilisateur) :
+# un menu a cocher, pas un selecteur de pays. Code ISO 639-1 -> drapeau.
+LANGUES_TCHAT = {
+    "fr": "🇫🇷", "en": "🇬🇧", "es": "🇪🇸",
+    "de": "🇩🇪", "it": "🇮🇹", "pt": "🇵🇹",
+}
+# Au-dela, ce n'est plus "les langues que je parle" mais une liste qu'on a
+# cochee par jeu — autant la plafonner a la taille de la liste elle-meme.
+LANGUES_TCHAT_MAX = len(LANGUES_TCHAT)
+
+
+def langues_tchat_valides(brut: str) -> str:
+    """Les codes de `brut` (separes par des virgules) qui sont dans
+    `LANGUES_TCHAT`, dans l'ordre, sans doublon, en "fr,en" propre.
+
+    Jamais d'exception : une entree inattendue rend simplement "" plutot que
+    de faire echouer l'envoi du message qui la porte.
+    """
+    vus: list[str] = []
+    for code in str(brut or "").lower().split(","):
+        code = code.strip()
+        if code in LANGUES_TCHAT and code not in vus:
+            vus.append(code)
+        if len(vus) >= LANGUES_TCHAT_MAX:
+            break
+    return ",".join(vus)
+
+
+def langues_du_compte(pseudo: str) -> str:
+    """Les langues enregistrees au profil de `pseudo`, "" si aucune/pas de compte."""
+    c = compte(pseudo)
+    return (c["langues"] or "") if c else ""
+
+
+def definir_langues_du_compte(pseudo: str, langues: str) -> str:
+    """Enregistre les langues au profil ; rend la valeur effectivement gardee."""
+    pseudo = (pseudo or "").strip().lower()
+    if not pseudo:
+        return ""
+    valides = langues_tchat_valides(langues)
+    with _cx() as cx:
+        cx.execute("UPDATE comptes SET langues = ? WHERE pseudo = ?", (valides or None, pseudo))
+    return valides
+
+
+def debit_anonyme_ok(adresse: str) -> bool:
+    """Vrai si `adresse` peut encore poster dans le tchat general cette heure."""
+    maintenant = time.time()
+    recents = [t for t in _ENVOIS_ANONYMES.get(adresse, []) if maintenant - t < 3600]
+    _ENVOIS_ANONYMES[adresse] = recents
+    if len(recents) >= ANONYMES_PAR_HEURE:
+        return False
+    recents.append(maintenant)
+    return True
+
+
+def pseudo_anonyme_valide(pseudo: str) -> str:
+    """Le pseudo d'un visiteur SANS COMPTE, nettoye, ou "" s'il ne convient pas.
+
+    ⚠ ON REFUSE UN PSEUDO QUI EST DEJA CELUI D'UN COMPTE. Sans ce controle,
+    n'importe quel visiteur pourrait se faire passer pour un titulaire de
+    compte dans le tchat general — un simple champ de texte, sans mot de
+    passe, lui suffirait.
+    """
+    pseudo = " ".join(str(pseudo or "").split())[:24]
+    if not pseudo or compte(pseudo) is not None:
+        return ""
+    return pseudo
 
 
 # --------------------------------------------------------------------------
@@ -2784,9 +3435,24 @@ def reponses_non_lues(pseudo: str) -> int:
 
 
 def liste_rapports(limite: int = 60) -> list[dict]:
+    """Les rapports ACTIFS (nouveau, en cours) au complet, jamais tronqués,
+    suivis des `limite` derniers rapports CLASSÉS (traité, refusé).
+
+    Archivage du 21/10/2026 (item 23 du backlog) : avant cette distinction,
+    `ORDER BY id DESC LIMIT` seul pouvait repousser hors de la fenêtre un
+    rapport actif ancien derrière une pile de tickets déjà corrigés/refusés,
+    si le suivi se remplissait. Les classés restent consultables (le fil et
+    la capture jusqu'à la purge à 30 jours), seulement plus loin dans la
+    liste une fois `limite` dépassée.
+    """
     with _cx() as cx:
-        return [dict(r) for r in cx.execute(
-            "SELECT * FROM rapports ORDER BY id DESC LIMIT ?", (limite,))]
+        actifs = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE etat IN ('nouveau', 'en cours') OR etat IS NULL"
+            " ORDER BY id DESC")]
+        classes = [dict(r) for r in cx.execute(
+            "SELECT * FROM rapports WHERE etat IN ('traite', 'refuse')"
+            " ORDER BY id DESC LIMIT ?", (limite,))]
+    return actifs + classes
 
 
 def nb_rapports_nouveaux() -> int:
@@ -2882,6 +3548,32 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
     return len(lignes)
 
 
+def purger_messages_anciens(jours: int = JOURS_MESSAGES_GARDES) -> int:
+    """Efface les messages du tchat (general ET prives, table `messages`)
+    vieux de plus de `jours` jours — demande de l'utilisateur du 06/11/2026 :
+    rouvrir une conversation privee doit retrouver les derniers jours, pas
+    repartir de zero, et une conversation calme ne doit pas perdre son
+    histoire parce qu'une AUTRE conversation a ete tres active (c'est la
+    limite de `PRIVES_GARDES`, par NOMBRE total et partagee entre toutes les
+    conversations privees -- ce filet-ci est par AGE et laisse chaque
+    conversation tranquille tant qu'elle a moins de `jours` jours).
+
+    Le fil de TABLE (`messages_table`) est deja ephemere par un autre chemin
+    (`effacer_messages_table`, `TABLE_MESSAGES_AGE_MAX_S`) : rien a faire ici.
+
+    Rend le nombre de messages effaces.
+    """
+    from datetime import datetime, timedelta
+    if jours < 0:
+        return 0
+    # Meme format que `_maintenant()`, meme raison qu'au-dessus : comparaison
+    # de chaines, fuseau UTC explicite.
+    limite = (datetime.utcnow() - timedelta(days=jours)).strftime("%Y-%m-%d %H:%M")
+    with _cx() as cx:
+        cur = cx.execute("DELETE FROM messages WHERE quand < ?", (limite,))
+        return cur.rowcount
+
+
 def supprimer_rapport(numero: int) -> None:
     """Efface le rapport ET sa capture : laisser l'image seule sur le disque
     ferait grossir le dossier sans que rien n'y renvoie plus."""
@@ -2895,8 +3587,12 @@ def supprimer_rapport(numero: int) -> None:
         cx.execute("DELETE FROM rapports WHERE id = ?", (numero,))
 
 
-def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
-    """Ecrit un message. `destinataire` vide = tchat general."""
+def dire(pseudo: str, texte: str, destinataire: str = "", langues: str = "") -> None:
+    """Ecrit un message. `destinataire` vide = tchat general.
+
+    `langues` sont les drapeaux de CET envoi (chantier du 06/11/2026), gardes
+    sur le message lui-meme — voir le commentaire de la colonne.
+    """
     texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
     if not texte:
         return
@@ -2906,9 +3602,10 @@ def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
     # personne ne lira jamais, sans que l'expediteur s'en doute.
     if a is not None and compte(a) is None:
         return
+    langues = langues_tchat_valides(langues)
     with _cx() as cx:
-        cx.execute("INSERT INTO messages (pseudo, texte, quand, destinataire)"
-                   " VALUES (?,?,?,?)", (pseudo, texte, _maintenant(), a))
+        cx.execute("INSERT INTO messages (pseudo, texte, quand, destinataire, langues)"
+                   " VALUES (?,?,?,?,?)", (pseudo, texte, _maintenant(), a, langues or None))
         # ⚠ DEUX PURGES SEPAREES. Une seule, globale, aurait laisse une
         # conversation generale animee effacer les messages prives de tout le
         # monde : ils partagent la meme table, pas le meme usage.
@@ -2918,6 +3615,68 @@ def dire(pseudo: str, texte: str, destinataire: str = "") -> None:
         cx.execute("DELETE FROM messages WHERE destinataire IS NOT NULL AND id NOT IN"
                    " (SELECT id FROM messages WHERE destinataire IS NOT NULL"
                    "  ORDER BY id DESC LIMIT ?)", (PRIVES_GARDES,))
+
+
+def dire_table(table_id: str, pseudo: str, texte: str, langues: str = "") -> None:
+    """Ecrit un message dans le fil de LA table `table_id` (ephemere).
+
+    ⚠ AUCUN CONTROLE DE COMPTE ICI. Un invite arrive par un lien de siege, ou
+    un spectateur, n'a pas de compte : c'est au moteur de decider qui a le
+    droit d'appeler cette fonction (tout siege de la table, spectateur
+    compris), pas a elle de le redemander.
+    """
+    table_id = (table_id or "").strip().lower()
+    texte = " ".join(str(texte or "").split())[:TAILLE_MESSAGE]
+    if not table_id or not texte:
+        return
+    langues = langues_tchat_valides(langues)
+    with _cx() as cx:
+        cx.execute("INSERT INTO messages_table (table_id, pseudo, texte, quand, langues)"
+                   " VALUES (?,?,?,?,?)", (table_id, pseudo, texte, _maintenant(), langues or None))
+        cx.execute("DELETE FROM messages_table WHERE table_id = ? AND id NOT IN"
+                   " (SELECT id FROM messages_table WHERE table_id = ?"
+                   "  ORDER BY id DESC LIMIT ?)", (table_id, table_id, MESSAGES_TABLE_GARDEES))
+        # Filet de securite : les tables abandonnees d'un autre `table_id` ne
+        # devraient normalement plus rien avoir a purger (deja fait a
+        # l'extinction), mais un plantage peut avoir saute cette etape.
+        cx.execute("DELETE FROM messages_table WHERE quand < ?",
+                   (_horodatage_avant(TABLE_MESSAGES_AGE_MAX_S),))
+
+
+def _horodatage_avant(secondes: int) -> str:
+    from datetime import datetime, timedelta, timezone
+    return (datetime.now(timezone.utc) - timedelta(seconds=secondes)).isoformat()
+
+
+def messages_table_depuis(table_id: str, depuis: int = 0) -> list:
+    """Les messages du fil de table `table_id`, apres `depuis`.
+
+    Jamais expose en relecture : la relecture lit le journal de la partie
+    (les actions), pas ce fil — voir `effacer_messages_table`, qui le vide de
+    toute facon a la fin de la partie.
+    """
+    table_id = (table_id or "").strip().lower()
+    if not table_id:
+        return []
+    with _cx() as cx:
+        lignes = cx.execute(
+            "SELECT id, pseudo, texte, quand, langues FROM messages_table"
+            " WHERE table_id = ? AND id > ?"
+            " ORDER BY id LIMIT ?", (table_id, depuis, MESSAGES_TABLE_GARDEES)).fetchall()
+    return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
+             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"]),
+             "langues": l["langues"] or ""}
+            for l in lignes]
+
+
+def effacer_messages_table(table_id: str) -> None:
+    """Vide le fil de table a l'extinction de la partie : il ne survit pas a
+    la partie qui l'a vu naitre (decision utilisateur, chantier du 06/11/2026)."""
+    table_id = (table_id or "").strip().lower()
+    if not table_id:
+        return
+    with _cx() as cx:
+        cx.execute("DELETE FROM messages_table WHERE table_id = ?", (table_id,))
 
 
 # --------------------------------------------------------------------------
@@ -2934,7 +3693,7 @@ ANNONCE_MINUTES_MAX = 180
 # La phrase par defaut, ECRITE POUR UN JOUEUR. Elle dit ce qui va se passer et
 # ce qu'il faut faire, dans cet ordre. Le decompte est ajoute par le client,
 # qui seul sait combien de minutes il reste au moment ou il dessine.
-ANNONCE_DEPLOIEMENT = ("Mise a jour du jeu en approche : les parties en cours "
+ANNONCE_DEPLOIEMENT = ("Mise à jour du jeu en approche : les parties en cours "
                        "seront interrompues. Sauvegarde la tienne avec le "
                        "bouton Save du plateau.")
 
@@ -2994,12 +3753,12 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
     with _cx() as cx:
         if not avec:
             lignes = cx.execute(
-                "SELECT id, pseudo, texte, quand FROM messages"
+                "SELECT id, pseudo, texte, quand, langues FROM messages"
                 " WHERE destinataire IS NULL AND id > ?"
                 " ORDER BY id LIMIT ?", (depuis, MESSAGES_GARDES)).fetchall()
         else:
             lignes = cx.execute(
-                "SELECT id, pseudo, texte, quand FROM messages WHERE id > ?"
+                "SELECT id, pseudo, texte, quand, langues FROM messages WHERE id > ?"
                 " AND ((pseudo=? AND destinataire=?) OR (pseudo=? AND destinataire=?))"
                 " ORDER BY id LIMIT ?",
                 (depuis, moi, avec, avec, moi, MESSAGES_GARDES)).fetchall()
@@ -3013,7 +3772,8 @@ def messages_depuis(depuis: int = 0, moi: str = "", avec: str = ""):
     # resultat legerement different a chaque appel. `_epoque_de` lit la date une
     # fois pour toutes, et la lit explicitement comme de l'UTC.
     return [{"id": l["id"], "pseudo": l["pseudo"], "texte": l["texte"],
-             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"])}
+             "quand": l["quand"][11:16], "quand_ts": _epoque_de(l["quand"]),
+             "langues": l["langues"] or ""}
             for l in lignes]
 
 
@@ -3410,12 +4170,18 @@ def _pied_de_page() -> str:
     texte a chaque rendu.
     """
     return lang.t(
-        "Ton espace de jeu est a toi : tes decks, tes campagnes en cours et tes "
-        "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
-        "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
+        "Ton espace de jeu est à toi : tes decks, tes campagnes en cours et tes "
+        "hauts faits t'y attendent d'une fois sur l'autre. Éteindre le jeu "
+        "n'efface rien. Tes invités, eux, rejoignent ta partie par leur lien "
         "sans avoir besoin d'un compte. Extinction automatique au bout de "
         "{heures} h d'allumage.").replace("{heures}", str(int(DUREE_MAX_HEURES))) \
         + '<span class="mention-legale">%s</span>' % _mention_courte()
+
+
+def _lignes_pied(*phrases: str) -> str:
+    """Le pied des formulaires : une phrase par ligne (20/10/2026). Elles
+    s'empilaient en un bloc de texte gris ; chacune a maintenant sa ligne."""
+    return "".join('<span class="ligne">%s</span>' % p for p in phrases if p)
 
 
 def _mention_courte() -> str:
@@ -3481,6 +4247,8 @@ def _barre(pseudo: str) -> str:
     signalements = ('<a href="/signalements">%s%s</a>'
                     % (lang.t("Mes signalements"),
                        ' <span class="pastille">%d</span>' % attente if attente else ""))
+    # Le createur de cartes est ouvert a tout compte connecte (28/10/2026).
+    createur = '<a href="/mc-creator">%s</a>' % "MC Creator"
     # ⚠ LE RETOUR N'EST PAS UN CONFORT, C'EST LA SEULE SORTIE. Le site
     # s'installe en application (`MANIFESTE_APPLI`, `display: standalone`), donc
     # dans une fenetre SANS bouton Precedent. Signale par un joueur le
@@ -3504,12 +4272,12 @@ def _barre(pseudo: str) -> str:
             'onclick="var b=this.parentNode;b.classList.toggle(\'ouvert\');'
             'this.setAttribute(\'aria-expanded\',b.classList.contains(\'ouvert\'))">&#9776;</button>'
             '<div class="barre-qui">%s <strong>%s</strong></div>'
-            '<nav class="barre-nav">%s%s%s'
+            '<nav class="barre-nav">%s%s%s%s'
             '<a href="/deconnexion" class="sortie">%s</a>'
             '</nav></header>'
-            % (lang.t("Menu"), lang.t("Connecte"), html.escape(pseudo),
-               signalements, admin, _bouton_langue(),
-               lang.t("Se deconnecter")))
+            % (lang.t("Menu"), lang.t("Connecté"), html.escape(pseudo),
+               createur, signalements, admin, _bouton_langue(),
+               lang.t("Se déconnecter")))
 
 
 def page_reprise(pseudo: str, attendue: dict) -> bytes:
@@ -3567,18 +4335,18 @@ def page_reprise(pseudo: str, attendue: dict) -> bytes:
              % (portrait,
                 lang.t("Ta partie t'attend"),
                 etiquettes,
-                lang.t("Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
-                       "tu peux la reprendre la ou tu l'avais laissee.")
+                lang.t("Interrompue le {quand}{motif}. Elle a été sauvegardée : "
+                       "tu peux la reprendre là où tu l'avais laissée.")
                 .replace("{quand}", _horodate(attendue.get("quand") or ""))
                 .replace("{motif}", (", " + html.escape(motif)) if motif else ""),
                 icone_nouvelle,
                 lang.t("Commencer autre chose"),
-                lang.t("La sauvegarde reste dans « Reprendre », sur l'ecran de "
-                       "preparation."),
+                lang.t("La sauvegarde reste dans « Reprendre », sur l'écran de "
+                       "préparation."),
                 icone_reprendre,
                 lang.t("Reprendre cette partie"),
                 lang.t("On recharge la sauvegarde et on te remet au plateau.")))
-    return PAGE.format(tete="", sous=lang.t("Tu etais en pleine partie."),
+    return PAGE.format(tete="", sous=lang.t("Tu étais en pleine partie."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3590,10 +4358,10 @@ def etiquette_ticket(etat: str) -> str:
     chargement du module, quand aucune requete n'existe et donc aucune langue.
     """
     return {
-        "nouveau": lang.t("Recu"),
+        "nouveau": lang.t("Reçu"),
         "en cours": lang.t("En cours"),
-        "traite": lang.t("Corrige"),
-        "refuse": lang.t("Refuse"),
+        "traite": lang.t("Corrigé"),
+        "refuse": lang.t("Refusé"),
     }.get(etat, etat)
 
 
@@ -3615,11 +4383,11 @@ def page_signalements(pseudo: str) -> bytes:
                  '<strong>%s</strong></div>'
                  '<p class="mdp">%s</p></div>'
                  % (lang.t("Aucun signalement"),
-                    lang.t("Quand un bug te gene en partie, le bouton "
-                           "« Signaler un bug » l'envoie avec ta capture d'ecran "
+                    lang.t("Quand un bug te gêne en partie, le bouton "
+                           "« Signaler un bug » l'envoie avec ta capture d'écran "
                            "et le journal de la partie. Tu retrouveras ici ma "
-                           "reponse.")))
-        return PAGE.format(tete="", sous=lang.t("Rien a suivre pour l'instant."),
+                           "réponse.")))
+        return PAGE.format(tete="", sous=lang.t("Rien à suivre pour l'instant."),
                            barre=_barre(pseudo), corps=corps,
                            pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3630,11 +4398,11 @@ def page_signalements(pseudo: str) -> bytes:
         for m in r.get("messages") or []:
             fil += ('<p class="msg %s"><b>%s</b> <span class="mdp">%s</span><br>%s</p>'
                     % ("de-lui" if m["auteur"] == "admin" else "de-moi",
-                       lang.t("Reponse") if m["auteur"] == "admin" else lang.t("Moi"),
+                       lang.t("Réponse") if m["auteur"] == "admin" else lang.t("Moi"),
                        _horodate(m["quand"] or ""),
                        html.escape(m["texte"] or "").replace("\n", "<br>")))
         if not fil:
-            fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de reponse.")
+            fil = '<p class="mdp">%s</p>' % lang.t("Pas encore de réponse.")
         capture = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
                    '%s</a></p>' % (r["id"], lang.t("Voir la capture"))) if r["capture"] else ""
         # Le siege n'est montre QUE s'il n'est pas le sien : « siege 0 », c'est
@@ -3642,12 +4410,12 @@ def page_signalements(pseudo: str) -> bytes:
         siege = int(r["siege"] or 0)
         if siege:
             provenance = (' &middot; %s %d (%s)'
-                          % (lang.t("siege"), siege, html.escape(r["nom"] or "")))
+                          % (lang.t("siège"), siege, html.escape(r["nom"] or "")))
             # Pas de formulaire : voir `rapports_de_ses_tables`. Repondre ici
             # ferait passer l'hote pour l'auteur du signalement.
             repondre = ('<p class="mdp">%s</p>'
-                        % lang.t("Envoye depuis un autre siege de ta table : "
-                                 "la reponse part a la personne qui l'a ecrit."))
+                        % lang.t("Envoyé depuis un autre siège de ta table : "
+                                 "la réponse part à la personne qui l'a écrit."))
         else:
             provenance = ""
             repondre = ('<form method="post" action="/signalements" class="repondre">'
@@ -3663,7 +4431,7 @@ def page_signalements(pseudo: str) -> bytes:
                   % (html.escape((r["description"] or "")[:160]),
                      etiquette_ticket(etat),
                      _horodate(r["quand"] or ""), provenance, fil, capture, repondre))
-    return PAGE.format(tete="", sous=lang.t("Ce que tu as signale, et ma reponse."),
+    return PAGE.format(tete="", sous=lang.t("Ce que tu as signalé, et ma réponse."),
                        barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
@@ -3678,14 +4446,14 @@ def page_attente(pseudo: str) -> bytes:
     erreur = ERREURS_DEMARRAGE.get(pseudo, "")
     if erreur:
         tete = ""
-        sous = lang.t("Quelque chose a coince.")
+        sous = lang.t("Quelque chose a coincé.")
         corps = ('<div class="table">'
                  '<div class="entete"><strong>%s</strong></div>'
                  '<p class="mdp">%s</p>'
                  '<form method="get" action="/entrer" style="margin-top:1rem">'
                  '<button type="submit">%s</button></form></div>'
-                 % (lang.t("Ton jeu n'a pas demarre"), html.escape(erreur),
-                    lang.t("Reessayer")))
+                 % (lang.t("Ton jeu n'a pas démarré"), html.escape(erreur),
+                    lang.t("Réessayer")))
     else:
         # ⚠ PLUS DE `meta refresh` COMME MOTEUR DE L'ATTENTE (17/09/2026).
         # Il rechargeait la page ENTIERE toutes les trois secondes : l'ecran
@@ -3717,9 +4485,9 @@ def page_attente(pseudo: str) -> bytes:
                  '})();'
                  '</script>'
                  % (narval_du_moment.tranche(),
-                    lang.t("Ton jeu demarre"),
+                    lang.t("Ton jeu démarre"),
                     lang.t("Le premier allumage prend une minute ou deux. "
-                           "Cette page bascule toute seule des que c'est pret."),
+                           "Cette page bascule toute seule dès que c'est prêt."),
                     lang.t("Tu peux laisser cet onglet ouvert.")))
     return PAGE.format(tete=tete, sous=sous, barre=_barre(pseudo), corps=corps,
                        pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
@@ -3791,8 +4559,8 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
     """
     if not prete:
         titre = lang.t("Un instant")
-        texte = lang.t("La table de {hote} n'est pas encore prete. Cette page "
-                       "reessaie toute seule.").replace("{hote}", html.escape(hote))
+        texte = lang.t("La table de {hote} n'est pas encore prête. Cette page "
+                       "réessaie toute seule.").replace("{hote}", html.escape(hote))
         corps = '<script>setTimeout(function(){location.reload();},3000);</script>'
         return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
@@ -3805,19 +4573,19 @@ def page_activite_discord_participant(hote: str, instance_id: str, prete: bool) 
 
     titre = lang.t("Rejoindre la table de {hote}").replace("{hote}", html.escape(hote))
     texte = lang.t("Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
-                   "ou simplement en invite.")
+                   "ou simplement en invité.")
     corps = ('<div class="choix">'
              '<a class="bouton principal" href="%s">%s</a>'
              '<a class="bouton" href="%s">%s</a>'
              '</div>'
              % (html.escape(lien_connexion), lang.t("J’ai un compte"),
-                html.escape(lien_invite), lang.t("Je suis invite")))
+                html.escape(lien_invite), lang.t("Je suis invité")))
     return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps=corps, mention=_mention_courte()).encode("utf-8")
 
 
 def page_activite_discord_complete(hote: str) -> bytes:
-    titre = lang.t("Table complete")
-    texte = lang.t("La table de {hote} n'a plus de siege libre.").replace(
+    titre = lang.t("Table complète")
+    texte = lang.t("La table de {hote} n'a plus de siège libre.").replace(
         "{hote}", html.escape(hote))
     return PAGE_ACTIVITE_DISCORD.format(titre=titre, texte=texte, corps="", mention=_mention_courte()).encode("utf-8")
 
@@ -3849,7 +4617,7 @@ PAGE_ACTIVITE_DISCORD_AMORCE = """<!doctype html>
            justify-content:center; opacity:.75; }}
   #jeu {{ position:absolute; inset:0; width:100%; height:100%; border:0; display:none; }}
 </style>
-<p id="etat">Connexion a Discord…</p>
+<p id="etat">Connexion à Discord…</p>
 <iframe id="jeu" title="NarwhalChampions" allow="autoplay; fullscreen"></iframe>
 <script type="module">
   const etat = document.getElementById('etat');
@@ -3859,12 +4627,12 @@ PAGE_ACTIVITE_DISCORD_AMORCE = """<!doctype html>
     // Garde sur `window` : le SDK doit vivre aussi longtemps que la page.
     const sdk = window.discordSdk = new DiscordSDK({client_id!r});
     await sdk.ready();
-    if (!sdk.instanceId) throw new Error('instanceId absent apres ready()');
+    if (!sdk.instanceId) throw new Error('instanceId absent après ready()');
     jeu.addEventListener('load', () => {{ etat.style.display = 'none'; jeu.style.display = 'block'; }}, {{ once: true }});
     jeu.src = '/activite_discord?instance_id=' + encodeURIComponent(sdk.instanceId);
   }} catch (erreur) {{
-    console.error('Activite Discord : ', erreur);
-    etat.textContent = "Impossible de demarrer l'activite (" + (erreur && erreur.message || erreur) + "). "
+    console.error('Activité Discord : ', erreur);
+    etat.textContent = "Impossible de démarrer l'activité (" + (erreur && erreur.message || erreur) + "). "
         + "Voir DISCORD.md.";
   }}
 </script>
@@ -3889,15 +4657,15 @@ def page_enchainer(vers: str) -> bytes:
 
 def page_arret(pseudo: str) -> bytes:
     corps = ('<div class="table">'
-             '<div class="entete"><strong>Ton jeu est eteint</strong></div>'
+             '<div class="entete"><strong>Ton jeu est éteint</strong></div>'
              '<p class="mdp">Rien n\'est perdu : tes decks, tes campagnes et tes '
              'hauts faits t\'attendent au prochain allumage.</p>'
-             '<p class="mdp">Eteindre ferme aussi la porte aux invites de la '
-             'partie precedente : leur lien et leur navigateur ne rouvrent plus '
+             '<p class="mdp">Éteindre ferme aussi la porte aux invités de la '
+             'partie précédente : leur lien et leur navigateur ne rouvrent plus '
              'ta table. Toi, tu rentres par ce bouton, comme d\'habitude.</p>'
              '<form method="get" action="/entrer" style="margin-top:1rem">'
              '<button type="submit">Rallumer mon jeu</button></form></div>')
-    return PAGE.format(tete="", sous="A tout de suite.", barre=_barre(pseudo),
+    return PAGE.format(tete="", sous="À tout de suite.", barre=_barre(pseudo),
                        corps=corps, pied=_pied_de_page(), bouton_appli=_bouton_appli()).encode("utf-8")
 
 
@@ -3909,22 +4677,37 @@ PAGE_FORMULAIRE = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=swap">
 <style>
-  :root {{
-    color-scheme: dark;
-    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
-    --text:#eef1f5; --muted:#8b95a3;
-    --accent:#e62429; --accent-hover:#ff3b40; --accent-ink:#fff;
-    --danger:#f85149;
-    --affiche: "Anton", "Arial Narrow", sans-serif;
-  }}
+  /* ===== REFONTE (20/10/2026, decision du 09/10) ===========================
+     Connexion, inscription et pages cousines sur le modele de l'assistant de
+     preparation : un EN-TETE FIN, une SCENE a gauche (~30 %, bord en biais,
+     la mascotte du moment et le titre en affiche) et le formulaire a droite.
+     Au telephone la scene devient un BANDEAU colle en haut, le formulaire
+     dessous. Toutes les couleurs passent par les variables : le mode sobre
+     (SOBRE_SITE) les redefinit sans rien toucher ici. */
+  /*JETONS*/
   * {{ box-sizing:border-box; }}
   body {{ margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--text);
-         min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2.5rem 1.1rem; }}
-  main {{ width:100%; max-width:23rem; }}
-  .marque {{ display:flex; align-items:center; gap:.7rem; margin:0 0 1.6rem; }}
-  .marque img {{ width:2.5rem; height:2.5rem; border-radius:50%; box-shadow:0 0 0 2px var(--border); }}
-  h1 {{ font:clamp(1.5rem,6vw,1.85rem)/1 var(--affiche); margin:0; font-weight:400;
-       letter-spacing:.01em; text-transform:uppercase; }}
+         min-height:100vh; display:flex; flex-direction:column; }}
+  .entete {{ flex:none; display:flex; align-items:center; justify-content:space-between; gap:1rem;
+            height:3rem; padding:0 1.2rem; background:var(--panel); border-bottom:1px solid var(--border); }}
+  .entete-marque {{ display:flex; align-items:center; gap:.6rem; font:1.15rem/1 var(--affiche);
+                   letter-spacing:.04em; text-transform:uppercase; }}
+  .entete-marque img {{ width:1.9rem; height:1.9rem; border-radius:50%; box-shadow:0 0 0 1px var(--border); }}
+  .lang {{ display:inline-flex; align-items:center; border:1px solid var(--border);
+          font-size:.8rem; font-weight:600; text-decoration:none; }}
+  .lang span {{ padding:.2rem .5rem; color:var(--muted); }}
+  .lang span.lang-active {{ background:var(--accent); color:var(--accent-ink); }}
+  .cadre {{ flex:1; display:grid; grid-template-columns:minmax(17rem,30%) 1fr; min-height:0; }}
+  .scene {{ position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end;
+           gap:1.2rem; padding:2rem 5rem 2.6rem 2rem;
+           background:radial-gradient(circle at 35% 38%, var(--accent-soft), transparent 62%), var(--panel);
+           clip-path:polygon(0 0,100% 0,calc(100% - 3.5rem) 100%,0 100%); }}
+  .scene img {{ width:min(100%,14rem); aspect-ratio:1; height:auto; border-radius:50%;
+               box-shadow:0 0 0 2px var(--border), 0 18px 40px -16px rgba(0,0,0,.8); }}
+  h1 {{ font:clamp(1.9rem,3.3vw,3rem)/1 var(--affiche); margin:0; font-weight:400;
+       letter-spacing:.01em; text-transform:uppercase; text-wrap:balance; }}
+  .contenu {{ display:flex; align-items:center; justify-content:center; padding:2rem 1.5rem; }}
+  .colonne {{ width:100%; max-width:24rem; }}
   .carte {{ background:var(--panel); border:1px solid var(--border); border-radius:.9rem;
            padding:1.5rem 1.4rem; box-shadow:0 12px 28px -18px rgba(0,0,0,.7); }}
   form {{ margin:0; }}
@@ -3938,43 +4721,62 @@ PAGE_FORMULAIRE = """<!doctype html>
   button:hover {{ background:var(--accent-hover); }}
   .erreur {{ border:1px solid var(--danger); background:#1d1113; color:#ff7b72;
             border-radius:.5rem; padding:.7rem .9rem; margin-bottom:1.2rem; font-size:.9rem; }}
-  p {{ color:var(--muted); font-size:.85rem; line-height:1.6; margin:1.2rem .1rem 0; }}
-  p.mention-legale {{ color:#5b6270; font-size:.75rem; }}
+  /* Le pied : une ligne par phrase, lisible (la premiere, celle qui sert, en clair). */
+  .pied {{ margin:1.1rem .1rem 0; color:var(--muted); font-size:.85rem; line-height:1.55; }}
+  .pied .ligne {{ display:block; margin-top:.4rem; }}
+  .pied .ligne:first-child {{ margin-top:0; color:var(--text); font-size:.92rem; }}
+  .mention-legale {{ color:var(--muted); opacity:.75; font-size:.72rem; line-height:1.5; margin:1.4rem .1rem 0; }}
   a {{ color:var(--accent); }}
-  /* TELEPHONE (zone 2 de la refonte du 09/10/2026) : un bandeau fin colle en
-     haut, le formulaire juste dessous (plus centre dans l'ecran), champs et
-     bouton de 44 px. Le clavier ne cache pas le bouton : la page retrecit
-     avec lui (`interactive-widget`), et le champ touche fait defiler jusqu'au
-     bouton (script plus bas). Au-dessus de 768 px, rien ne change. */
+  /* TELEPHONE : la scene devient un bandeau fin colle en haut (mascotte + titre
+     sur une ligne), le formulaire juste dessous, champs et bouton de 44 px. Le
+     clavier ne cache pas le bouton : la page retrecit avec lui
+     (`interactive-widget`), et le champ touche fait defiler jusqu'au bouton
+     (script plus bas). Au-dessus de 768 px, c'est la mise en page a deux
+     colonnes. */
   @media (max-width:767px) {{
-    body {{ display:block; min-height:100dvh; padding:0 0 1.5rem; }}
-    main {{ max-width:none; }}
-    .marque {{ position:sticky; top:0; z-index:5; gap:.6rem; min-height:52px; margin:0 0 1rem;
-              padding:.35rem 1rem; background:#05060a; border-bottom:1px solid var(--border); }}
-    .marque img {{ width:2.2rem; height:2.2rem; }}
-    .marque h1 {{ font-size:1.3rem; }}
+    body {{ min-height:100dvh; padding-bottom:1.5rem; }}
+    /* L'en-tete se reduit a la bascule FR / EN, posee sur la droite du bandeau (20/10/2026). */
+    .entete {{ position:fixed; top:0; right:0; z-index:6; height:56px; padding:0 .7rem; background:none;
+              border:0; pointer-events:none; }}
+    .entete-marque {{ display:none; }}
+    .entete .lang {{ pointer-events:auto; background:var(--panel); }}
+    .cadre {{ display:block; }}
+    .scene {{ position:sticky; top:0; z-index:5; flex-direction:row; justify-content:flex-start; align-items:center; gap:.7rem;
+             min-height:56px; padding:.4rem 1rem; clip-path:none; border-bottom:1px solid var(--border);
+             background:linear-gradient(90deg, var(--accent-soft), transparent 70%), var(--panel); }}
+    .scene img {{ width:2.3rem; box-shadow:0 0 0 1px var(--border); }}
+    h1 {{ font-size:1.35rem; }}
+    .contenu {{ display:block; padding:1rem 0 0; }}
+    .colonne {{ max-width:none; }}
     .carte {{ margin:0 1rem; padding:1.1rem 1rem; border-radius:.7rem; }}
     label {{ margin-bottom:.8rem; }}
     input {{ min-height:44px; font-size:16px; }}
     button {{ min-height:48px; }}
-    p {{ margin:1rem 1rem 0; }}
-    p a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; justify-content:center; }}
+    .pied, .mention-legale {{ margin-left:1rem; margin-right:1rem; }}
+    .pied a {{ display:inline-flex; align-items:center; min-height:44px; min-width:44px; }}
+    .lang span {{ display:flex; align-items:center; min-height:40px; padding:0 .8rem; }}
   }}
 </style>
-<main>
-  <div class="marque"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></div>
-  <div class="carte">
-    {erreur}
-    <form method="post" action="{action}">
-      {champs}
-      <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
-      <button type="submit">{bouton}</button>
-    </form>
-  </div>
-  <p>{pied}</p>
-  <p class="mention-legale">{mention}</p>
-  {bouton_appli}
-</main>
+<header class="entete">
+  <span class="entete-marque"><img src="/narwhal.png" alt="" width="512" height="512">NarwhalChampions</span>
+  {langue}
+</header>
+<div class="cadre">
+  <aside class="scene"><img src="/narwhal.png" alt="" width="512" height="512"><h1>{titre}</h1></aside>
+  <main class="contenu"><div class="colonne">
+    <div class="carte">
+      {erreur}
+      <form method="post" action="{action}">
+        {champs}
+        <label>{mdp}<input name="mdp" type="password" autocomplete="{auto}" required></label>
+        <button type="submit">{bouton}</button>
+      </form>
+    </div>
+    <div class="pied">{pied}</div>
+    <p class="mention-legale">{mention}</p>
+    {bouton_appli}
+  </div></main>
+</div>
 <script>(function(){{
   // Telephone : le clavier ne doit pas cacher le bouton d'envoi. Au toucher
   // d'un champ, une fois le clavier ouvert, on amene le bouton dans l'ecran.
@@ -4116,6 +4918,18 @@ PAGE_ADMIN = """<!doctype html>
   .sous-onglet[aria-selected="true"] {{ color:var(--accent); border-bottom-color:var(--accent); }}
   .sous-onglet .compte {{ color:inherit; opacity:.7; font-weight:400; margin-left:.3rem; }}
   .sous-panneau[hidden] {{ display:none; }}
+  .dj-compte {{ background:var(--panel); border:1px solid var(--border); border-radius:.6rem; padding:.8rem 1rem; margin-bottom:.8rem; }}
+  .dj-compte h3 {{ margin:0 0 .5rem; font-size:1rem; }}
+  .dj-compte ul {{ list-style:none; margin:0; padding:0; }}
+  .dj-deck {{ display:flex; justify-content:space-between; align-items:center; gap:.8rem; padding:.5rem 0; border-top:1px solid var(--border); }}
+  .dj-infos {{ display:flex; flex-direction:column; min-width:0; }}
+  .dj-meta {{ color:var(--muted); font-size:.8rem; }}
+  .dj-importer, .dj-actualiser {{ background:var(--accent); color:var(--accent-ink); border:0; border-radius:.4rem; padding:.4rem .8rem; font:inherit; font-weight:700; cursor:pointer; flex:none; }}
+  .dj-importer:hover, .dj-actualiser:hover {{ background:var(--accent-hover); }}
+  .dj-importer:disabled {{ opacity:.5; cursor:wait; }}
+  .dj-message {{ min-height:1.4rem; margin:.5rem 0; font-weight:600; }}
+  .dj-ok {{ color:#6fcf8f; }}
+  .dj-erreur {{ color:#ff6b6b; }}
   /* Les comptes, en fiches (23/09/2026, demande de l'utilisateur : le
      tableau a 6 colonnes etait illisible, surtout etroit). Une pastille
      d'initiale, le nom et son statut sur une ligne, le reste en meta. Les
@@ -4222,7 +5036,9 @@ PAGE_ADMIN = """<!doctype html>
     td[colspan] {{ justify-content:flex-start; text-align:left; }}
   }}
   @media (max-width:767px) {{
-    .onglets {{ top:52px; }}
+    /* Telephone : tous les onglets se voient (ils passent a la ligne) au lieu de defiler de cote sans rien dire. */
+    .onglets {{ top:52px; flex-wrap:wrap; overflow-x:visible; }}
+    .onglet {{ flex:1 1 auto; justify-content:center; }}
     .onglet, .sous-onglet, .annonce-toggle, button {{ min-height:44px; }}
     .sous-onglets {{ overflow-x:auto; scrollbar-width:none; gap:1rem; }}
     .sous-onglet {{ flex:none; min-width:44px; }}
@@ -4260,11 +5076,11 @@ PAGE_ADMIN = """<!doctype html>
                  style="width:4.5rem;font:inherit;background:var(--panel-2);color:inherit;
                         border:1px solid var(--border);border-radius:0;padding:.3rem .5rem">
           minutes</label>
-        <input name="texte" type="text" maxlength="400" placeholder="Message (vide = preavis de mise a jour)"
+        <input name="texte" type="text" maxlength="400" placeholder="Message (vide = préavis de mise à jour)"
                style="width:100%;box-sizing:border-box;margin:.5rem 0;font:inherit;
                       background:var(--panel-2);color:inherit;border:1px solid var(--border);
                       border-radius:0;padding:.4rem .6rem">
-        <button class="oui" type="submit">Prevenir</button>
+        <button class="oui" type="submit">Prévenir</button>
       </form>
     </div>
   </div>
@@ -4275,36 +5091,51 @@ PAGE_ADMIN = """<!doctype html>
     <button type="button" class="onglet" data-onglet="joueurs" data-n="{n_joueurs}" role="tab">Joueurs{badge_joueurs}</button>
     <button type="button" class="onglet" data-onglet="parties" data-n="0" role="tab">Parties</button>
     <button type="button" class="onglet" data-onglet="journal" data-n="0" role="tab">Journal</button>
+    <button type="button" class="onglet" data-onglet="decks" data-n="0" role="tab">{titre_decks}</button>
   </nav>
 
   <section class="panneau" data-panneau="comptes">
     <nav class="sous-onglets">
       <button type="button" class="sous-onglet" data-sous="comptes-liste" role="tab">Comptes</button>
       <button type="button" class="sous-onglet" data-sous="comptes-invitations" role="tab">Invitations <span class="compte">{nb_invitations}</span></button>
+      <button type="button" class="sous-onglet" data-sous="comptes-createurs" role="tab">Créateurs de cartes <span class="compte">{nb_createurs}</span></button>
       <button type="button" class="sous-onglet" data-sous="comptes-mdp" role="tab">Mots de passe <span class="compte">{nb_reinit}</span></button>
     </nav>
     <div class="sous-panneau" data-sous-panneau="comptes-liste">
-      <p class="sous">{valides} valide(s) sur {max}. {regle_expiration}
+      <p class="sous">{valides} validé(s) sur {max}. {regle_expiration}
       <a href="/">Retour au site</a></p>
       <div class="comptes">
         {lignes}
       </div>
     </div>
     <div class="sous-panneau" data-sous-panneau="comptes-invitations" hidden>
-      <p class="sous">Un lien vaut une place, une seule fois. Celui qui le recoit
+      <p class="sous">Un lien vaut une place, une seule fois. Celui qui le reçoit
       entre directement, sans passer par la file d'attente.</p>
       <form method="post" action="/admin" style="margin-bottom:1rem">
         <input type="hidden" name="action" value="inviter">
-        <button class="oui" type="submit">Creer un lien d'invitation</button>
+        <button class="oui" type="submit">Créer un lien d'invitation</button>
       </form>
       <div class="comptes">
         {invitations}
       </div>
     </div>
+    <div class="sous-panneau" data-sous-panneau="comptes-createurs" hidden>
+      <p class="sous">Un compte « créateur de cartes » n'a accès qu'au créateur de
+      cartes : ni le jeu, ni cette administration. Il se crée par un lien
+      d'invitation à usage unique, à copier et à transmettre. Désactiver un
+      compte coupe sa session ; ses projets restent.</p>
+      <form method="post" action="/admin" style="margin-bottom:1rem">
+        <input type="hidden" name="action" value="inviter_createur">
+        <button class="oui" type="submit">Inviter un créateur de cartes</button>
+      </form>
+      <div class="comptes">
+        {createurs}
+      </div>
+    </div>
     <div class="sous-panneau" data-sous-panneau="comptes-mdp" hidden>
-      <p class="sous">Le bouton « Mot de passe » d'un compte cree un lien a usage
-      unique, valable 24 heures. Transmets-le a la personne : elle y choisit son
-      nouveau mot de passe, et ses anciennes sessions sont fermees.</p>
+      <p class="sous">Le bouton « Mot de passe » d'un compte crée un lien à usage
+      unique, valable 24 heures. Transmets-le à la personne : elle y choisit son
+      nouveau mot de passe, et ses anciennes sessions sont fermées.</p>
       <div class="comptes">
         {reinitialisations}
       </div>
@@ -4312,15 +5143,15 @@ PAGE_ADMIN = """<!doctype html>
   </section>
 
   <section class="panneau" data-panneau="rapports" hidden>
-    <p class="sous">Les 60 derniers, le plus recent en haut, ranges par etat
-    (code couleur, comme sur chaque rapport). Deplie pour voir la capture et
+    <p class="sous">Les 60 derniers, le plus récent en haut, rangés par état
+    (code couleur, comme sur chaque rapport). Déplie pour voir la capture et
     le journal de la partie.</p>
     {rapports}
   </section>
 
   <section class="panneau" data-panneau="joueurs" hidden>
-    <p class="sous">Qui est la, et de quoi on se parle. Un message part tout de
-    suite : la personne voit une pastille dans son jeu, et te repond de la.</p>
+    <p class="sous">Qui est là, et de quoi on se parle. Un message part tout de
+    suite : la personne voit une pastille dans son jeu, et te répond de là.</p>
     {salon}
   </section>
 
@@ -4334,40 +5165,45 @@ PAGE_ADMIN = """<!doctype html>
         <button type="button" class="sous-onglet" data-sous="parties-play" role="tab">Play</button>
       </nav>
       <div class="sous-panneau" data-sous-panneau="parties-play" hidden>
-        <p class="sous">Les parties lancees sur play (le jeu dans le navigateur, sans compte).
+        <p class="sous">Les parties lancées sur play (le jeu dans le navigateur, sans compte).
         Compteur anonyme : ni adresse, ni identifiant.</p>
         {stats_play}
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-revoir" hidden>
-        <p class="sous">Les 3 dernieres parties TERMINEES de chaque joueur (rangees chez l'hote de la
-        table). Telecharge le fichier, puis ouvre-le dans « Revoir » sur l'ecran de preparation.</p>
+        <p class="sous">Les 3 dernières parties TERMINÉES de chaque joueur (rangées chez l'hôte de la
+        table). Télécharge le fichier, puis ouvre-le dans « Revoir » sur l'écran de préparation.</p>
         {parties_a_revoir}
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-encours">
-        <p class="sous">Qui joue en ce moment. Rafraichi tout seul toutes les
+        <p class="sous">Qui joue en ce moment. Rafraîchi tout seul toutes les
         30 s <small id="maj" style="color:var(--muted)">chargement…</small>.</p>
         <div id="encours"><p class="vide">…</p></div>
       </div>
       <div class="sous-panneau" data-sous-panneau="parties-historique" hidden>
-        <p class="sous">Les {suivi_max} dernieres parties finies : heros, deck,
-        aspect, mechant, rounds et resultat. Les abandons sont en orange. 20
-        affichees d'abord, le reste sur demande. La meme chose, a epingler sur
-        le telephone : <a href="/suivi">page de suivi</a>.</p>
+        <p class="sous">Les {suivi_max} dernières parties finies : héros, deck,
+        aspect, méchant, rounds et résultat. Les abandons sont en orange. 20
+        affichées d'abord, le reste sur demande. La même chose, à épingler sur
+        le téléphone : <a href="/suivi">page de suivi</a>.</p>
         <div id="terminees"><p class="vide">…</p></div>
       </div>
     </div>
   </section>
 
   <section class="panneau" data-panneau="journal" hidden>
-    <p class="sous">Allumage et extinction des 25 dernieres tables.</p>
+    <p class="sous">Allumage et extinction des 25 dernières tables.</p>
     <table>
-      <tr><th>Table</th><th>Hote</th><th>Ouverte le</th><th>Fermee le</th></tr>
+      <tr><th>Table</th><th>Hôte</th><th>Ouverte le</th><th>Fermée le</th></tr>
       {parties}
     </table>
+  </section>
+
+  <section class="panneau" data-panneau="decks" hidden>
+    {panneau_decks}
   </section>
 </main>
 {script_suivi}
 {script_onglets}
+{script_decks}
 """
 
 
@@ -4415,7 +5251,7 @@ def _pseudos_par_emplacement() -> dict:
 def _depuis(secondes: float) -> str:
     secondes = max(0, int(secondes))
     if secondes < 90:
-        return "a l'instant"
+        return "à l'instant"
     if secondes < 5400:
         return "depuis %d min" % round(secondes / 60)
     if secondes < 172800:
@@ -4426,7 +5262,7 @@ def _depuis(secondes: float) -> str:
 def _il_y_a_horodatage(quand: float) -> str:
     ecart = max(0, time.time() - float(quand))
     if ecart < 90:
-        return "a l'instant"
+        return "à l'instant"
     if ecart < 5400:
         return "il y a %d min" % round(ecart / 60)
     if ecart < 172800:
@@ -4858,7 +5694,7 @@ ADMIN_ONGLETS_SCRIPT = """<script>
     });
   }
 
-  // L'historique des parties : 20 affichees d'abord, le reste sur demande
+  // L'historique des parties : 20 affichées d'abord, le reste sur demande
   // (23/09/2026). ⚠ ON NE TOUCHE PAS A SUIVI_SCRIPT (partage avec /suivi,
   // hors perimetre de cette refonte) : ce bloc observe seulement le DOM
   // qu'il produit dans #terminees, et le complete sans le modifier.
@@ -5047,10 +5883,10 @@ def page_hors_ligne() -> bytes:
     return (PAGE_HORS_LIGNE
             .replace("{titre}", lang.t("Pas de connexion"))
             .replace("{corps}", lang.t(
-                "NarwhalChampions a besoin du reseau pour tourner : la partie "
-                "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
-                "et reessaie."))
-            .replace("{bouton}", lang.t("Reessayer"))
+                "NarwhalChampions a besoin du réseau pour tourner : la partie "
+                "se joue sur le serveur, pas sur ton téléphone. Reconnecte-toi "
+                "et réessaie."))
+            .replace("{bouton}", lang.t("Réessayer"))
             ).encode("utf-8")
 
 SERVICE_WORKER = """// NarwhalChampions : un service worker qui ne fait RIEN, et c'est voulu.
@@ -5120,9 +5956,9 @@ def _bouton_appli() -> str:
     'border:1px solid var(--border);border-radius:.5rem;background:var(--panel-2);font-size:.9rem">'
     '<button id="appli-bouton" type="button" style="width:100%;font:inherit;font-weight:600;background:var(--accent);'
     'color:var(--accent-ink);border:0;border-radius:.5rem;padding:.7rem;cursor:pointer">'
-    + lang.t("Installer l'application sur ce telephone") + '</button>'
+    + lang.t("Installer l'application sur ce téléphone") + '</button>'
     '<p id="appli-ios" hidden style="margin:.4rem 0 0;color:var(--muted)">'
-    + lang.t("Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».") + '</p>'
+    + lang.t("Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ».") + '</p>'
     # ⚠ DIT AVANT L'INSTALLATION, pas apres. Une icone sur l'ecran d'accueil
     # laisse croire au hors ligne ; le jeu tourne sur le serveur, il n'y a
     # rien a jouer sans connexion.
@@ -5167,6 +6003,62 @@ _TETE_POUR_FORMAT = TETE_APPLI.replace("{", "{{").replace("}", "}}")
 PAGE = PAGE.replace("{tete_appli}", _TETE_POUR_FORMAT)
 PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("{tete_appli}", _TETE_POUR_FORMAT)
 
+# LES COULEURS DES PAGES DE FORMULAIRE (20/10/2026, decision de l'utilisateur :
+# « passer ces pages en Epure »). EPURE_FORMULAIRE = True : les jetons de
+# `Fusion/marvel-lcg-src/public/css/affichage-epure-pages.css` (fond #111318,
+# surface #1c2028, champ #292e38, filet #383e49, accent bleu Captain #3f86e0,
+# titres Bangers). False : l'ancien habillage rouge du site, conserve tel quel.
+# ⚠ Une seule bascule pour TOUT le gabarit (connexion, inscription,
+# reinitialisation, confirmations, page des createurs), pour qu'elles restent
+# coherentes entre elles. Le mode sobre (SOBRE_SITE) redefinit ces variables
+# par-dessus, dans les deux cas.
+EPURE_FORMULAIRE = True
+_JETONS_FORMULAIRE_ROUGE = """:root {{
+    color-scheme: dark;
+    --bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;
+    --text:#eef1f5; --muted:#8b95a3;
+    --accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14); --accent-ink:#fff;
+    --danger:#f85149;
+    --affiche: "Anton", "Arial Narrow", sans-serif;
+  }}"""
+_JETONS_FORMULAIRE_EPURE = """:root {{
+    color-scheme: dark;
+    --bg:#111318; --panel:#1c2028; --panel-2:#292e38; --border:#383e49;
+    --text:#f2f3f5; --muted:#9da5b3;
+    --accent:#3f86e0; --accent-hover:#5a9bf0; --accent-soft:rgba(63,134,224,.16); --accent-ink:#fff;
+    --danger:#f85149;
+    --affiche: "Bangers", "Anton", Impact, "Arial Black", sans-serif;
+  }}"""
+PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace(
+    "/*JETONS*/", _JETONS_FORMULAIRE_EPURE if EPURE_FORMULAIRE else _JETONS_FORMULAIRE_ROUGE)
+if EPURE_FORMULAIRE:
+    PAGE_FORMULAIRE = PAGE_FORMULAIRE.replace("family=Anton&display", "family=Bangers&display")
+
+# L'ADMINISTRATION, LE SUIVI ET LA PAGE DU SITE AU MEME HABILLAGE (24/10/2026, remarque de l'utilisateur : « les pages d'admin
+# ne sont pas aux bonnes couleurs, meme sur PC, ca ne va pas avec le reste du style du site »). Ces trois gabarits gardaient
+# l'ancien rouge alors que les formulaires sont passes a l'Epure : meme bascule (`EPURE_FORMULAIRE`), memes valeurs.
+_ROUGE_VERS_EPURE = (
+    ("--bg:#07080c; --panel:#12151b; --panel-2:#181d26; --border:#262b35;", "--bg:#111318; --panel:#1c2028; --panel-2:#292e38; --border:#383e49;"),
+    ("--text:#eef1f5; --muted:#8b95a3;", "--text:#f2f3f5; --muted:#9da5b3;"),
+    ("--accent:#e62429; --accent-hover:#ff3b40; --accent-soft:rgba(230,36,41,.14);", "--accent:#3f86e0; --accent-hover:#5a9bf0; --accent-soft:rgba(63,134,224,.16);"),
+    ("--accent:#e62429; --accent-hover:#ff3b40;", "--accent:#3f86e0; --accent-hover:#5a9bf0;"),
+    ("rgba(230,36,41,.4)", "rgba(63,134,224,.4)"),
+    ('--affiche: "Anton", "Arial Narrow", sans-serif;', '--affiche: "Bangers", "Anton", Impact, "Arial Black", sans-serif;'),
+    ("family=Anton&display", "family=Bangers&display"),
+)
+
+
+def _en_epure(gabarit: str) -> str:
+    for ancien, nouveau in _ROUGE_VERS_EPURE:
+        gabarit = gabarit.replace(ancien, nouveau)
+    return gabarit
+
+
+if EPURE_FORMULAIRE:
+    PAGE = _en_epure(PAGE)
+    PAGE_ADMIN = _en_epure(PAGE_ADMIN)
+    PAGE_SUIVI = _en_epure(PAGE_SUIVI)
+
 # L'heure locale, ajoutee aux deux pages qui montrent des dates ABSOLUES.
 #
 # ⚠ MEME PIEGE QUE CI-DESSUS, ET LA MEME PARADE : le script est plein
@@ -5191,6 +6083,46 @@ def _avec_heure_locale(gabarit: str, nom: str) -> str:
 
 PAGE = _avec_heure_locale(PAGE, "PAGE")
 PAGE_ADMIN = _avec_heure_locale(PAGE_ADMIN, "PAGE_ADMIN")
+
+
+def _textes_decks_joueurs() -> dict:
+    return {
+        "aucun": lang.t("Aucun deck enregistré par les autres comptes."),
+        "cartes": lang.t("cartes"),
+        "importer": lang.t("Importer dans mon compte"),
+        "confirmer": lang.t("Importer le deck « {deck} » de {compte} dans votre compte ? L'original ne sera pas modifié."),
+        "reussi": lang.t("Deck importé dans votre compte sous le nom « {fichier} »."),
+        "echec_import": lang.t("L'import a échoué."),
+        "echec_liste": lang.t("La liste des decks n'a pas pu être chargée."),
+    }
+
+
+def _panneau_decks_joueurs() -> str:
+    return (
+        '<p class="sous">%s</p>'
+        '<p><button type="button" class="dj-actualiser">%s</button></p>'
+        '<div class="dj-message" role="status" aria-live="polite"></div>'
+        '<div class="dj-liste"><p class="vide">…</p></div>'
+        % (html.escape(lang.t("Les decks enregistrés par les autres comptes, en lecture seule. Chaque consultation et chaque import est journalisé.")),
+           html.escape(lang.t("Actualiser"))))
+
+
+def _script_decks_joueurs() -> str:
+    """Le script de l'onglet. Le panneau ne charge la liste qu'a l'ouverture de
+    l'onglet : chaque chargement est une consultation journalisee."""
+    with open(os.path.join(RACINE_SITE, "static", "admin-decks-joueurs.js"), encoding="utf-8") as f:
+        code = f.read().replace("</", "<\\/")
+    textes = json.dumps(_textes_decks_joueurs(), ensure_ascii=False).replace("</", "<\\/")
+    demarrage = (
+        "(function(){"
+        "var z=document.querySelector('[data-panneau=\"decks\"]');"
+        "var b=document.querySelector('.onglet[data-onglet=\"decks\"]');var f=false;"
+        "function go(){if(f||!z||!window.DecksJoueursAdmin)return;f=true;"
+        "window.DecksJoueursAdmin.monter(z," + textes + ");}"
+        "if(b){b.addEventListener('click',go);"
+        "if(b.getAttribute('aria-selected')==='true')go();}})();")
+    return "<script>" + code + "\n" + demarrage + "</script>"
+
 
 # La page des demandes des createurs (12/10/2026) : le gabarit commun des
 # formulaires, dont le `<form>` (qui impose un champ mot de passe) est remplace
@@ -5267,6 +6199,18 @@ def _portrait_vilain(slug: str) -> bytes | None:
             return f.read()
     except OSError:
         return None
+
+
+# --- Puzzles publies (E7, docs/puzzle/PLAN.md) : la logique est dans puzzles_publies.py et api_puzzles.py.
+_PUZZLES_PUBLIES = []
+
+
+def puzzles_publies():
+    """Le serveur de puzzles, cree au premier appel (il charge le catalogue des cartes)."""
+    if not _PUZZLES_PUBLIES:
+        import puzzles_publies as _pp
+        _PUZZLES_PUBLIES.append(_pp.PuzzlesPublies(BASE))
+    return _PUZZLES_PUBLIES[0]
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -5386,6 +6330,81 @@ class Handler(BaseHTTPRequestHandler):
             return
         demarrer_en_fond(pseudo, joueurs)
         self._repondre(200, page_attente(pseudo), entetes=entetes_supplementaires)
+
+    def _origine_play(self) -> str:
+        """L'origine de Play si c'est elle qui appelle (pour le CORS), sinon ""."""
+        origine = (self.headers.get("Origin") or "").strip()
+        if DOMAINE:
+            return origine if origine == "https://play." + DOMAINE else ""
+        return origine if re.match(r"^http://(localhost|127\.0\.0\.1)(:\d+)?$", origine) else ""
+
+    def _entetes_tchat_play(self) -> list[tuple[str, str]]:
+        """En-tetes pour une reponse de `/tchat/vue` ou `/tchat/dire` lisible
+        depuis Play (autre origine, chantier du 06/11/2026 : premiere visite
+        sur Play, un pseudo demande une fois, le tchat general devient
+        accessible sans compte).
+
+        ⚠ IL EN FAUT DEUX, PAS UN SEUL. `Access-Control-Allow-Origin` autorise
+        le SCRIPT a LIRE la reponse (CORS) ; `Cross-Origin-Resource-Policy`
+        autorise le NAVIGATEUR a la laisser passer du tout (COEP require-corp,
+        pose sur play. pour Safari le 12/10/2026 -- voir le commentaire de
+        `/compteur_play`). Sans le second, Safari refuse la reponse avant meme
+        que le JS la voie ; sans le premier, `fetch()` la voit « opaque » et ne
+        peut pas lire le JSON.
+        """
+        entetes: list[tuple[str, str]] = [("Cross-Origin-Resource-Policy", "same-site")]
+        origine = self._origine_play()
+        if origine:
+            entetes += [("Access-Control-Allow-Origin", origine), ("Vary", "Origin")]
+        return entetes
+
+    def _places_invite(self) -> None:
+        """`/places_invite` : combien de tables invite sont prises. Lu par la tuile
+        « Online co-op » de Play (autre origine : d'ou le CORS)."""
+        prises = tables_invite_prises()
+        corps = json.dumps({"prises": prises, "total": NB_PLACES_INVITE,
+                            "libres": max(0, NB_PLACES_INVITE - prises)}).encode("utf-8")
+        entetes = [("Cache-Control", "no-store")]
+        origine = self._origine_play()
+        if origine:
+            entetes += [("Access-Control-Allow-Origin", origine), ("Vary", "Origin")]
+        self._repondre(200, corps, "application/json; charset=utf-8", entetes=entetes)
+
+    def _jouer_invite(self) -> None:
+        """`/jouer-invite?joueurs=N` : l'hote d'une partie en ligne depuis Play, SANS compte.
+
+        Il prend une table invite, recoit une session jetable, et suit ensuite
+        EXACTEMENT le chemin d'un joueur qui clique sur « Entrer » (attente du
+        moteur, puis table `p<N>` et salon).
+        """
+        try:
+            joueurs = int((self.parametres.get("joueurs") or ["2"])[0])
+        except ValueError:
+            joueurs = 2
+        joueurs = max(2, min(4, joueurs))
+
+        def refus(code: int, titre: str, texte: str) -> None:
+            page = ('<!DOCTYPE html><html><head><meta charset="utf-8"><title>%s</title>'
+                    '<meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+                    '<body style="font-family:system-ui;background:#111;color:#eee;'
+                    'max-width:32rem;margin:4rem auto;padding:0 1rem"><h1>%s</h1><p>%s</p></body></html>'
+                    % (html.escape(titre), html.escape(titre), html.escape(texte)))
+            self._repondre(code, page.encode("utf-8"))
+
+        if invite_trop_souvent(self._adresse_client()):
+            refus(429, lang.t("Trop de tables créées"),
+                  lang.t("Tu as déjà ouvert plusieurs parties en ligne cette heure-ci. Réessaie plus tard."))
+            return
+        pseudo, raison = prendre_place_invite()
+        if pseudo is None:
+            refus(503, lang.t("Toutes les tables en ligne sont prises"),
+                  lang.t("Réessaie dans quelques minutes : une table se libère dès qu'une partie se termine."))
+            return
+        jeton = ouvrir_session(pseudo)
+        cookie = (f"nc_session={jeton}; HttpOnly; Path=/; Max-Age=86400"
+                  + self._attributs_cookie())
+        self._entrer_dans_partie(pseudo, proposer_reprise=False, joueurs=joueurs,
+                                 entetes_supplementaires=[("Set-Cookie", cookie)])
 
     def _activite_discord(self, pseudo: str | None) -> None:
         """`/activite_discord?instance_id=...` : point d'entree du salon vocal.
@@ -5639,7 +6658,8 @@ class Handler(BaseHTTPRequestHandler):
         if instance_discord:
             champs += '<input type="hidden" name="da" value="%s">' % html.escape(instance_discord)
         return PAGE_FORMULAIRE.format(
-            titre=lang.t("Creer un compte") if inscription else lang.t("Se connecter"),
+                langue=_bouton_langue(),
+            titre=lang.t("Créer un compte") if inscription else lang.t("Se connecter"),
             action="/inscription" if inscription else "/connexion",
             bouton=lang.t("Demander un compte") if inscription else lang.t("Entrer"),
             auto="new-password" if inscription else "current-password",
@@ -5647,20 +6667,20 @@ class Handler(BaseHTTPRequestHandler):
             champs=champs,
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(), mention=_mention_complete(),
-            pied=((lang.t("Tu es invite : ton compte sera actif tout de suite.")
+            pied=_lignes_pied(*((lang.t("Tu es invité : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
-                   lang.t("Ton compte devra etre valide a la main avant de servir."))
-                  + ' ' + lang.t('Deja un compte ? <a href="/connexion">Se connecter</a>.')
+                   lang.t("Ton compte devra être validé à la main avant de servir."),
+                  lang.t('Déjà un compte ? <a href="/connexion">Se connecter</a>.'))
                   if inscription else
-                  lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.')
-                  + ' ' + lang.t("Mot de passe oublie ? Demande un lien de reinitialisation a l'administrateur.")
+                  (lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
+                  lang.t("Mot de passe oublié ? Demande un lien de réinitialisation à l'administrateur."),
                   # ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas
                   # envoyer de courriel : personne ne peut etre prevenu de son
                   # expiration. La seule facon honnete de la faire accepter est
                   # de l'ecrire la ou tout le monde passe.
-                  + ' ' + lang.t("Les places sont comptees : {jours} jours sans venir et la tienne"
-                                 " retourne au pot. Ecris-moi, je te la rends.").replace(
-                      "{jours}", str(EXPIRATION_JOURS))),
+                  lang.t("Les places sont comptées : {jours} jours sans venir et la tienne"
+                         " retourne au pot. Écris-moi, je te la rends.").replace(
+                      "{jours}", str(EXPIRATION_JOURS))))),
         ).encode("utf-8")
 
     def _page_contact_createurs(self, erreur: str = "", valeurs: dict | None = None,
@@ -5698,6 +6718,7 @@ class Handler(BaseHTTPRequestHandler):
                    lang.t("Ton message : ce que tu as créé, et où ça apparaît sur le site"), v["message"],
                    lang.t("Envoyer")))
         return PAGE_CONTACT_CREATEURS.format(
+            langue=_bouton_langue(),
             titre=lang.t("Crédits et retrait"),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             formulaire=formulaire,
@@ -5709,14 +6730,15 @@ class Handler(BaseHTTPRequestHandler):
     def _formulaire_reinitialisation(self, jeton: str, erreur: str = "") -> bytes:
         """Le formulaire du nouveau mot de passe, sur le gabarit commun."""
         return PAGE_FORMULAIRE.format(
+                langue=_bouton_langue(),
             titre=lang.t("Nouveau mot de passe"),
             action="/reinitialisation", bouton=lang.t("Enregistrer"), auto="new-password",
             mdp=lang.t("Mot de passe"),
             champs='<input type="hidden" name="r" value="%s">' % html.escape(jeton),
             erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
             bouton_appli=_bouton_appli(), mention=_mention_complete(),
-            pied=lang.t("Huit caracteres au minimum. Tes sessions ouvertes seront fermees.")
-                 + ' ' + lang.t('<a href="/connexion">Se connecter</a>.'),
+            pied=_lignes_pied(lang.t("Huit caractères au minimum. Tes sessions ouvertes seront fermées."),
+                              lang.t('<a href="/connexion">Se connecter</a>.')),
         ).encode("utf-8")
 
     def _servir_capture(self) -> None:
@@ -5792,19 +6814,23 @@ class Handler(BaseHTTPRequestHandler):
             except OSError:
                 continue
             lignes.append('<li><a href="/admin/sauvegarde-code?n=%d">%s</a> (%.0f Mo)%s</li>'
-                          % (rang, html.escape(nom), taille, " &larr; la plus recente" if rang == 0 else ""))
-        corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se cree au prochain deploiement.</li>"
-        return ("<!doctype html><meta charset=utf-8><title>Sauvegardes du code</title>"
-                "<body style='font-family:system-ui;background:#0d1116;color:#e8edf2;padding:2rem'>"
+                          % (rang, html.escape(nom), taille, " &larr; la plus récente" if rang == 0 else ""))
+        corps = "".join(lignes) or "<li>Aucune sauvegarde pour l'instant : elle se crée au prochain déploiement.</li>"
+        return ("<!doctype html><meta charset=utf-8>"
+                "<meta name=viewport content='width=device-width,initial-scale=1'>"
+                "<title>Sauvegardes du code</title>"
+                "<body style='font-family:system-ui;background:#111318;color:#f2f3f5;padding:clamp(1rem,4vw,2rem);"
+                "overflow-wrap:anywhere'>"
+                "<p><a href='/admin'>&larr; Administration</a></p>"
                 "<h1>Sauvegardes du code</h1>"
-                "<p>Tout le projet sans les images, historique compris. Un zip par deploiement, les 5 derniers. "
+                "<p>Tout le projet sans les images, historique compris. Un zip par déploiement, les 5 derniers. "
                 "La notice de restauration est dans le zip (LISEZ-MOI.txt).</p>"
                 "<ul style='line-height:2'>%s</ul>"
                 "<h2>Images</h2>"
                 "<p><a href='/admin/images'>Toutes les images (scans, vignettes, HD, sons, documents), environ 2,5 Go</a>"
-                " : un fichier .tar fabrique a l'instant depuis le serveur. Apres une restauration, l'extraire dans "
+                " : un fichier .tar fabriqué à l'instant depuis le serveur. Après une restauration, l'extraire dans "
                 "<code>Fusion/marvel-lcg-src/</code> (il contient le dossier <code>assets/</code>).</p>"
-                "<style>a{color:#f0b95f}</style></body>" % corps).encode("utf-8")
+                "<style>a{color:#5a9bf0}</style></body>" % corps).encode("utf-8")
 
     def _servir_images(self) -> None:
         import tarfile
@@ -5895,7 +6921,7 @@ class Handler(BaseHTTPRequestHandler):
                             '<input type="hidden" name="action" value="reinitialiser">'
                             '<input type="hidden" name="pseudo" value="%s">'
                             '<button type="submit" title="Mot de passe"'
-                            ' aria-label="Creer un lien pour choisir un nouveau mot de passe">%s</button>'
+                            ' aria-label="Créer un lien pour choisir un nouveau mot de passe">%s</button>'
                             '</form>' % (html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
             essai = bool("essai_phase" in c.keys() and c["essai_phase"])
             actions += ('<form method="post" action="/admin">'
@@ -5922,6 +6948,41 @@ class Handler(BaseHTTPRequestHandler):
                    html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
                    html.escape(_visite_lisible(c)), actions))
         n_comptes = sum(1 for c in comptes_liste if c["statut"] not in ("valide", "refuse"))
+        # Les comptes createur de cartes : leur propre liste, avec activer /
+        # desactiver (statut valide <-> refuse, ce qui coupe leurs sessions).
+        createurs = []
+        for c in liste_createurs():
+            actif = c["statut"] == "valide"
+            cible = "refuse" if actif else "valide"
+            libelle = "Désactiver" if actif else "Réactiver"
+            createurs.append(
+                '<div class="compte-ligne">'
+                '<div class="compte-avatar">%s</div>'
+                '<div class="compte-info">'
+                '<div class="compte-nom">%s <span class="etat-pastille %s">%s</span></div>'
+                '<div class="compte-meta">%s &middot; créé le %s &middot; %s</div>'
+                '</div>'
+                '<div class="compte-actions">'
+                '<form method="post" action="/admin">'
+                '<input type="hidden" name="pseudo" value="%s">'
+                '<input type="hidden" name="statut" value="%s">'
+                '<button class="%s" type="submit" title="%s" aria-label="%s le compte">%s</button>'
+                '</form>'
+                '<form method="post" action="/admin">'
+                '<input type="hidden" name="action" value="reinitialiser">'
+                '<input type="hidden" name="pseudo" value="%s">'
+                '<button type="submit" title="Mot de passe"'
+                ' aria-label="Créer un lien pour choisir un nouveau mot de passe">%s</button>'
+                '</form></div></div>'
+                % (html.escape((c["pseudo"] or "?")[:1].upper()), html.escape(c["pseudo"]),
+                   "oui" if actif else "non", "actif" if actif else html.escape(c["statut"]),
+                   html.escape(c["email"] or "—"), html.escape(c["cree"] or "?"),
+                   html.escape(_visite_lisible(c)),
+                   html.escape(c["pseudo"]), cible, "non" if actif else "oui", libelle, libelle,
+                   icone_svg % (ICONE_CROIX if actif else ICONE_CHECK),
+                   html.escape(c["pseudo"]), icone_svg % ICONE_CLE))
+        if not createurs:
+            createurs.append('<p class="sous">Aucun créateur de cartes. Invite-en un ci-dessus.</p>')
         base = ("https://%s" % DOMAINE) if DOMAINE else "http://127.0.0.1:%d" % PORT_SITE
         # Invitations et mots de passe oublies, en fiches (23/09/2026) : avant,
         # deux tableaux a part -- desormais la meme carte que Comptes.
@@ -5932,15 +6993,16 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-ligne">'
                 '<div class="compte-avatar">?</div>'
                 '<div class="compte-info">'
-                '<div class="compte-nom">Lien d\'invitation <span class="etat-pastille attente">libre</span></div>'
-                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '<div class="compte-nom">Lien d\'invitation%s <span class="etat-pastille attente">libre</span></div>'
+                '<div class="compte-meta"><code>%s</code> &middot; créé le %s</div>'
                 '</div>'
                 '<div class="compte-actions"><form method="post" action="/admin">'
                 '<input type="hidden" name="action" value="annuler">'
                 '<input type="hidden" name="jeton" value="%s">'
                 '<button class="non" type="submit" title="Annuler" aria-label="Annuler cette invitation">%s</button>'
                 '</form></div></div>'
-                % (html.escape(lien), _horodate(i["cree_le"]), html.escape(i["jeton"]),
+                % (' créateur de cartes' if i["role"] == "createur" else "",
+                   html.escape(lien), _horodate(i["cree_le"]), html.escape(i["jeton"]),
                    icone_svg % ICONE_CROIX))
         for i in invitations_utilisees():
             initiale = (i["utilise_par"] or "?")[:1].upper()
@@ -5948,13 +7010,13 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-ligne">'
                 '<div class="compte-avatar">%s</div>'
                 '<div class="compte-info">'
-                '<div class="compte-nom">%s <span class="etat-pastille oui">utilisee</span></div>'
-                '<div class="compte-meta">cree le %s &middot; utilisee le %s</div>'
+                '<div class="compte-nom">%s <span class="etat-pastille oui">utilisée</span></div>'
+                '<div class="compte-meta">créé le %s &middot; utilisée le %s</div>'
                 '</div></div>'
                 % (html.escape(initiale), html.escape(i["utilise_par"] or "?"),
                    _horodate(i["cree_le"]), html.escape(i["utilise_le"] or "")))
         if not inv:
-            inv.append('<p class="sous">Aucune invitation. Cree-en une ci-dessus.</p>')
+            inv.append('<p class="sous">Aucune invitation. Crée-en une ci-dessus.</p>')
         reinit = []
         for r in reinitialisations_ouvertes():
             lien = "%s/reinitialisation?r=%s" % (base, r["jeton"])
@@ -5964,7 +7026,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<div class="compte-avatar">%s</div>'
                 '<div class="compte-info">'
                 '<div class="compte-nom">%s</div>'
-                '<div class="compte-meta"><code>%s</code> &middot; cree le %s</div>'
+                '<div class="compte-meta"><code>%s</code> &middot; créé le %s</div>'
                 '</div>'
                 '<div class="compte-actions"><form method="post" action="/admin">'
                 '<input type="hidden" name="action" value="reinit_annuler">'
@@ -5975,7 +7037,7 @@ class Handler(BaseHTTPRequestHandler):
                    _horodate(r["cree_le"]), html.escape(r["jeton"]), icone_svg % ICONE_CROIX))
         if not reinit:
             reinit.append('<p class="sous">Aucun lien en cours. Le bouton '
-                          '« Mot de passe » d\'un compte en cree un.</p>')
+                          '« Mot de passe » d\'un compte en crée un.</p>')
         # Rapports : groupes repliables par etat, chacun avec un compte en
         # COULEUR (23/09/2026, demande de l'utilisateur) -- meme code couleur
         # que le badge de chaque rapport individuel (`.etat.*`, voir
@@ -6001,9 +7063,9 @@ class Handler(BaseHTTPRequestHandler):
         # n'existe que s'il y a quelque chose a annuler.
         en_cours = annonce_courante()
         if en_cours is None:
-            annonce_etat = ("Aucune annonce. Le message apparait en haut du "
-                            "plateau et de l'assistant, avec le decompte, "
-                            "chez tous les joueurs connectes.")
+            annonce_etat = ("Aucune annonce. Le message apparaît en haut du "
+                            "plateau et de l'assistant, avec le décompte, "
+                            "chez tous les joueurs connectés.")
             annonce_annuler = ""
         else:
             annonce_etat = ('Annonce en cours, encore %d minute(s) : « %s »'
@@ -6043,7 +7105,7 @@ class Handler(BaseHTTPRequestHandler):
                 '<form method="post" action="/admin" style="display:flex;gap:.5rem;margin-top:.6rem">'
                 '<input type="hidden" name="action" value="message">'
                 '<input type="hidden" name="a" value="%s">'
-                '<input name="texte" maxlength="%d" placeholder="Ecrire a %s" required'
+                '<input name="texte" maxlength="%d" placeholder="Écrire à %s" required'
                 ' style="flex:1;font:inherit;background:var(--panel-2);color:inherit;'
                 'border:1px solid var(--border);border-radius:0;padding:.4rem .6rem">'
                 '<button class="oui" type="submit">Envoyer</button>'
@@ -6055,14 +7117,14 @@ class Handler(BaseHTTPRequestHandler):
                    lignes_msg, html.escape(personne["pseudo"]),
                    TAILLE_MESSAGE, html.escape(personne["pseudo"])))
         if not salon:
-            salon = '<p class="sous">Aucun compte valide a qui ecrire.</p>'
+            salon = '<p class="sous">Aucun compte validé à qui écrire.</p>'
         nb_invitations = len(invitations_libres()) + len(invitations_utilisees())
         nb_reinit = len(reinitialisations_ouvertes())
         n_rapports = nb_rapports_nouveaux()
         n_joueurs = attente_salon["nouveaux"]
         parties = "".join(
             # `data-label` : au telephone, chaque ligne devient une carte.
-            '<tr><td data-label="Table">%s</td><td data-label="Hote">%s</td>'
+            '<tr><td data-label="Table">%s</td><td data-label="Hôte">%s</td>'
             '<td data-label="Ouverte le">%s</td><td data-label="Fermee le">%s</td></tr>' % (
                 html.escape(p["nom"]), html.escape(p["hote"]),
                 html.escape(p["ouverte_le"]),
@@ -6082,6 +7144,7 @@ class Handler(BaseHTTPRequestHandler):
                                  valides=nb_valides(), max=MAX_COMPTES,
                                  lignes="".join(lignes),
                                  invitations="".join(inv),
+                                 createurs="".join(createurs), nb_createurs=len(liste_createurs()),
                                  reinitialisations="".join(reinit),
                                  rapports=rapports,
                                  salon=salon,
@@ -6105,6 +7168,9 @@ class Handler(BaseHTTPRequestHandler):
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
+                                 titre_decks=html.escape(lang.t("Decks des joueurs")),
+                                 panneau_decks=_panneau_decks_joueurs(),
+                                 script_decks=_script_decks_joueurs(),
                                  script_onglets=ADMIN_ONGLETS_SCRIPT).encode("utf-8")
 
     @staticmethod
@@ -6136,7 +7202,7 @@ class Handler(BaseHTTPRequestHandler):
                              html.escape(d["nom"]), html.escape(d["contact"]),
                              _horodate(d["quand"] or ""),
                              html.escape(d["message"]).replace("\n", "<br>"), bouton))
-        return ('<details class="groupe"%s><summary>Demandes des createurs '
+        return ('<details class="groupe"%s><summary>Demandes des créateurs '
                 '<span class="etat nouveau">%d</span></summary>%s</details>'
                 % (" open" if nouvelles else "", nouvelles, corps))
 
@@ -6169,10 +7235,10 @@ class Handler(BaseHTTPRequestHandler):
             journal = ('<details><summary class="sous">Journal de la partie</summary>'
                        '<pre>%s</pre></details>' % html.escape(r["journal"]))
         else:
-            journal = '<p class="sous">Aucun journal (rapport envoye hors partie).</p>'
+            journal = '<p class="sous">Aucun journal (rapport envoyé hors partie).</p>'
         ou = r["ecran"] or "?"
         if r["siege"]:
-            ou += " · siege %d" % r["siege"]
+            ou += " · siège %d" % r["siege"]
 
         # ⚠ LE FIL N'EXISTE QUE POUR UN TICKET. Un rapport d'invite n'a pas de
         # proprietaire connu (voir `_est_un_ticket`) : lui offrir un champ de
@@ -6192,12 +7258,12 @@ class Handler(BaseHTTPRequestHandler):
             fil += ('<form method="post" action="/admin" class="repondre">'
                     '<input type="hidden" name="action" value="rapport_repondre">'
                     '<input type="hidden" name="id" value="%d">'
-                    '<textarea name="texte" rows="2" placeholder="Repondre a %s"></textarea>'
-                    '<button type="submit">Repondre</button></form>'
+                    '<textarea name="texte" rows="2" placeholder="Répondre à %s"></textarea>'
+                    '<button type="submit">Répondre</button></form>'
                     % (r["id"], html.escape(r["hote"] or "")))
         else:
-            fil = ('<p class="sous">Rapport envoye depuis un siege invite : on ne '
-                   'sait pas a quel compte il appartient, il n\'y a donc pas de fil.</p>')
+            fil = ('<p class="sous">Rapport envoyé depuis un siège invité : on ne '
+                   'sait pas à quel compte il appartient, il n\'y a donc pas de fil.</p>')
 
         return ('<details class="rapport">'
                 '<summary><span class="etat %s">%s</span>'
@@ -6211,9 +7277,38 @@ class Handler(BaseHTTPRequestHandler):
                    html.escape(r["description"] or "").replace("\n", "<br>"),
                    image, journal, fil, boutons))
 
+    def _api_puzzle(self, methode: str) -> bool:
+        """Les routes /api/puzzle/... : JSON, sans compte ni cookie. Vrai si la route est la leur."""
+        import api_puzzles
+        if not api_puzzles.est_route_puzzle(self.chemin):
+            return False
+        corps = b""
+        if methode == "POST":
+            taille = self._taille_corps()
+            if taille < 0 or taille > api_puzzles.CORPS_MAX_OCTETS:
+                self._corps_refuse()
+                return True
+            corps = self.rfile.read(taille)
+        statut, contenu, entetes = api_puzzles.traiter(
+            puzzles_publies(), methode, self.chemin, self.parametres, corps, self._adresse_client(),
+            self.headers.get("Origin", ""), DOMAINE)
+        donnees = b"" if statut == 204 else json.dumps(contenu, ensure_ascii=False).encode("utf-8")
+        self._repondre(statut, donnees, "application/json; charset=utf-8", entetes)
+        return True
+
+    def do_OPTIONS(self):
+        if not self._api_puzzle("OPTIONS"):
+            self._repondre(404, b"", "text/plain; charset=utf-8")
+
     def do_GET(self):
+        if self._api_puzzle("GET"):
+            return
         self._poser_langue()
         pseudo = self._session()
+        if self._refuser_createur(pseudo, "GET"):
+            return
+        if self._route_createur("GET", pseudo):
+            return
         if self.chemin in ("/", "/index.html"):
             # ⚠ C'EST ICI, ET PAS SUR `/activite`, QUE DISCORD CHARGE SON
             # CADRE. Le « Root Mapping » du panneau developpeur pointe
@@ -6284,11 +7379,15 @@ class Handler(BaseHTTPRequestHandler):
             # poignee de main, puis redirige lui-meme vers
             # `/activite_discord?instance_id=...`. Voir DISCORD.md.
             if not DISCORD_CLIENT_ID:
-                self._repondre(404, b"Activite Discord non configuree "
-                                    b"(DISCORD_CLIENT_ID absent).",
+                self._repondre(404, ("Activité Discord non configurée "
+                                    "(DISCORD_CLIENT_ID absent).").encode("utf-8"),
                                "text/plain; charset=utf-8")
                 return
             self._repondre(200, page_activite_discord_amorce())
+        elif self.chemin == "/places_invite":
+            self._places_invite()
+        elif self.chemin == "/jouer-invite":
+            self._jouer_invite()
         elif self.chemin == "/pret":
             # ⚠ CETTE ROUTE NE DEMARRE RIEN, et c'est tout son interet. La page
             # d'attente l'interroge toutes les 1,5 s : si elle appelait
@@ -6375,7 +7474,7 @@ class Handler(BaseHTTPRequestHandler):
             jeton = urllib.parse.parse_qs(requete.query).get("i", [""])[0]
             if not INSCRIPTION_LIBRE and not invitation_valide(jeton):
                 self._repondre(403, self._formulaire(
-                    "inscription", "Il faut un lien d'invitation pour creer un compte ici."))
+                    "inscription", lang.t("Il faut un lien d'invitation pour créer un compte ici.")))
                 return
             self._repondre(200, self._formulaire("inscription", jeton=jeton))
         elif self.chemin == "/connexion":
@@ -6406,12 +7505,12 @@ class Handler(BaseHTTPRequestHandler):
             jeton = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query).get("r", [""])[0]
             if reinitialisation_valide(jeton) is None:
                 self._repondre(410, self._formulaire_reinitialisation(
-                    "", "Ce lien n'est plus valable. Demande un nouveau lien a l'administrateur."))
+                    "", "Ce lien n'est plus valable. Demande un nouveau lien à l'administrateur."))
                 return
             self._repondre(200, self._formulaire_reinitialisation(jeton))
         elif self.chemin == "/admin":
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_admin())
         elif self.chemin == "/suivi":
@@ -6421,7 +7520,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._rediriger("/")
                 return
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, PAGE_SUIVI.encode("utf-8"))
         elif self.chemin == "/regarder":
@@ -6438,7 +7537,7 @@ class Handler(BaseHTTPRequestHandler):
             # mot de passe de la table (`comptes.mdp_jeu`). Le moteur, de son
             # cote, ouvre la lecture sans distribuer de siege (`/spectateur`).
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             vise = (self.parametres.get("joueur") or [""])[0].strip().lower()
             try:
@@ -6455,6 +7554,20 @@ class Handler(BaseHTTPRequestHandler):
                 siege = 0
             cle = urllib.parse.quote(partie.mot_de_passe)
             self._rediriger(f"{partie.base_url()}/spectateur?p={siege}&key={cle}")
+        elif self.chemin == "/api/admin/decks-joueurs":
+            # Reserve a l'administrateur, VERIFIE ICI (19/10/2026). Un visiteur
+            # sans session recoit 403 comme un joueur : on ne dit pas si la
+            # route existe.
+            if pseudo != ADMIN:
+                self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
+                return
+            comptes_decks = lister_decks_des_joueurs()
+            journaliser_decks_admin(
+                "consultation", comptes=len(comptes_decks),
+                decks=sum(len(c["decks"]) for c in comptes_decks))
+            corps = json.dumps({"comptes": comptes_decks}, ensure_ascii=False).encode("utf-8")
+            self._repondre(200, corps, "application/json; charset=utf-8",
+                           [("Cache-Control", "no-store")])
         elif self.chemin == "/api/suivi":
             if pseudo != ADMIN:
                 self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
@@ -6522,7 +7635,7 @@ class Handler(BaseHTTPRequestHandler):
         elif self.chemin == "/admin/sauvegardes":
             # La liste des sauvegardes du code, reservee a l'administrateur.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._repondre(200, self._page_sauvegardes())
         elif self.chemin == "/admin/images":
@@ -6530,19 +7643,19 @@ class Handler(BaseHTTPRequestHandler):
             # a jour, rien de stocke en double. Plusieurs Go : le site sert un
             # fil par requete, les joueurs ne l'attendent pas.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_images()
         elif self.chemin == "/admin/partie-joueur":
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_partie_joueur()
         elif self.chemin == "/admin/sauvegarde-code":
             # Le zip designe par son RANG dans la liste (0 = le plus recent),
             # jamais par un nom venu de l'adresse : pas de traversee de dossier.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_sauvegarde()
         elif self.chemin.startswith("/admin/capture"):
@@ -6551,7 +7664,7 @@ class Handler(BaseHTTPRequestHandler):
             # l'adresse : on lit celui que la base associe au numero demande,
             # sans quoi n'importe quel chemin sortirait du dossier.
             if pseudo != ADMIN:
-                self._repondre(403, b"Reserve a l'administrateur.", "text/plain; charset=utf-8")
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_capture()
         elif self.chemin == "/etat":
@@ -6573,7 +7686,304 @@ class Handler(BaseHTTPRequestHandler):
                     etat["jeux"] = []
             self._repondre(200, json.dumps(etat, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
+        elif self.chemin == "/tchat/vue":
+            # ⚠ ACCES DIRECT DEPUIS LE NAVIGATEUR (pas depuis le moteur) :
+            # reserve au tchat GENERAL et aux MP, consultes depuis une page du
+            # site (ex. la preparation) plutot que depuis le plateau. Le fil
+            # de TABLE, lui, ne passe que par le moteur (`/api/vue`
+            # salon=table, server_get.py) : le navigateur y est deja sur
+            # p<N>.<domaine> une fois la partie lancee.
+            #
+            # ⚠ UN VISITEUR SANS COMPTE NE LIT QUE LE GENERAL. Un pseudo
+            # anonyme ne prouve rien : lui laisser lire des MP reviendrait a
+            # les rendre publics.
+            avec = self.parametres.get("avec", [""])[0]
+            try:
+                depuis = int((self.parametres.get("depuis") or ["0"])[0])
+            except ValueError:
+                depuis = 0
+            if pseudo:
+                toucher_presence(pseudo)
+                moi = pseudo
+            elif avec:
+                self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
+                               "application/json; charset=utf-8", self._entetes_tchat_play())
+                return
+            else:
+                moi = pseudo_anonyme_valide((self.parametres.get("pseudo") or [""])[0])
+                if not moi:
+                    self._repondre(400, b'{"error":"pseudo invalide"}',
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
+                    return
+            messages = messages_depuis(depuis, moi, avec)
+            corps = {"pseudo": moi, "messages": messages,
+                     "dernier": messages[-1]["id"] if messages else depuis,
+                     "prives": derniers_prives(moi) if pseudo else {},
+                     # Drapeaux enregistres au PROFIL (compte uniquement) : un
+                     # anonyme n'en a pas ici, il garde les siens en
+                     # `localStorage` cote client (06/11/2026).
+                     "mes_langues": langues_du_compte(moi) if pseudo else ""}
+            self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
+                           "application/json; charset=utf-8", self._entetes_tchat_play())
         else:
+            self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+
+    # ------------------------------------------------------------------
+    # Createur de cartes : isolement, pages statiques, API de stockage
+    # ------------------------------------------------------------------
+    # ⚠ ISOLEMENT PAR LISTE BLANCHE, A L'ENTREE DE CHAQUE do_*. Un compte
+    # `createur` ne passe que par ces chemins ; tout le reste (jeu, admin,
+    # decks, parties, API du moteur...) est refuse AVANT d'atteindre la moindre
+    # route, y compris celles qu'on ajoutera plus tard : un oubli ne peut donc
+    # pas ouvrir une porte, il ferme une page de trop. Public = sans session
+    # de toute facon (connexion, inscription, mot de passe oublie, deconnexion).
+    _CREATEUR_EXACT = frozenset({
+        "/mc-creator", "/createur-cartes.html", "/atelier-couvertures.html", "/connexion", "/deconnexion",
+        "/inscription", "/reinitialisation", "/favicon.ico", "/favicon.png"})
+    _CREATEUR_PREFIXES = ("/createur-cartes/", "/api/createur/")
+
+    def _chemin_createur_permis(self) -> bool:
+        chemin = self.chemin
+        return chemin in self._CREATEUR_EXACT or chemin.startswith(self._CREATEUR_PREFIXES)
+
+    def _refuser_createur(self, pseudo, methode: str) -> bool:
+        """True si la requete vient d'un createur ET sort de son perimetre
+        (la reponse est alors deja envoyee)."""
+        if not pseudo or not est_createur(pseudo) or self._chemin_createur_permis():
+            return False
+        if methode != "GET":
+            self._raccrocher()      # le corps n'est pas lu
+        if methode == "GET" and self.chemin in ("/", "/index.html", "/entrer"):
+            self._rediriger("/mc-creator")
+        else:
+            self._repondre(403, "Réservé aux joueurs : ton compte ne donne accès"
+                                " qu'au créateur de cartes.".encode("utf-8"),
+                           "text/plain; charset=utf-8", [("Cache-Control", "no-store")])
+        return True
+
+    _MIME_CREATEUR = {
+        ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+        ".mjs": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
+        ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml",
+        ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+        ".webp": "image/webp", ".gif": "image/gif", ".ico": "image/x-icon",
+        ".woff": "font/woff", ".woff2": "font/woff2", ".ttf": "font/ttf",
+        ".otf": "font/otf", ".txt": "text/plain; charset=utf-8",
+    }
+
+    def _json(self, code: int, objet) -> None:
+        self._repondre(code, json.dumps(objet, ensure_ascii=False).encode("utf-8"),
+                       "application/json; charset=utf-8",
+                       [("Cache-Control", "no-store"), ("X-Content-Type-Options", "nosniff")])
+
+    def _chemin_statique_createur(self) -> str | None:
+        """Le fichier du jeu que ce chemin designe, ou None. Aucune sortie du
+        dossier public du jeu : segments filtres, puis realpath verifie."""
+        racine = os.path.realpath(DOSSIER_PUBLIC_JEU)
+        # « Images de pack » (atelier-couvertures.html) : une page seule, sans API, qui se
+        # rend dans le navigateur ; servie comme le createur, au meme titre (30/10/2026 :
+        # le menu « Que veux-tu fabriquer ? » y renvoyait et le site repondait « Introuvable »).
+        # « MC Creator » : l'adresse courte (30/10/2026) ; le fichier garde son nom. L'ancienne adresse redirige.
+        if self.chemin == "/mc-creator":
+            relatif = ["createur-cartes.html"]
+        elif self.chemin in ("/createur-cartes.html", "/atelier-couvertures.html"):
+            relatif = [self.chemin[1:]]
+        else:
+            brut = urllib.parse.unquote(self.chemin[len("/createur-cartes/"):])
+            if "\x00" in brut or "\\" in brut:
+                return None
+            segments = brut.split("/")
+            if any(seg in ("", ".", "..") or seg.startswith(".") for seg in segments):
+                return None
+            relatif = ["createur-cartes"] + segments
+        chemin = os.path.realpath(os.path.join(racine, *relatif))
+        if not chemin.startswith(racine + os.sep) or not os.path.isfile(chemin):
+            return None
+        if os.path.splitext(chemin)[1].lower() not in self._MIME_CREATEUR:
+            return None
+        return chemin
+
+    def _route_createur(self, methode: str, pseudo) -> bool:
+        """Traite les routes du createur de cartes. True si la requete est la
+        sienne (reponse envoyee), False pour laisser le reste du site faire."""
+        chemin = self.chemin
+        if chemin == "/createur-cartes.html" and methode == "GET":
+            self._rediriger("/mc-creator")     # l'ancienne adresse (favoris, liens deja envoyes)
+            return True
+        statique = (chemin in ("/mc-creator", "/createur-cartes.html", "/atelier-couvertures.html")
+                    or chemin.startswith("/createur-cartes/"))
+        api = chemin.startswith("/api/createur/")
+        if not (statique or api):
+            return False
+        if methode != "GET":
+            if api:
+                pass     # le corps est lu (ou refuse) par `_api_createur`
+            else:
+                self._raccrocher()
+        # 31/10/2026 : les PAGES du createur (statique, GET) sont libres, sur
+        # decision de l'admin : quiconque a le lien l'ouvre, sans compte. Les
+        # projets vivent dans son navigateur. L'API (stockage serveur, scans
+        # officiels) reste derriere une session.
+        # Les scans de « carte comparable » (lecture seule, liste blanche sur le code)
+        # sont libres eux aussi, sur demande de l'admin (31/10/2026).
+        scan_libre = methode == "GET" and chemin.startswith("/api/createur/scan/")
+        if not pseudo and not ((statique and methode == "GET") or scan_libre):
+            if api:
+                self._raccrocher()
+                self._json(401, {"erreur": "Connexion requise."})
+            elif methode == "GET":
+                self._rediriger("/")
+            else:
+                self._repondre(405, b"", "text/plain; charset=utf-8")
+            return True
+        # 28/10/2026 : ouvert a TOUT compte connecte (joueurs, createurs, admin),
+        # sur decision de l'admin. Chacun reste isole : ses projets seulement.
+        if statique:
+            if methode != "GET":
+                self._repondre(405, b"", "text/plain; charset=utf-8")
+                return True
+            fichier = self._chemin_statique_createur()
+            if fichier is None:
+                self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+                return True
+            with open(fichier, "rb") as f:
+                corps = f.read()
+            self._repondre(200, corps, self._MIME_CREATEUR[os.path.splitext(fichier)[1].lower()],
+                           [("Cache-Control", "no-cache"), ("X-Content-Type-Options", "nosniff")])
+            return True
+        self._api_createur(methode, pseudo)
+        return True
+
+    def _api_createur(self, methode: str, pseudo: str) -> None:
+        """/api/createur/projets, /projet/<id>, /projet/<id>/versions[/<n>].
+
+        Chacun ne voit que SES projets ; l'administrateur LIT ceux des autres
+        par `?compte=<pseudo>`, sans jamais les ecrire."""
+        ecriture = methode in ("PUT", "DELETE")
+        try:
+            morceaux_scan = self.chemin[len("/api/createur/"):].split("/")
+            if len(morceaux_scan) == 2 and morceaux_scan[0] == "scan":
+                if methode != "GET":
+                    raise createur_cartes.ErreurCreateur(405, "Lecture seule.")
+                self._scan_createur(urllib.parse.unquote(morceaux_scan[1]))
+                return
+            demande = (self.parametres.get("compte") or [""])[0].strip().lower()
+            if demande and demande != pseudo:
+                if pseudo != ADMIN or ecriture:
+                    raise createur_cartes.ErreurCreateur(
+                        403, "Les projets d'un autre compte ne sont pas accessibles.")
+                cible = createur_cartes.compte_valide(demande)
+                ligne = compte(cible)
+                if ligne is None:
+                    raise createur_cartes.ErreurCreateur(404, "Compte introuvable.")
+            else:
+                cible = createur_cartes.compte_valide(pseudo)
+            if ecriture:
+                # Meme origine obligatoire : le cookie est SameSite=Lax, ceci
+                # double la protection contre une requete venue d'ailleurs.
+                origine = self.headers.get("Origin")
+                if origine and (urllib.parse.urlparse(origine).netloc
+                                != (self.headers.get("Host") or "")):
+                    raise createur_cartes.ErreurCreateur(403, "Origine refusée.")
+            morceaux = self.chemin[len("/api/createur/"):].split("/")
+            racine = DOSSIER_CREATEUR
+            if morceaux == ["projets"] and methode == "GET":
+                self._json(200, {"projets": createur_cartes.lister(racine, cible),
+                                 "utilise": createur_cartes.usage_octets(racine, cible),
+                                 "quota": QUOTA_CREATEUR_OCTETS})
+                return
+            if len(morceaux) >= 2 and morceaux[0] == "projet":
+                identifiant = createur_cartes.id_valide(morceaux[1])
+                reste = morceaux[2:]
+                if not reste and methode == "GET":
+                    self._repondre(200, createur_cartes.lire(racine, cible, identifiant),
+                                   "application/json; charset=utf-8",
+                                   [("Cache-Control", "no-store"),
+                                    ("X-Content-Type-Options", "nosniff")])
+                    return
+                if not reste and methode == "PUT":
+                    octets = self._corps_projet()
+                    meta = createur_cartes.ecrire(racine, cible, identifiant, octets,
+                                                  QUOTA_CREATEUR_OCTETS, MAX_PROJET_OCTETS)
+                    self._json(200, meta)
+                    return
+                if not reste and methode == "DELETE":
+                    createur_cartes.supprimer(racine, cible, identifiant)
+                    self._json(200, {"supprime": identifiant})
+                    return
+                if reste == ["versions"] and methode == "GET":
+                    self._json(200, {"versions": createur_cartes.versions(racine, cible, identifiant)})
+                    return
+                if len(reste) == 2 and reste[0] == "versions" and methode == "GET":
+                    self._repondre(200, createur_cartes.lire_version(racine, cible, identifiant, reste[1]),
+                                   "application/json; charset=utf-8",
+                                   [("Cache-Control", "no-store"),
+                                    ("X-Content-Type-Options", "nosniff")])
+                    return
+            if ecriture:
+                self._raccrocher()
+            raise createur_cartes.ErreurCreateur(404, "Route inconnue.")
+        except createur_cartes.ErreurCreateur as e:
+            if ecriture:
+                self._raccrocher()      # corps eventuellement non lu
+            self._json(e.code, {"erreur": e.message})
+
+    _RE_CODE_SCAN = re.compile(r"^[0-9A-Za-z_-]{2,24}$")
+
+    def _scan_createur(self, code: str) -> None:
+        """Le scan officiel d'une carte (lecture seule), pour « voir une vraie carte
+        comparable ». Liste blanche sur le code, jamais de chemin : `<code>.jpg` dans
+        assets/pics-hd (HD, si elle existe) ou assets/pics, sous le dossier des
+        images du jeu, et nulle part ailleurs. Libre d'acces (31/10/2026)."""
+        if not self._RE_CODE_SCAN.match(code):
+            raise createur_cartes.ErreurCreateur(400, "Code de carte invalide.")
+        racine = os.path.realpath(os.path.join(RACINE_JEU, "assets"))
+        for sous in ("pics-hd", "pics"):
+            chemin = os.path.realpath(os.path.join(racine, sous, code + ".jpg"))
+            if chemin.startswith(racine + os.sep) and os.path.isfile(chemin):
+                with open(chemin, "rb") as f:
+                    corps = f.read()
+                self._repondre(200, corps, "image/jpeg",
+                               [("Cache-Control", "private, max-age=86400"),
+                                ("X-Content-Type-Options", "nosniff")])
+                return
+        raise createur_cartes.ErreurCreateur(404, "Scan introuvable.")
+
+    def _corps_projet(self) -> bytes:
+        """Le corps d'un PUT de projet, plafonne sur l'ANNONCE avant lecture."""
+        if "application/json" not in (self.headers.get("Content-Type") or "").lower():
+            raise createur_cartes.ErreurCreateur(415, "Content-Type : application/json attendu.")
+        brut = self.headers.get("Content-Length")
+        try:
+            taille = int(brut)
+        except (TypeError, ValueError):
+            raise createur_cartes.ErreurCreateur(411, "Content-Length obligatoire.")
+        if taille < 0:
+            raise createur_cartes.ErreurCreateur(400, "Content-Length invalide.")
+        if taille > MAX_PROJET_OCTETS:
+            raise createur_cartes.ErreurCreateur(
+                413, "Projet trop volumineux : %d Mo au maximum." % (MAX_PROJET_OCTETS // (1024 * 1024)))
+        corps = self.rfile.read(taille)
+        if len(corps) != taille:
+            raise createur_cartes.ErreurCreateur(400, "Corps incomplet.")
+        return corps
+
+    def do_PUT(self):
+        self._poser_langue()
+        pseudo = self._session()
+        if self._refuser_createur(pseudo, "PUT"):
+            return
+        if not self._route_createur("PUT", pseudo):
+            self._raccrocher()
+            self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
+
+    def do_DELETE(self):
+        self._poser_langue()
+        pseudo = self._session()
+        if self._refuser_createur(pseudo, "DELETE"):
+            return
+        if not self._route_createur("DELETE", pseudo):
+            self._raccrocher()
             self._repondre(404, b"Introuvable", "text/plain; charset=utf-8")
 
     def _poser_langue(self) -> None:
@@ -6587,6 +7997,8 @@ class Handler(BaseHTTPRequestHandler):
                                  self.headers.get("Accept-Language") or ""))
 
     def do_POST(self):
+        if self._api_puzzle("POST"):
+            return
         self._poser_langue()
         # ⚠ L'ORDRE DE CES TROIS LIGNES EST LE CORRECTIF. On plafonne le corps
         # AVANT de le lire, et on identifie qui parle AVANT de le lire aussi.
@@ -6597,6 +8009,8 @@ class Handler(BaseHTTPRequestHandler):
         # apres avoir verifie ce qu'elle pouvait verifier.
         if self._taille_corps() < 0:
             self._corps_refuse()
+            return
+        if self._refuser_createur(self._session(), "POST"):
             return
 
         if self.chemin == "/compteur_play":
@@ -6613,6 +8027,16 @@ class Handler(BaseHTTPRequestHandler):
                            [("Cross-Origin-Resource-Policy", "same-site")])
             return
 
+        if self.chemin == "/compteur_phase_play":
+            taille = self._taille_corps()
+            if taille > COMPTEUR_PHASE_MAX_OCTETS:
+                self._corps_refuse()
+                return
+            enregistrer_phase_play(self.rfile.read(taille))
+            self._repondre(204, b"", "text/plain; charset=utf-8",
+                           [("Cross-Origin-Resource-Policy", "same-site")])
+            return
+
         if self.chemin == "/presence_play":
             taille = self._taille_corps()
             if taille > PRESENCE_PLAY_MAX_OCTETS:
@@ -6623,6 +8047,46 @@ class Handler(BaseHTTPRequestHandler):
             # CORP, le navigateur refuse cette reponse venue du site principal.
             self._repondre(204, b"", "text/plain; charset=utf-8",
                            [("Cross-Origin-Resource-Policy", "same-site")])
+            return
+
+        if self.chemin == "/tchat/dire":
+            # ⚠ ACCES DIRECT DEPUIS LE NAVIGATEUR, pas depuis le moteur — voir
+            # le commentaire symmetrique de `/tchat/vue` (GET). Table exclue :
+            # elle ne passe que par le moteur.
+            champs = self._champs()
+            pseudo = self._session()
+            if pseudo:
+                moi = pseudo
+            else:
+                if champs.get("a"):
+                    self._repondre(403, b'{"error":"compte requis pour les messages prives"}',
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
+                    return
+                if not debit_anonyme_ok(self._adresse_client()):
+                    self._repondre(429, b'{"error":"trop de messages, reessaie plus tard"}',
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
+                    return
+                moi = pseudo_anonyme_valide(champs.get("pseudo", ""))
+                if not moi:
+                    self._repondre(400, b'{"error":"pseudo invalide"}',
+                                   "application/json; charset=utf-8", self._entetes_tchat_play())
+                    return
+            dire(moi, champs.get("texte", ""), champs.get("a", ""), champs.get("langues", ""))
+            self._repondre(200, b'{"ok":true}', "application/json; charset=utf-8", self._entetes_tchat_play())
+            return
+
+        if self.chemin == "/tchat/langues":
+            # Enregistre les drapeaux au PROFIL — reserve aux comptes, un
+            # anonyme n'a pas de profil ou les garder (voir `/tchat/vue`).
+            pseudo = self._session()
+            if not pseudo:
+                self._repondre(403, b'{"error":"compte requis"}',
+                               "application/json; charset=utf-8")
+                return
+            champs = self._champs()
+            valides = definir_langues_du_compte(pseudo, champs.get("langues", ""))
+            self._repondre(200, json.dumps({"langues": valides}).encode("utf-8"),
+                           "application/json; charset=utf-8")
             return
 
         if self.chemin == "/contact-createurs":
@@ -6682,7 +8146,8 @@ class Handler(BaseHTTPRequestHandler):
                     "inscription", str(erreur), champs.get("i", "")))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre=lang.t("Demande enregistree"), action="/connexion",
+                langue=_bouton_langue(),
+                titre=lang.t("Demande enregistrée"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
                 mdp=lang.t("Mot de passe"),
                 bouton_appli=_bouton_appli(), mention=_mention_complete(),
@@ -6701,7 +8166,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(400, self._formulaire_reinitialisation(champs.get("r", ""), str(erreur)))
                 return
             self._repondre(200, PAGE_FORMULAIRE.format(
-                titre=lang.t("Mot de passe enregistre"), action="/connexion",
+                langue=_bouton_langue(),
+                titre=lang.t("Mot de passe enregistré"), action="/connexion",
                 bouton=lang.t("Entrer"), auto="current-password", erreur="",
                 mdp=lang.t("Mot de passe"),
                 champs='<label>%s<input name="pseudo" '
@@ -6725,7 +8191,7 @@ class Handler(BaseHTTPRequestHandler):
             reste = attente_connexion(cle)
             if reste:
                 self._repondre(429, self._formulaire(
-                    "connexion", "Trop de tentatives. Reessaie dans %s."
+                    "connexion", "Trop de tentatives. Réessaie dans %s."
                                  % delai_lisible(reste),
                     instance_discord=instance_en_attente))
                 return
@@ -6739,12 +8205,14 @@ class Handler(BaseHTTPRequestHandler):
             # Reussite : on relache le frein, pour que ses propres fautes de
             # frappe ne poursuivent pas quelqu'un qui a fini par entrer.
             oublier_tentatives(cle)
+            createur = est_createur(qui)
             jeton = ouvrir_session(qui)
             # Sans ceci, « en ligne » n'apparaitrait presque jamais : la
             # presence n'etait rafraichie que par le MOTEUR, donc uniquement
             # pendant qu'une partie tourne. On la touche des l'entree sur le
             # site, ce qui couvre le moment ou le moteur demarre encore.
-            toucher_presence(qui)
+            if not createur:
+                toucher_presence(qui)
             # HttpOnly : le cookie n'est pas lisible en JavaScript.
             # SameSite=Lax : il ne part pas sur une requete venue d'un autre site.
             # Secure : il ne part pas en clair. Sans lui, une premiere visite
@@ -6765,6 +8233,11 @@ class Handler(BaseHTTPRequestHandler):
                 f"nc_session={jeton}; HttpOnly; Path=/;"
                 f" Max-Age={DUREE_SESSION_JOURS * 86400}"
                 + self._attributs_cookie(domaine_parent=True))
+
+            if createur:
+                # Ni table, ni activite Discord : le seul endroit permis.
+                self._rediriger("/mc-creator", [("Set-Cookie", cookie_session)])
+                return
 
             if instance_en_attente:
                 # ⚠ RESOLU ICI, PAS PAR UNE REDIRECTION VERS `/activite_discord`.
@@ -6793,12 +8266,39 @@ class Handler(BaseHTTPRequestHandler):
 
             self._rediriger("/entrer", [("Set-Cookie", cookie_session)])
 
+        elif self.chemin == "/api/admin/decks-joueurs/importer":
+            # Reserve a l'administrateur, verifie AVANT de lire le corps. En-tete
+            # `X-Importer-Deck` exige : un formulaire d'un autre site ne peut
+            # pas l'ajouter (en plus du cookie SameSite=Lax).
+            if pseudo != ADMIN:
+                self._raccrocher()
+                self._repondre(403, b'{"error":"admin"}', "application/json; charset=utf-8")
+                return
+            if self.headers.get("X-Importer-Deck") != "1" or self._taille_corps() > 4096:
+                self._raccrocher()
+                self._repondre(400, b'{"error":"requete"}', "application/json; charset=utf-8")
+                return
+            champs = self._champs()
+            cible = str(champs.get("compte", ""))
+            identifiant = str(champs.get("deck", ""))
+            try:
+                resultat = importer_deck_de_joueur(cible, identifiant)
+                code = 200
+                journaliser_decks_admin("import", compte=cible, deck=identifiant,
+                                        copie=resultat["fichier"], resultat="ok")
+            except ErreurDeckAdmin as erreur:
+                code = erreur.code
+                resultat = {"ok": False, "error": str(erreur)}
+                journaliser_decks_admin("import", compte=cible[:40], deck=identifiant[:80],
+                                        resultat="refuse %d" % code)
+            self._repondre(code, json.dumps(resultat, ensure_ascii=False).encode("utf-8"),
+                           "application/json; charset=utf-8")
         elif self.chemin == "/admin":
             # Le controle passe AVANT la lecture du corps : un inconnu n'a pas
             # a faire allouer un octet sur une route qui va le refuser.
             if pseudo != ADMIN:
                 self._raccrocher()
-                self._repondre(403, b"Reserve a l'administrateur.",
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"),
                                "text/plain; charset=utf-8")
                 return
             champs = self._champs()
@@ -6821,6 +8321,8 @@ class Handler(BaseHTTPRequestHandler):
                 marquer_messages_lus(ADMIN)
             elif action == "inviter":
                 creer_invitation()
+            elif action == "inviter_createur":
+                creer_invitation("createur")
             elif action == "annuler":
                 supprimer_invitation(champs.get("jeton", ""))
             elif action == "reinitialiser":
@@ -6863,7 +8365,7 @@ class Handler(BaseHTTPRequestHandler):
                            "/api/prives", "/api/prives_lus", "/api/eteindre",
                            "/api/connectes", "/api/inviter", "/api/invitations",
                            "/api/invitation_reponse", "/api/invitations_envoyees",
-                           "/api/decks_invite"):
+                           "/api/decks_invite", "/api/decks_compte", "/api/connexion"):
             # ⚠ CES ROUTES NE SONT PAS POUR LE NAVIGATEUR. Elles sont appelees
             # par le MOTEUR, en 127.0.0.1, et s'authentifient par le jeton de
             # partie plutot que par le cookie de session : le navigateur est sur
@@ -7031,13 +8533,82 @@ class Handler(BaseHTTPRequestHandler):
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
+            if self.chemin == "/api/connexion":
+                # L'invite se CONNECTE a son compte depuis le salon (cas B,
+                # 28/10/2026). `qui` (jeton de partie) prouve seulement que
+                # l'appel vient d'un moteur legitime ; l'identite verifiee est
+                # celle du couple pseudo/mdp. L'anti-flood porte sur l'ADRESSE
+                # reelle du navigateur, relayee par le moteur (la connexion ici
+                # vient de 127.0.0.1, inexploitable comme cle). Reussite : on
+                # rend le jeton de session, que le MOTEUR posera en cookie
+                # nc_session (Domain=.<domaine>) sur sa reponse au navigateur.
+                adresse = str(champs.get("adresse", "") or "") or "?"
+                cle = cle_frein(adresse)
+                reste = attente_connexion(cle)
+                if reste:
+                    self._repondre(200, json.dumps(
+                        {"ok": False, "erreur": "Trop de tentatives. Réessaie dans %s." % delai_lisible(reste)},
+                        ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                    return
+                compter_tentative(cle)
+                try:
+                    pseudo = verifier(str(champs.get("pseudo", "") or ""), str(champs.get("mdp", "") or ""))
+                except ValueError as erreur:
+                    self._repondre(200, json.dumps({"ok": False, "erreur": str(erreur)},
+                        ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                    return
+                oublier_tentatives(cle)
+                jeton = ouvrir_session(pseudo)
+                toucher_presence(pseudo)
+                self._repondre(200, json.dumps({"ok": True, "jeton": jeton, "pseudo": pseudo},
+                    ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/decks_compte":
+                # Les decks du compte DEJA CONNECTE dans le navigateur de
+                # l'invite : son cookie de session, relaye par le moteur, dit
+                # qui il est (seul le site sait lire une session). `qui` (le
+                # jeton de partie) prouve seulement que l'appel vient d'un
+                # moteur legitime ; l'identite qui COMPTE est celle de la
+                # session. Session absente/invalide (invite jamais connecte) :
+                # liste vide, comme `get_decks_invite` sans invitation.
+                pseudo = pseudo_de_session(str(champs.get("nc_session") or ""))
+                self._repondre(200, json.dumps(decks_du_compte(pseudo or ""),
+                                               ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
             if self.chemin == "/api/invitations_envoyees":
                 self._repondre(200, json.dumps({"sieges": invitations_de(qui)},
                                                ensure_ascii=False).encode("utf-8"),
                                "application/json; charset=utf-8")
                 return
+            # ⚠ LE FIL « TABLE » (chantier du 06/11/2026). `qui` est TOUJOURS
+            # le pseudo de l'HOTE (c'est ce que `jeton_site` designe depuis
+            # l'origine, voir `JETONS_SITE`), que l'appel vienne du siege 0,
+            # d'un invite ou d'un spectateur relayant par le MEME moteur :
+            # c'est exactement ce qu'il faut comme `table_id`, et c'est pour
+            # ca qu'aucun jeton supplementaire n'est necessaire ici. Qui a le
+            # droit d'appeler est decide par le MOTEUR (server_get.py), pas
+            # ici : siege 0 pour general/prive, n'importe quel siege ou un
+            # spectateur pour la table.
+            if self.chemin == "/api/dire" and champs.get("salon") == "table":
+                dire_table(qui, champs.get("pseudo_table", qui), champs.get("texte", ""),
+                          champs.get("langues", ""))
+                self._repondre(200, b'{"ok":true}',
+                               "application/json; charset=utf-8")
+                return
+            if self.chemin == "/api/vue" and champs.get("salon") == "table":
+                try:
+                    depuis = int(champs.get("depuis", "0") or "0")
+                except ValueError:
+                    depuis = 0
+                messages = messages_table_depuis(qui, depuis)
+                corps = {"messages": messages,
+                         "dernier": messages[-1]["id"] if messages else depuis}
+                self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
+                               "application/json; charset=utf-8")
+                return
             if self.chemin == "/api/dire":
-                dire(qui, champs.get("texte", ""), champs.get("a", ""))
+                dire(qui, champs.get("texte", ""), champs.get("a", ""), champs.get("langues", ""))
                 self._repondre(200, b'{"ok":true}',
                                "application/json; charset=utf-8")
                 return
@@ -7059,6 +8630,7 @@ class Handler(BaseHTTPRequestHandler):
                 # signaler d'une pastille les conversations ou il s'est passe
                 # quelque chose, sans avoir a les ouvrir une par une.
                 "prives": derniers_prives(qui),
+                "mes_langues": langues_du_compte(qui),
             }
             self._repondre(200, json.dumps(corps, ensure_ascii=False).encode("utf-8"),
                            "application/json; charset=utf-8")
@@ -7102,6 +8674,11 @@ def main() -> int:
     if compte(ADMIN) is None:
         print(f"  ⚠ Aucun compte administrateur « {ADMIN} » : cree-le sur /inscription,")
         print("    il sera valide d'office.")
+    # Au demarrage aucun moteur ne tourne : toute table invite en base est un reste.
+    try:
+        nettoyer_invites_perimes(0)
+    except Exception as souci:
+        print(f"  ⚠ nettoyage initial des tables invite en echec : {souci}")
     threading.Thread(target=faucheur, daemon=True).start()
     serveur = ThreadingHTTPServer(("127.0.0.1", PORT_SITE), Handler)
 
@@ -7156,7 +8733,30 @@ def purge_en_ligne_de_commande(arguments: list) -> int:
     return 0
 
 
+def purge_messages_en_ligne_de_commande(arguments: list) -> int:
+    """`orchestrateur.py purger-messages [jours]`, pour `deploiement/purge.sh`.
+
+    Voir `purger_messages_anciens` : filet par AGE sur le tchat (general et
+    prive), en plus du filet par NOMBRE deja en place (`MESSAGES_GARDES`,
+    `PRIVES_GARDES`).
+    """
+    try:
+        jours = int(arguments[0]) if arguments else JOURS_MESSAGES_GARDES
+    except ValueError:
+        print(f"Nombre de jours invalide : {arguments[0]}", file=sys.stderr)
+        return 2
+    if not os.path.isfile(BASE):
+        print(f"  (base absente, rien a purger) {BASE}")
+        return 0
+    effaces = purger_messages_anciens(jours)
+    print(f"  messages (general + prives) vieux de plus de {jours} jours : "
+          f"{effaces} efface(s)")
+    return 0
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "purger-rapports":
         sys.exit(purge_en_ligne_de_commande(sys.argv[2:]))
+    if len(sys.argv) > 1 and sys.argv[1] == "purger-messages":
+        sys.exit(purge_messages_en_ligne_de_commande(sys.argv[2:]))
     sys.exit(main())

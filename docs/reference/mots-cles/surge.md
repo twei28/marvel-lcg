@@ -12,3 +12,7 @@
 
 
 **Rules Reference 1.8 (22/07/2026)** : Surge ne RÉVÈLE plus, il DISTRIBUE : « When an encounter card with this keyword is revealed, the player resolving the card deals themself a facedown encounter card » (équivaut à « When Revealed : Deal yourself 1 facedown encounter card »). Hors phase du méchant, la carte reste face cachée jusqu'à l'étape 4 de la phase suivante ; pendant l'étape 4, la boucle `RevealEncounterCards` la révèle dans la foulée. Moteur : règle `v18_surge` (posée par `v18_all`, que le lanceur pousse pour toute partie neuve) ; sans elle, `fix_surge` garde l'ancien comportement (révélation immédiate) pour rejouer les sauvegardes d'avant. Cas : `[RR1.8] 01191 Exhaustion` dans `tools/test_capacites.py`.
+
+## Pièges vus au portage de Raza Longknife (26/10/2026)
+
+- **« If no attachment was revealed this way, this card gains surge »** (`rl015` Shi'ar Host) : `ThisCardGainSurge(effect, message)` (helper de `cards/pack/__init__.py`). Mesure : un deck rencontre d'UNE seule carte et la clé d'attendu `carte_du_surge` (la carte ne doit plus être dans le deck), plus fiable qu'un `en_jeu` dont le résultat dépend de l'ordre du deck.

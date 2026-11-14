@@ -207,3 +207,19 @@ html[data-affichage] .deroule-phase.est-scene.est-essai.est-tris.est-tris .essai
   .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-resolution { padding-block: 6px; }
   .deroule-phase.est-scene.est-essai.est-tris .est-synthese .tris-boosts { gap: 8px; }
 }
+
+/* Le BILAN de fin de phase (onglet « Bilan ») : UNE colonne. Trois colonnes de 122 px coupaient les noms au milieu des mots
+   (« Hel / ibo / und… » pour Hellbound Obsession), `overflow-wrap: anywhere` brisant n'importe où. Une colonne pleine largeur,
+   le chiffre sous le nom quand la ligne est trop courte, et les mots ne se coupent que s'ils débordent vraiment. */
+.deroule-phase.est-scene.est-essai.est-tris .deroule-bilan {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-bilan .deroule-lignes li {
+  flex-wrap: wrap;
+  column-gap: 8px;
+  row-gap: 0;
+}
+.deroule-phase.est-scene.est-essai.est-tris .deroule-bilan .deroule-colonne-nom {
+  overflow-wrap: break-word;
+}

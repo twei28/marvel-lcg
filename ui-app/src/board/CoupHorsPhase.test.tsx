@@ -13,6 +13,19 @@ const coup = (cle: string, extra: Partial<EtapeDeroule> = {}): EtapeDeroule => (
   auteurNom: 'Ultron', cibleNom: 'Shuri', montant: 5, boosts: [], ...extra,
 })
 
+describe('le cartouche d un coup hors phase : les cartes de boost', () => {
+  // Rapport BL-Stark n°103 : Crossbones s'active (Crossbones' Assault vaincue) hors phase, sa carte de boost (Assault, sans icone) ne se voyait pas.
+  it('dit la carte de boost retournee, meme quand son apport est nul', () => {
+    render(<CoupHorsPhase etapes={[coup('a', { boosts: [{ cle: 'boost:0:101', nom: 'Assault', cibleId: 101, apport: 0 }] })]} />)
+    expect(screen.getByText(/Carte de boost : Assault \(\+0\)/)).toBeInTheDocument()
+  })
+
+  it('TEMOIN : sans carte de boost, aucune ligne de boost', () => {
+    render(<CoupHorsPhase etapes={[coup('b')]} />)
+    expect(screen.queryByText(/Carte de boost/)).toBeNull()
+  })
+})
+
 describe('le cartouche d un coup hors phase', () => {
   it('montre le coup, puis se ferme sur Continuer', () => {
     const { container } = render(<CoupHorsPhase etapes={[coup('a')]} />)

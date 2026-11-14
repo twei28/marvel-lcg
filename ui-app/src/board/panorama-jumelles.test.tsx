@@ -39,6 +39,7 @@ describe('registre des paires', () => {
       { gauche: 'td011', droite: 'td012' },
       { gauche: 'ta009', droite: 'ta010' },
       { gauche: 'tj009', droite: 'tj010' },
+      { gauche: 'pu005', droite: 'pu006' },
     ])
   })
 })

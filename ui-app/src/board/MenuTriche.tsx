@@ -11,6 +11,7 @@
 // faire.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { t } from './langue'
 import { useGlisserPanneau } from './placement/useGlisserPanneau'
 import * as triche from './triche'
@@ -62,6 +63,9 @@ export const ZONES_MANUELLES: readonly string[] = [
   // juste au-dessus, atteignable par le glisser (`PILE_PAR_ZONE`,
   // glisser-manuel.ts) mais qui manquait ici.
   'RisingTideArea',
+  // AJOUT (pack mephisto) : la Damnation, une pile par joueur (`player.damnation`, `RunPuzzle.ZONES_JOUEUR`), hors jeu et
+  // sans emplacement au plateau tant qu'elle est vide : sans cette entree, ni la deplacer vers elle ni la vider ne serait possible.
+  'DamnationArea',
   'MainSchemesArea',
   'AdditionalDeck',
   // La défausse du deck spécial : le moteur ne l'exposait à AUCUNE des deux
@@ -138,6 +142,8 @@ export function libellePile(zone: string): string {
     // AJOUT (pack wave) : même clé que `zones.ts` (`emplacement('rising-tide',
     // t('Ta marée montante'), ...)`), même objet (`player.rising_tide`).
     case 'RisingTideArea': return t('Ta marée montante')
+    // AJOUT (pack mephisto) : même clé que la pile de `zones.ts` (`pileFondue('damnation-N', t('Damnation'), ...)`).
+    case 'DamnationArea': return t('Damnation')
     case 'MainSchemesArea': return t('Manigance principale')
     // I2 (revue finale) : MÊME CLÉ que `zones.ts` pour « Mises de côté du
     // scénario » (`t('Mises de côté du scénario')`, groupe de la pile
@@ -221,6 +227,13 @@ export type MenuTricheProps = {
   echangerAvecLeDessus?: () => void
   /** Les cartes sur lesquelles agit le menu : la selection si elle contient la carte (lot 5). */
   ids?: number[]
+  /**
+   * TABLETTE (24/10/2026, decision 6) : les gestes se rangent en gros boutons SOUS
+   * l'apercu de la carte touchee (`.apercu-actions-tablette`), sans titre ni
+   * placement au curseur. Les boutons qui ouvrent une sous-vue (nombre, piles,
+   * retour) portent `data-garde-apercu` : l'apercu reste ouvert pour la suite.
+   */
+  dansApercu?: boolean
 }
 
 /** Une entrée du menu. `valeur` ouvre une saisie de nombre avant d'agir. */
@@ -243,7 +256,12 @@ export function MenuTriche({
   poserEnJeu,
   echangerAvecLeDessus,
   ids: idsDonnes,
+  dansApercu = false,
 }: MenuTricheProps) {
+  const [place, setPlace] = useState<HTMLElement | null>(null)
+  useLayoutEffect(() => {
+    setPlace(dansApercu ? document.querySelector<HTMLElement>('.carte-apercu.est-tenu .apercu-actions-tablette') : null)
+  }, [dansApercu, cible.id])
   const ids = idsDonnes && idsDonnes.length > 0 ? idsDonnes : [cible.id]
   const [saisie, setSaisie] = useState<Entree | undefined>(undefined)
   const [nombre, setNombre] = useState(1)
@@ -282,6 +300,9 @@ export function MenuTriche({
   // par-dessus le plateau et intercepte les clics de jeu.
   useEffect(() => {
     const dehors = (evenement: MouseEvent) => {
+      // Au doigt, la souris imitee arrive APRES le toucher : toucher une autre carte vient
+      // d'en ouvrir le menu, il ne faut pas le refermer aussitot.
+      if (dansApercu && (evenement.target as HTMLElement | null)?.closest?.('.carte-apercu.est-tenu, .scan-card')) return
       if (boite.current && !boite.current.contains(evenement.target as Node)) onFermer()
     }
     const touche = (evenement: KeyboardEvent) => {
@@ -293,7 +314,7 @@ export function MenuTriche({
       document.removeEventListener('mousedown', dehors)
       document.removeEventListener('keydown', touche)
     }
-  }, [onFermer])
+  }, [onFermer, dansApercu])
 
   const entrees: Entree[] = []
 
@@ -358,13 +379,14 @@ export function MenuTriche({
     onFermer()
   }
 
-  return (
+  const menu = (
     <div
-      className="menu-triche"
-      style={{ left: position.left + decalage.dx, top: position.top + decalage.dy }}
+      className={`menu-triche${dansApercu ? ' est-dans-apercu' : ''}`}
+      style={dansApercu ? undefined : { left: position.left + decalage.dx, top: position.top + decalage.dy }}
       ref={boite}
       role="menu"
     >
+      {dansApercu ? null : (
       <header
         className="menu-triche-titre poignee-glisser"
         onPointerDown={gestesGlisser.onPointerDown}
@@ -375,23 +397,35 @@ export function MenuTriche({
         <span>{cible.nom}</span>
         <span className="menu-triche-marque">{manuel ? t('Geste manuel') : t('Triche')}</span>
       </header>
+      )}
 
       {saisie ? (
         <div className="menu-triche-saisie">
           <label>
             {saisie.libelle}
+            {dansApercu ? (
+              <button type="button" className="menu-triche-pas" data-garde-apercu="" aria-label={t('Moins')} onClick={() => setNombre((n) => Math.max(0, n - 1))}>
+                −
+              </button>
+            ) : null}
             <input
               type="number"
               value={nombre}
-              autoFocus
+              autoFocus={!dansApercu}
+              readOnly={dansApercu}
               onChange={(e) => setNombre(Number(e.target.value))}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') void executer(saisie, nombre)
               }}
             />
+            {dansApercu ? (
+              <button type="button" className="menu-triche-pas" data-garde-apercu="" aria-label={t('Plus')} onClick={() => setNombre((n) => n + 1)}>
+                +
+              </button>
+            ) : null}
           </label>
           <div className="menu-triche-boutons">
-            <button type="button" onClick={() => setSaisie(undefined)}>{t('Retour')}</button>
+            <button type="button" data-garde-apercu="" onClick={() => setSaisie(undefined)}>{t('Retour')}</button>
             <button type="button" onClick={() => void executer(saisie, nombre)}>
               {t('Appliquer')}
             </button>
@@ -418,7 +452,7 @@ export function MenuTriche({
             ))}
           </ul>
           <div className="menu-triche-boutons">
-            <button type="button" onClick={() => setDeplacer(false)}>{t('Retour')}</button>
+            <button type="button" data-garde-apercu="" onClick={() => setDeplacer(false)}>{t('Retour')}</button>
           </div>
         </div>
       ) : (
@@ -450,7 +484,7 @@ export function MenuTriche({
             </li>
           ) : null}
           <li>
-            <button type="button" onClick={() => setDeplacer(true)}>
+            <button type="button" data-garde-apercu="" onClick={() => setDeplacer(true)}>
               {t('Déplacer vers')}
               <span className="menu-triche-suite">…</span>
             </button>
@@ -460,6 +494,7 @@ export function MenuTriche({
               <button
                 type="button"
                 className={entree.danger ? 'est-danger' : undefined}
+                data-garde-apercu={entree.valeur !== undefined ? '' : undefined}
                 onClick={() => {
                   if (entree.valeur !== undefined) {
                     setNombre(entree.valeur)
@@ -478,4 +513,6 @@ export function MenuTriche({
       )}
     </div>
   )
+  if (!dansApercu) return menu
+  return place ? createPortal(menu, place) : null
 }

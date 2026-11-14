@@ -1,7 +1,7 @@
 import { act, cleanup, render } from '@testing-library/react'
 import { createRef } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { CoucheRencontreSurTable, type ControleRencontre } from './CoucheRencontreSurTable'
+import { CoucheRencontreSurTable, DUREE_ENTREE_MS, type ControleRencontre } from './CoucheRencontreSurTable'
 import type { EtapeDeroule } from './deroule-phase'
 import { boiteDeCarte } from './mesures-plateau'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -90,7 +90,7 @@ describe('lecture et trajet des cartes rencontre', () => {
       { cle: 'b1', cibleId: 70, nom: 'A', apport: 1 }, { cle: 'b2', cibleId: 71, nom: 'B', apport: 2 },
     ] }
     const r = render(<CoucheRencontreSurTable etape={etape} boostsMontres={2} carteScene={scans} actif controle={controle} />)
-    expect(vols.map((v) => v.options.delay)).toEqual([0, 900])
+    expect(vols.map((v) => v.options.delay)).toEqual([0, DUREE_ENTREE_MS])
     await finir(0)
     expect(r.container.querySelector('[data-lecture="entree"]')).not.toBeNull()
     await finir(1)

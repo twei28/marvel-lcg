@@ -1,5 +1,7 @@
 # Relecture et spectateur : voir 100 % de ce que le joueur voit (12/10/2026)
 
+**RETIRÉ du backlog le 21/10/2026** (item 5), décision de l'utilisateur.
+
 Constat de l'utilisateur : en revoyant une partie, « on ne voit pas tout » : le curseur du joueur passe SOUS
 les fenêtres (couche `ui-app/src/board/CoucheCurseurs.tsx`), l'agrandissement d'une carte survolée n'apparaît
 pas, etc. Existant : chaque client envoie sa souris normalisée 0..1 (`/set_cursor`, 150 ms) avec la carte

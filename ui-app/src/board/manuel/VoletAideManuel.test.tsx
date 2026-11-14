@@ -34,6 +34,13 @@ describe('l’aide du mode manuel', () => {
     }
   })
 
+  it('annonce « Regarder le dessus » d’un deck (demande du testeur, 09/11/2026)', () => {
+    render(<VoletAideManuel ouvert ouvrir={() => {}} fermer={() => {}} />)
+    const aide = screen.getByRole('dialog', { name: 'Aide du mode manuel' })
+    expect(aide.textContent).toContain('Regarder le dessus')
+    expect(aide.textContent).toContain('sans rien déplacer')
+  })
+
   it('la croix ferme, la languette rouvre', () => {
     const fermer = vi.fn()
     const ouvrir = vi.fn()

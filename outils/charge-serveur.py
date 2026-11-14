@@ -17,7 +17,9 @@ import argparse, asyncio, json, os, random, shutil, signal, subprocess, sys, tim
 from collections import defaultdict
 
 RACINE = os.environ.get("RACINE_JEU", "/opt/narwhal/Fusion/marvel-lcg-src")
-PYTHON = "/opt/narwhal/venv310/bin/python"
+# PYTHON_JEU : pour rejouer le banc ailleurs que sur le serveur (machine de
+# developpement, 20/10/2026). Defaut inchange.
+PYTHON = os.environ.get("PYTHON_JEU", "/opt/narwhal/venv310/bin/python")
 PORT_BASE = 2350
 PLACE_DEPART = int(os.environ.get("PLACE_DEPART", "101"))
 sys.path.insert(0, os.path.join(RACINE, "tools"))
@@ -53,6 +55,19 @@ def pss_mo(pid):
     return 0.0
 
 
+def cpu_s(pid):
+    """Temps CPU consomme (utilisateur + systeme) par un moteur, en secondes.
+
+    Ajout du 20/10/2026 : sur une machine partagee (charge des autres
+    processus), la latence murale ne mesure plus le moteur. Le temps CPU, lui,
+    ne depend que du travail fait par la table."""
+    try:
+        champs = open(f"/proc/{pid}/stat").read().rsplit(")", 1)[1].split()
+        return (int(champs[11]) + int(champs[12])) / os.sysconf("SC_CLK_TCK")
+    except (OSError, IndexError, ValueError):
+        return None
+
+
 def rss_mo(pid):
     try:
         for l in open(f"/proc/{pid}/status"):
@@ -75,6 +90,7 @@ class Table:
         self.reponses = 0
         self.parties = 0
         self.mort = False
+        self.cpu = 0.0  # dernier temps CPU lu (reste acquis si la table meurt)
 
     def demarrer(self):
         base = json.load(open(os.path.join(RACINE, "launch.json"), encoding="utf-8"))
@@ -263,6 +279,11 @@ def pcts(valeurs):
 def instantane(tables, t0, niveau):
     m = lire_meminfo()
     vivantes = [x for x in tables if x.proc and x.proc.poll() is None and not x.mort]
+    for x in tables:
+        if x.proc:
+            c = cpu_s(x.proc.pid)
+            if c is not None:
+                x.cpu = max(x.cpu, c)
     maintenant = time.time()
     fenetre = lambda ep: [ms for (ts, ms) in LAT[ep] if ts > maintenant - 30]
     ligne = {
@@ -270,6 +291,7 @@ def instantane(tables, t0, niveau):
         "charge1": os.getloadavg()[0], "dispo_mo": m["MemAvailable"], "swap_utilise_mo": m["SwapTotal"] - m["SwapFree"],
         "pss_tables_mo": round(sum(pss_mo(x.proc.pid) for x in vivantes)),
         "rss_tables_mo": round(sum(rss_mo(x.proc.pid) for x in vivantes)),
+        "cpu_tables_s": round(sum(x.cpu for x in tables if x.proc), 1),
         "actions": ACTIONS[0], "passes": VIDES[0], "parties": PARTIES[0], "finies": FINIES[0], "erreurs": dict(ERR),
     }
     for ep in ("post", "ask", "monde", "accuse"):

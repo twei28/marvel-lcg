@@ -152,6 +152,13 @@ class Scene:
     # Champ a defaut vide : une sauvegarde anterieure se recharge inchangee.
     reprise_auto: str = field(default="")
 
+    # OBJECTIFS D'UN PUZZLE (E3, 23/10/2026, format v2) : un JSON `{kind, target, text}` par objectif, et le mode `all` / `any`.
+    # Vides hors puzzle a objectifs : la fin de partie est alors celle du moteur.
+    puzzle_objectifs: List[str] = field(default_factory=lambda: [])
+    puzzle_objectifs_mode: str = field(default="all")
+    # L'ENONCE d'un puzzle (E8, 23/10/2026) : un JSON `{title, description, difficulty, hints, author}`, vide hors puzzle v2.
+    puzzle_info: str = field(default="")
+
     inputs: List[OperationDescriptor] = field(default_factory=lambda: [])
 
     @property

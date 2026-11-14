@@ -30,6 +30,11 @@ class UndoModule:
         # choix de la carte, quel que soit le nombre de sous-questions passees.
         self.debut_action: int = 0
         self.joueur_action: int = -1
+        # AJOUT LOCAL (29/10/2026) : la pile d'instantanes du tour en cours, ou rien. Ici et pas dans le monde : le
+        # monde est lui-meme memorise par les instantanes, il ne doit pas les contenir.
+        self.pile_instantanes = None
+        # « Annuler » demande par le fil web, a consommer par le fil du jeu (voir `Cheat.do_undo`).
+        self.restauration_demandee = False
         self.manager: Final = manager
 
         # message_id, [card_ids]
@@ -50,6 +55,7 @@ class UndoModule:
         self.next_step = 0
         self.debut_action = 0
         self.joueur_action = -1
+        self.restauration_demandee = False
 
         if not by_undo:
             self.undo_effect_card_cache = {}

@@ -34,6 +34,7 @@ import { nomAffiche } from './noms-cartes-fr'
 import { FinManuelle } from './manuel/FinManuelle'
 import { ChoixCibleAmelioration, type ChoixCible } from './manuel/ChoixCibleAmelioration'
 import { ChoixMulligan } from './manuel/ChoixMulligan'
+import { nombreARegarder, REGARD_PAR_DEFAUT, RegarderDessus } from './manuel/RegarderDessus'
 import { gesteDePose } from './manuel/glisser-manuel'
 import { carteDeLaTrame, contexteDePose, poserEnJeu, type CibleAmelioration } from './manuel/poser-en-jeu'
 import { leMoteurSeTait } from './manuel/mode'
@@ -47,6 +48,7 @@ import { MenuTriche, type CibleTriche } from './MenuTriche'
 import * as triche from './triche'
 import { publierVu, useVuDuJoueur } from './vu-partage'
 import type { World, WorldCard } from './world'
+import { estTablette, useEstTablette } from './tablette/tablette'
 
 /** Une pile ouverte à la consultation. */
 export type PileTriche = {
@@ -629,6 +631,21 @@ export function useTriche(
     const surDeplacementAppui = (evenement: PointerEvent) => {
       if (appui && issueAppui(appui, Date.now(), evenement.clientX, evenement.clientY) === 'glisser') oublierAppui()
     }
+    // TABLETTE (decision 6) : un simple toucher sur une carte de la table ou de la main ouvre
+    // ses gestes, sous son apercu (le plateau ouvre l'apercu au meme toucher). Pas les piles :
+    // elles gardent leur geste d'ordinateur.
+    const surLeverAppui = (evenement: PointerEvent) => {
+      const court = appui !== undefined && minuteurAppui !== undefined
+      const tenu = appui
+      oublierAppui()
+      if (!court || !tenu || !appuiCompte(evenement.pointerType) || !estTablette()) return
+      const cible = tenu.cible
+      if (!cible?.closest?.('.plateau-cadre') || cible.closest('.plateau-unite[data-pile], button')) return
+      const noeud = cible.closest<HTMLElement>('.scan-card[data-card-id]')
+      const id = Number(noeud?.dataset.cardId)
+      if (!noeud || !Number.isFinite(id)) return
+      ouvrirMenuCarte(id, tenu.x, tenu.y)
+    }
 
     const surFinDuToucher = (evenement: TouchEvent) => {
       if (leverAAvaler) evenement.preventDefault()
@@ -645,7 +662,7 @@ export function useTriche(
     document.addEventListener('click', surClicApresAppui, true)
     document.addEventListener('pointerdown', surAppui)
     document.addEventListener('pointermove', surDeplacementAppui)
-    document.addEventListener('pointerup', oublierAppui)
+    document.addEventListener('pointerup', surLeverAppui)
     document.addEventListener('pointercancel', oublierAppui)
     return () => {
       oublierAppui()
@@ -654,7 +671,7 @@ export function useTriche(
       document.removeEventListener('click', surClicApresAppui, true)
       document.removeEventListener('pointerdown', surAppui)
       document.removeEventListener('pointermove', surDeplacementAppui)
-      document.removeEventListener('pointerup', oublierAppui)
+      document.removeEventListener('pointerup', surLeverAppui)
       document.removeEventListener('pointercancel', oublierAppui)
     }
   }, [actif, manuel, ouvrirMenuCarte])
@@ -1324,6 +1341,8 @@ type ManuelVu = {
 }
 
 export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = catalogueVide, siege, cartesParId }: CoucheTricheProps) {
+  // Tablette (decision 6) : le menu d'une carte se range sous son apercu.
+  const tablette = useEstTablette()
   const confirmerPile = useConfirmation()
   const regardeManuel = estSpectateur()
   const vuManuel = useVuDuJoueur<ManuelVu | null>('manu', regardeManuel ? siege : undefined)
@@ -1414,6 +1433,10 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
     finOuverte ? 'fin-ouverte' : 'fin-fermee'
   )
   const { decalage: decalagePile, gestes: gestesGlisserPile } = useGlisserPanneau(pile?.titre ?? 'aucune-pile')
+  // « Regarder les X cartes du dessus » (mode manuel) : LOCAL à ce joueur, jamais partagé aux spectateurs, et
+  // sans aucun geste moteur. `undefined` = la pile entière ; un nombre = seulement les X du dessus.
+  const [regard, setRegard] = useState<number | undefined>(undefined)
+  useEffect(() => setRegard(undefined), [pile?.zone, pile?.siege, pile?.titre])
 
   // Échap ferme le catalogue et la fenêtre de fin de partie, comme les deux
   // menus le font déjà (`MenuTriche.tsx`, `MenuTable.tsx`) — défaut relevé
@@ -1581,6 +1604,7 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
           poserEnJeu={manuel && estEnMain(menu.cible.id) ? () => poserDepuisLaMain(menu.cible.id) : undefined}
           echangerAvecLeDessus={manuel && estEnMain(menu.cible.id) ? () => echangerAvecLeDessus(menu.cible.id) : undefined}
           ids={manuel ? cartesDuGeste(menu.cible.id) : undefined}
+          dansApercu={tablette}
         />
       ) : null}
 
@@ -1688,11 +1712,19 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
               >
                 {pile.titre} <small>({pile.cartes.length})</small>
               </h2>
-              <span className="pile-triche-aide">
-                {pile.duJoueur
-                  ? t('Choisis une carte pour l’ajouter à ta main')
-                  : t('Choisis une carte pour la mettre en jeu')}
-              </span>
+              {regard === undefined ? (
+                <span className="pile-triche-aide">
+                  {pile.duJoueur
+                    ? t('Choisis une carte pour l’ajouter à ta main')
+                    : t('Choisis une carte pour la mettre en jeu')}
+                </span>
+              ) : null}
+              {/* Seulement les decks ORDONNÉS (le dessus a un sens), et seulement pour le joueur qui joue. */}
+              {manuel && regard === undefined && (pile.zone === 'PlayerDeck' || pile.zone === 'EncounterDeck') ? (
+                <button type="button" onClick={() => setRegard(nombreARegarder(REGARD_PAR_DEFAUT, pile.cartes.length))}>
+                  {t('Regarder le dessus')}
+                </button>
+              ) : null}
               <button type="button" onClick={() => void melangerPile()}>{t('Mélanger')}</button>
               {estUneDefausse ? (
                 <button type="button" onClick={() => void remelangerLaDefausse()}>
@@ -1702,6 +1734,16 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
               <button type="button" onClick={() => setPile(undefined)}>{t('Fermer')}</button>
             </header>
 
+            {regard !== undefined ? (
+              <RegarderDessus
+                cartes={pile.cartes}
+                x={regard}
+                onChangerX={(x) => setRegard(nombreARegarder(x, pile.cartes.length))}
+                onToutVoir={() => setRegard(undefined)}
+              />
+            ) : null}
+
+            {regard === undefined ? (
             <div className="pile-triche-cartes">
               {pile.cartes.length === 0 ? (
                 <p className="pile-triche-vide">{t('Cette pile est vide')}</p>
@@ -1727,6 +1769,7 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
                 ))
               )}
             </div>
+            ) : null}
           </section>
         </div>
       ) : null}

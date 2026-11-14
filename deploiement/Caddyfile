@@ -5,7 +5,7 @@
 # Deux blocs seulement :
 #   - l'apex, servi par l'orchestrateur (127.0.0.1:8080), certificat HTTP-01 ;
 #   - le wildcard *.domaine, certificat obtenu par challenge DNS Cloudflare,
-#     qui contient les 30 routes statiques p1..p30 vers les ports 2351..2380.
+#     qui contient les 45 routes statiques p1..p45 vers les ports 2351..2395 (1-30 : comptes ; 31-45 : tables invite de Play).
 #
 # Les 20 routes ne bougent jamais : c'est l'orchestrateur qui alloue les tables.
 # Aucune reconfiguration de Caddy en vol.
@@ -25,7 +25,7 @@
 	# HSTS. Un navigateur qui a vu cet en-tête une fois ne retente plus jamais le
 	# http:// sur ce domaine : il part directement en https, sans la redirection
 	# pendant laquelle un intermédiaire pouvait lire le cookie de session au vol.
-	# `includeSubDomains` couvre du même coup les trente tables p1..p30, dont les
+	# `includeSubDomains` couvre du même coup les quarante-cinq tables p1..p45, dont les
 	# URL portent les clés de siège. Un an, la valeur d'usage.
 	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 
@@ -212,6 +212,81 @@
 		reverse_proxy 127.0.0.1:2380
 	}
 
+	@p31 host p31.{$DOMAINE}
+	handle @p31 {
+		reverse_proxy 127.0.0.1:2381
+	}
+
+	@p32 host p32.{$DOMAINE}
+	handle @p32 {
+		reverse_proxy 127.0.0.1:2382
+	}
+
+	@p33 host p33.{$DOMAINE}
+	handle @p33 {
+		reverse_proxy 127.0.0.1:2383
+	}
+
+	@p34 host p34.{$DOMAINE}
+	handle @p34 {
+		reverse_proxy 127.0.0.1:2384
+	}
+
+	@p35 host p35.{$DOMAINE}
+	handle @p35 {
+		reverse_proxy 127.0.0.1:2385
+	}
+
+	@p36 host p36.{$DOMAINE}
+	handle @p36 {
+		reverse_proxy 127.0.0.1:2386
+	}
+
+	@p37 host p37.{$DOMAINE}
+	handle @p37 {
+		reverse_proxy 127.0.0.1:2387
+	}
+
+	@p38 host p38.{$DOMAINE}
+	handle @p38 {
+		reverse_proxy 127.0.0.1:2388
+	}
+
+	@p39 host p39.{$DOMAINE}
+	handle @p39 {
+		reverse_proxy 127.0.0.1:2389
+	}
+
+	@p40 host p40.{$DOMAINE}
+	handle @p40 {
+		reverse_proxy 127.0.0.1:2390
+	}
+
+	@p41 host p41.{$DOMAINE}
+	handle @p41 {
+		reverse_proxy 127.0.0.1:2391
+	}
+
+	@p42 host p42.{$DOMAINE}
+	handle @p42 {
+		reverse_proxy 127.0.0.1:2392
+	}
+
+	@p43 host p43.{$DOMAINE}
+	handle @p43 {
+		reverse_proxy 127.0.0.1:2393
+	}
+
+	@p44 host p44.{$DOMAINE}
+	handle @p44 {
+		reverse_proxy 127.0.0.1:2394
+	}
+
+	@p45 host p45.{$DOMAINE}
+	handle @p45 {
+		reverse_proxy 127.0.0.1:2395
+	}
+
 	# --- L'activite Discord (29/09/2026) -----------------------------------------
 	# Le « Root Mapping » du portail Discord vise CET hote. Discord ne charge
 	# qu'une origine dans son cadre : toutes les tables y passent, aiguillees par
@@ -252,6 +327,21 @@
 		@d_t28 header_regexp Cookie (^|;\s*)nc_table=28(;|$)
 		@d_t29 header_regexp Cookie (^|;\s*)nc_table=29(;|$)
 		@d_t30 header_regexp Cookie (^|;\s*)nc_table=30(;|$)
+		@d_t31 header_regexp Cookie (^|;\s*)nc_table=31(;|$)
+		@d_t32 header_regexp Cookie (^|;\s*)nc_table=32(;|$)
+		@d_t33 header_regexp Cookie (^|;\s*)nc_table=33(;|$)
+		@d_t34 header_regexp Cookie (^|;\s*)nc_table=34(;|$)
+		@d_t35 header_regexp Cookie (^|;\s*)nc_table=35(;|$)
+		@d_t36 header_regexp Cookie (^|;\s*)nc_table=36(;|$)
+		@d_t37 header_regexp Cookie (^|;\s*)nc_table=37(;|$)
+		@d_t38 header_regexp Cookie (^|;\s*)nc_table=38(;|$)
+		@d_t39 header_regexp Cookie (^|;\s*)nc_table=39(;|$)
+		@d_t40 header_regexp Cookie (^|;\s*)nc_table=40(;|$)
+		@d_t41 header_regexp Cookie (^|;\s*)nc_table=41(;|$)
+		@d_t42 header_regexp Cookie (^|;\s*)nc_table=42(;|$)
+		@d_t43 header_regexp Cookie (^|;\s*)nc_table=43(;|$)
+		@d_t44 header_regexp Cookie (^|;\s*)nc_table=44(;|$)
+		@d_t45 header_regexp Cookie (^|;\s*)nc_table=45(;|$)
 		route {
 			reverse_proxy @d_lancement 127.0.0.1:8080
 			reverse_proxy @d_site 127.0.0.1:8080
@@ -285,6 +375,21 @@
 			reverse_proxy @d_t28 127.0.0.1:2378
 			reverse_proxy @d_t29 127.0.0.1:2379
 			reverse_proxy @d_t30 127.0.0.1:2380
+			reverse_proxy @d_t31 127.0.0.1:2381
+			reverse_proxy @d_t32 127.0.0.1:2382
+			reverse_proxy @d_t33 127.0.0.1:2383
+			reverse_proxy @d_t34 127.0.0.1:2384
+			reverse_proxy @d_t35 127.0.0.1:2385
+			reverse_proxy @d_t36 127.0.0.1:2386
+			reverse_proxy @d_t37 127.0.0.1:2387
+			reverse_proxy @d_t38 127.0.0.1:2388
+			reverse_proxy @d_t39 127.0.0.1:2389
+			reverse_proxy @d_t40 127.0.0.1:2390
+			reverse_proxy @d_t41 127.0.0.1:2391
+			reverse_proxy @d_t42 127.0.0.1:2392
+			reverse_proxy @d_t43 127.0.0.1:2393
+			reverse_proxy @d_t44 127.0.0.1:2394
+			reverse_proxy @d_t45 127.0.0.1:2395
 			reverse_proxy 127.0.0.1:8080
 		}
 	}

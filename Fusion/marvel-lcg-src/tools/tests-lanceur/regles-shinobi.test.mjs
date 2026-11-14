@@ -17,7 +17,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { estCarteJoueur, validerDeck, classeDeConstruction } from "../../public/js/deckbuilder/regles.js";
-import { PATHS_SHINOBI, CLASSES_SHINOBI, typesShinobi, estShinobi, estPath, reglesDuPath, admiseParLePath } from "../../public/js/deckbuilder/paths-shinobi.js";
+import { PATHS_SHINOBI, CLASSES_SHINOBI, typesShinobi, estShinobi, estPath, reglesDuPath, admiseParLePath, passeLaVoie } from "../../public/js/deckbuilder/paths-shinobi.js";
 import { serieExclusive, exclusiveRefusee } from "../../public/js/prepare/arts-cartes-choix.js";
 import { filtresVides, passeFiltres } from "../../public/js/deckbuilder/filtres.js";
 
@@ -302,4 +302,21 @@ test("Q-S3 : validerDeck refuse le Path et les cartes Shinobi d'un heros non TMN
     assert.deepEqual(verdictSet(heros("leonardo"), extra).problemes, []);
     assert.deepEqual(verdictSet({ ...heros("jennika"), heroCardId: "tj001" }, { Ninjutsu1: 3 }).problemes.filter((p) => /TMNT/.test(p)), []);
     assert.deepEqual(verdictSet(JENNIKA, {}).problemes.filter((p) => /TMNT/.test(p)), []);
+});
+
+// Voie Shinobi dans la grille (12/11/2026) : un Path ne se prend pas dans la grille, une carte Shinobi
+// exige une Voie qui l'admet, une Voie sans aspect (Sosaiken) n'admet aucun aspect.
+test("grille : sous Shihan (Taijutsu), seules les Taijutsu et les aspects passent ; pas de Path ; sans Voie, pas de Shinobi", () => {
+    const shihan = reglesDuPath({ class: "Taijutsu" }, "se004");
+    const sosaiken = { aspects: { max: 0 }, types: ["Bushido", "Ninjutsu", "Kuji-Kiri", "Taijutsu"] };
+    assert.equal(passeLaVoie({ type: "Ally", class: "Taijutsu" }, shihan), true);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Bushido" }, shihan), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Bushido;Ninjutsu" }, shihan), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Justice" }, shihan), true);
+    assert.equal(passeLaVoie({ type: "Path", class: "Taijutsu" }, shihan), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Taijutsu" }, null), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Hero" }, null), true);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Justice" }, sosaiken), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Justice;Leadership" }, sosaiken), false);
+    assert.equal(passeLaVoie({ type: "Ally", class: "Kuji-Kiri" }, sosaiken), true);
 });

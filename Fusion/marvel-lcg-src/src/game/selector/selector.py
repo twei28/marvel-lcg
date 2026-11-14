@@ -73,6 +73,14 @@ class Selector(metaclass=Tracker.Meta):
                     and face.refuse_target_fn(effect))
         ]
 
+        # BRIQUE 2 (20/10/2026) : une face « insensible aux cartes joueur »
+        # n'est jamais une cible legale d'un effet de carte joueur. Une carte a
+        # cibles multiples reste jouable s'il reste une autre cible ; une carte
+        # a cible unique devient injouable (Galactic Storm p.14).
+        from game.operate.immunity import PlayerCardImmunity
+        legal_faces = [face for face in legal_faces
+                       if not PlayerCardImmunity.Refuses(face, effect)]
+
         legal_faces = self.selector_rule.Process(legal_faces, effect, self.selector_range)
 
         if not legal_faces:

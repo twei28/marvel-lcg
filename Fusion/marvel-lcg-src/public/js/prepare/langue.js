@@ -8,8 +8,7 @@
 
 import { DICO_EN_BASE } from "/public/js/prepare/dico-en.js";
 import "/public/js/prepare/icones-entete.js";
-
-const CLE_LANGUE = "marvel-langue";
+import { CLE_LANGUE, cookieLangue, lireCookieLangue, resoudreLangue } from "/public/js/prepare/langue-resolution.js";
 
 /** Réglage « Scans en français » du PLATEAU (ui-app/src/board/scans-fr.ts).
  *  Le wizard, lui, suit langueActuelle() directement (scans-fr.js) ; cette clé
@@ -17,12 +16,21 @@ const CLE_LANGUE = "marvel-langue";
  *  posée en clair plutôt qu'importée : scans-fr.js importe déjà ce module. */
 const CLE_SCANS_FR_PLATEAU = "marvel-board-scans-fr";
 
+/** La langue du jeu (décision du 26/10/2026) : le choix fait DANS le jeu, sinon le cookie « nc_langue » du site (posé sur le
+ *  domaine parent : une table p<N>.<domaine> est une autre origine et ne voit pas le localStorage du site), sinon la langue du
+ *  navigateur, sinon le français. Règle commune : langue-resolution.js. */
 export function langueActuelle() {
-    try {
-        return localStorage.getItem(CLE_LANGUE) === "en" ? "en" : "fr";
-    } catch (e) {
-        return "fr";
-    }
+    let stockage = "";
+    try { stockage = localStorage.getItem(CLE_LANGUE) || ""; } catch (e) { /* stockage bloqué : le cookie et le navigateur décident */ }
+    let cookie = "";
+    try { cookie = document.cookie; } catch (e) { /* cookies bloqués */ }
+    return resoudreLangue({ stockage, cookie, navigateur: typeof navigator === "undefined" ? null : navigator });
+}
+
+/** Le jeu pose AUSSI le cookie « nc_langue » quand le joueur change de langue : le site et les autres tables suivent
+ *  (site/langue.py annonçait déjà « posé par le site ET par le jeu »). Mêmes attributs que le site. */
+function poserCookieLangue(langue) {
+    try { document.cookie = cookieLangue(langue, location.host, location.protocol); } catch (e) { /* cookies bloqués */ }
 }
 
 /** Français → anglais. Base commune (dico-en.js) + ajouts par écran ; une clé
@@ -48,6 +56,7 @@ export async function basculerLangue() {
     try {
         localStorage.setItem(CLE_LANGUE, nouvelle);
     } catch (e) { /* stockage indisponible : la bascule serveur reste utile */ }
+    poserCookieLangue(nouvelle);
     // Les IMAGES des cartes du plateau suivent aussi : elles ont leur propre
     // réglage (« Scans en français », menu Options du plateau), et le laisser en
     // arrière donnait une interface anglaise sur un plateau français.
@@ -78,6 +87,8 @@ const CLE_LANGUE_CHOISIE = "marvel-langue-choisie";
 
 /** La question a-t-elle déjà été posée à cette personne, sur cet appareil ? */
 export function langueDejaChoisie() {
+    // Une langue déjà fixée par le SITE (cookie « nc_langue » lisible sur le domaine parent) ne se redemande pas (26/10/2026).
+    try { if (lireCookieLangue(document.cookie)) return true; } catch (e) { /* cookies bloqués */ }
     try {
         return localStorage.getItem(CLE_LANGUE_CHOISIE) === "1";
     } catch (e) {
@@ -98,13 +109,15 @@ export async function retenirLangue(langue) {
     try {
         localStorage.setItem(CLE_LANGUE_CHOISIE, "1");
     } catch (e) { /* sans stockage, la question reviendra : tant pis */ }
+    // Le choix est maintenant EXPLICITE : on le retient, et on prévient le site (cookie), changement de langue ou non.
+    try { localStorage.setItem(CLE_LANGUE, choisie); } catch (e) { /* idem */ }
+    poserCookieLangue(choisie);
     if (!change) {
         // Même sans changement, le moteur doit connaître la langue : c'est
         // peut-être la première fois qu'on la lui dit.
         try { await fetch("/set_language?" + choisie); } catch (e) { /* hors ligne */ }
         return false;
     }
-    try { localStorage.setItem(CLE_LANGUE, choisie); } catch (e) { /* idem */ }
     try {
         localStorage.setItem(CLE_SCANS_FR_PLATEAU, choisie === "fr" ? "on" : "off");
     } catch (e) { /* préférence non critique */ }

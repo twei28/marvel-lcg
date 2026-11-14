@@ -17,6 +17,11 @@ from . import *
 # keywords ») et n'eteint le surge que sur `cancel_all_effects`
 # (face_on_event.py:326). Mesure : Exhaustion (01191, Surge) annulee par
 # l'ancienne version faisait quand meme distribuer 1 carte Rencontre de plus.
+#
+# Showtime! : « a FRIENDLY character » = `SetTarget(Friend)` (tout personnage du
+# cote des joueurs) ; la cible etait `"YouControlUnit"` jusqu'au 20/10/2026.
+# « a status card » : `RetirerUnStatut` (dazzler/__init__.py) couvre toutes les
+# cartes d'etat et laisse le joueur choisir quand il y en a plusieurs.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -44,6 +49,6 @@ def GetAbilities() -> Sequence['Ability']:
             ciel_de_velours,
             from_encounter=True,
         ).SetPlay(),
-        Showtime(showtime).SetTarget("YouControlUnit", has_status="Any",
+        Showtime(showtime).SetTarget(Friend, has_status="Any",
                                     range=(0, 1)),
     ]

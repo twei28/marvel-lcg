@@ -697,9 +697,11 @@ CAS = [
                     "statuts_absents": [["tm001a", "Tough"]]},
     },
     {
-        "nom": "[michelangelo] tm006 Majime — reduction de 1 (05017 Energy Barrier) : declare 3, subis 2 -> X = 2",
-        "pourquoi": ("Energy Barrier previent 1 des degats (et inflige 1 a un ennemi) : declare 3, l'identite subit 2, X = 2 : "
-                     "principale 5 -> 3, Rhino subit 2 (Majime) + 1 (Energy Barrier) = 3"),
+        "nom": "[michelangelo] tm006 Majime — reduction de 1 (05017 Energy Barrier) : declare 3, subis 2 -> cout NON paye, aucun effet (RR Cost, 26/10/2026)",
+        "pourquoi": ("RR Cost : « If taking damage is a cost, that cost is not considered paid unless all of that damage was taken » : "
+                     "Energy Barrier previent 1 des 3 degats declares (et inflige 1 a un ennemi), l'identite subit 2 sur 3, le cout n'est pas paye : "
+                     "principale inchangee (5), Rhino ne subit QUE le 1 degat d'Energy Barrier (meme arbitrage que us004 Reckless ; remplace la lecture "
+                     "« X reel = 2 » de decisions-phase-b.md du 15/10/2026)"),
         **HEROS,
         "mise_en_place": [FORME_HEROS, "Puzzle.PutIntoPlay('05017', under_control=True)", f"Puzzle.SetThreat('{COMPLOT}', 5)"],
         "declencher": [],
@@ -707,7 +709,7 @@ CAS = [
         "choisir_option": ["3"],
         "cibles": [COMPLOT, "01094"],
         "verifier": "etat_attendu",
-        "attendu": {"degats_identite": 2, "menace": [[COMPLOT, 3]], "degats": [["01094", 3]]},
+        "attendu": {"degats_identite": 2, "menace": [[COMPLOT, 5]], "degats": [["01094", 1]]},
     },
     {
         "nom": "[michelangelo] tm006 Majime — libelle attaque/contre : consomme Sonne ET Desoriente du heros (annule, aucun effet)",

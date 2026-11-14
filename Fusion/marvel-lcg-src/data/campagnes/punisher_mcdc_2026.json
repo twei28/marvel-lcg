@@ -1,0 +1,210 @@
+{
+    "version": "1.0",
+    "code": "punisher_mcdc_2026",
+    "cle_extension": "208. Custom (La ville ne dort jamais)",
+    "nom": "La ville ne dort jamais",
+    "nom_en": "The City Never Sleeps",
+    "resume": "Quatre combats pour une ville : la guerre des gangs de Big Apple, la traque de l'acheteur, le Châtiment du Punisher et la chute du Caïd. Entre deux combats, ce que vous avez saisi vous suit.",
+    "resume_en": "Four battles. One city. The Big Apple gang war, the hunt for the buyer, the Punisher's reckoning and the fall of the Kingpin. What you seize between battles follows you.",
+    "expert": {
+        "pv_persistants": true
+    },
+    "pages_regles": [
+        "00-campagne-regles-1.jpg"
+    ],
+    "scenarios": [
+        {
+            "id": "the_big_apple",
+            "numero": 1,
+            "nom": "The Big Apple",
+            "nom_fr": "The Big Apple",
+            "resume": "Trois CAPO se partagent les rangées d'une ville en grille, neuf lieux et neuf pistes. Suivez les pistes, éteignez la guerre des gangs, puis remontez jusqu'au Trafiquant d'armes.",
+            "enjeu": "Le carnet retient le lieu de la dernière piste et le CAPO qui était le Trafiquant d'armes (ils fixent le combat 2) ; la victoire retourne l'environnement et vous donne les Caisses de technologie saisies pour les combats 2 et 3.",
+            "victoire": [
+                {
+                    "cle": "Final LEAD Location",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Lieu de la dernière piste",
+                    "aide": "Au stade 2A, le lieu de la dernière piste ajoutée à la pile de victoire. Il fixe la manigance principale du combat 2 (tableau de la carte « Tracking the Buyer »)."
+                },
+                {
+                    "cle": "Gunrunner",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "CAPO Trafiquant d'armes",
+                    "aide": "Le CAPO auquel Gunrunner était attaché. Combat 2 : Hobgoblin si c'était Count Nefaria, Ringmaster, Mister Negative ou Nightshade ; Jigsaw sinon."
+                },
+                {
+                    "cle": "Big Apple Gang War!",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Guerre des gangs à Big Apple ! retournée",
+                    "aide": "Victoire : l'environnement est retourné."
+                },
+                {
+                    "cle": "Seized Tech Crates",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Caisses de technologie saisies",
+                    "aide": "Gagnées : à mettre en jeu aux combats 2 et 3."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [
+                    "01-the_big_apple-regles-1.jpg",
+                    "01-the_big_apple-regles-2.jpg",
+                    "01-the_big_apple-regles-3.jpg"
+                ],
+                "epilogue": []
+            }
+        },
+        {
+            "id": "tracking_the_buyer",
+            "numero": 2,
+            "nom": "Tracking the Buyer",
+            "nom_fr": "Super Bouffon / Jigsaw",
+            "resume": "Les pistes ont mené le Punisher à l'entrepôt du trafiquant d'armes. Le méchant subordonné (Hobgoblin ou Jigsaw) et la manigance principale dépendent du combat 1.",
+            "enjeu": "Le scénario joué est choisi d'après le carnet : la manigance selon le lieu de la dernière piste, le méchant selon le Trafiquant d'armes. La victoire note le subordonné affronté et vous donne la Cache d'armement du Punisher pour le combat 3.",
+            "catalogue_selon_carnet": {
+                "modele": "tracking_the_buyer_{manigance}_{sous_fifre}",
+                "variables": {
+                    "manigance": {
+                        "cle": "Final LEAD Location",
+                        "table": {
+                            "Theater District": "art_museum_heist",
+                            "Financial District": "art_museum_heist",
+                            "Hell's Kitchen": "the_getaway",
+                            "Lower East Side": "the_getaway",
+                            "Upper East Side": "the_raft_breakout",
+                            "Midtown": "the_raft_breakout",
+                            "Chinatown": "protection_racket",
+                            "West Village": "stop_the_presses",
+                            "Soho": "stop_the_presses"
+                        }
+                    },
+                    "sous_fifre": {
+                        "cle": "Gunrunner",
+                        "table": {
+                            "Count Nefaria": "hobgoblin",
+                            "Ringmaster": "hobgoblin",
+                            "Mister Negative": "hobgoblin",
+                            "Nightshade": "hobgoblin",
+                            "Crime-Master": "jigsaw",
+                            "Lady Yulan": "jigsaw",
+                            "The Rose": "jigsaw",
+                            "Diamondback": "jigsaw"
+                        }
+                    }
+                },
+                "defaut": "tracking_the_buyer_the_getaway_jigsaw"
+            },
+            "victoire": [
+                {
+                    "cle": "Underling",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Méchant subordonné affronté",
+                    "aide": "Hobgoblin ou Jigsaw : le combat 3 affronte l'autre."
+                },
+                {
+                    "cle": "Tracking the Buyer",
+                    "type": "auto",
+                    "format": "liste",
+                    "libelle": "Trouver l'Acheteur retournée",
+                    "aide": "Victoire : l'environnement est retourné."
+                },
+                {
+                    "cle": "Punisher's Ordnance Cache",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Cache d'armement du Punisher",
+                    "aide": "Gagnée : à mettre en jeu au combat 3."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [
+                    "02-tracking_the_buyer-regles-1.jpg",
+                    "02-tracking_the_buyer-regles-2.jpg"
+                ],
+                "epilogue": []
+            }
+        },
+        {
+            "id": "punishment",
+            "numero": 3,
+            "nom": "Punishment",
+            "nom_fr": "Châtiment",
+            "resume": "Le Punisher a acculé sa cible sur le toit d'un entrepôt. Le méchant subordonné est celui que vous n'avez pas affronté au combat 2.",
+            "enjeu": "Le scénario joué est choisi d'après le carnet : le subordonné est l'autre de celui du combat 2. La victoire vous donne l'allié Punisher pour le combat 4.",
+            "catalogue_selon_carnet": {
+                "modele": "punishment_{autre}",
+                "variables": {
+                    "autre": {
+                        "cle": "Underling",
+                        "table": {
+                            "jigsaw": "hobgoblin",
+                            "hobgoblin": "jigsaw"
+                        }
+                    }
+                },
+                "defaut": "punishment_hobgoblin"
+            },
+            "victoire": [
+                {
+                    "cle": "Punisher Ally",
+                    "type": "auto",
+                    "format": "int",
+                    "libelle": "Allié Punisher gagné",
+                    "aide": "Victoire : l'allié Punisher est mis en jeu au combat 4."
+                }
+            ],
+            "pages": {
+                "intro": [],
+                "regles": [
+                    "03-punishment-regles-1.jpg",
+                    "03-punishment-regles-2.jpg",
+                    "03-punishment-regles-3.jpg"
+                ],
+                "epilogue": []
+            }
+        },
+        {
+            "id": "kingsfall",
+            "numero": 4,
+            "nom": "Kingsfall",
+            "nom_fr": "La Chute du Roi",
+            "resume": "Le Caïd voit son empire se fissurer et ses alliés fuir. À l'aube, le Roi sera-t-il encore debout ?",
+            "enjeu": "Dernier combat : vaincre le Caïd gagne la campagne. L'allié Punisher entre en jeu si vous l'avez gagné au combat 3.",
+            "victoire": [],
+            "pages": {
+                "intro": [],
+                "regles": [
+                    "04-kingsfall-regles-1.jpg",
+                    "04-kingsfall-regles-2.jpg"
+                ],
+                "epilogue": []
+            },
+            "defaite": {
+                "quand": "partie_perdue",
+                "expert_seulement": false,
+                "texte": "Le Caïd reste le roi de New York, qu’il tient dans le creux de sa main. Vous avez perdu la campagne."
+            },
+            "assemblee": true
+        }
+    ],
+    "victoire_commune_expert": [
+        {
+            "cle": "Remaining hit points",
+            "type": "auto",
+            "format": "int",
+            "parJoueur": true,
+            "detection": "pv_restants",
+            "libelle": "PV restants",
+            "aide": "Campagne experte : ils deviennent les PV de départ du combat suivant."
+        }
+    ],
+    "livret_fr": true
+}

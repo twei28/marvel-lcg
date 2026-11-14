@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « PAS ENCORE CODÉ » »). Preuve : `public/css/prepare/prepare.css:65` : `--affiche-scene-w:32%` (le défaut du fichier restant 58 % aux lignes 1361 et 1470, remplacé par cette variable) ; nombre exact de colonnes et de rangées non mesuré (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°6).
+
 # Étape « Choisis un héros » : plus de héros visibles (décidé le 09/10/2026, PAS ENCORE CODÉ)
 
 Avant : la grille des héros tient dans la moitié droite (5 colonnes, à peine 2,5 rangées visibles, une douzaine de héros) ;

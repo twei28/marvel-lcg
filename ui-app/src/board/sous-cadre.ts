@@ -17,6 +17,7 @@
 
 import type { ScanCardProps } from '../components/ScanCard'
 import type { Demande, Option } from './ask'
+import { choixRefuses } from './choix-refuses'
 import { nettoyerNarration, nomLisible } from './BarreAction'
 import type { EtapeDeroule, TempsPhase } from './deroule-phase'
 import {
@@ -29,6 +30,7 @@ import {
 } from './DemandeCentrale'
 import type { CoutSlot, Interaction } from './interaction'
 import { t } from './langue'
+import { DEMANDER_A_UN_AUTRE, estDemandeAUnAutre, libelleDemandeAUnAutre } from './demande-a-un-autre'
 import { ligneDefense } from './ligne-attaque'
 import { nomAffiche } from './noms-cartes-fr'
 import { REPARTITION_INDIRECTE } from './texte-capacite'
@@ -109,6 +111,7 @@ const TYPES_DE_CAPACITE =
 
 /** Le moteur nomme-t-il une capacite propre (« Spider-Sense », « "I Object!" ») ? */
 function capaciteNommee(nom: string): boolean {
+  if (nom === DEMANDER_A_UN_AUTRE) return false
   if (/^["«]/.test(nom) || /\u2014/.test(nom)) return true
   if (nom.includes('_')) return false
   return !TYPES_DE_CAPACITE.test(nom.trim())
@@ -159,6 +162,7 @@ export function titreReponse(option: Option, q: QuestionDuMoteur): string {
       : t('Répartis %1 dégât indirect entre tes personnages')
     ).replace('%1', String(n))
   }
+  if (estDemandeAUnAutre(option)) return libelleDemandeAUnAutre(option, q.demande.event_name, (id) => nomCarte(id, q))
   const texte = q.texteCapacite(option)
   const corps = texte ? texteSansEntete(texte) : ''
   let tete: string
@@ -193,30 +197,29 @@ function vignetteOption(option: Option, chiffre: number, q: QuestionDuMoteur, no
 }
 
 /**
- * « Ask » (moteur, player_setup.py) : si le heros attaque ne defend pas, un AUTRE
- * joueur peut defendre a sa place. Le moteur la rattache au heros attaque : la
- * boite montrait donc une seconde fois sa carte, sans rien dire (signale le
+ * « Ask » (moteur, player_setup.py) : demander a un AUTRE joueur (voir
+ * `demande-a-un-autre.ts`). Le moteur la rattache au heros attaque : la boite
+ * montrait donc une seconde fois sa carte, sans rien dire (signale le
  * 13/10/2026, « pourquoi il affiche deux fois Ironheart ? »). Elle montre le
  * heros a qui l'on demande, et le dit.
  */
-const DEMANDER_A_UN_AUTRE = 'Ask'
-
 function vignetteDemande(option: Option, chiffre: number, q: QuestionDuMoteur): VignetteOption {
   const aides = [...new Set(option.all_legal_targets)]
   const seul = aides.length === 1 ? aides[0] : undefined
-  const nom =
-    seul !== undefined
-      ? t('Demander à %1 de défendre').replace('%1', nomCarte(seul, q))
-      : t('Demander à un autre joueur de défendre')
   return {
     optionId: option.id,
     chiffre,
-    nom,
+    nom: libelleDemandeAUnAutre(option, q.demande.event_name, (id) => nomCarte(id, q)),
     scan: seul !== undefined ? q.carteScene(seul, true) : undefined,
     carteId: seul,
     indisponible: option.failure_reason || undefined,
     demande: true,
   }
+}
+
+/** La vignette d'une option, la demande a un autre joueur comprise. */
+function vignette(option: Option, chiffre: number, q: QuestionDuMoteur): VignetteOption {
+  return estDemandeAUnAutre(option) ? vignetteDemande(option, chiffre, q) : vignetteOption(option, chiffre, q)
 }
 
 /** La carte qui porte TOUTES les options, s'il n'y en a qu'une. */
@@ -365,7 +368,7 @@ export function vueSousCadre(
       }),
       autres: options
         .filter((option) => option.name !== 'Defense')
-        .map((option, rang) => (option.name === DEMANDER_A_UN_AUTRE ? vignetteDemande(option, defenses.length + rang + 1, q) : vignetteOption(option, defenses.length + rang + 1, q))),
+        .map((option, rang) => vignette(option, defenses.length + rang + 1, q)),
       refus: q.ligneSansDefense ? `${refus} (${q.ligneSansDefense})` : refus,
     }
   }
@@ -388,7 +391,7 @@ export function vueSousCadre(
     }
   }
 
-  const choix = options.map((option, rang) => vignetteOption(option, rang + 1, q))
+  const choix = options.map((option, rang) => vignette(option, rang + 1, q))
 
   if (ctx.tempsQuestion === 'revelation' && q.demande.event_name === 'WhenPlayerChooseAbility') {
     const prompt = nettoyerNarration(sansIdentifiantsEnFrancais(q.demande.prompt_text))
@@ -402,7 +405,7 @@ export function vueSousCadre(
       // vignettes identiques ne disaient plus lequel faisait quoi (planche du
       // lot 4, Poseur de Bombe d'Hydra). Une carte que le choix NOMME garde
       // sa vignette.
-      choix: options.map((option, rang) => ({
+      choix: [...options, ...choixRefuses(q.demande)].map((option, rang) => ({
         ...vignetteOption(option, rang + 1, q, nomLisible(option)),
         scan: q.carteDeLOption?.(option),
       })),
@@ -411,7 +414,7 @@ export function vueSousCadre(
   }
 
   const porteurUnique = porteurCommun(options)
-  if (q.demande.event_name === 'WhenPlayerChooseAbility' && options.length > 1 && porteurUnique !== undefined) {
+  if (q.demande.event_name === 'WhenPlayerChooseAbility' && options.length + choixRefuses(q.demande).length > 1 && porteurUnique !== undefined) {
     // UNE carte propose plusieurs effets (Proxima Midnight : 1 dégât à la tour
     // OU +2 ATQ) : un bouton par effet, nommé par son texte. Deux vignettes de
     // la même carte avec le même texte ne disaient pas lequel faisait quoi.
@@ -419,7 +422,8 @@ export function vueSousCadre(
     return {
       genre: 'choix-carte',
       intitule: nom ? `${nom} : ${t('choisis un effet')}` : t('Choisis un effet'),
-      choix: options.map((option, rang) => ({
+      // Les choix sans cible suivent, grises (bug 129, choix-refuses.ts).
+      choix: [...options, ...choixRefuses(q.demande)].map((option, rang) => ({
         ...vignetteOption(option, rang + 1, q, libelleDeChoix(option, porteurUnique, q)),
         scan: q.carteDeLOption?.(option),
       })),

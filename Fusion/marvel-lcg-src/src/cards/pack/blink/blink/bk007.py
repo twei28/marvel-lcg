@@ -34,11 +34,6 @@ def GetAbilities() -> Sequence['Ability']:
         zone = getattr(message, "from_area", None)
         return zone is not None and zone.flags.is_in_play
 
-    def _inutilise_est_un_portail(effect: 'Effect', message: 'Message2') -> bool:
-        Unused(effect)
-        carte = getattr(message, "trigger", None)
-        return carte is not None and carte.HasTrait(TRAIT_PORTAIL)
-
     def reprendre_le_stock(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Support)
         Unused(message)

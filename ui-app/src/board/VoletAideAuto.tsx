@@ -10,7 +10,19 @@ const PENDANT_LA_PARTIE: Raccourci[] = [
   { touches: 'E  Espace', effet: 'Finir ton tour' },
   { touches: 'Entrée  Espace', effet: 'Étape suivante pendant le déroulé d’une phase' },
   { touches: 'U', effet: 'Annuler' },
+  { touches: 'B', effet: 'Copier le rapport de bug (les 20 dernières entrées du journal), sans ouvrir de panneau' },
+  { touches: '1 à 9', effet: 'Choisir l’option portant ce numéro dans le cartouche du bas' },
   { touches: 'Échap  ×', effet: 'Annuler l’action en cours : la partie revient avant le choix de la carte' },
+]
+
+// MODE SUR LA TABLE (06/11/2026) : repris de l'entree du journal des nouveautes du 05/11/2026,
+// ecrite pour un joueur. S'affiche uniquement en mode d'affichage « Plateau anime » (Reglages ›
+// Jeu › Mode d'affichage), pas en « Guidee » ni « Accelere ».
+const MODE_SUR_LA_TABLE: Raccourci[] = [
+  { touches: 'Halo vert qui respire', effet: 'Une carte jouable en ce moment' },
+  { touches: 'Halo rouge qui respire', effet: 'Une cible possible pour l’action en cours' },
+  { touches: 'Bandeau doré', effet: 'La question du moment, plus large et mieux visible' },
+  { touches: 'Annonce brève', effet: 'Une carte de Renfort vient d’apparaître' },
 ]
 
 const RANGER_SES_CARTES: Raccourci[] = [
@@ -18,10 +30,28 @@ const RANGER_SES_CARTES: Raccourci[] = [
   { touches: 'Alt + glisser une amélioration', effet: 'Changer l’ordre des améliorations d’une même carte' },
 ]
 
+// LES CARTES EMPILEES (26/10/2026) : State of Flow (Shang-Chi), les cartes glissees sous Corsair ou Havok. Pour le moteur elles sont
+// rattachees a leur porteuse, comme une amelioration ; le plateau les dessine donc d'un contour en pointilles dores et la porteuse
+// porte la pastille « Pile de cartes : N » (empilees.ts). Un joueur croyait que son evenement « restait en jeu ».
+const CARTES_EMPILEES: Raccourci[] = [
+  { touches: 'Contour en pointillés dorés', effet: 'Une carte posée SOUS une autre (State of Flow, cartes glissées sous Corsair ou Havok) : c’est une pile, pas une amélioration en jeu.' },
+  { touches: 'Pastille « Pile de cartes : N »', effet: 'Sur la carte qui porte la pile : N cartes sont dessous.' },
+  { touches: 'Événement dans une pile', effet: 'Il n’est pas resté en jeu par erreur : la carte qui l’a posé le garde dessous.' },
+]
+const CARTES_EMPILEES_PC: Raccourci[] = [
+  ...CARTES_EMPILEES,
+  { touches: 'Survoler une carte de la pile', effet: 'La lire en grand sur le côté' },
+]
+const CARTES_EMPILEES_TEL: Raccourci[] = [
+  ...CARTES_EMPILEES,
+  { touches: 'Toucher une carte de la pile', effet: 'L’ouvrir en grand pour la lire' },
+]
+
 const LA_TABLE: Raccourci[] = [
   { touches: 'Réglages › Apparence', effet: '« Modifier la table » : glisse une zone pour la déplacer, ses poignées règlent sa place et la taille de ses cartes' },
   { touches: 'Double-clic sur le titre', effet: 'Dans « Modifier la table » : renommer la zone (laisse vide pour reprendre le titre d’origine)' },
-  { touches: 'Réglages › Jeu', effet: '« Améliorations » : à gauche ou à droite de la carte qui les porte' },
+  { touches: 'Réglages › Jeu', effet: '« Côté des améliorations » : à gauche ou à droite de la carte qui les porte' },
+  { touches: 'Réglages › Jeu', effet: '« Taille de l’aperçu agrandi » : règle au curseur la taille de la carte qui s’ouvre au survol, de 70 % à 150 %' },
 ]
 
 // LE TELEPHONE (10/10/2026) : les touches et le glisser-Alt n'existent pas au
@@ -118,12 +148,15 @@ export function VoletAideAuto({
                 <Tableau titre="Le plateau" lignes={TEL_LE_PLATEAU} />
                 <Tableau titre="Ta main" lignes={TEL_TA_MAIN} />
                 <Tableau titre="Les piles" lignes={TEL_PILES} />
+                <Tableau titre="Cartes empilées" lignes={CARTES_EMPILEES_TEL} />
                 <Tableau titre="Pendant la partie" lignes={TEL_PENDANT_LA_PARTIE} />
                 <Tableau titre="Réglages du téléphone" lignes={TEL_REGLAGES} />
               </>
             ) : (
               <>
                 <Tableau titre="Pendant la partie" lignes={PENDANT_LA_PARTIE} />
+                <Tableau titre="Mode sur la table" lignes={MODE_SUR_LA_TABLE} />
+                <Tableau titre="Cartes empilées" lignes={CARTES_EMPILEES_PC} />
                 <Tableau titre="Ranger tes cartes" lignes={RANGER_SES_CARTES} />
                 <Tableau titre="La table" lignes={LA_TABLE} />
               </>

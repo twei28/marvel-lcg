@@ -29,4 +29,6 @@ set-aside NYC card and put it into play »).
 - `FindCardPaper("Welcome to the Jungle")` cherche par NOM : le nom doit rester
   unique dans tout le catalogue.
 
-**Variantes maison** : aucune.
+**Variantes maison** : « Linked (A, B, or C) » a TROIS noms (Shadowland, set Dark Protege, sl018 a sl027) : `desc.Linked` n'accepte qu'un nom, donc rien n'y est ecrit ; la liste est lue dans le texte imprime par `VilainsLies` (`cards/pack/shadowland/__init__.py`) et `sl001a` melange dans le deck de rencontre les seules cartes liees au vilain tire (les autres restent de cote).
+
+**Variante maison (31/10/2026, pack `buffy`)** : `desc.Linked` se pose par **card_id**, pas par nom, quand le nom est ambigu : `bf006` Faith (allie) -> `bf031` (le sbire Faith, MEME nom), `bf019` Prophecy Girl -> `bf027` (le complot « Harvest », nom aussi porte par la traitrise officielle `05029`). `database.py:86-87` passe la valeur a `FindCardPaper`, qui accepte un card_id. Les cartes liees naissent dans `world.aside_deck` quand leur hote est fabrique ; l'hote lui-meme peut etre cree mis de cote par `BeginGameWithSetAside` (alter-ego `bf001b`), ce qui fait naitre toute la chaine. Piege : un hote jamais fabrique (carte absente) ne cree rien.

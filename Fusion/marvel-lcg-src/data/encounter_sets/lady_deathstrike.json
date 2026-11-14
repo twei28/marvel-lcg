@@ -1,0 +1,21 @@
+{
+  "version": "0.5.8",
+  "name": "Lady Deathstrike",
+  "encounters": [
+    "ld006",
+    "ld006",
+    "ld007",
+    "ld008",
+    "ld009",
+    "ld009",
+    "ld009",
+    "ld010",
+    "ld011",
+    "ld011",
+    "ld012",
+    "ld013",
+    "ld013",
+    "ld014",
+    "ld014"
+  ]
+}

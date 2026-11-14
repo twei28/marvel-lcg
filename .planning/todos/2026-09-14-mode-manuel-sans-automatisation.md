@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « Spec à écrire » »). Preuve : La fiche se clôt elle-même : « 06/10/2026 : fiche close », spec livrée le 22/09 (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°2).
+
 # Un mode MANUEL : le joueur fait tout, le moteur ne conduit plus
 
 **Idée de l'utilisateur, 14/09/2026** : « une version pas automatisée du jeu :

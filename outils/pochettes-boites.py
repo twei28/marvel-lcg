@@ -20,8 +20,13 @@ SORTIE = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "public", "img", "prep
 RATIO = 0.72
 LARGEUR, HAUTEUR = 288, 400
 
+# ⚠ 1, 56, 57, 120, 143, 178 RETIRÉES le 29/10/2026 : nouvelles images d'origine recues
+# (Core Set, Civil War, Synthezoid Smackdown, Web of Deceit, Skrull Menace, Hunting Season),
+# affichees entieres (pochette carree en "contain" cote CSS) : plus besoin de ce recadrage
+# manuel pour elles. 119 (The Spot) et 192 (Bebop & Rocksteady) n'avaient jamais ete ici
+# (elles etaient composees depuis assets/pics, voir plus bas) : memes nouvelles images,
+# posees directement dans assets/textures/sets/.
 RECTS = {
-    "1. Core Set": (72, 4, 160),
     "2. The Green Goblin": (10, 48, 159),
     "4. The Rise of Red Skull": (42, 0, 216),
     "7. The Wrecking Crew": (10, 48, 159),
@@ -36,13 +41,8 @@ RECTS = {
     "45. Age of Apocalypse": (42, 0, 216),
     "50. Agents of S.H.I.E.L.D.": (42, 0, 216),
     "55. Trickster Takeover": (70, 42, 160),
-    "56. Civil War": (20, 0, 216),
-    "57. Synthezoid Smackdown": (22, 36, 166),
     "60. Fear No Evil": (42, 0, 216),
-    "120. Custom (Web of Deceit)": (0, 5, 209),
     "136. Custom (Gorr the God Butcher)": (0, 10, 183),
-    "143. Custom (Skrull Menace)": (28, 0, 216),
-    "178. Custom (Hunting Season)": (8, 0, 216),
 }
 
 os.makedirs(SORTIE, exist_ok=True)
@@ -62,12 +62,11 @@ PICS = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "assets", "pics")
 POLICE = os.path.join(RACINE, "Fusion", "marvel-lcg-src", "public", "fonts", "Bangers-Regular.ttf")
 Y0, Y1 = 98, 488   # la fenêtre de l'illustration sur une carte de méchant (615 x 882)
 LARGE = round((Y1 - Y0) * RATIO)
+# 192 (Bebop & Rocksteady) et 119 (The Spot) RETIRÉS le 29/10/2026 : vraies pochettes recues,
+# posees directement dans assets/textures/sets/ (plus besoin de les composer depuis une carte).
 DE_CARTES = {
     "190": ("SHREDDER", [("ts001.jpg", 215)]),
-    "192": ("BEBOP & ROCKSTEADY", [("tk001a.jpg", 190), ("tk003a.jpg", 230)]),
     "195": ("BAXTER STOCKMAN", [("tx001.jpg", 130)]),
-    # Les cartes de The Spot font 600 x 840 : la fenêtre de l'illustration est un peu plus haute.
-    "119": ("THE SPOT", [("sp002.jpg", 177)], 92, 458),
 }
 for numero, (titre, morceaux, *fenetre) in DE_CARTES.items():
     y0, y1 = fenetre if fenetre else (Y0, Y1)

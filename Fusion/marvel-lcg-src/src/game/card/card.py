@@ -76,6 +76,18 @@ class Card(Object):
 
         self.is_apply_unique_rule: bool|None = None
 
+        # Marqueur UI GENERIQUE (05/11/2026, Silver Surfer « Power Cosmic ») :
+        # object_id d'une AUTRE carte que CETTE carte veut faire savoir au
+        # client, sans aucun rapport avec `bind_object_id` (qui a un sens figé :
+        # attache/inventaire). N'importe quel pack maison peut poser cette
+        # reference pour une infobulle "lie a la carte X" sans inventer un
+        # nouveau champ de `CardDescriptor` a chaque fois. Rien ne le pose par
+        # defaut : `None` = pas de marqueur, invisible au rendu (`Render()`).
+        # Premier usage : `pc_planete_actuelle` du pack `silver_surfer_power_
+        # cosmic` (quelle carte PLANET un personnage marque occupe), lu par
+        # `ArriverA`/`Departir` dans son `__init__.py`.
+        self.ui_marker_object_id: int|None = None
+
         self.face: CardFace = faces[0]
         self.back_faces: List[CardFace] = list(faces[1:])
 
@@ -451,6 +463,8 @@ class Card(Object):
         if self.area == message.into_area:
             return True
 
+        # Fix "01018" : une defausse redirigee (Collector) garde les compteurs, comme une defausse
+        self.state.discard_redirected = into_area.flags.is_discards and not message.into_area.flags.is_discards
         into_area = message.into_area
         self.can_state.Reset()
         self.is_apply_unique_rule = None
@@ -567,7 +581,7 @@ class Card(Object):
             after_leave_message = Message.AfterCardLeavePlay(up_face, from_area, into_area, leave_play_message)
             up_face.OnAfterCardLeavePlay(after_leave_message)
             # Fix surge
-            if not from_area.flags.is_obligations_area and not into_area.flags.is_discards and not into_area.flags.is_place_card_area:
+            if not from_area.flags.is_obligations_area and not into_area.flags.is_discards and not into_area.flags.is_place_card_area and not self.state.discard_redirected:
                 up_face.Reset(False)
         elif into_area.flags.is_in_play and not from_area.flags.is_in_play:
             up_face.ApplyAfterEnterPlay(from_area, into_area, by_effect, is_flip=False)
@@ -945,6 +959,14 @@ class Card(Object):
 
         assert isinstance(self.face, FinalType)
 
+        info = self.face.GetRenderInfo() # Calc crc here
+        if self.ui_marker_object_id is not None:
+            # Canal GENERIQUE reutilise (deja celui de `info.crisis`, voir
+            # `has_crisis.py`) : un entier de plus dans `info` ne demande ni
+            # nouveau champ de `CardDescriptor`, ni nouvelle version du
+            # contrat `world.ts` cote client.
+            info = {**info, "ui_marker_object_id": self.ui_marker_object_id}
+
         return CardDescriptor(
             id                  = self.object_id,
             is_ready            = self.IsReady(),
@@ -955,7 +977,7 @@ class Card(Object):
             effect_to_cards     = [x.card.object_id for x in self.face.card.ui.GetEffectToFaces()],
             game_area           = self.game_area.object_id,
             name                = self.face.name,
-            info                = self.face.GetRenderInfo(), # Calc crc here
+            info                = info,
             traits              = self.face.GetInfoTraits(),
             buffs               = self.face.GetBuffsText(),
             card_id             = self.face.paper.card_id,

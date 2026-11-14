@@ -58,11 +58,10 @@ describe('la boite fixe de la colonne de gauche', () => {
 })
 
 describe('le telephone', () => {
-  it('feuille basse a environ 40 % de la hauteur (decision 30)', () => {
-    expect(tel).toMatch(/height:\s*40dvh/)
-    // 70 % seulement le temps d'une question (finition du 12/10/2026), jamais en regle generale.
-    const sansQuestion = tel.replace(/\.deroule-phase\.est-scene\.est-essai\.a-question:not\(\.est-reduit\) \{[^}]*\}/, '')
-    expect(sansQuestion).not.toMatch(/70dvh/)
+  it('la feuille prend la hauteur de son contenu, jusqu\'a sous l\'entete (24/10/2026, remplace la decision 30 : 40 %)', () => {
+    expect(tel).toMatch(/height:\s*auto;\s*max-height:\s*calc\(100dvh - 56px\)/)
+    expect(tel).not.toMatch(/height:\s*40dvh/)
+    expect(tel).not.toMatch(/height:\s*70dvh/)
   })
 })
 
@@ -102,9 +101,9 @@ describe('finition (12/10/2026) : rien ne pousse « Continuer », rien n est cou
     expect(regle('.deroule-phase.est-scene.est-essai.est-essai .deroule-boutons [data-refus]')).toMatch(/max-width:\s*calc\(\(var\(--essai-l\) - 48px\) \/ 1\.5\)/)
   })
 
-  it('au telephone, la feuille monte a 70 % le temps d une question seulement', () => {
+  it('au telephone, une question ne fige plus la feuille a 70 % : meme hauteur selon le contenu', () => {
     const i = tel.indexOf('.deroule-phase.est-scene.est-essai.a-question:not(.est-reduit) {')
     expect(i).toBeGreaterThan(-1)
-    expect(tel.slice(i, tel.indexOf('}', i))).toMatch(/height:\s*70dvh/)
+    expect(tel.slice(i, tel.indexOf('}', i))).toMatch(/height:\s*auto/)
   })
 })

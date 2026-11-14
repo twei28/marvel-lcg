@@ -136,10 +136,20 @@ class Worlds:
         else:
             return None
     @staticmethod
+    def ZonesVisibles(game_area_effect: 'GameArea|Effect') -> List['GameArea']:
+        """Les zones dont les cartes sont vues depuis cette zone : la zone elle-meme et, si le scenario en a une, la zone COMMUNE
+        (PU-5). Sans zone commune : [zone], comme avant."""
+        game_area = Worlds.CastGameArea(game_area_effect)
+        commune = game_area_effect.world.game_area_commune
+        if commune is not None and commune is not game_area:
+            return [game_area, commune]
+        return [game_area]
+
+    @staticmethod
     def GetMainSchemes(game_area_effect: 'GameArea|Effect') -> List['MainScheme']:
         world = game_area_effect.world
-        game_area = Worlds.CastGameArea(game_area_effect)
-        return [x for x in world.area_schemes_main.Get() if x.card.GetGameArea() == game_area ]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        return [x for x in world.area_schemes_main.Get() if x.card.GetGameArea() in zones ]
 
     @staticmethod
     def GetOnFieldSchemes(game_area_effect: 'GameArea|Effect', finder: 'CardFinder|None'=None) -> List['MainScheme|EncounterSideScheme|PlayerSideScheme']:
@@ -151,8 +161,8 @@ class Worlds:
     @staticmethod
     def GetSideSchemes(game_area_effect: 'GameArea|Effect') -> List['EncounterSideScheme|PlayerSideScheme']:
         world = game_area_effect.world
-        game_area = Worlds.CastGameArea(game_area_effect)
-        return [x for x in world.area_schemes_side.Get() if x.card.GetGameArea() == game_area and (EncounterSideScheme.IsType(x) or PlayerSideScheme.IsType(x))]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        return [x for x in world.area_schemes_side.Get() if x.card.GetGameArea() in zones and (EncounterSideScheme.IsType(x) or PlayerSideScheme.IsType(x))]
 
     @staticmethod
     def FilterSideScheme(by_effect: 'Effect',
@@ -274,8 +284,8 @@ class Worlds:
         for unit in Worlds.GetPlayersIdentities(game_area_effect):
             player = unit.GetControlByPlayer()
             faces += player.area_environment.Get()
-        game_area = Worlds.CastGameArea(game_area_effect)
-        faces += [x for x in game_area_effect.world.area_environment.Get() if x.card.game_area == game_area]
+        zones = Worlds.ZonesVisibles(game_area_effect)
+        faces += [x for x in game_area_effect.world.area_environment.Get() if x.card.game_area in zones]
         return faces
 
     @staticmethod
@@ -396,6 +406,7 @@ class Worlds:
         # from game.card.face.card_type import Identity
         world = game_area_effect.world
         game_area = Worlds.CastGameArea(game_area_effect)
+        zones = Worlds.ZonesVisibles(game_area_effect)
 
         faces: List['CardFace'] = []
         areas: List[Deck] = []
@@ -405,7 +416,7 @@ class Worlds:
 
         for area in [world.area_schemes_main, world.area_schemes_side, world.area_environment, world.scenario.area_villain] + areas:
             for face in area.GetAll():
-                if face.card.game_area == game_area:
+                if face.card.game_area in zones:
                     def get_faces(*check_faces: 'CardFace'):
                         found: List['CardFace'] = []
                         for x in check_faces:
@@ -549,6 +560,7 @@ class Worlds:
                                     **kwargs: Unpack['CardFinder.KWArgs'],
                                     ) -> 'TC|None':
         encounter_deck = Worlds.GetEncounterDeck(by_effect)
+        taille_avant = encounter_deck.GetSize()
         face, other = encounter_deck.DiscardUntil(
             by_effect,
             name=name,
@@ -556,13 +568,34 @@ class Worlds:
             card_type=card_type,
             **kwargs
         )
+        # CORRECTIF (23/10/2026) : « defausser jusqu'a trouver » CONTINUE apres le remelange du deck epuise. Le deck vide se remelange avec sa
+        # defausse (regle du deck de rencontre epuise) ; si la fouille a echoue ALORS qu'une carte valable se trouve maintenant dans ce deck
+        # remelange (un sbire qui etait en defausse), on cherche UNE fois de plus. Sans carte valable dans le deck, rien de plus n'est defausse
+        # (un seul passage, comme avant). Avant : la fouille s'arretait au remelange et la carte en defausse n'etait jamais trouvee.
+        if face is None and encounter_deck.GetSize() > 0:
+            from game.card.card_finder import CardFinder
+            from game.card.face.card_face import CardFace
+            valable = CardFinder(name=name, trait=trait, card_type=CardFace if isinstance(card_type, CardFace) else card_type, **kwargs)
+            if any(valable.Check(candidate) for candidate in encounter_deck.Get()):
+                face, apres = encounter_deck.DiscardUntil(
+                    by_effect,
+                    name=name,
+                    trait=trait,
+                    card_type=card_type,
+                    **kwargs
+                )
+                other = list(other) + list(apres)
         if return_other_faces != None:
             return_other_faces.clear()
             return_other_faces.extend(other)
         # 13/10/2026 (encadre 12) : « defausser jusqu'a trouver » se publie comme
         # une recherche, trouvee ou non, sur la carte revelee en cours.
+        # Rapport BL-Stark n°102 : le panneau annoncait « Paquet rencontre melange » a chaque fois, alors que le deck ne se remelange que s'il
+        # s'epuise en cours de route (plus de cartes defaussees que le deck n'en avait). Il dit maintenant AUSSI ce qui a ete defausse en chemin.
         from game.player.action.player_action import PlayerAction
-        PlayerAction.NoterRecherche(by_effect.world, [face] if face else [], fouille_paquet=True)
+        retirees = len(other) + (1 if face else 0)
+        PlayerAction.NoterRecherche(by_effect.world, [face] if face else [], fouille_paquet=retirees > taille_avant,
+                                    defaussees=[x for x in other if x is not face])
         return face
 
     @staticmethod
@@ -762,6 +795,9 @@ class Worlds:
         # paquet IMPOSTOR, 20 cartes double face (allie CAMOUFLAGED / sbire REVEALED),
         # avec sa defausse (insert p.16).
         "ImpostorDeck",
+        # AJOUT (22/10/2026, pack custom Punisher MC×DC 2026, scenario 1 The Big Apple) : le paquet LEADS,
+        # 9 pistes (obligations LEAD) melangees, COMMUN a toute la table ; chaque joueur en revele une.
+        "LeadsDeck",
     ]
 
     SCENARIO_AREA_NAME: TypeAlias = Literal[
@@ -1009,4 +1045,8 @@ class Worlds:
         return not by_effect.world.rule.mode_competitive.val
 
     Enemies = Enemies
+
+    # Brique commune du 20/10/2026 : plusieurs mechants, un seul « le mechant »
+    # (game/operate/villains.py, RECETTES-MOTEUR.md §15.3).
+    from game.operate.villains import Villains
 

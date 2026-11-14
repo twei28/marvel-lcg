@@ -1,0 +1,68 @@
+{
+    "version": "0.5.8",
+    "name": "Multiple Man",
+    "metadata": {
+        "author": "R. Tim Morris",
+        "url": "",
+        "note": "Pack « Multiple Man » (R. Tim Morris). Deck de heros = les 15 cartes du set (mm002-mm016). Obligation Got Duped! (mm017), set nemesis Multiple Man Nemesis (mm018-mm022). player_deck = decklist imprimee de l'auteur (Leadership), recopiee telle quelle : 9 Basics + 16 Leadership (Got Your Back et Ultimate Teamwork sont des cartes de l'auteur, mm023-mm024 ; les autres sont des officielles).",
+        "variante_nom": "Leadership (precon)"
+    },
+    "hero": [
+        "mm001a,mm001b"
+    ],
+    "hero_deck": [
+        "mm002",
+        "mm003",
+        "mm004",
+        "mm005",
+        "mm006",
+        "mm007",
+        "mm008",
+        "mm009",
+        "mm010",
+        "mm011",
+        "mm012",
+        "mm013",
+        "mm014",
+        "mm015",
+        "mm016"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "mm017"
+    ],
+    "nemesis_set": [
+        "mm018",
+        "mm019",
+        "mm020",
+        "mm021",
+        "mm022"
+    ],
+    "player_deck": [
+        "mm025",
+        "mm026",
+        "mm027",
+        "37021",
+        "37021",
+        "37021",
+        "38018",
+        "41023",
+        "32049",
+        "01069",
+        "01069",
+        "01069",
+        "mm023",
+        "mm023",
+        "mm023",
+        "49018",
+        "49018",
+        "49018",
+        "mm024",
+        "mm024",
+        "mm024",
+        "36019",
+        "36019",
+        "36019",
+        "40023"
+    ]
+}

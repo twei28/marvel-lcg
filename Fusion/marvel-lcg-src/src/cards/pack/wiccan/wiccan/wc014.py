@@ -12,17 +12,11 @@ from . import *
 # Over the Evidence (`jessica_jones/on_the_job/jj015.py`, meme brique sur un
 # joueur nomme).
 #
-# ECART ASSUME, DOCUMENTE : le texte imprime dit « this ROUND ». Le moteur
-# ne connait que `in_this="Phase"` et `in_this="Turn"` (worlds.py:815 :
-# `in_this: Literal["Phase", "Turn"]`) — il n'existe AUCUNE variante « Round »,
-# ni ici ni ailleurs (meme lecon que le pack Dazzler). « Phase » est retenu,
-# c'est la plus large des deux : elle couvre TOUTE la phase des joueurs, donc
-# les tours des autres joueurs aussi, la ou « Turn » s'arreterait a la fin du
-# tour courant. Ce qui reste hors de portee, c'est la phase du VILAIN du meme
-# round — une carte jouee en reaction pendant la phase du vilain ne
-# beneficiera pas de la reduction, alors que le texte imprime le permettrait.
-# Restriction plus severe que la carte, jamais plus permissive : c'est le sens
-# de l'ecart qu'on accepte.
+# « this ROUND » : `in_this="Round"` (portee ajoutee au moteur le 06/10/2026
+# pour dz003). Jusqu'au 20/10/2026 ce module prenait `"Phase"` et l'ecart
+# etait avoue ici : une carte jouee en reaction pendant la phase du VILAIN
+# perdait la reduction. Elle la garde desormais jusqu'a la fin du round (cas
+# test_capacites « wc014 Warping Reality — ... TOUT LE ROUND »).
 #
 # `1+X` -> `1 + IconesBoostDuDessus(...)`. La reduction vaut donc AU MOINS 1,
 # meme a 0 icone, meme sur un deck de rencontre vide, meme quand l'obligation
@@ -47,7 +41,7 @@ def GetAbilities() -> Sequence['Ability']:
             initiator,
             -valeur,
             effect,
-            in_this="Phase",
+            in_this="Round",
         )
 
     return [

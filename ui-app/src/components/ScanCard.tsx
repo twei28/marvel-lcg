@@ -201,6 +201,8 @@ export type ScanCardProps = {
    * agissent deja.
    */
   inactif?: boolean
+  /** Le mot de la pastille d'une carte `inactif` (defaut « En attente ») : « Autre territoire » pour le vilain d'une autre rangee de La ville. */
+  etiquetteInactif?: string
   /**
    * Identite du joueur ACTIF (hot-seat) : badge vert « Active » sur la carte,
    * pour voir d'un coup d'oeil quel heros a la main.
@@ -263,6 +265,8 @@ export type ScanCardProps = {
   taille?: 'table' | 'grande'
   /** Traits imprimés, réécrits par la traduction posée de l'aperçu agrandi. */
   traits?: string[]
+  /** Les traits qu'elle a EN CE MOMENT (cles `t_AERIAL` du descripteur) ; `undefined` si le moteur ne les donne pas. */
+  traitsActuels?: string[]
   /** Posé SUR le scan, dans son cadre (la traduction de l'aperçu agrandi). */
   surcouche?: ReactNode
   /**
@@ -318,6 +322,11 @@ export type ScanCardProps = {
    * MODIFIEES par les ameliorations en jeu.
    */
   stats?: Array<{ label: string; value: number }>
+  /**
+   * TOUTES les stats d'un personnage (pas seulement les modifiees) avec leur valeur imprimee, pour le plateau en ronds
+   * (24/10/2026) : il ecrit « ATQ 3 » sous le rond, en vert si la valeur est augmentee, en rouge si elle est reduite.
+   */
+  statsComplets?: Array<{ label: string; value: number; base?: number }>
   /** La carte montre son dos : aucun compteur, aucun type ne doit fuiter. */
   facedown?: boolean
   /** Posee face cachee sur la table, mais nous avons le droit de la voir. */
@@ -365,6 +374,14 @@ export type ScanCardProps = {
   assignerResteQuantite?: number
   /** Cible possible mise en avant depuis le menu d'action. */
   targetPulse?: boolean
+  /**
+   * Carte utilisable pour PAYER un cout en cours (main ou en jeu : defausse
+   * en ressource, ou capacite de generation comme Redirect Chi) — halo bleu
+   * distinct du flash dore de `targetPulse`, continu tant que le paiement
+   * n'est pas boucle. Demande utilisateur du 07/11/2026 : les joueurs ne
+   * reperaient pas ces cartes, faute de signal pendant l'etape de paiement.
+   */
+  paymentPulse?: boolean
   /** Mots-cles de la carte, affiches (avec definition) par l'apercu seulement. */
   keywords?: Array<{ nom: string; definition: string }>
   /** Identifiant catalogue (ex. 01001a) : liens et textes marvelcdb. */
@@ -395,6 +412,14 @@ export type ScanCardProps = {
    * maximum n'est pas connu de facon fiable).
    */
   jauge?: CardGauge
+  /**
+   * Personnage marque « a une planete » (pack maison Silver Surfer « Power
+   * Cosmic », PLAYER ENVIRONMENT) : pastille au survol/focus montrant le nom
+   * ET l'image de la carte PLANET (decision utilisateur du 04/11/2026— pas de
+   * jeton, une infobulle). Aucune carte ne bouge jamais de zone : c'est le
+   * SEUL signal visuel de ce marqueur.
+   */
+  environnementMarque?: { nom: string; imageUrl: string }
 }
 
 // Etiquettes courtes : les cartes sont petites. Ce sont les termes du jeu,
@@ -553,8 +578,10 @@ export function ScanCard({
   kind,
   estNemesis = false,
   inactif = false,
+  etiquetteInactif,
   estActif = false,
   crise,
+  environnementMarque,
   deckSpecial = false,
   aspect,
   lisereHeros,
@@ -592,6 +619,7 @@ export function ScanCard({
   onAssignerReste,
   assignerResteQuantite,
   targetPulse = false,
+  paymentPulse = false,
   effectDelta,
   jauge,
   masquerType,
@@ -701,6 +729,7 @@ export function ScanCard({
     peeking ? 'is-peeking' : '',
     highlight ? 'is-highlighted' : '',
     targetPulse ? 'is-target-pulse' : '',
+    paymentPulse ? 'is-payment-pulse' : '',
     // Secousse/flash a l'impact : la classe suit le badge +N/-N (meme cycle de
     // vie), le CSS ne s'anime que si les animations sont actives.
     effectDelta ? `a-delta-${effectDelta.kind}` : '',
@@ -757,7 +786,7 @@ export function ScanCard({
       <div className="scan-visuel">
         <div className="top-strip">
           {typeMuet ? null : <span className={aLeJeton ? 'kind-pill est-premier-joueur' : 'kind-pill'}>{etiquette}</span>}
-          {inactif ? <span className="pastille-inactif">{t('En attente')}</span> : null}
+          {inactif ? <span className="pastille-inactif">{etiquetteInactif ?? t('En attente')}</span> : null}
           {estActif && !facedown ? <span className="pastille-actif">{t('Actif')}</span> : null}
           {crise && !facedown ? (
             <span className="pastille-crise" title={`${t('Crise : la menace ne peut pas être retirée d’ici tant que')} ${crise} ${t('est en jeu.')}`}>
@@ -765,6 +794,15 @@ export function ScanCard({
             </span>
           ) : null}
           {accroche && !facedown ? <span className="pastille-accroche">{t('Accroché')}</span> : null}
+          {environnementMarque && !facedown ? (
+            <span className="pastille-planete" tabIndex={0} role="note" aria-label={`${t('À la planète')} ${environnementMarque.nom}`}>
+              <span className="pastille-planete-mot">{t('Planète')}</span>
+              <span className="pastille-planete-bulle" role="tooltip">
+                <img src={environnementMarque.imageUrl} alt="" draggable="false" />
+                <b>{environnementMarque.nom}</b>
+              </span>
+            </span>
+          ) : null}
         </div>
 
         <div className={`scan-frame${retournement ? ` retourne-${retournement.phase}` : ''}`}>

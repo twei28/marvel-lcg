@@ -1,0 +1,18 @@
+/* Les quatre languettes du bord droit (Aide, Feuillets, Tchat, Journal) ont EXACTEMENT la meme taille (demande du 09/11/2026 :
+   « Feuillets » etait plus grand que les autres). Chacune garde sa place et ses couleurs dans son propre fichier ; seule la
+   taille est commune. `html` devant les selecteurs : plus specifique que les regles de chaque volet, donc independant de
+   l'ordre dans lequel Vite assemble les feuilles. Au doigt (tablette), la regle de tablette.css prend le relais, pour les quatre. */
+html .volet-aide-languette,
+html .volet-feuillets-languette,
+html .volet-tchat-languette,
+html .volet-journal-languette {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 100px;
+  padding: 0;
+  line-height: 1;
+  white-space: nowrap;
+}

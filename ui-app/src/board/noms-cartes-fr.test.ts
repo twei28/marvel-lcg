@@ -40,6 +40,21 @@ describe('nomAffiche', () => {
     expect(nomAffiche(carte('wd002a', 'Shock Party'))).toBe('Shock Party')
   })
 
+  it('rend le nom francais fan-made pour une carte avec un vrai scan FR (pack Blade)', () => {
+    // Signalement mobile du 05/11/2026 : titre de boite de choix en anglais
+    // (« Vampire Bite ») alors que le scan deposee le 04/11/2026 dit
+    // « Morsure de Vampire ». NOMS_FR_FANMADE comble ce que NOMS_FR (genere,
+    // marvelcdb ignore le fan-made) ne peut pas savoir.
+    expect(nomAffiche(carte('bl005', 'Vampire Bite'))).toBe('Morsure de Vampire')
+  })
+
+  it('retombe sur l\'anglais pour une carte fan-made SANS scan FR depose (bl010)', () => {
+    // Contre-cas : bl010 (Predatory Instincts) n'a pas de scan FR dans
+    // assets/pics-fr/ au 05/11/2026, donc pas d'entree dans NOMS_FR_FANMADE
+    // non plus -- sans quoi le titre divergerait du scan anglais affiche.
+    expect(nomAffiche(carte('bl010', 'Predatory Instincts'))).toBe('Predatory Instincts')
+  })
+
   it('retombe sur le nom du moteur quand la VF est identique a la VO', () => {
     // « Rhino » ne figure pas dans NOMS_FR, justement parce qu'il n'y a rien
     // a traduire : le dictionnaire ne garde que les noms qui DIFFERENT.

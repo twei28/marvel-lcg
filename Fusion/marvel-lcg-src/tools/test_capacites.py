@@ -870,6 +870,20 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"compteurs": [["ah012a", "rage", 0]], "degats": [["01094", 4]]},
     },
+    # Meme montage que sr007 (rapport 115) : la carte payee reste en jeu.
+    {
+        "nom": "ah007 The Power of Forgiveness — vide les compteurs rage du Trunk apres avoir paye une AMELIORATION (ah006)",
+        "pourquoi": "jumelle de sr007, rapport 115 : carte payee qui reste en jeu",
+        "scenario": "rhino",
+        "heros": "totally_awesome_hulk",
+        "mise_en_place": ["Puzzle.ChangeForm('Amadeus Cho')"],
+        "main": ["ah007"],
+        "declencher": ["Puzzle.Counter('\"The Trunk\"', 'rage', 3)"],
+        "jouer": ["ah006"],
+        "payer_avec": ["ah007"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["ah012a", "rage", 0]]},
+    },
     {
         "nom": "ah018 Threat Assessment — 3 degats a l'identite la plus en forme",
         "pourquoi": "When Revealed qui doit choisir une cible parmi les identites",
@@ -1531,6 +1545,38 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"degats": [["01094", 2]], "compteurs": [["01094", "web", 1]]},
     },
+    # Rapport de bug n°115 (08/11/2026) : Great Power ne faisait RIEN quand elle payait une carte qui RESTE EN JEU.
+    # Le moteur n'envoie « AfterEffectResolved » que pour une capacite d'evenement : une amelioration ou un allie
+    # n'en ont pas, la reponse differee ne partait jamais (seul l'evenement Thwip! etait teste).
+    {
+        "nom": "sr007 Great Power — 2 degats apres avoir paye une AMELIORATION (Web-Shooters sr011)",
+        "pourquoi": "rapport 115 : la carte payee reste en jeu, pas d'AfterEffectResolved",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        "main_exclusive": ["sr011", "sr007"],
+        "declencher": [],
+        "jouer": ["sr011"],
+        "payer_avec": ["sr007"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "sr007 Great Power — 2 degats apres avoir paye un ALLIE (Spider-Man Ben Reilly sr002)",
+        "pourquoi": "rapport 115 : meme defaut avec un allie",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        # cout 2 : Great Power (1 ressource) + sr008 (1 ressource) paient ensemble.
+        "main_exclusive": ["sr002", "sr007", "sr008"],
+        "declencher": [],
+        "jouer": ["sr002"],
+        "payer_avec": ["sr007", "sr008"],
+        "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
     {
         "nom": "sr008 Great Responsibility — retire 2 menaces apres paiement",
         "pourquoi": "meme montage, cote menace",
@@ -1545,6 +1591,35 @@ CAS = [
         "jouer": ["sr003"],
         "payer_avec": ["sr008"],
         "cibles": ["01094"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    # Meme defaut que sr007 (rapport 115) : la carte payee reste en jeu, pas d'AfterEffectResolved.
+    {
+        "nom": "sr008 Great Responsibility — retire 2 menaces apres avoir paye une AMELIORATION (Web-Shooters sr011)",
+        "pourquoi": "jumelle de sr007, rapport 115 : carte payee qui reste en jeu",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        "main_exclusive": ["sr011", "sr008"],
+        "declencher": ["Puzzle.PlaceThreat('The Break-In!', 5)"],
+        "jouer": ["sr011"],
+        "payer_avec": ["sr008"],
+        "cibles": ["01097b"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "sr008 Great Responsibility — retire 2 menaces apres avoir paye un ALLIE (Spider-Man Ben Reilly sr002)",
+        "pourquoi": "jumelle de sr007, rapport 115 : allie (cout 2, paye avec sr007 + sr008)",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.ChangeForm('sr001a')"],
+        "main_exclusive": ["sr002", "sr007", "sr008"],
+        "declencher": ["Puzzle.PlaceThreat('The Break-In!', 5)"],
+        "jouer": ["sr002"],
+        "payer_avec": ["sr007", "sr008"],
+        "cibles": ["01097b"],
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 3]]},
     },
@@ -3708,6 +3783,18 @@ CAS = [
         "attendu": {},
     },
     {
+        "nom": "01188 Caught Off Guard — Rocket Raccoon : on peut defausser son amelioration (Rocket's Pistol)",
+        "pourquoi": "rapport du 28/10/2026 (partie Rocket Raccoon contre Rhino) : « impossible de defausser sur Pris par surprise ». Rocket's Pistol (amelioration Restricted attachee a l'identite) et le Triskelion sont en jeu",
+        "scenario": "rhino",
+        "heros": "rocket_raccoon",
+        "mise_en_place": ["Puzzle.ChangeForm('16029a')", "Puzzle.PutIntoPlay('16038', under_control=True)",
+                          "Puzzle.Attach('16038', '16029a')", "Puzzle.PutIntoPlay('01073', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('01188')"],
+        "cibles": ["16038"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["16038"]},
+    },
+    {
         "nom": "01094 Rhino — Puzzle.Attack : le vilain frappe et le heros encaisse",
         "pourquoi": "premier cas passant par Puzzle.Attack ; sans lui aucune capacite « apres avoir attaque » n'est atteignable",
         "scenario": "rhino",
@@ -4469,6 +4556,36 @@ CAS = [
         "declencher": ["Puzzle.Action('sr009', 'AlterEgoAction')"],
         "verifier": "etat_attendu",
         "attendu": {"exhausted": ["sr009"]},
+    },
+    # Rapport de bug (08/11/2026) : l'ancienne heuristique (deviner a la carte
+    # tiree, via son set) a ete remplacee par une question posee au joueur,
+    # qui regarde la carte piochee et juge lui-meme. Les deux reponses sont
+    # testees : « Yes » pioche une 2e carte, « No » s'arrete a la 1ere.
+    {
+        "nom": "sr009 J. Jonah Jameson — le joueur repond Yes : 2 cartes piochees",
+        "pourquoi": "la question posee au joueur, branche positive",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sr009')"],
+        # `main_exclusive: []` NE VIDE RIEN (test de verite Python) : une carte
+        # de remplissage neutre, sans rapport avec la question posee.
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Action('sr009', 'AlterEgoAction')"],
+        "choisir_option": "Yes",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 3},
+    },
+    {
+        "nom": "sr009 J. Jonah Jameson — le joueur repond No : une seule carte piochee",
+        "pourquoi": "la question posee au joueur, branche negative",
+        "scenario": "rhino",
+        "heros": "spider_man_rainy",
+        "mise_en_place": ["Puzzle.PutIntoPlay('sr009')"],
+        "main_exclusive": ["09032"],
+        "declencher": ["Puzzle.Action('sr009', 'AlterEgoAction')"],
+        "choisir_option": "No",
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 2},
     },
     {
         "nom": "sr010 Spider-Sense — Hero Interrupt : piocher quand le vilain attaque",
@@ -8772,6 +8889,29 @@ CAS = [
         "jouer": ["wc014", "wc009"],
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 1]], "defausse": ["wc009"]},
+    },
+    {
+        "nom": "wc014 Warping Reality — Action : la reduction dure TOUT LE ROUND (survit a la phase du vilain)",
+        "pourquoi": ("« the next card played THIS ROUND » : la reduction etait posee avec "
+                     "`in_this=\"Phase\"` et tombait a la fin de la phase des joueurs (ecart "
+                     "avoue dans le module jusqu'au 20/10/2026). Meme montage que le cas "
+                     "precedent, mais Magic Portal (wc009) est jouee APRES l'ouverture de la "
+                     "phase du vilain : payable seulement si la reduction a survecu "
+                     "(`Puzzle.EndPlayerPhase()` d'abord, sans quoi un cas sur la duree reste "
+                     "vert avec la mauvaise duree, RECETTES §5)"),
+        "scenario": "rhino",
+        "heros": "wiccan",
+        "mise_en_place": ["Puzzle.ChangeToFace('Billy Kaplan', 'wc001a')",
+                          "Puzzle.SetThreat('01097b', 6)"],
+        "declencher": ["Puzzle.CreateEncounterDeck('01106')"],
+        "main_exclusive": ["wc014", "wc009", "01088"],
+        "cibles": ["01097b"],
+        "ne_pas_depenser": ["wc014"],
+        "jouer": ["wc014"],
+        "declencher_apres": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()"],
+        "jouer_apres": ["wc009"],
+        "verifier": "etat_attendu",
+        "attendu": {"defausse": ["wc009"]},
     },
     {
         "nom": "wc015 Mother's Protection — Interrupt : 3 degats prevenus, la carte retourne dans le deck",
@@ -16426,18 +16566,34 @@ CAS = [
     {
         "nom": "im001b Inventor — l'Action rend jouable une amelioration a 1 sans ressource",
         "pourquoi": ("`Worlds.UpdateNextCardPlayCost(joueur, -1, effect, finder=..., "
-                     "in_this='Phase')` (modele 16024 Deft Focus via aa009). Le cas est "
+                     "in_this='Round')` (modele 16024 Deft Focus via aa009). Le cas est "
                      "SUJET par construction : la main ne contient QUE im010 (cout 1), "
                      "donc aucune ressource pour la payer. Si elle entre en jeu, c'est "
-                     "que son cout est tombe a 0. ⚠ La carte imprime « this ROUND » et "
-                     "le moteur n'offre que 'Phase' ou 'Turn' : ecart assume, documente "
-                     "dans le module"),
+                     "que son cout est tombe a 0. La portee « this ROUND » a son cas "
+                     "propre, juste apres (in_this='Round' depuis le 20/10/2026)"),
         "scenario": "rhino",
         "heros": "iron_man_model_42",
         "mise_en_place": [],
         "main_exclusive": ["im010"],
         "declencher": ["Puzzle.Action('im001b')"],
         "jouer": ["im010"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["im010"]},
+    },
+    {
+        "nom": "im001b Inventor — l'Action reduit la prochaine amelioration de TOUT LE ROUND (survit a la phase du vilain)",
+        "pourquoi": ("« the next upgrade played THIS ROUND » : `in_this=\"Phase\"` faisait "
+                     "tomber la reduction a la fin de la phase des joueurs (ecart avoue dans "
+                     "le module jusqu'au 20/10/2026). Meme preuve par insuffisance que le cas "
+                     "precedent (main = im010 seule, cout 1, aucune ressource), mais im010 est "
+                     "jouee APRES `EndPlayerPhase` + `BeginVillainPhase`"),
+        "scenario": "rhino",
+        "heros": "iron_man_model_42",
+        "mise_en_place": [],
+        "main_exclusive": ["im010"],
+        "declencher": ["Puzzle.Action('im001b')"],
+        "declencher_apres": ["Puzzle.EndPlayerPhase()", "Puzzle.BeginVillainPhase()"],
+        "jouer_apres": ["im010"],
         "verifier": "etat_attendu",
         "attendu": {"en_jeu": ["im010"]},
     },
@@ -30189,6 +30345,65 @@ CAS = [
         "attendu": {"defausse_joueur": 1},
     },
     {
+        "nom": "ze013 Nyx — energie imprimee au dessus : 1 carte de boost SUPPLEMENTAIRE, appliquee a l'attaque",
+        "pourquoi": ("« If that card has a printed [energy] icon, give Nyx 1 additional boost "
+                     "card. » Reserve du 11/09/2026 levee le 20/10/2026 (backlog 13) par la cle "
+                     "`boosts_sur`. Dessus du deck : Thunderbolt (ze008, energie imprimee). "
+                     "Villainous donne 1 carte, Nyx 1 de plus : 2 cartes recues. Deck Rencontre "
+                     "reduit a des Shocker (01103, boost 2, sans etoile) : ATQ 1 + 2 + 2 = 5, "
+                     "Zeus defend (DEF 2), 3 degats. Sans le module : 1 carte, 1 degat. La "
+                     "mesure des degats prouve que la carte donnee est bien RESOLUE, pas "
+                     "seulement posee"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('ze010', 'ze008')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Attack('ze013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["ze013", 2]], "degats_identite": 3,
+                    "defausse": ["ze008"]},
+    },
+    {
+        "nom": "ze013 Nyx — CONTRE-CAS : carte du dessus sans energie, AUCUNE carte de boost supplementaire",
+        "pourquoi": ("Dessus du deck : Hephaestus (ze010, mental). Il est defausse, mais Nyx ne "
+                     "recoit que la carte de Villainous : 1 carte, ATQ 1 + 2 = 3, DEF 2, 1 degat. "
+                     "Vert sans le module (contre-cas d'ABSENCE, assume) : c'est le cas "
+                     "precedent qui le rend discriminant"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')", "Puzzle.PutIntoPlay('ze013')",
+                          "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('ze008', 'ze010')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Attack('ze013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["ze013", 1]], "degats_identite": 1,
+                    "defausse": ["ze010"]},
+    },
+    {
+        "nom": "ze016 Total Eclipse — Boost : l'ennemi qui s'active recoit 1 carte de boost supplementaire",
+        "pourquoi": ("« [star] Boost: Give the activating enemy an additional boost card. » "
+                     "Reserve du 11/09/2026 levee le 20/10/2026 (backlog 13) par la cle "
+                     "`boosts_sur`. Total Eclipse est la carte de boost de Rhino "
+                     "(`Puzzle.Boost`), le reste du deck Rencontre est fait de Shocker "
+                     "(01103, boost 2). Rhino recoit 2 cartes : ATQ 2 + 1 (Total Eclipse) "
+                     "+ 2 (Shocker) = 5, Zeus defend (DEF 2), 3 degats. Sans le module : "
+                     "1 carte, 1 degat"),
+        "scenario": "rhino",
+        "heros": "zeus",
+        "mise_en_place": ["Puzzle.ChangeForm('ze001b')",
+                          "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01103', '01103', '01103', '01103')"],
+        "declencher": ["Puzzle.Boost('ze016')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"boosts_sur": [["01094", 2]], "degats_identite": 3},
+    },
+    {
         "nom": "ze014 The Mother of Night — 2 cartes a energie imprimee glissees dessous, +1 menace chacune",
         "pourquoi": ("« search their deck and discard pile for 2 cards with printed [energy] "
                      "icons and place them facedown under here. Place 1 additional threat "
@@ -31160,40 +31375,46 @@ CAS = [
     # ------------------------------------------------------------------------
     # MUSE (Rainy, set 174, prefixe `mu`) : SET MODULAIRE, 6 cartes.
     #
-    # ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET (decision utilisateur, 13/09/2026) :
-    # « une carte avec l'image de votre identite dessus » = une CARTE SIGNATURE
-    # (`card_class="IdentitySpecific"`). C'est le vocabulaire de l'auteur
-    # lui-meme sur `mu005`. Quatre cartes sur six en dependent.
+    # ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET (decision utilisateur, 13/09/2026,
+    # REVU le 08/11/2026) : « une carte avec l'image de votre identite dessus »
+    # est du dessin, le moteur ne le lit pas. Le plan du 13/09 (releve manuel
+    # de 5746 illustrations) n'a jamais ete rempli ; remplace par la solution
+    # de `spider_man_rainy/sr009` J. Jonah Jameson : on demande au joueur, qui
+    # REGARDE et repond (`choisir_option` force sa reponse ici). Quatre cartes
+    # sur six en dependent (mu001, mu003, mu004, mu006) ; mu005 garde son
+    # arbitrage propre (« an identity-specific card » est ecrit dans son texte,
+    # pas une question d'image).
     #
-    # Le heros de service est Spider-Man : ses cartes signature sont 01002
-    # Black Cat, 01003 Backflip, 01004 Enhanced Spider-Sense, 01006 Aunt May,
-    # 01007 Spider-Tracer, 01008 Web-Shooter. Cartes NON signature de
-    # comparaison : 01086 First Aid et 01090 Strength (Basic).
+    # Le heros de service est Spider-Man : 01002 Black Cat, 01006 Aunt May,
+    # 01007 Spider-Tracer et 01090 Strength (Basic) servent juste a NOMMER des
+    # cartes distinctes dans la question posee ; `choisir_option` decide seul
+    # de la reponse.
     # ------------------------------------------------------------------------
     {
-        "nom": "mu001 Art Imitates Death — 1 degat par carte SIGNATURE defaussee du dessus du deck",
+        "nom": "mu001 Art Imitates Death — le joueur repond 3 : 3 degats",
         "pourquoi": ("« Discard the top 3 cards of each player's deck. For each card "
                      "discarded this way, deal 1 damage to each character whose picture "
-                     "was on that card. » ⚠ DEUX arbitrages utilisateur du 13/09/2026 : "
-                     "l'image de l'identite = la carte SIGNATURE, et c'est le HEROS DONT "
-                     "C'EST LE DECK qui encaisse, quoi que montre la carte. Trois "
-                     "signatures sur le dessus du deck, donc 3 degats"),
+                     "was on that card. » ⚠ ARBITRAGE : c'est le HEROS DONT C'EST LE DECK "
+                     "qui encaisse, quoi que montre la carte (decision utilisateur du "
+                     "13/09/2026). Le joueur regarde les 3 cartes defaussees et repond : "
+                     "3 montrent son identite, donc 3 degats"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
                           "Puzzle.CreatePlayerDeck('01002', '01003', '01004')"],
         "declencher": ["Puzzle.Reveal('mu001')"],
+        "choisir_option": "3",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 3},
     },
     {
-        "nom": "mu001 — TEMOIN : trois cartes NON signature, aucun degat",
-        "pourquoi": ("le contre-cas de l'arbitrage. Sans le filtre, la carte frapperait "
-                     "a 3 quel que soit le deck, et le choix « carte signature » ne "
-                     "voudrait plus rien dire. Trois cartes Basic : zero degat"),
+        "nom": "mu001 — TEMOIN : le joueur repond 0, aucun degat",
+        "pourquoi": ("le contre-cas : une reponse 0 ne doit infliger AUCUN degat. Sans ce "
+                     "temoin, un montant fige independant de la reponse passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.EmptyPlayerDeck()",
                           "Puzzle.CreatePlayerDeck('01086', '01090', '01088')"],
         "declencher": ["Puzzle.Reveal('mu001')"],
+        "choisir_option": "0",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0},
     },
@@ -31235,7 +31456,7 @@ CAS = [
         "attendu": {"degats_identite": 2},
     },
     {
-        "nom": "mu003 Muse — jouer une carte SIGNATURE le reveille, et il attaque",
+        "nom": "mu003 Muse — le joueur repond Yes : il se reveille et attaque",
         "pourquoi": ("« When a player plays a card that has their identity's picture on "
                      "it, Muse activates against that player. » Muse est engage avec le "
                      "joueur et incline le heros : son activation est donc une ATTAQUE a "
@@ -31250,25 +31471,25 @@ CAS = [
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["01007", "01090"],
         "declencher": [], "jouer": ["01007"],
+        "choisir_option": "Yes",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2, "en_jeu": ["01007"]},
     },
     {
-        "nom": "mu003 — TEMOIN : une carte NON signature ne le reveille pas",
-        "pourquoi": ("le contre-cas de l'arbitrage central. 01086 First Aid est une "
-                     "carte Basic : Muse dort, et le heros ne prend rien. Sans le "
-                     "filtre, TOUTE carte jouee declencherait une attaque et le set "
-                     "serait injouable"),
+        "nom": "mu003 — TEMOIN : le joueur repond No, il ne se reveille pas",
+        "pourquoi": ("le contre-cas : une reponse No ne doit declencher AUCUNE attaque. "
+                     "Sans ce temoin, Muse pourrait s'activer quelle que soit la reponse"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.PutIntoPlay('mu003')"],
         "main_exclusive": ["05023", "01090"],
         "declencher": [], "jouer": ["05023"],
+        "choisir_option": "No",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 0, "en_jeu": ["05023"]},
     },
     {
-        "nom": "mu004 Graffitied Streets — jouer une carte signature pose 1 menace sur la principale",
+        "nom": "mu004 Graffitied Streets — le joueur repond Yes : 1 menace sur la principale",
         "pourquoi": ("« When you play a card with your identity's picture on it, place 1 "
                      "threat on the main scheme. » La principale part de 0 : elle doit "
                      "porter 1. ⚠ `Uses (3[per_hero] graffiti)` est une BASE AUTOMATIQUE "
@@ -31284,8 +31505,24 @@ CAS = [
                           "Puzzle.SetThreat('01097b', 0)"],
         "main_exclusive": ["01006", "01090"],
         "declencher": [], "jouer": ["01006"],
+        "choisir_option": "Yes",
         "verifier": "etat_attendu",
         "attendu": {"menace": [["01097b", 1]], "compteurs": [["mu004", "graffiti", 3]],
+                    "en_jeu": ["01006"]},
+    },
+    {
+        "nom": "mu004 — TEMOIN : le joueur repond No, aucune menace posee",
+        "pourquoi": ("le contre-cas : une reponse No ne doit poser AUCUNE menace. Sans "
+                     "ce temoin, la menace pourrait partir quelle que soit la reponse"),
+        "scenario": "rhino", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')",
+                          "Puzzle.PutIntoPlay('mu004')",
+                          "Puzzle.SetThreat('01097b', 0)"],
+        "main_exclusive": ["01006", "01090"],
+        "declencher": [], "jouer": ["01006"],
+        "choisir_option": "No",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 0]], "compteurs": [["mu004", "graffiti", 3]],
                     "en_jeu": ["01006"]},
     },
     {
@@ -31339,35 +31576,35 @@ CAS = [
         "attendu": {"en_jeu": ["mu003"], "degats_identite": 2},
     },
     {
-        "nom": "mu006 — le boost ETOILE grossit d'une icone par carte signature EN MAIN",
+        "nom": "mu006 — le joueur repond 2 : le boost ETOILE gagne 2 icones",
         "pourquoi": ("« This card gets +X boost icons, where X is the number of cards in "
                      "your hand with your identity's picture. » ⚠ « YOUR hand » sur une "
                      "capacite Boost = LE JOUEUR QUI DEFEND (sender_card.py:688), pas le "
-                     "proprietaire de la carte. Deux signatures en main, Obsession n'a "
-                     "AUCUNE valeur de boost imprimee (boost etoile) : Rhino frappe a "
-                     "2 + 2 = 4. ⚠ LES DEUX CARTES EN MAIN SONT INERTES PENDANT UNE "
-                     "ATTAQUE (Aunt May, un soutien ; Spider-Tracer, une amelioration). "
-                     "Avec Backflip ou Enhanced Spider-Sense, le pilote les jouait pour "
-                     "PREVENIR l'attaque et le cas mesurait zero degat"),
+                     "proprietaire de la carte. Le defenseur regarde sa main (2 cartes) et "
+                     "repond 2 ; Obsession n'a AUCUNE valeur de boost imprimee (boost "
+                     "etoile) : Rhino frappe a 2 + 2 = 4"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01006", "01007"],
         "declencher": ["Puzzle.Attack('01094')"],
+        "choisir_option": "2",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 4},
     },
     {
-        "nom": "mu006 — TEMOIN : main sans carte signature, le boost n'ajoute rien",
-        "pourquoi": ("le contre-cas : X vaut ZERO et la carte ne boost pas. Rhino frappe "
-                     "a 2, sa valeur nue. Sans ce temoin, un X fige passerait inapercu"),
+        "nom": "mu006 — TEMOIN : le joueur repond 0, le boost n'ajoute rien",
+        "pourquoi": ("le contre-cas : une reponse 0 ne doit ajouter AUCUNE icone. Rhino "
+                     "frappe a 2, sa valeur nue. Sans ce temoin, un X fige independant de "
+                     "la reponse passerait inapercu"),
         "scenario": "rhino", "heros": "spider_man",
         "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')",
                           "Puzzle.EmptyEncounterDeck()",
                           "Puzzle.CreateEncounterDeck('mu006')"],
         "main_exclusive": ["01086", "01090"],
         "declencher": ["Puzzle.Attack('01094')"],
+        "choisir_option": "0",
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 2},
     },
@@ -39917,8 +40154,8 @@ CAS = [
         }
     },
     {
-        "nom": "45017 Suit Up [aoa] — contre-cas : aucune amelioration attachable a un allie, rien n'entre en main",
-        "pourquoi": "« for an ally AND an upgrade » : les deux ou aucun. Les allies sans amelioration attachable ne sont meme pas proposes, sinon le joueur choisit un allie et perd sa carte pour rien",
+        "nom": "45017 Suit Up [aoa] — aucune amelioration attachable a un allie : l'allie est pris quand meme, pas d'amelioration",
+        "pourquoi": "RRG 1.8, Search : chaque recherche est independante (« si le joueur trouve une carte qui repond aux criteres, il l'ajoute »). Maria Hill (01067) est un allie, 01065 n'est pas une amelioration attachable a un allie : seul l'allie entre en main (decision du 04/11 : on suit les regles a 100 %)",
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": [],
@@ -39935,12 +40172,13 @@ CAS = [
         "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {
-            "taille_main": 0
+            "en_main": ["01067"],
+            "taille_main": 1
         }
     },
     {
-        "nom": "45017 Suit Up [aoa] — Sidekick (45015, « identity-specific ally ») n'est prise qu'avec l'allie signature : Black Cat, pas Maria Hill",
-        "pourquoi": "le filtre est la VRAIE regle d'attache (Upgrade.CanAttachTo relit le selecteur de la capacite Play) : 45015 ne s'attache qu'a un allie de classe Hero, donc Black Cat (01002) et jamais Maria Hill (01067)",
+        "nom": "45017 Suit Up [aoa] — Sidekick (45015, « identity-specific ally ») est proposee quand l'allie signature Black Cat est dans le deck (l'allie pris est Maria Hill, premier du deck : plus contraint par l'amelioration)",
+        "pourquoi": "ERRATA RRG 1.8 (« to AN ally ») : le filtre est la VRAIE regle d'attache (Upgrade.CanAttachTo relit le selecteur de la capacite Play) sur UN allie quelconque ; 45015 ne s'attache qu'a un allie de classe Hero (Black Cat 01002, present dans le deck). ⚠ AVANT l'errata ce cas disait « jamais avec Maria Hill » : l'allie pris n'est plus contraint par l'amelioration, voir tools/cas/errata_rrg.py",
         "scenario": "rhino",
         "heros": "spider_man",
         "mise_en_place": [],
@@ -39958,7 +40196,7 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {
             "en_main": [
-                "01002",
+                "01067",
                 "45015"
             ],
             "taille_main": 2
@@ -45129,6 +45367,27 @@ CAS = [
                     "defausse_avec": ["60040a", "01087"], "glissees": []},
     },
     {
+        "nom": "60040a 60040b 60040c Photographic Reflexes — etape 8 bis : ce que le moteur ENVOIE au plateau (monde + options)",
+        "pourquoi": ("Reserve du 21/09/2026 levee le 20/10/2026 (backlog 13). La carte rend "
+                     "cliquable une carte de la MAIN (chemin A) et une carte GLISSEE sous Echo "
+                     "(chemin B). Ce cas exige, cote moteur, que les trois variantes soient en "
+                     "main dans le descripteur du monde avec une option disponible portee par "
+                     "LEUR objet, et que Haymaker glisse soit rattache a Echo avec une option "
+                     "Play. Avec ECHO_FIXTURE_DIR, il ecrit ces descripteurs pour le cas "
+                     "plateau `echo-photographic-reflexes-plateau.test.ts`"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["01087", "01088", "60040a", "60040b", "60040c"],
+        "cibles": ["01094"],
+        "ne_pas_depenser": ["60040a", "60040b", "60040c"],
+        "declencher": [],
+        "jouer": ["01087"],
+        "verifier": "echo_rendu_pour_le_plateau",
+        "attendu": {"en_main": ["60040a", "60040b", "60040c"], "glissees": ["01087"],
+                    "fixture": "echo-photographic-reflexes.json"},
+    },
+    {
         "nom": "60037a Echo — Watch and Learn ne re-glisse PAS l'evenement joue depuis sous Echo",
         "pourquoi": "« You cannot trigger Echo's Watch and Learn ability for that event » : apres le rejeu, la carte finit en defausse, pas sous Echo",
         "scenario": "rhino",
@@ -45210,6 +45469,67 @@ CAS = [
         "verifier": "echo_etat",
         "attendu": {"glissees": ["18020"], "main_avec": ["60040a"],
                     "defausse_sans": ["18020", "60040a"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A ABSENT quand l'evenement glisse n'est pas payable (autoplay graine 4)",
+        "pourquoi": ("Decision de l'utilisateur du 20/10/2026 (backlog 13, Q1) : « you can "
+                     "discard ... TO play an event » ; le geste n'a de sens que s'il y a quoi "
+                     "jouer. Hit and Run (18020) coute 3, soit 1 apres reduction, et il ne reste "
+                     "en main QUE cette Photographic Reflexes, qui ne peut pas payer la carte "
+                     "qu'elle autorise. Avant : l'action etait offerte, la carte partait en "
+                     "defausse et rien n'etait joue (autoplay echo/rhino graine 4)"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": ["18020"], "action_offerte": [["60040a", False]],
+                    "main_avec": ["60040a"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A PRESENT et joue des que l'evenement glisse est payable",
+        "pourquoi": ("Le bout positif du cas precedent : meme position, plus une carte de "
+                     "ressource (01088) pour payer le 1 restant. Le geste est offert et va au "
+                     "bout : Hit and Run part de sous Echo (4 degats), Photographic Reflexes "
+                     "est defaussee"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "ne_pas_depenser": ["60040a"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')", "Puzzle.Gain('01088')"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "degats": [["01094", 4]],
+                    "defausse_avec": ["60040a", "18020"]},
+    },
+    {
+        "nom": "60040a Photographic Reflexes — chemin A avec DEUX copies : la seconde paie l'evenement",
+        "pourquoi": ("La garde du 25/09/2026 interdit a une Photographic Reflexes de payer la "
+                     "carte qu'ELLE autorise ; elle l'autorise si une SECONDE copie porte ce "
+                     "cout. Sur le chemin A, la copie cliquee est deja defaussee comme cout : "
+                     "la seconde est donc une AUTRE carte et peut payer. Sans cela, le geste "
+                     "serait offert (le chemin B accepte la position) puis echouerait, et la "
+                     "copie cliquee serait perdue pour rien"),
+        "scenario": "rhino",
+        "heros": "echo",
+        "mise_en_place": ["Puzzle.ChangeForm('60037b')"],
+        "main_exclusive": ["18020", "01088", "01090"],
+        "cibles": ["01094"],
+        "declencher": [],
+        "jouer": ["18020"],
+        "declencher_apres": ["Puzzle.Gain('60040a')", "Puzzle.Gain('60040b')"],
+        "action_en_main": ["60040a"],
+        "verifier": "echo_etat",
+        "attendu": {"glissees": [], "degats": [["01094", 4]],
+                    "defausse_avec": ["60040a", "60040b", "18020"]},
     },
     {
         "nom": "60040a Photographic Reflexes — la reduction de 2 NE COUVRE PAS l'exigence de couleur",
@@ -45522,6 +45842,28 @@ CAS = [
         "attendu": {'menace': [['01097b', 2]]},
     },
     {
+        "nom": '60006 Superior Taste — la Reponse est AUSSI offerte quand le contre VIDE la manigance (menace 2 -> 0)',
+        "pourquoi": ("rapport n°101 (BL-Stark) : « Toucher Parfait ne trigger pas quand je vide la Manigance Principale ». Aucune menace ne "
+                     "reste a retirer, mais la Reponse reste jouable (elle defausse la carte, qui retourne sous le deck Sens) : "
+                     "acceptee, Superior Taste quitte la manigance"),
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('01097b', 2)", "Puzzle.AttachReel('60006', '01097b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['01097b', 0]], 'hors_jeu': ['60006']},
+    },
+    {
+        "nom": '60006 Superior Taste — la Reponse est offerte sur Attack on Mount Athena (Crossbones) quand le contre la VIDE (menace 2 -> 0)',
+        "pourquoi": "rapport n°101 (BL-Stark) reproduit tel quel : scenario Crossbones, manigance principale 04061b",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeForm('60001b')", "Puzzle.SetThreat('04061b', 2)", "Puzzle.AttachReel('60006', '04061b')"],
+        "declencher": ["Puzzle.Thwart('60001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {'menace': [['04061b', 0]], 'hors_jeu': ['60006']},
+    },
+    {
         "nom": '60006 Superior Taste — CONTRE-CAS : la Reponse se REFUSE, seul le contre retire de la menace',
         "pourquoi": 'preuve du refus : Passer est offert ; repondu, la menace ne baisse que de 2 (6 -> 4)',
         "scenario": "rhino",
@@ -45642,6 +45984,56 @@ CAS = [
         "accepter_choix": True,
         "verifier": "etat_attendu",
         "attendu": {"degats_identite": 1, "degats": [["60007", 0]]},
+    },
+    {
+        "nom": "04069 Piller l'Armurerie : le journal du mechant dit ce qui est defausse (Se Liguer) et trouve (Pistolet d'Hydra), sans « paquet melange »",
+        "pourquoi": "rapport n°102 (BL-Stark) : 4 cartes defilaient sans explication, et le panneau annoncait a tort que le paquet etait melange",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.CreateEncounterDeck('04149', '01189')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "faits_piller_armurerie",
+    },
+    {
+        "nom": "Menace du point 1 : l'icone d'acceleration de Cloak (allie) est NOMMEE dans le journal du mechant",
+        "pourquoi": "rapport n°104 (BL-Stark) : « la manigance a pris 2 menaces d'un coup » ; l'icone venait de Cloak, sans que rien ne le dise",
+        "scenario": "crossbones",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.PutIntoPlay('60020', under_control=True)"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "menace_nomme_la_source_acceleration",
+    },
+    {
+        "nom": "60001b Matt Murdock — le deck Sens est consultable : ses 5 cartes sont visibles pour Daredevil",
+        "pourquoi": "rapport n°100 (BL-Stark) : la pile Sens s'affichait sans pouvoir s'ouvrir, car ses cartes face cachee n'etaient pas visibles pour leur proprietaire",
+        "scenario": "rhino",
+        "heros": "daredevil",
+        "mise_en_place": ["Puzzle.ChangeToFace('60001b', '60001a')"],
+        "main_exclusive": ["01090"],
+        "declencher": [],
+        "verifier": "dd_deck_sens_consultable",
+    },
+    {
+        "nom": "27131 Common Criminal — une seule option possible : le choix est enregistre pour le bandeau de l'interface",
+        "pourquoi": "rapport n°99 (BL-Stark) : le journal seul passait inapercu ; le monde exporte aussi `choix_uniques`, que l'interface annonce",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_enregistre",
+    },
+    {
+        "nom": "27131 Common Criminal — DEUX options possibles : rien d'enregistre pour le bandeau",
+        "pourquoi": "temoin du cas precedent",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Engage('27131')", "Puzzle.PutIntoPlay('27133')"],
+        "main_exclusive": ["01090"],
+        "declencher": ["Puzzle.Action('27131', 'AlterEgoAction')"],
+        "verifier": "choix_option_unique_non_enregistre",
     },
     {
         "nom": "27131 Common Criminal — une seule option possible (aucune manigance annexe) : le journal le dit",
@@ -47253,6 +47645,61 @@ CAS = [
         "attendu": {"en_jeu": ["dt105"], "hors_jeu": ["dt016"], "defausse": ["dt016"]},
     },
     {
+        "nom": "dt105 Venompool [dt] — +1 ATQ par carte face cachee devant vous : 2 cartes, +2",
+        "pourquoi": ("« Venompool gets +1 ATK for each facedown encounter card in front of you "
+                     "(to a maximum of +3 ATK). » Trouve par l'autoplay du deck de test (backlog "
+                     "13, 20/10/2026) : `OnEvent.GameArea()` faisait planter l'entree en jeu "
+                     "(AssertionError avalee), le bonus ne partait jamais"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt105', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dt105", "attack", 2]]},
+    },
+    {
+        "nom": "dt105 Venompool [dt] — le bonus plafonne a +3 ATQ (4 cartes face cachee)",
+        "pourquoi": "« (to a maximum of +3 ATK) » : temoin du plafond, 4 cartes distribuees, +3 seulement",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt105', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')",
+                       "Puzzle.Deal('01101')", "Puzzle.Deal('01101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["dt105", "attack", 3]]},
+    },
+    {
+        "nom": "dt106 Captain Universe [dt] — degats consecutifs reduits du nombre de cartes face cachee",
+        "pourquoi": ("« Interrupt: When Captain Universe would take any amount of consequential "
+                     "damage, reduce that amount by X, where X is the number of facedown "
+                     "encounter cards in front of you. » Trouve par l'autoplay du deck de test "
+                     "(backlog 13, 20/10/2026) : `PreventDamage` n'existe pas sur ce message, "
+                     "AttributeError avalee, aucune reduction. ATQ 3** = 2 degats consecutifs ; "
+                     "2 cartes face cachee : 0 degat"),
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt106', under_control=True)"],
+        "declencher": ["Puzzle.Deal('01101')", "Puzzle.Deal('01101')", "Puzzle.Attack('dt106')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["dt106", 0], ["01094", 3]]},
+    },
+    {
+        "nom": "dt106 Captain Universe [dt] — temoin : sans carte face cachee, les degats consecutifs passent",
+        "pourquoi": "ligne de base du cas precedent : meme attaque, aucune carte distribuee (vert sans module, assume)",
+        "scenario": "rhino",
+        "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('dt106', under_control=True)"],
+        "declencher": ["Puzzle.Attack('dt106')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["dt106", 2], ["01094", 3]]},
+    },
+    {
         "nom": "dt105 Venompool [dt] — temoin : sans homonyme controle, pas de gratuite, la carte reste en main",
         "pourquoi": "contre-cas d'Alias : la reduction est conditionnelle (reste vert sous substitution, assume)",
         "scenario": "rhino",
@@ -48746,7 +49193,7 @@ CAS = [
         "main_exclusive": ["01090"],
         "declencher": ["Puzzle.Reveal('hs052')"],
         "verifier": "etat_attendu",
-        "attendu": {"statuts_absents": [["01001b", "Stunned"]]}
+        "attendu": {"statuts_absents": [["01001b", "Confused"]]}
     },
     {
         "nom": "[hs2] hs052 Restraining Pincers : deja etourdi et rien a depenser, elle prend surge",
@@ -54008,7 +54455,7 @@ CAS = [
                           "Puzzle.CreatePlayerDeck('01088', '01088')", "Puzzle.EmptyHand()"],
         "declencher": ["Puzzle.Action('sk030', 'Action', 0)"],
         "verifier": "etat_attendu",
-        "attendu": {"taille_main": 0, "defausse": ["01088"]},
+        "attendu": {"taille_main": 0, "defausse": ["01089"]},
     },
     {
         "nom": "sk031 Interracial Hatred — en jeu, Hulkling (Skrull) ne peut pas se redresser",
@@ -54989,6 +55436,3235 @@ CAS = [
         "verifier": "etat_attendu",
         "attendu": {"menace": [["sk111", 4], ["sk082b", 0]]},
     },
+
+    # ------------------------------------------------------------------------
+    # Pack « pc » : Silver Surfer (Power Cosmic), mecanique PLANET
+    # ------------------------------------------------------------------------
+    {
+        "nom": "pc001a Silver Surfer — marque « a une planete » : l'attaque de base est BLOQUEE (0 degat)",
+        "pourquoi": ("preuve du blocage impose par le texte imprime de pc001a (« Characters at a PLANET cannot "
+                     "attack or scheme ») : Puzzle.ArriveAtPlanet pose le marqueur `pc_planete_actuelle` (outil de "
+                     "test, voir puzzle.py), puis Puzzle.Attack('pc001a') doit infliger 0 degats a 01094 (Rhino). "
+                     "L'identite finit EPUISEE malgre tout (verifie par diagnostic : le Stunned OFFICIEL laisse "
+                     "aussi l'attaquant epuise apres une attaque empechee — ForcedInterrupt+SetBeInstead intervient "
+                     "APRES que le cout de l'attaque, l'inclinaison, est deja paye ; comportement attendu du moteur, "
+                     "pas un defaut de ce pack)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 0]]},
+    },
+    {
+        "nom": "pc001a Silver Surfer — TEMOIN, sans marqueur : l'attaque de base part normalement (1 degat), identite EPUISEE",
+        "pourquoi": ("contre-cas du precedent, memes conditions SAUF le marqueur : sans lui l'attaque de base "
+                     "(ATK imprime 1) doit bien toucher Rhino et epuiser l'identite. Sans ce temoin, le cas "
+                     "precedent pourrait passer au vert pour une tout autre raison (Puzzle.Attack cassé, "
+                     "Rhino invulnerable...) sans que le blocage soit reellement en cause"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 1]], "exhausted": ["pc001a"]},
+    },
+    {
+        "nom": "pc003 Zenn-La — entre en jeu automatiquement au Setup",
+        "pourquoi": ("texte hors-carte de l'auteur (« start with Zenn-La ... in play »), code sur pc001b "
+                     "(AbilityFactory.SetupPutIntoPlay) : Zenn-La ne vit jamais dans player_deck, le scan "
+                     "natif des cartes Setup (world.py) ne la trouverait jamais sans cet appel explicite"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc003"]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Arrive : soigne 2 degats du personnage arrivant",
+        "pourquoi": "texte imprime « Arrive: Heal the arriving character 2. » ; preuve directe sur les degats de l'identite",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Damage('pc001a', 2)", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 0]]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Depart : +1 au PROCHAIN pouvoir de base du personnage partant",
+        "pourquoi": ("texte imprime « Depart: Add +1 to the departing character's next basic power. » : "
+                     "Silver Surfer part de Zenn-La puis attaque (ATK imprime 1) -> 2 degats a Rhino (1+1), "
+                     "preuve que le bonus s'est bien applique a CETTE attaque"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "pc003 Zenn-La — Depart : le bonus ne vaut qu'UNE fois (temoin d'epuisement)",
+        "pourquoi": ("« NEXT basic power », pas tous : une 2e attaque APRES celle qui a consomme le bonus "
+                     "doit revenir a l'ATK imprime (1), sans quoi le bonus serait permanent par erreur"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [
+            "Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')", "Puzzle.DepartFromPlanet('pc001a')",
+        ],
+        "declencher": ["Puzzle.Attack('pc001a')", "Puzzle.Ready('pc001a')", "Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3]]},
+    },
+    {
+        "nom": "pc001a a une planete — AFFICHAGE PLATEAU (etape 8 bis) : le marqueur traverse jusqu'au JSON envoye au client",
+        "pourquoi": ("PROCESSUS-CARTE.md etape 8 bis : `pc_planete_actuelle` ne deplace AUCUNE carte (decision "
+                     "utilisateur du 04/11/2026), donc rien ne garantit que le client sache qu'un personnage est "
+                     "marque sans un canal explicite vers le JSON. `ArriverA`/`Departir` posent aussi "
+                     "`card.ui_marker_object_id` (canal GENERIQUE moteur, `card.py`), lu par `Render()` dans "
+                     "`info['ui_marker_object_id']` -- c'est CE canal, pas `pc_planete_actuelle`, que lit "
+                     "`ui-app/src/board/zones.ts` pour l'infobulle nom+image. Verifie directement sur le "
+                     "`CardDescriptor` rendu, pas seulement sur l'attribut Python interne : c'est exactement le "
+                     "piege de `su001b` Master Planner cite par PROCESSUS-CARTE (moteur juste, rien a l'ecran)."),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "declencher": [],
+        "verifier": "pc_marqueur_ui_planete",
+    },
+    {
+        "nom": "pc004 Nova Frankie Raye — Action : arrive puis part aussitot, le bonus de depart de la PLANETE profite a SON prochain contre",
+        "pourquoi": ("« I arrive... then depart » (pc004) declenche le Depart de la planete choisie (pc003 Zenn-La, "
+                     "deja en jeu par le Setup) : +1 au prochain pouvoir de base DE FRANKIE RAYE (pas de Silver Surfer). "
+                     "THW imprime 1 + 1 = 2 menaces retirees par son contre. Menace de depart fixee a 5 (PAS 10, modele "
+                     "beast_proust bs004) : le seuil de 01097b (Rhino) est 7 a un joueur -- 10 ACCOMPLIT la manigance "
+                     "AVANT le contre (diagnostic du 05/11/2026, le vrai bug etait dans CE cas de test, pas le moteur)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc004', under_control=True)", "Puzzle.SetThreat('01097b', 5)"],
+        "declencher": ["Puzzle.Action('pc004', 'Action')", "Puzzle.Thwart('pc004')"],
+        "cibles": ["pc003", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "pc004 Nova Frankie Raye — fin de phase : 1 degat a elle-meme apres avoir utilise son Action",
+        "pourquoi": ("« At the end of the phase, deal 1 damage to me » : declencheur WhenPhaseEnd, hors de portee de "
+                     "l'API Puzzle (modele kb_bow_fin_de_phase) — le verificateur envoie Message.WhenPhaseEnd lui-meme"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc004', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc004', 'Action')"],
+        "cibles": ["pc003"],
+        "verifier": "pc_nova_fin_de_phase",
+    },
+    {
+        "nom": "pc005 Sakaar — Arrive : +2 ATK jusqu'a la fin du round",
+        "pourquoi": ("ATK imprime 1 + 2 = 3 degats a Rhino PAR L'ATTAQUE ; Silver Surfer doit D'ABORD partir de "
+                     "Sakaar (sinon sa propre capacite « Characters at a PLANET cannot attack » bloquerait "
+                     "l'attaque). Ce depart declenche AUSSI le texte « Depart: Deal 2 damage to an enemy » de "
+                     "Sakaar lui-meme (seul ennemi en jeu : Rhino, choisi sans ambiguite) -> 2 + 3 = 5 au total. "
+                     "Le bonus +2 ATK doit donc encore tenir apres le depart pour atteindre ce chiffre"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": ["Puzzle.Attack('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "pc005 Sakaar — Depart : 2 degats a un ennemi choisi",
+        "pourquoi": "texte imprime « Depart: Deal 2 damage to an enemy »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')"],
+        "cibles": ["01094"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 2]]},
+    },
+    {
+        "nom": "pc006 Newhaven — Arrive : +2 CTR jusqu'a la fin du round",
+        "pourquoi": ("texte imprime « gains +2 THW until the end of the round » ; verifie DIRECTEMENT la valeur de "
+                     "pouvoir (THW imprime 1 + 2 = 3), pas via Puzzle.Thwart"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "declencher": [],
+        "verifier": "pc_valeur_thw",
+        "attendu": {"thw": 3},
+    },
+    {
+        "nom": "pc006 Newhaven — Depart : retire 2 menaces d'une manigance choisie",
+        "pourquoi": ("texte imprime « Depart: Remove 2 threat from a scheme ». Menace de depart fixee a 5 (PAS 10, "
+                     "modele beast_proust bs004) : le seuil de 01097b (Rhino) est 7 a un joueur -- 10 ACCOMPLIT la "
+                     "manigance AVANT le contre (diagnostic du 05/11/2026 : le vrai bug etait dans l'ANCIEN cas de "
+                     "test lui-meme, pas le moteur ni `Puzzle.Thwart` ni `ChooseAbilities+SetTarget(Scheme2)`)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "cibles": ["01097b"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "DIAGNOSTIC pc007 — Exhaust puis ReadyAll direct, sans planete",
+        "pourquoi": "isoler si le probleme vient de Puzzle.Exhaust/Ready ou du script pc007",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.Ready('pc001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc007 Xandar — Depart : redresse le personnage partant",
+        "pourquoi": "texte imprime « Depart: Ready the departing character » ; Silver Surfer incline (attaque) puis arrive+part de Xandar -> redresse",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')",
+                          "Puzzle.PutIntoPlay('pc007', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc007')", "Puzzle.DepartFromPlanet('pc001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc008 Cosmic Blast — jouee depuis la main (cout 2 energy) en reponse au Depart de Xandar : 5 degats, sans piercing",
+        "pourquoi": ("Hero Response (attack), carte EN MAIN, declenche par `AfterCharacterDepartPlanet` -- modele "
+                     "cr008 Riposte (`main_exclusive`+`payer_avec`+`accepter_choix`, carte offerte automatiquement "
+                     "par le moteur des que le declencheur imprime arrive). PLANET = Xandar (pas Sakaar) : pas de "
+                     "piercing, pas d'option de redressement"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc007', under_control=True)",
+                          "Puzzle.ArriveAtPlanet('pc001a', 'pc007')"],
+        "main_exclusive": ["pc008", "01088"],
+        "payer_avec": ["01088"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 5]]},
+    },
+    {
+        "nom": "pc008 Cosmic Blast — depart de SAKARA : piercing + redressement facultatif accepte",
+        "pourquoi": "« If that PLANET was Sakaar, this attack gains piercing and you may spend a [energy] resource to ready Silver Surfer »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')",
+                          "Puzzle.PutIntoPlay('pc005', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc005')"],
+        "main_exclusive": ["pc008", "01088", "01088"],
+        "payer_avec": ["01088"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01094", "01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc009 Lightspeed Entrance — jouee depuis la main (cout 0) en reponse au Depart de Xandar : 2 menaces retirees",
+        "pourquoi": "Hero Response (thwart), meme modele que pc008 ; PLANET = Xandar (pas Newhaven) : pas d'option de redressement",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc007', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc007')"],
+        "main_exclusive": ["pc009"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["01097b", 3]]},
+    },
+    {
+        "nom": "pc009 Lightspeed Entrance — depart de NEWHAVEN : redressement facultatif accepte",
+        "pourquoi": "« If that PLANET was Newhaven, you may spend a [mental] resource to ready Silver Surfer »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Exhaust('pc001a')", "Puzzle.SetThreat('01097b', 5)",
+                          "Puzzle.PutIntoPlay('pc006', under_control=True)", "Puzzle.ArriveAtPlanet('pc001a', 'pc006')"],
+        "main_exclusive": ["pc009", "01089"],
+        "payer_avec": ["01089"],
+        "declencher": ["Puzzle.DepartFromPlanet('pc001a')"],
+        "cibles": ["01097b", "01097b"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc010 Surfin' — jouee (cout REELLEMENT paye : 1 physical) : Exhaust Cosmic Surfboard, 9 degats, overkill accepte",
+        "pourquoi": ("carte jouee par le vrai chemin (`jouer`, modele `jouer_carte` du harnais, PAS "
+                     "`Puzzle.PutIntoPlay` qui ne resout jamais l'effet d'un evenement -- piege documente "
+                     "le 05/11/2026). 9 degats + overkill facultatif accepte (Rhino 7 PV)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)"],
+        "main_exclusive": ["pc010", "01090"],
+        "jouer": ["pc010"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 9]], "exhausted": ["pc002"], "defausse": ["pc010", "01090"]},
+    },
+    {
+        "nom": "pc011 Ride Along — jouee (cout REELLEMENT paye : 1 energy) puis Action : arrive puis part aussitot, se defausse",
+        "pourquoi": ("Amelioration jouee par le vrai chemin (`jouer`), puis son Action declenchee separement "
+                     "(`Puzzle.Action`) -- PAS `Puzzle.PutIntoPlay` qui pose la carte sans jamais offrir son Action "
+                     "(piege documente le 05/11/2026). pc001a (Hero) arrive a Zenn-La (pc003) puis en repart aussitot "
+                     "-> soigne 2 degats (texte pc003 Arrive), carte toujours defaussee"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.Damage('pc001a', 2)"],
+        "main_exclusive": ["pc011", "01088"],
+        "jouer": ["pc011"],
+        "declencher": [],
+        "declencher_apres": ["Puzzle.Action('pc011', 'Action')"],
+        "cibles": ["pc003", "pc001a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 0]], "hors_jeu": ["pc011"]},
+    },
+    {
+        "nom": "pc012 Psionic Bond — incline cette carte et une ressource, redresse Cosmic Surfboard",
+        "pourquoi": "texte imprime : Cosmic Surfboard incline -> redresse via Psionic Bond",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.Exhaust('pc002')", "Puzzle.PutIntoPlay('pc012', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc012', 'Action')"],
+        "surpayer": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc002"], "exhausted": ["pc012"]},
+    },
+    {
+        "nom": "pc014 The Power Cosmic — depensee pour JOUER une carte POWER COSMIC : repiochee (seule carte du deck) puis 1 carte tiree",
+        "pourquoi": ("modele dy012/mt006 (`AfterYouSpendThisCard`). Deck VIDE avant resolution : apres que pc014 se "
+                     "soit elle-meme melangee dans le deck (texte imprime, toujours), c'est la SEULE carte qui s'y "
+                     "trouve -> la pioche qui suit (puisque pc010 Surfin' porte POWER COSMIC) la ramene forcement en "
+                     "main, resultat deterministe malgre le melange"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.EmptyPlayerDeck()"],
+        "main_exclusive": ["pc010", "pc014"],
+        "jouer": ["pc010"],
+        "payer_avec": ["pc014"],
+        "declencher": [],
+        "cibles": ["01094"],
+        "accepter_choix": True,
+        "preferer_option": "Cancel",
+        "verifier": "etat_attendu",
+        "attendu": {"en_main": ["pc014"]},
+    },
+    {
+        "nom": "pc014 The Power Cosmic — depensee pour un COUT DE CAPACITE (pas une carte jouee) : repiochee, AUCUNE carte tiree",
+        "pourquoi": "« if you spent it on a POWER COSMIC or COSMIC card » : `pay_for_card` est None pour un cout de capacite (Action de Psionic Bond, pas une carte JOUEE) -- pas de pioche",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc002', under_control=True)",
+                          "Puzzle.Exhaust('pc002')", "Puzzle.PutIntoPlay('pc012', under_control=True)",
+                          "Puzzle.EmptyPlayerDeck()"],
+        "main_exclusive": ["pc014"],
+        "declencher": ["Puzzle.Action('pc012', 'Action')"],
+        "payer_avec": ["pc014"],
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc002"], "absent_main": ["pc014"], "dans_deck_joueur": ["pc014"]},
+    },
+    {
+        "nom": "pc014 The Power Cosmic — deux icones [wild] IMPRIMEES (RES=GG), pas une seule",
+        "pourquoi": ("desc.RES valait \"G\" (UNE icone), corrige en \"GG\" le 05/11/2026 apres rapport de partie "
+                     "reelle (« je selectionne pc014 pour payer, il ne m'indique qu'UNE ressource ») -- le scan "
+                     "(assets/pics/pc014.jpg) montre bien DEUX pastilles [wild] vertes empilees en bas a gauche"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "main_exclusive": ["pc014"],
+        "declencher": [],
+        "verifier": "pc_power_cosmic_deux_icones",
+    },
+    {
+        "nom": "pc013 Cosmic Awareness — jouee (cout 0), un sbire qui s'engage arrive a la planete choisie et est Confused",
+        "pourquoi": ("Amelioration jouee par le vrai chemin (`jouer`, cout imprime 0 -- modele `jouer_carte` du "
+                     "harnais) -- PAS `Puzzle.PutIntoPlay`. Engagement reel via `Puzzle.PutIntoPlay('01101')` "
+                     "SANS `under_control` (modele sr001a « Just Like Flies », seul declencheur confirme "
+                     "`WhenMinionEngagePlayer` du harnais -- `Puzzle.Engage` ne l'envoie jamais, piege documente "
+                     "le 05/11/2026) ; 17011 (Adam Warlock, un ALLIE) etait une mauvaise cible, corrige en 01101 "
+                     "Hydra Mercenary (minion core)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.Gain('pc013')"],
+        "main": ["pc013"],
+        "jouer": ["pc013"],
+        "declencher": [],
+        "declencher_apres": ["Puzzle.PutIntoPlay('01101')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01101", "Confused"]], "hors_jeu": ["pc013"]},
+    },
+    {
+        "nom": "pc015 Tactical Navigation — declare Silver Surfer defenseur sans l'incliner",
+        "pourquoi": "texte imprime : Silver Surfer devient defenseur d'une attaque ennemie, SANS s'incliner",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc003', under_control=True)", "Puzzle.Gain('pc015')"],
+        "main": ["pc015"],
+        "declencher": ["Puzzle.Activate('01094')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["pc001a"]},
+    },
+    {
+        "nom": "pc016 Black Hole — entre en jeu : le mechant arrive ici (3 degats) et ne peut plus attaquer",
+        "pourquoi": ("texte imprime : « choose a player -> the villain ... arrive here and take 3 damage ». Le "
+                     "blocage imprime de Silver Surfer lui-meme (« Characters at a PLANET cannot attack ») s'applique "
+                     "a N'IMPORTE QUEL personnage, y compris le mechant envoye ici -- preuve indirecte que l'arrivee "
+                     "a bien pose le marqueur : la tentative d'attaque qui suit est annulee (0 degat a l'identite)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('pc016', under_control=True)", "Puzzle.Attack('01094')"],
+        "cibles": ["pc001a"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 3], ["pc001a", 0]]},
+    },
+    {
+        "nom": "pc016 Black Hole — retiree de la partie au debut de la PROCHAINE phase joueur, le mechant repart (peut de nouveau attaquer)",
+        "pourquoi": ("« At the start of the next player phase, remove this card from the game ». Decision "
+                     "utilisateur du 05/11/2026 (QUESTIONS-AUTEUR.md Q2) : le mechant encore marque ici en repart "
+                     "explicitement a ce moment -- verifie DIRECTEMENT que le marqueur « a une planete » du mechant "
+                     "est efface (pas via une nouvelle attaque : ATK imprime 2 de Rhino contre DEF imprime 2 de "
+                     "Silver Surfer donne 0 degat de toute facon une fois defendue, ce qui aurait masque la preuve -- "
+                     "piege trouve le 05/11/2026)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc016', under_control=True)"],
+        "cibles": ["pc001a"],
+        "accepter_choix": True,
+        "declencher": ["Puzzle.BeginPlayerPhase()"],
+        "verifier": "pc_black_hole_reparti",
+    },
+    {
+        "nom": "pc017 Ego — Arrive : 6 degats a lui-meme",
+        "pourquoi": "texte imprime « Arrive: Deal 6 damage to Ego »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.PutIntoPlay('pc017', under_control=True)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc017", 6]]},
+    },
+    {
+        "nom": "pc017 Ego — vaincu (6 degats d'Arrive + 6 de plus) : pc018 Ego The Living Planet entre en jeu, pc017 retire de la partie",
+        "pourquoi": "« When Defeated: Put the set aside Ego The Living Planet ally into play under your control. Remove this card from the game »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc017', under_control=True)"],
+        "declencher": ["Puzzle.Damage('pc017', 6)"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pc017"], "en_jeu": ["pc018"]},
+    },
+    {
+        "nom": "pc018 Ego The Living Planet — Action : accueille un sbire choisi, subit des degats egaux a SON ATK a lui",
+        "pourquoi": ("« Action: Choose a minion -> that minion arrives here and I take damage equal to that minion's "
+                     "ATK » (01101 Hydra Mercenary, ATK IMPRIME 1, pas 2 -- verifie sur cards.json)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc018', under_control=True)",
+                          "Puzzle.PutIntoPlay('01101')"],
+        "declencher": ["Puzzle.Action('pc018', 'Action')"],
+        "cibles": ["01101"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc018", 1]]},
+    },
+    {
+        "nom": "pc018 Ego The Living Planet — fin du ROUND : le sbire accueilli subit des degats egaux a l'ATK de pc018, puis repart",
+        "pourquoi": ("« At the end of the round, each character here takes damage equal to my ATK, then departs » "
+                     "(ATK imprime 3 de pc018). Cosmic Surfboard (pc002) RETIREE de la main avant le cas -- son "
+                     "propre « Forced Interrupt: at the end of the round, all enemies at a PLANET depart » (deja "
+                     "prouvee) passe AVANT cette Response et recupere le sbire SANS degat en premier, masquant la "
+                     "preuve de CETTE carte : interaction reelle entre deux cartes du pack, pas un bug, mais qui "
+                     "doit etre isolee pour prouver pc018 seule. 02023 Goblin Soldier (5 PV, ni Tough ni Elite) : "
+                     "01101 Hydra Mercenary n'a que 3 PV (mourrait exactement sous les 3 degats, masquant le "
+                     "« puis repart ») et 01102 Sandman porte Tough (absorbe le degat en entier) -- pieges trouves "
+                     "le 05/11/2026"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.Remove('pc002')",
+                          "Puzzle.PutIntoPlay('pc018', under_control=True)", "Puzzle.PutIntoPlay('02023')"],
+        "declencher": ["Puzzle.Action('pc018', 'Action')", "Puzzle.SendRoundEnd()"],
+        "cibles": ["02023"],
+        "accepter_choix": True,
+        "verifier": "pc_ego_fin_de_round",
+    },
+    {
+        "nom": "pc001b — Setup : le planet deck personnel est peuple de Sakaar/Newhaven/Xandar/Ego, melange",
+        "pourquoi": ("regle hors carte (QUESTIONS-AUTEUR.md) : « Shuffle the planet deck and set it aside "
+                     "facedown ». Correctif du 05/11/2026 (matin) : rien ne le remplissait jamais avant -- le "
+                     "deck restait TOUJOURS VIDE, invisible aux cas qui posent Sakaar/Newhaven/Xandar/Ego "
+                     "directement par `Puzzle.PutIntoPlay`"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "pc_planet_deck_peuple",
+    },
+    {
+        "nom": "pc001b — Action « put the top card of the planet deck into play » : tire reellement une carte DU DECK",
+        "pourquoi": ("meme regle hors carte, cote tirage cette fois : avant le correctif, `PlanetDeck(joueur)."
+                     "GetTop()` rendait toujours None (deck vide), donc cette Action ne faisait jamais rien en "
+                     "vraie partie"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Action('pc001b', 'Action')"],
+        "verifier": "pc_planet_deck_action_tire",
+    },
+    {
+        "nom": "pc019 Terrax — When Revealed : trouve et attache Terrax's Axe a lui-meme, revele Herald of Galactus",
+        "pourquoi": "texte imprime : les deux effets du reveal",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.Reveal('pc019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc019", "pc021", "pc020"]},
+    },
+    {
+        "nom": "pc019 Terrax — ne peut jamais arriver a une planete (immunite posee a l'entree en jeu)",
+        "pourquoi": "« Terrax cannot arrive at or depart a PLANET » -- tente de l'y envoyer via le meme chemin que Black Hole",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)"],
+        "declencher": ["Puzzle.ArriveAtPlanet('pc019', 'pc003')"],
+        "verifier": "pc_terrax_immunise",
+    },
+    {
+        "nom": "pc020 Herald of Galactus — la menace ne peut pas etre retiree tant que Terrax est en jeu",
+        "pourquoi": "« Threat cannot be removed from this scheme while Terrax is in play »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)", "Puzzle.SetThreat('pc020', 2)"],
+        "cibles": ["pc020"],
+        "declencher": ["Puzzle.Thwart('pc001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["pc020", 2]]},
+    },
+    {
+        "nom": "pc020 Herald of Galactus — apres une attaque de Terrax, menace += degats infliges ; 5+ retire une PLANETE au hasard",
+        "pourquoi": ("« add threat here equal to the amount of damage dealt. Then, if 5 or more, remove a random "
+                     "PLANET ». Terrax attaque pc004 Nova Frankie Raye (DEF 0 imprimee, PAS pc001a dont DEF 2 "
+                     "annulerait entierement l'ATK 2 de Terrax et masquerait la preuve) ; pc001a EXHAUST pour ne "
+                     "PAS pouvoir voler la defense a pc004 (n'importe quel heros pret peut defendre n'importe "
+                     "quelle cible engagee, pas seulement la cible attaquee) ; AUCUN `SetThreat` -- un complot "
+                     "annexe REDUIT a 0 menace est VAINCU/retire (regle generale des complots annexes), donc "
+                     "`SetThreat('pc020', 0)` AVANT Terrax l'aurait fait disparaitre instantanement (menace "
+                     "imprimee 1), et APRES Terrax (ou sa propre regle bloque le retrait) l'aurait rendu sans "
+                     "effet -- piege trouve en pratiquant les deux ordres. On garde la menace imprimee (1) comme "
+                     "point de depart ; main et deck rencontre neutralises pour eviter toute carte/boost parasite"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc004', under_control=True)",
+                          "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.EnemyAttacks('pc019', 'pc004')"],
+        "verifier": "pc_herald_apres_attaque",
+    },
+    {
+        "nom": "pc021 Terrax's Axe — Terrax ABSENT : s'attache au mechant actif au lieu de Terrax",
+        "pourquoi": "« if Terrax is not in play attach to the villain instead »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.PutIntoPlay('pc021', under_control=True)"],
+        "verifier": "pc_axe_attachee_au_mechant",
+    },
+    {
+        "nom": "pc021 Terrax's Axe — Forced Response : apres que le porteur attaque et inflige des degats, la cible est etourdie",
+        "pourquoi": ("« After the attached character attacks, if that attack dealt damage, stun the attacked "
+                     "character ». Meme choix de cible que pc020 (pc004, DEF 0) pour la meme raison ; pc001a "
+                     "EXHAUST pour ne pas pouvoir voler la defense a pc004 (n'importe quel heros pret peut "
+                     "defendre n'importe quelle cible engagee, pas seulement la cible attaquee)"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc021', under_control=True)", "Puzzle.Attach('pc021', 'pc019')",
+                          "Puzzle.PutIntoPlay('pc004', under_control=True)",
+                          "Puzzle.Exhaust('pc001a')"],
+        "declencher": ["Puzzle.EnemyAttacks('pc019', 'pc004')"],
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["pc004", "Stunned"]]},
+    },
+    {
+        "nom": "pc022 Cleave The Way — trouve/revele Terrax's Axe puis son porteur attaque le joueur",
+        "pourquoi": ("« Find and reveal Terrax's Axe. Then, the character that Terrax's Axe is attached to attacks "
+                     "you ». « Attacks YOU » cible toujours le JOUEUR (pas une ally) : la seule carte defendante "
+                     "disponible est l'identite elle-meme (pc001a, DEF 2) -- main et deck rencontre neutralises "
+                     "pour que ce DEF imprime soit la seule variable, MAIS Terrax's Axe donne +1 ATK IMPRIME a son "
+                     "porteur (pc021.py, bas de carte) : ATK 2+1=3 contre DEF 2 -> 1 degat net, PAS 0 (chiffre "
+                     "trouve surprenant au premier passage, confirme par relecture du texte imprime de pc021, pas "
+                     "un bug) ; verifie aussi via l'INCLINAISON de pc001a -- preuve que la defense a bien eu lieu"),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pc022')"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["pc021"], "exhausted": ["pc001a"], "degats": [["pc001a", 1]]},
+    },
+    {
+        "nom": "pc023 Hungry Master — Terrax en jeu : menace sur Herald +1 puis Terrax attaque le joueur",
+        "pourquoi": ("« add 1 threat to the Herald of Galactus side scheme, then Terrax attacks you ». Meme preuve "
+                     "indirecte que pc022 (« attacks you » ne peut pas etre redirige vers une ally a DEF plus "
+                     "faible) : l'INCLINAISON de pc001a prouve que la defense a eu lieu. AUCUN `SetThreat` -- un "
+                     "complot annexe a 0 menace est VAINCU/retire (voir pc020) : on garde la menace imprimee (1), "
+                     "+1 de Hungry Master = 2 attendu."),
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.EmptyHand()", "Puzzle.EmptyEncounterDeck()",
+                          "Puzzle.CreateEncounterDeck('01105', '01105', '01105', '01105', '01105', '01105', '01105', '01105')",
+                          "Puzzle.PutIntoPlay('pc020', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc019', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('pc023')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["pc020", 2]], "exhausted": ["pc001a"]},
+    },
+    {
+        "nom": "pc023 Hungry Master — TEMOIN, Terrax absent : aucune attaque, la carte gagne surge",
+        "pourquoi": "« If no attack was made this way, this card gains surge »",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')"],
+        "declencher": ["Puzzle.Reveal('pc023')"],
+        "verifier": "pc_hungry_master_surge",
+    },
+    {
+        "nom": "pc024 Hunger of Galactus — le texte de chaque environnement PLANET est traite comme vierge",
+        "pourquoi": "« Treat the text box of each PLANET environment as blank » : Zenn-La (Arrive: heal 2) n'a plus d'effet",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.ChangeForm('pc001a')", "Puzzle.PutIntoPlay('pc024', under_control=True)",
+                          "Puzzle.PutIntoPlay('pc003', under_control=True)", "Puzzle.Damage('pc001a', 2)"],
+        "declencher": ["Puzzle.ArriveAtPlanet('pc001a', 'pc003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["pc001a", 2]]},
+    },
+    {
+        "nom": "pc024 Hunger of Galactus — Alter-Ego Action : Exhaust Cosmic Surfboard, choisit une PLANETE -> la retire de la partie, se defausse",
+        "pourquoi": "texte imprime, action et cout",
+        "scenario": "rhino",
+        "heros": "silver_surfer_power_cosmic",
+        "mise_en_place": ["Puzzle.PutIntoPlay('pc024', under_control=True)", "Puzzle.PutIntoPlay('pc003', under_control=True)"],
+        "declencher": ["Puzzle.Action('pc024', 'AlterEgoAction')"],
+        "cibles": ["pc003"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["pc003", "pc024"]},
+    },
+    # ------------------------------------------------------------------------
+    # MEPHISTO (Neptune, pack `mephisto`, prefixe `mp`, set 254). Un joueur (spider_man), scenario `mephisto`.
+    # ------------------------------------------------------------------------
+    {
+        "nom": "mp001 Mephisto I — Devil's Pacts : avec un BARGAIN, il ne s'active pas et SOIGNE 1 par joueur",
+        "pourquoi": ("« When Mephisto would activate against you, if you control a BARGAIN attachment, Mephisto does not activate and heals "
+                     "1[per_hero] damage instead ». Un joueur : il perd 1 degat sur les 5 poses. `Puzzle.Activate` envoie "
+                     "`WhenEnemyWouldActivate`, le message que l'interruption forcee intercepte."),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('mp001', 5)", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Activate('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 4]]},
+    },
+    {
+        "nom": "mp001 Mephisto I — Devil's Pacts, TEMOIN : sans BARGAIN l'interruption ne part pas (aucun soin)",
+        "pourquoi": "contre-cas du precedent : « if you control a BARGAIN attachment » ; sans pacte, Mephisto s'active et ne se soigne pas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('mp001', 5)"],
+        "declencher": ["Puzzle.Activate('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 5]]},
+    },
+    {
+        "nom": "mp001 Mephisto I — Devil's Pacts : rien a soigner, 1 menace sur le complot principal par BARGAIN en jeu",
+        "pourquoi": ("« If no damage was healed this way, place 1 threat on the main scheme for each BARGAIN attachment in play » : Mephisto "
+                     "sans degats ne soigne rien ; un pacte en jeu = +1 menace. Valeur de depart du complot (1B, 2 par joueur) : 2"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Activate('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 0]], "menace": [["mp004b", 3]]},
+    },
+    {
+        "nom": "mp007a Gateway to Corruption — une carte mise de cote DEPUIS LE DECK d'un joueur part en Damnation, face cachee",
+        "pourquoi": ("« When a card is set aside from a player's deck, put it facedown into Damnation instead » : `WhenCardWouldMoveToArea` "
+                     "+ `ChangeToArea`. Gateway est en jeu des la mise en place (Setup). `Puzzle.MoveTo` passe par `card.MoveToArea`"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01088"], "pas_de_cote": ["01088"], "face_cachee": True, "invisible_a_tous": True, "perdue": False},
+    },
+    {
+        "nom": "mp007a Gateway to Corruption — TEMOIN : une carte qui ne vient PAS du deck reste mise de cote",
+        "pourquoi": "« set aside from a player's deck » : une carte de la main mise de cote n'est pas redirigee",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.EmptyHand()", "Puzzle.CreateHandCards('01088')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "de_cote": ["01088"], "perdue": False},
+    },
+    {
+        "nom": "mp007a Gateway to Corruption — 10 cartes par joueur en Damnation : les joueurs perdent",
+        "pourquoi": ("« If there are 10[per_hero] cards in Damnation, the players lose the game » : un joueur, neuf cartes deja en Damnation, "
+                     "la dixieme mise de cote depuis le deck y entre et fait perdre la partie"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088')"]
+                         + [f"Puzzle.MoveTo('01088', 'AsideDeck')" for _ in range(10)],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"perdue": True},
+    },
+    {
+        "nom": "mp004b Battle for the Soul (1B) — Hidden Clause : 1 carte par joueur du dessus du deck en Damnation, face cachee",
+        "pourquoi": ("« Hidden Clause - Special : Put 1[per_hero] card from the top of your deck facedown into Damnation ». Un joueur : "
+                     "une carte ; resolu ici par `Puzzle.ResolveSpecial` (le Special que les cartes de rencontre appellent)"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp004b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090"], "face_cachee": True, "perdue": False},
+    },
+    {
+        "nom": "mp004b Battle for the Soul (1B) — fin de MON tour : une Hidden Clause par BARGAIN que je controle (deux pactes, deux cartes)",
+        "pourquoi": ("« At the end of your turn, resolve the Hidden Clause ability for each BARGAIN attachment you control » : deux BARGAIN sur "
+                     "l'identite = deux resolutions, donc deux cartes du dessus du deck en Damnation"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')",
+                          "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.EndPlayerTurn()"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"], "face_cachee": True, "perdue": False},
+    },
+    {
+        "nom": "mp004b Battle for the Soul (1B) — TEMOIN : sans BARGAIN, la fin de tour ne met rien en Damnation",
+        "pourquoi": "contre-cas : « for each BARGAIN attachment you control » ; zero pacte = zero resolution",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090')"],
+        "declencher": ["Puzzle.EndPlayerTurn()"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "perdue": False},
+    },
+    {
+        "nom": "mp002 Mephisto II — When Revealed : le Hell Lord (mis de cote) est attache a Mephisto",
+        "pourquoi": "« When Revealed : Find and attach the Hell Lord attachment to Mephisto » : mp008 part de la zone mise de cote du scenario",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": ["Puzzle.AdvanceVillain()"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["mp002", "mp008"]]},
+    },
+    {
+        "nom": "mp002 Mephisto II — Devil's Pacts : avec un BARGAIN, il soigne 2 par joueur",
+        "pourquoi": "meme interruption que mp001, N = 2 : 5 degats - 2 = 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.Damage('mp002', 5)", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Activate('mp002')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp002", 3]]},
+    },
+    {
+        "nom": "mp003 Mephisto III — Devil's Pacts : avec un BARGAIN, il soigne 3 par joueur",
+        "pourquoi": "meme interruption que mp001, N = 3 : 5 degats - 3 = 2",
+        "scenario": "mephisto_expert", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceVillain()", "Puzzle.Damage('mp003', 5)", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Activate('mp003')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp003", 2]]},
+    },
+    {
+        "nom": "mp005b Fiendish Investment (2B) — Hidden Clause : 2 cartes par joueur du dessus du deck en Damnation",
+        "pourquoi": "« Put 2[per_hero] card(s) from the top of your deck facedown into Damnation » : un joueur, deux cartes",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(1)", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp005b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"], "face_cachee": True, "perdue": False},
+    },
+    {
+        "nom": "mp006b Hellbound Obsession (3B) — Hidden Clause : 3 cartes par joueur du dessus du deck en Damnation",
+        "pourquoi": "« Put 3[per_hero] card(s) from the top of your deck facedown into Damnation » : un joueur, trois cartes",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp006b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01089", "01090", "01091"], "face_cachee": True, "perdue": False},
+    },
+    {
+        "nom": "mp006b Hellbound Obsession (3B) — plus de menace sur le complot : les joueurs gagnent",
+        "pourquoi": "« If there is no threat here, the players win the game » : `WhenLastThreatRemoveFromThisScheme`",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.SetThreat('mp006b', 1)"],
+        "declencher": ["Puzzle.PlaceThreat('mp006b', -1)"],
+        "verifier": "mp_damnation",
+        "attendu": {"gagnee": True},
+    },
+    {
+        "nom": "mp006b Hellbound Obsession (3B) — TEMOIN : il reste de la menace, pas de victoire",
+        "pourquoi": "contre-cas : tant qu'il reste de la menace, les joueurs ne gagnent pas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.SetThreat('mp006b', 9)"],
+        "declencher": ["Puzzle.PlaceThreat('mp006b', -1)"],
+        "verifier": "mp_damnation",
+        "attendu": {"gagnee": False},
+    },
+    {
+        "nom": "mp006a Hellbound Obsession (3A) — Gateway to Corruption est retourne en Hell",
+        "pourquoi": "« Flip the Gateway to Corruption environment to reveal the Hell environment » : le meme objet, face B (mp007b)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp007b"], "hors_jeu": ["mp007a"]},
+    },
+    {
+        "nom": "mp007b Hell — fin de round : 1 jeton d'acceleration",
+        "pourquoi": "« At the end of the round, place 1 acceleration token here »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Flip('mp007a')"],
+        "declencher": ["Puzzle.SendAfterRoundEnd()"],
+        "verifier": "etat_attendu",
+        "attendu": {"jetons": [["mp007b", "acceleration_token", 1]]},
+    },
+    {
+        "nom": "mp005a Fiendish Investment (2A) — remelange la defausse BARGAIN puis chaque joueur en cherche un",
+        "pourquoi": ("« Shuffle each BARGAIN attachment from the encounter discard pile into the encounter deck. In player order, each player "
+                     "must search the encounter deck for a BARGAIN attachment and reveal it » : deux pactes en defausse, tous deux remelanges dans le deck, le joueur en revele un, que la premiere option attache a son identite (defausse 0, deck 1 ; sans le script : defausse 2, deck 0)"),
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp009', 'mp010')"],
+        "declencher": ["Puzzle.AdvanceMainScheme(1)"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"defausse": 0, "deck": 1}},
+    },
+    {
+        "nom": "mp005a Fiendish Investment (2A) — TEMOIN : une carte de la defausse qui n'est pas BARGAIN n'est pas remelangee",
+        "pourquoi": "« each BARGAIN attachment from the encounter discard pile » : mp016 (pas un pacte) reste en defausse, rien a chercher",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp016')"],
+        "declencher": ["Puzzle.AdvanceMainScheme(1)"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"defausse": ["mp016"], "deck": 0}},
+    },
+    {
+        "nom": "mp008 Hell Lord — l'identite avec 1 BARGAIN inflige 1 degat de moins a Mephisto",
+        "pourquoi": "« Reduce the amount of damage Mephisto takes from identities by 1 for each BARGAIN attachment they control » : ATK 2, un pacte = 1 degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 1]]},
+    },
+    {
+        "nom": "mp008 Hell Lord — deux BARGAIN : 2 degats de moins (plancher a 0)",
+        "pourquoi": "1 de reduction PAR pacte : ATK 2, deux pactes = 0 degat (la reduction ne rend jamais de soin)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 0]]},
+    },
+    {
+        "nom": "mp008 Hell Lord — TEMOIN : sans BARGAIN l'identite inflige ses degats pleins",
+        "pourquoi": "contre-cas : zero pacte = zero reduction",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('mp008', 'mp001')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 2]]},
+    },
+    {
+        "nom": "mp008 Hell Lord — TEMOIN : un ALLIE n'est pas une identite, ses degats ne sont pas reduits",
+        "pourquoi": "« from identities » : Black Cat (ATK 1) attaque Mephisto alors que l'identite porte un BARGAIN : 1 degat, pas 0",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Attack('01002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 1]]},
+    },
+    {
+        "nom": "mp008 Hell Lord — TEMOIN : sans Hell Lord attache, pas de reduction",
+        "pourquoi": "la reduction vient de la carte : un pacte seul ne reduit rien",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 2]]},
+    },
+    {
+        "nom": "mp008 Hell Lord — Forced Response : apres l'attaque, 1 carte de la Damnation par BARGAIN retourne dans le deck de son proprietaire",
+        "pourquoi": "« look at 1 card in Damnation -> shuffle each card looked at this way back into its owner's deck » : un pacte, deux cartes en Damnation, une seule revient",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["01091"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp008 Hell Lord — Forced Response : deux BARGAIN, deux cartes reviennent",
+        "pourquoi": "« for each BARGAIN attachment they control » : deux pactes, deux cartes sur trois",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.MoveTo('01089', 'AsideDeck')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp008 Hell Lord — TEMOIN : sans BARGAIN la Forced Response ne part pas",
+        "pourquoi": "« an identity WITH a BARGAIN attachment » : sans pacte, la Damnation reste intacte",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.Attach('mp008', 'mp001')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp008 Hell Lord — TEMOIN : une attaque d'ALLIE ne declenche pas la Forced Response",
+        "pourquoi": "« After an IDENTITY with a BARGAIN attachment attacks » : Hulk attaque, rien ne revient",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.Attach('mp008', 'mp001')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Attack('01002')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp009 Endless Greed — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "« You may attach this card to your identity » : premiere option = attacher",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp009')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp009"]]},
+    },
+    {
+        "nom": "mp009 Endless Greed — When Revealed : je refuse, la carte est defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : alter-ego, manigance SCH 2 : 2 menace de depart + 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp009')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp009"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp009 Endless Greed — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "« After your turn begins, discard this card -> Mephisto activates against you. Apply this card's boost icons for this activation as if it were a boost card » : SCH 2 + 3 icones = 5 (menace remise a 0 : 6 = seuil du stade, 7 le ferait avancer)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp009"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp009 Endless Greed — Response : TEMOIN, sans ce pacte rien ne se passe en debut de tour",
+        "pourquoi": "contre-cas : pas de pacte, pas de reponse, pas d'activation",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp010')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp010')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp010"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp010', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp010"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp011 Lusting Existence — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp011')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp011"]]},
+    },
+    {
+        "nom": "mp011 Lusting Existence — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp011')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp011"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp011 Lusting Existence — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp011', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp011"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp012')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp012"]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp012')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp012"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp012', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp012"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp013')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp013"]]},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp013')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp013"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp013', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp013"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp014')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp014"]]},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp014')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp014"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp014', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp014"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp015 Unquenchable Envy — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes BARGAIN : « You may attach this card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp015')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp015"]]},
+    },
+    {
+        "nom": "mp015 Unquenchable Envy — When Revealed : je refuse, defaussee et Mephisto s'active contre moi",
+        "pourquoi": "« If you do not, discard this card and Mephisto activates against you » : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp015')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp015"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp015 Unquenchable Envy — Response : en debut de tour je defausse le pacte, Mephisto s'active avec +3 icones de boost",
+        "pourquoi": "texte commun : SCH 2 + 3 icones = 5 (menace remise a 0 ; carte de boost du deck : Sonic Boom, 0 icone)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp015"], "menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp009 Endless Greed — passif : +2 taille de main pour l'identite",
+        "pourquoi": "« Your identity gains +2 hand size » : alter-ego HS 6 -> 8 (ecart +2)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": 2}},
+    },
+    {
+        "nom": "mp009 Endless Greed — passif, TEMOIN : sans le pacte la taille de main est celle imprimee",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"hand_size": 0}},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — passif : mon soin de base remet l'identite a ses PV imprimes",
+        "pourquoi": "« When you make a basic recovery, restore your identity to its printed hit point value » : alter-ego 10 PV, 8 degats, REC 3 normalement -> avec le pacte 0 degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('01001b', 8)", "Puzzle.AttachReel('mp010', '01001b')"],
+        "declencher": ["Puzzle.Recover('01001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — passif, TEMOIN : sans le pacte le soin de base est de REC (3)",
+        "pourquoi": "contre-cas : 8 degats - 3 = 5",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('01001b', 8)"],
+        "declencher": ["Puzzle.Recover('01001b')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — passif, TEMOIN : un soin qui n'est pas un recover de base ne restaure pas",
+        "pourquoi": "« when you make a BASIC recovery » : un soin de 1 (Puzzle.Heal) laisse 7 degats sur 8",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('01001b', 8)", "Puzzle.AttachReel('mp010', '01001b')"],
+        "declencher": ["Puzzle.Heal('01001b', 1)"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 7},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — passif : je peux defausser un statut de l'identite en meme temps",
+        "pourquoi": "« you may discard any number of status cards from it » : alter-ego Confused (Stunned serait defausse par le recover lui-meme), option acceptee : statut defausse",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('01001b', 4)", "Puzzle.Confuse('01001b')", "Puzzle.AttachReel('mp010', '01001b')"],
+        "declencher": ["Puzzle.Recover('01001b')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts_absents": [["01001b", "Confused"]]},
+    },
+    {
+        "nom": "mp010 Gluttonous Restoration — passif : je refuse de defausser le statut (facultatif)",
+        "pourquoi": "« you MAY discard any number of status cards » : en passant, l'identite garde Confused mais est quand meme restauree",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Damage('01001b', 4)", "Puzzle.Confuse('01001b')", "Puzzle.AttachReel('mp010', '01001b')"],
+        "declencher": ["Puzzle.Recover('01001b')"],
+        "passer_sur_option": "Discard_a_Confused",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "statuts": [["01001b", "Confused"]]},
+    },
+    {
+        "nom": "mp011 Lusting Existence — passif : j'incline une carte specifique a mon identite, mon identite se redresse",
+        "pourquoi": "« Action : Exhaust an identity-specific card you control -> ready your identity » : Black Cat (carte signature) s'incline, l'alter-ego epuise se redresse",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01002')", "Puzzle.Exhaust('01001b')", "Puzzle.AttachReel('mp011', '01001b')"],
+        "declencher": ["Puzzle.Action('mp011')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"pret": ["01001b"], "exhausted": ["01002"]},
+    },
+    {
+        "nom": "mp011 Lusting Existence — passif, TEMOIN : une carte d'aspect n'est pas specifique a l'identite, l'action n'est pas payable",
+        "pourquoi": "« identity-SPECIFIC » : Hulk (Aggression) ne paie pas le cout, l'identite reste epuisee",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01050')", "Puzzle.Exhaust('01001b')", "Puzzle.AttachReel('mp011', '01001b')"],
+        "declencher": [], "declencher_tolerant": ["Puzzle.Action('mp011')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01001b"]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif : la valeur de THW de l'identite est doublee",
+        "pourquoi": "« Double the THW value of your identity » : Spider-Man (THW 1) passe a 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp012', '01001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 1}},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif, TEMOIN : sans le pacte le THW est celui imprime",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"thwart": 0}},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif : mon identite ignore Patrol (et contre 2)",
+        "pourquoi": "« ignores the patrol keyword » : Badoon Lieutenant (Patrol 1) engage, complot a 5 menace, THW doublee 2 : 5 -> 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('mp004b', 5)", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('16119')", "Puzzle.AttachReel('mp012', '01001a')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 3]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif, TEMOIN : sans le pacte Patrol bloque la menee sur le complot",
+        "pourquoi": "contre-cas : menace inchangee a 5",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('mp004b', 5)", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('16119')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif : mon identite ignore les icones de crise (et contre 2)",
+        "pourquoi": "« any crisis icons in play » : Aid the Condemned (Crisis) en jeu, complot a 5 : 5 -> 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('mp004b', 5)", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp016')", "Puzzle.AttachReel('mp012', '01001a')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 3]]},
+    },
+    {
+        "nom": "mp012 Prideful Ambitions — passif, TEMOIN : sans le pacte la crise bloque la menee sur le complot",
+        "pourquoi": "contre-cas : menace inchangee a 5",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('mp004b', 5)", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp016')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — passif : la valeur d'ATK de l'identite est doublee",
+        "pourquoi": "« Double the ATK value of your identity » : Spider-Man (ATK 2) passe a 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp013', '01001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 2}},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — passif, TEMOIN : sans le pacte l'ATK est celle imprimee",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"attack": 0}},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — passif : l'attaque de l'identite gagne overkill (exces au vilain)",
+        "pourquoi": "« Your identity's attacks gain overkill » : Weapons Runner (2 PV) frappe par ATK 4 : 2 d'exces sur Mephisto",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('01121')", "Puzzle.AttachReel('mp013', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["01121"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "degats": [["mp001", 2]]},
+    },
+    {
+        "nom": "mp013 Shackled Wrath — passif, TEMOIN : l'attaque d'un ALLIE n'a pas overkill",
+        "pourquoi": "« your IDENTITY's attacks » : Spider-Woman (ATK 2) tue Weapons Runner (1 PV restant), 1 d'exces qui ne passe pas au vilain",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('01121')", "Puzzle.Damage('01121', 1)", "Puzzle.PutIntoPlay('01011')", "Puzzle.AttachReel('mp013', '01001a')"],
+        "declencher": ["Puzzle.Attack('01011')"],
+        "accepter_choix": True,
+        "cibles": ["01121"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "degats": [["mp001", 0]]},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif : la valeur de DEF de l'identite est doublee",
+        "pourquoi": "« Double the DEF value of your identity » : Spider-Man (DEF 3) passe a 6",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp014', '01001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 3}},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif, TEMOIN : sans le pacte la DEF est celle imprimee",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"defense": 0}},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif : une attaque de moins de DEF (6) n'inflige rien",
+        "pourquoi": "« cannot take damage less than its DEF from each attack » : Tiger Shark (ATK 3) frappe le heros epuise : 3 < 6, aucun degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('01131')", "Puzzle.Exhaust('01001a')", "Puzzle.AttachReel('mp014', '01001a')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif, TEMOIN : sans le pacte la meme attaque inflige ses 3 degats",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('01131')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif : une attaque d'exactement DEF (6) inflige ses degats",
+        "pourquoi": "limite imprimee, seuil EXACT : ATK 3 + 3 icones d'une carte de boost = 6, pas MOINS que DEF : pris en entier",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('01131')", "Puzzle.Exhaust('01001a')", "Puzzle.AttachReel('mp014', '01001a')", "Puzzle.GiveFacedownBoost('01131', '01118')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 6},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif : une attaque de DEF - 1 (5) n'inflige rien",
+        "pourquoi": "seuil, cote bas : ATK 3 + 2 icones (Sound Manipulation) = 5 < 6 : aucun degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('01131')", "Puzzle.Exhaust('01001a')", "Puzzle.AttachReel('mp014', '01001a')", "Puzzle.GiveFacedownBoost('01131', '01124')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0},
+    },
+    {
+        "nom": "mp014 Slothful Endurance — passif, TEMOIN : l'alter-ego sans DEF prend ses degats",
+        "pourquoi": "alter-ego : DEF 0, rien a prevenir ; Tiger Shark ATK 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('01131')", "Puzzle.AttachReel('mp014', '01001b')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "mp015 Unquenchable Envy — passif : une ressource [energy] generee compte comme [wild], elle paie une carte « [physical] uniquement »",
+        "pourquoi": "« Each resource you generate is considered a wild resource » : Crushing Blow ne se paie qu'en [physical] ; Energy (icone [energy]) la paie grace au pacte : ATK 2 sur Mephisto",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": [],
+        "main_exclusive": ["01088", "10002"],
+        "jouer": ["10002"],
+        "payer_avec": ["01088"],
+        "accepter_choix": True,
+        "cibles": ["mp001"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 2]]},
+    },
+    {
+        "nom": "mp015 Unquenchable Envy — passif, TEMOIN : sans le pacte la meme ressource [energy] ne paie pas Crushing Blow",
+        "pourquoi": "contre-cas : sans conversion, la carte n'est pas jouee, aucun degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": [],
+        "main_exclusive": ["01088", "10002"],
+        "jouer": ["10002"],
+        "payer_avec": ["01088"],
+        "accepter_choix": True,
+        "cibles": ["mp001"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 0]]},
+    },
+    {
+        "nom": "mp016 Aid the Condemned — When Defeated : le joueur regarde 1 carte de la Damnation et la remelange dans son deck",
+        "pourquoi": "« Each player looks at 1[per_hero] card in Damnation and shuffles it back into their owner's deck » : un joueur, deux cartes en Damnation, une seule revient",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.PutIntoPlay('mp016')"],
+        "declencher": ["Puzzle.PlaceThreat('mp016', -99)"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp016 Aid the Condemned — TEMOIN : tant qu'il reste de la menace, rien ne revient",
+        "pourquoi": "contre-cas : la manigance n'est pas vaincue",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.PutIntoPlay('mp016')"],
+        "declencher": ["Puzzle.PlaceThreat('mp016', -1)"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 2, "deck_joueur_taille": 2},
+    },
+    {
+        "nom": "mp017 Culling the Damned — un sbire MYSTIC vaincu : 1 compteur scorned",
+        "pourquoi": "« After a MYSTIC minion is defeated, place one scorned counter here » : Cultist (MYSTIC) tombe",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mp017')", "Puzzle.PutIntoPlay('39049')"],
+        "declencher": ["Puzzle.Damage('39049', 4)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp017", "scorned", 1]]},
+    },
+    {
+        "nom": "mp017 Culling the Damned — TEMOIN : un sbire qui n'est pas MYSTIC ne donne aucun compteur",
+        "pourquoi": "contre-cas : Weapons Runner (non MYSTIC)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mp017')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Damage('01121', 2)"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp017", "scorned", 0]]},
+    },
+    {
+        "nom": "mp017 Culling the Damned — When Defeated : X cartes (X = compteurs scorned) retournent dans leur deck",
+        "pourquoi": "deux compteurs scorned, trois cartes en Damnation : celui qui vainc la manigance en regarde 2, il en reste 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.MoveTo('01089', 'AsideDeck')", "Puzzle.PutIntoPlay('mp017')", "Puzzle.Counter('mp017', 'scorned', 2)", "Puzzle.SetThreat('mp017', 1)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp017"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp017 Culling the Damned — When Defeated, TEMOIN : zero compteur, rien ne revient",
+        "pourquoi": "X = 0 : aucune carte regardee",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.MoveTo('01089', 'AsideDeck')", "Puzzle.PutIntoPlay('mp017')", "Puzzle.SetThreat('mp017', 1)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp017"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 3, "deck_joueur_taille": 1},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — Hidden Clause : une carte de plus du deck part en Damnation",
+        "pourquoi": "« When a card is put into Damnation from a player's deck, put 1 additional card ... » : 1 carte par joueur du Hidden Clause + 1 en plus = 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.PutIntoPlay('mp018')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp004b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"], "face_cachee": True},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — TEMOIN : sans la manigance le Hidden Clause ne met qu'1 carte",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp004b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01091"]},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — mise de cote redirigee par Gateway : une carte de plus aussi",
+        "pourquoi": "second chemin (Gateway to Corruption redirige la mise de cote) : 1 + 1 en plus = 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.PutIntoPlay('mp018')", "Puzzle.MoveTo('01091', 'AsideDeck')"],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"]},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — UNE seule carte en plus : l'interruption ne se relance pas",
+        "pourquoi": "limite imprimee : « 1 additional card », pas une chaine ; deck de 8, Hidden Clause : exactement 2 cartes en Damnation",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091', '01092', '01093', '01094', '01095')", "Puzzle.PutIntoPlay('mp018')"],
+        "declencher": ["Puzzle.ResolveSpecial('mp004b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 2, "deck_joueur_taille": 6},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — When Defeated : chaque joueur remelange 1[per_hero] carte regardee",
+        "pourquoi": "trois cartes en Damnation (la mise de cote sans manigance), un joueur : 1 revient dans le deck, 2 restent",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.MoveTo('01089', 'AsideDeck')", "Puzzle.PutIntoPlay('mp018')", "Puzzle.SetThreat('mp018', 1)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp018"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 2, "deck_joueur_taille": 2},
+    },
+    {
+        "nom": "mp018 Exposing Intentions — Damnation : après le « look at » de chaque joueur, les cartes restantes ne sont visibles de personne",
+        "pourquoi": "le « look at » (SearchForCard, not_move) passe par la fenêtre de choix du joueur et ne marque AUCUNE carte visible (seul le Peek le fait) : les 2 cartes restantes restent cachées à tous. Prouvé sous mutation (visible.Set(True) en Damnation -> rouge)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.MoveTo('01089', 'AsideDeck')", "Puzzle.PutIntoPlay('mp018')", "Puzzle.SetThreat('mp018', 1)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp018"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 2, "face_cachee": True, "invisible_a_tous": True},
+    },
+    {
+        "nom": "mp019 Hotel Inferno — When Revealed : 6 menace sur le complot principal pour 6 cartes en Damnation",
+        "pourquoi": "« Place 6 threat on the main scheme for every 6 cards in Damnation » : stade 3 (9 de depart), 6 cartes en Damnation : 9 + 6 = 15",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": ["Puzzle.Reveal('mp019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 15]]},
+    },
+    {
+        "nom": "mp019 Hotel Inferno — When Revealed, TEMOIN : 5 cartes ne font pas une tranche de 6",
+        "pourquoi": "« for EVERY 6 » : division entiere, 5 // 6 = 0",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": ["Puzzle.Reveal('mp019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 9]]},
+    },
+    {
+        "nom": "mp019 Hotel Inferno — When Revealed, TEMOIN : 6 cartes mais aucune en Damnation (deck), rien",
+        "pourquoi": "seules les cartes EN Damnation comptent",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088')", ],
+        "declencher": ["Puzzle.Reveal('mp019')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 9]]},
+    },
+    {
+        "nom": "mp019 Hotel Inferno — When Defeated : celui qui la vainc regarde jusqu'a 6 cartes et les remelange",
+        "pourquoi": "« up to 6 » : 3 cartes en Damnation, il les remelange (le choix repond a chaque fois) : Damnation 0, deck 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.PutIntoPlay('mp019')", "Puzzle.SetThreat('mp019', 1)", "Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp019"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 0, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp020 Alter the Deal — mon pacte est remelange, une Hidden Clause part, puis un BARGAIN est defausse et attache",
+        "pourquoi": "pacte mp009 attache : remelange dans le deck de rencontre (vide a part lui), 1 Hidden Clause (1 carte en Damnation), puis la defausse du dessus trouve mp009 qui s'attache de nouveau",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090')", "Puzzle.EmptyEncounterDeck()", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp020')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090"]},
+    },
+    {
+        "nom": "mp020 Alter the Deal — le pacte retrouve est bien attache a l'identite",
+        "pourquoi": "« Attach that card to your identity »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp020')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp009"]]},
+    },
+    {
+        "nom": "mp020 Alter the Deal — sans pacte : defausse du dessus jusqu'au premier BARGAIN, qui s'attache",
+        "pourquoi": "pas de pacte a remelanger : deux Sonic Boom defaussees, puis mp010 trouve et attache",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp010', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp020')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp020 Alter the Deal — sans pacte ni BARGAIN dans le deck : la traitrise est remelangee dans le deck de rencontre",
+        "pourquoi": "« Otherwise, shuffle this card into the encounter deck » : le deck est defausse en entier, mp020 revient dedans (le moteur remelange aussitot la defausse vide : le deck vaut les 2 Sonic Boom + mp020)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp020')"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": ["01123", "01123", "mp020"], "defausse": []}},
+    },
+    {
+        "nom": "mp021 Dark Compulsions — avec un BARGAIN, je resous la Hidden Clause du complot",
+        "pourquoi": "« Each player resolves the Hidden Clause ability if they control a BARGAIN » : 1 pacte, 1 carte du dessus du deck en Damnation",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp021')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01091"]},
+    },
+    {
+        "nom": "mp021 Dark Compulsions — sans BARGAIN chez personne, je peux regarder 1[per_hero] carte en Damnation et la remelanger",
+        "pourquoi": "branche « If no player controls a BARGAIN » : 2 cartes en Damnation, 1 revient dans le deck",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')"],
+        "declencher": ["Puzzle.Reveal('mp021')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp021 Dark Compulsions — TEMOIN : avec un BARGAIN la branche facultative ne part pas (la Damnation ne se vide pas)",
+        "pourquoi": "contre-cas : 1 pacte => seulement la Hidden Clause : 2 cartes en Damnation + 1 = 3, aucune ne revient",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp021')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 3},
+    },
+    {
+        "nom": "mp022 Dark Compulsions — avec un BARGAIN, je resous la Hidden Clause du complot",
+        "pourquoi": "« Each player resolves the Hidden Clause ability if they control a BARGAIN » : 1 pacte, 1 carte du dessus du deck en Damnation",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp022')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01091"]},
+    },
+    {
+        "nom": "mp022 Dark Compulsions — sans BARGAIN chez personne, je peux regarder 1[per_hero] carte en Damnation et la remelanger",
+        "pourquoi": "branche « If no player controls a BARGAIN » : 2 cartes en Damnation, 1 revient dans le deck",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')"],
+        "declencher": ["Puzzle.Reveal('mp022')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 1, "deck_joueur_taille": 3},
+    },
+    {
+        "nom": "mp022 Dark Compulsions — TEMOIN : avec un BARGAIN la branche facultative ne part pas (la Damnation ne se vide pas)",
+        "pourquoi": "contre-cas : 1 pacte => seulement la Hidden Clause : 2 cartes en Damnation + 1 = 3, aucune ne revient",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.MoveTo('01091', 'AsideDeck')", "Puzzle.MoveTo('01090', 'AsideDeck')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp022')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 3},
+    },
+    {
+        "nom": "mp021 Dark Compulsions — Boost : autant d'icones que de BARGAIN en jeu",
+        "pourquoi": "« [star] Boost : This card gains boost icons equal to the number of BARGAIN attachments in play » : 2 pactes en jeu chez l'AUTRE joueur (Devil's Pacts bloquerait Mephisto contre un joueur qui en porte), la carte compte pour 2 icones : manigance SCH 2 + 2 = 4 (menace remise a 0)",
+        "scenario": "mephisto", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp009', '04001b')", "Puzzle.AttachReel('mp015', '04001b')", "Puzzle.GiveFacedownBoost('mp001', 'mp021')"],
+        "declencher": ["Puzzle.Scheme('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp021 Dark Compulsions — Boost, TEMOIN : sans pacte en jeu elle n'ajoute aucune icone",
+        "pourquoi": "contre-cas : SCH 2 + 0 = 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.GiveFacedownBoost('mp001', 'mp021')"],
+        "declencher": ["Puzzle.Scheme('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp023 Demonic Fury — option 1 : je cherche un BARGAIN dans le deck de rencontre et la defausse, il s'attache",
+        "pourquoi": "« Search the encounter deck and discard pile for a BARGAIN attachment. Attach it to your identity » : mp010 en defausse",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp010')"],
+        "declencher": ["Puzzle.Reveal('mp023')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp023 Demonic Fury — option 2 : Mephisto m'attaque (et ne manigance pas)",
+        "pourquoi": "« Mephisto attacks you » : alter-ego, deck de rencontre non vide (boost Sonic Boom 0 icone) : ATK 1 sur l'alter-ego = 1 degat, la menace ne bouge pas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp023')"],
+        "choisir_option": "Mephisto_attacks_you",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1, "menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp023 Demonic Fury — option 2 : une carte de boost EN PLUS (deck : Sonic Boom 0 icone puis Solid-Sound Body 3 icones : ATK 1 + 0 + 3 = 4, sans la 2e carte 1)",
+        "pourquoi": "« Give him an additional boost card for this activation » : deux cartes de boost retournees au lieu d'une : la seconde apporte les 3 icones",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01118', '01119', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp023')"],
+        "choisir_option": "Mephisto_attacks_you",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "mp023 Demonic Fury — option 2 : piercing, le statut Tough de l'identite est defausse",
+        "pourquoi": "« This attack gains ... piercing » : Tough sur l'alter-ego : defausse, et les 4 degats passent",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01118', '01119', '01123')", "Puzzle.Tough('01001b')"],
+        "declencher": ["Puzzle.Reveal('mp023')"],
+        "choisir_option": "Mephisto_attacks_you",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4, "statuts_absents": [["01001b", "Tough"]]},
+    },
+    {
+        "nom": "mp023 Demonic Fury — option 2 : overkill, l'exces d'un allie qui defend passe a l'identite",
+        "pourquoi": "« This attack gains overkill » : Black Cat (2 PV) defend l'attaque de 4 : elle tombe, 2 d'exces vont a l'identite",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01118', '01119', '01123')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Reveal('mp023')"],
+        "choisir_option": "Mephisto_attacks_you",
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 2},
+    },
+    {
+        "nom": "mp024 Infernal Temper — alter-ego : Mephisto manigance avec +X SCH (X = pactes en jeu)",
+        "pourquoi": "« When Revealed (Alter-Ego) : Mephisto schemes with +X SCH » : 2 pactes en jeu : SCH 2 + 2 = 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.AttachReel('mp015', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp024 Infernal Temper — alter-ego, TEMOIN : sans pacte, X = 0",
+        "pourquoi": "contre-cas : SCH 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp024 Infernal Temper — heros : Mephisto m'attaque avec +X ATK",
+        "pourquoi": "« When Revealed (Hero) : Mephisto attacks you with +X ATK » : 2 pactes, heros epuise (ne defend pas) : ATK 1 + 2 = 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.Reveal('mp024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "mp024 Infernal Temper — heros, TEMOIN : sans pacte, ATK 1",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('mp024')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp025 Infernal Temper — alter-ego : Mephisto manigance avec +X SCH (X = pactes en jeu)",
+        "pourquoi": "« When Revealed (Alter-Ego) : Mephisto schemes with +X SCH » : 2 pactes en jeu : SCH 2 + 2 = 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.AttachReel('mp015', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp025 Infernal Temper — alter-ego, TEMOIN : sans pacte, X = 0",
+        "pourquoi": "contre-cas : SCH 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp025 Infernal Temper — heros : Mephisto m'attaque avec +X ATK",
+        "pourquoi": "« When Revealed (Hero) : Mephisto attacks you with +X ATK » : 2 pactes, heros epuise (ne defend pas) : ATK 1 + 2 = 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')", "Puzzle.AttachReel('mp009', '01001a')", "Puzzle.AttachReel('mp015', '01001a')"],
+        "declencher": ["Puzzle.Reveal('mp025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 3},
+    },
+    {
+        "nom": "mp025 Infernal Temper — heros, TEMOIN : sans pacte, ATK 1",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('mp025')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp026 Meager Request — j'accepte : identite redressee, 1 carte piochee, 4 degats soignes, puis la Hidden Clause",
+        "pourquoi": "« You may ready your identity, draw 1 card, and heal 4 damage from your identity. If you do, resolve Hidden Clause » : alter-ego epuise avec 6 degats",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.Damage('01001b', 6)", "Puzzle.Exhaust('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.EmptyHand()"],
+        "declencher": ["Puzzle.Reveal('mp026')"],
+        "choisir_option": "Ready_your_identity",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "pret": ["01001b"], "taille_main": 1},
+    },
+    {
+        "nom": "mp026 Meager Request — j'accepte : la Hidden Clause part (1 carte du deck en Damnation)",
+        "pourquoi": "« If you do, resolve the Hidden Clause ability on the main scheme »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp026')"],
+        "choisir_option": "Ready_your_identity",
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090"]},
+    },
+    {
+        "nom": "mp026 Meager Request — je refuse : pas de Hidden Clause, la carte gagne Surge",
+        "pourquoi": "« Otherwise, this card gains surge » : la Damnation reste vide ; Surge : une carte de la rencontre est revelee en plus (Sonic Boom, sans effet)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp026')"],
+        "choisir_option": "This_card_gains_surge",
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp027 Meager Request — j'accepte : identite redressee, 1 carte piochee, 4 degats soignes, puis la Hidden Clause",
+        "pourquoi": "« You may ready your identity, draw 1 card, and heal 4 damage from your identity. If you do, resolve Hidden Clause » : alter-ego epuise avec 6 degats",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.Damage('01001b', 6)", "Puzzle.Exhaust('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.EmptyHand()"],
+        "declencher": ["Puzzle.Reveal('mp027')"],
+        "choisir_option": "Ready_your_identity",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 2, "pret": ["01001b"], "taille_main": 1},
+    },
+    {
+        "nom": "mp027 Meager Request — j'accepte : la Hidden Clause part (1 carte du deck en Damnation)",
+        "pourquoi": "« If you do, resolve the Hidden Clause ability on the main scheme »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp027')"],
+        "choisir_option": "Ready_your_identity",
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090"]},
+    },
+    {
+        "nom": "mp027 Meager Request — je refuse : pas de Hidden Clause, la carte gagne Surge",
+        "pourquoi": "« Otherwise, this card gains surge » : la Damnation reste vide ; Surge : une carte de la rencontre est revelee en plus (Sonic Boom, sans effet)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp027')"],
+        "choisir_option": "This_card_gains_surge",
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp026 Meager Request — Boost : apres l'activation, defausse jusqu'au premier BARGAIN et le revele (il s'attache)",
+        "pourquoi": "« After this activation, discard cards from the top of the encounter deck until a BARGAIN attachment is discarded. Reveal that card » : deck Sonic Boom puis mp010 ; revelation : j'attache",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp010', '01123', '01123')", "Puzzle.GiveFacedownBoost('mp001', 'mp026')"],
+        "declencher": ["Puzzle.Scheme('mp001')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp027 Meager Request — Boost : apres l'activation, defausse jusqu'au premier BARGAIN et le revele (il s'attache)",
+        "pourquoi": "« After this activation, discard cards from the top of the encounter deck until a BARGAIN attachment is discarded. Reveal that card » : deck Sonic Boom puis mp010 ; revelation : j'attache",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp010', '01123', '01123')", "Puzzle.GiveFacedownBoost('mp001', 'mp027')"],
+        "declencher": ["Puzzle.Scheme('mp001')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp026 Meager Request — Boost, TEMOIN : sans la carte en boost, le BARGAIN du deck n'est pas revele",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp010', '01123', '01123')"],
+        "declencher": ["Puzzle.Scheme('mp001')"],
+        "verifier": "etat_attendu",
+        "attendu": {"dans_deck_rencontre": ["mp010"]},
+    },
+    {
+        "nom": "mp028 Rewrite History — option 1 : main defaussee, defausse remelangee, pioche jusqu'a la taille de main, identite redressee, un BARGAIN attache",
+        "pourquoi": "« Discard your hand, shuffle your discard pile into your deck, draw up to your hand size, and ready your identity. Search ... Attach it » : main 3 cartes, defausse 2, alter-ego epuise (HS 6)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01012', '01013', '01014', '01015', '01016', '01017', '01018')", "Puzzle.EmptyHand()", "Puzzle.CreateHandCards('01088', '01089', '01090')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01021', '01022')", "Puzzle.Exhaust('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp010')"],
+        "declencher": ["Puzzle.Reveal('mp028')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_main": 6, "pret": ["01001b"], "attaches": [["01001b", "mp010"]]},
+    },
+    {
+        "nom": "mp028 Rewrite History — option 1 : l'ancienne main est repartie dans le deck, pas gardee",
+        "pourquoi": "« Discard your hand » puis « shuffle your discard pile into your deck » : deck 7 + defausse 2 + main 3 = 12 cartes, 6 en main, 6 dans le deck, defausse vide",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01012', '01013', '01014', '01015', '01016', '01017', '01018')", "Puzzle.EmptyHand()", "Puzzle.CreateHandCards('01088', '01089', '01090')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01021', '01022')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp010')"],
+        "declencher": ["Puzzle.Reveal('mp028')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"taille_deck_joueur": 6, "taille_main": 6},
+    },
+    {
+        "nom": "mp028 Rewrite History — option 2 : Mephisto manigue avec 2 cartes de boost EN PLUS",
+        "pourquoi": "« Mephisto schemes against you. Give him 2 additional boost cards » : alter-ego, deck (dessus) Sonic Boom, Sonic Boom, Solid-Sound Body (3 icones) : 3 cartes tirees au total, SCH 2 + 3 = 5 (sans les 2 en plus : 2)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01119', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp028')"],
+        "choisir_option": "Mephisto_schemes_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 5]]},
+    },
+    {
+        "nom": "mp101 Blackheart — Action : je defausse un BARGAIN, il soigne 3 degats",
+        "pourquoi": "« Discard a BARGAIN attachment you control -> heal 3 damage from Blackheart » : 5 degats (apres que le 1er degat a use son Toughness) - 3 = 2, le pacte part",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mp101')", "Puzzle.Damage('mp101', 1)", "Puzzle.Damage('mp101', 5)", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Action('mp101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp101", 2]], "hors_jeu": ["mp009"]},
+    },
+    {
+        "nom": "mp101 Blackheart — Action : sans degats a soigner, il recoit un statut Tough",
+        "pourquoi": "« If no damage was healed this way, give him a tough status card »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mp101')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Action('mp101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["mp101", "Tough"]], "hors_jeu": ["mp009"]},
+    },
+    {
+        "nom": "mp101 Blackheart — Action, TEMOIN : sans BARGAIN l'action n'est pas payable",
+        "pourquoi": "contre-cas : rien ne se passe",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('mp101')", "Puzzle.Damage('mp101', 1)", "Puzzle.Damage('mp101', 5)"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('mp101')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp101", 5]]},
+    },
+    {
+        "nom": "mp101 Blackheart — Boost : je defausse un BARGAIN, l'attaque est annulee et Blackheart arrive engage avec moi",
+        "pourquoi": "« You may discard a BARGAIN attachment to cancel this activation. If you do, put Blackheart into play engaged with you » : Tiger Shark attaque l'alter-ego, Blackheart en boost : pas de degat, pacte defausse, Blackheart en jeu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp101')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "choisir_option": "Discard_a_BARGAIN_attachment_to_cancel_this_activation_and_put_Blackheart_into_play_engaged_with_you",
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 0, "hors_jeu": ["mp009"], "en_jeu": ["mp101"]},
+    },
+    {
+        "nom": "mp101 Blackheart — Boost, TEMOIN : sans BARGAIN l'attaque a lieu (ATK 3 + 2 icones) et Blackheart n'entre pas en jeu",
+        "pourquoi": "contre-cas : 5 degats, Blackheart retourne en defausse",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp101')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 5, "hors_jeu": ["mp101"]},
+    },
+    {
+        "nom": "mp101 Blackheart — Boost : la manigance est annulee aussi (aucune menace posee)",
+        "pourquoi": "« cancel this activation » vaut aussi pour une manigance : Tiger Shark (SCH 1) + 2 icones, pacte defausse : menace 0, Blackheart en jeu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp101')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Scheme('01131')"],
+        "accepter_choix": True,
+        "choisir_option": "Discard_a_BARGAIN_attachment_to_cancel_this_activation_and_put_Blackheart_into_play_engaged_with_you",
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 0]], "en_jeu": ["mp101"], "hors_jeu": ["mp009"]},
+    },
+    {
+        "nom": "mp101 Blackheart — Boost, TEMOIN : sans BARGAIN la manigance pose SCH 1 + 2 icones = 3 de menace",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp101')"],
+        "declencher": ["Puzzle.Scheme('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 3]]},
+    },
+    {
+        "nom": "mp103 Black-Hearted — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp103')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp103"]]},
+    },
+    {
+        "nom": "mp103 Black-Hearted — When Revealed : je refuse, defausse et Mephisto s'active contre moi",
+        "pourquoi": "texte commun : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp103')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp103"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp103 Black-Hearted — Interrupt : seul BARGAIN, au debut de la phase du mechant je reordonne les 3 premieres cartes",
+        "pourquoi": "« if this is the only BARGAIN attachment you control, look at the top 3 cards of the encounter deck. Put them back in any order » : je mets Solid-Sound Body (01119) au-dessus",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01119', '01124')", "Puzzle.AttachReel('mp103', '01001b')"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "accepter_choix": True,
+        "cibles": ["01119", "01123", "01124"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"dessus": "01119"}},
+    },
+    {
+        "nom": "mp103 Black-Hearted — Interrupt, TEMOIN : avec un 2e BARGAIN l'interruption ne part pas (l'ordre reste)",
+        "pourquoi": "« the ONLY BARGAIN » : deux pactes, le deck garde son ordre (dessus = Sound Manipulation 01124, la derniere carte creee)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01119', '01124')", "Puzzle.AttachReel('mp103', '01001b')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "accepter_choix": True,
+        "cibles": ["01119", "01123", "01124"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"dessus": "01124"}},
+    },
+    {
+        "nom": "mp103 Black-Hearted — Response : je defausse le pacte, Blackheart est trouve dans le deck, revele, et s'active contre moi",
+        "pourquoi": "« discard this card -> find Blackheart and reveal him ... Blackheart activates against you » : alter-ego, SCH 2 : menace 0 -> 2, Blackheart en jeu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp101', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp103', '01001b')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp103"], "en_jeu": ["mp101"], "menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp103 Black-Hearted — Response : Blackheart deja en jeu, il s'engage avec moi et s'active",
+        "pourquoi": "« (If he is already in play, he engages you.) Blackheart activates against you »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp101')", "Puzzle.AttachReel('mp103', '01001b')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp103"], "en_jeu": ["mp101"], "menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp103 Black-Hearted — Response, TEMOIN : sans Blackheart nulle part, le pacte est defausse et rien ne s'active",
+        "pourquoi": "contre-cas : menace inchangee",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp103', '01001b')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp103"], "menace": [["mp004b", 0]]},
+    },
+    {
+        "nom": "mp102 Prince's Offer — When Defeated : je remelange mon BARGAIN, Black-Hearted est trouve et revele",
+        "pourquoi": "« Each player may shuffle 1 BARGAIN attachment they control into the encounter deck. The player who defeated this scheme finds Black-Hearted and reveals it » : mp009 remelange, mp103 en defausse trouve et attache",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp103')", "Puzzle.PutIntoPlay('mp102')", "Puzzle.SetThreat('mp102', 1)", "Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp102"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001a", "mp103"]], "dans_deck_rencontre": ["mp009"]},
+    },
+    {
+        "nom": "mp102 Prince's Offer — When Defeated, TEMOIN : tant que la manigance n'est pas vaincue, rien ne bouge",
+        "pourquoi": "contre-cas : menace restante, mp009 reste attache",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDiscardPile('mp103')", "Puzzle.PutIntoPlay('mp102')", "Puzzle.SetThreat('mp102', 5)", "Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp009', '01001a')"],
+        "declencher": ["Puzzle.Thwart('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp102"],
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001a", "mp009"]]},
+    },
+    {
+        "nom": "mp104 Sinful Ambitions — Blackheart en jeu et un BARGAIN : je le remelange, Blackheart recoit Tough",
+        "pourquoi": "« If Blackheart is in play, you may shuffle a BARGAIN attachment you control into the encounter deck. If you do, give Blackheart a tough status » (son Toughness 1 est use par 1 degat avant, sinon l'effet est invisible)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('mp101')", "Puzzle.Damage('mp101', 1)", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp104')"],
+        "choisir_option": "Shuffle_a_BARGAIN_attachment_into_the_encounter_deck_and_give_Blackheart_a_tough_status",
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["mp101", "Tough"]], "dans_deck_rencontre": ["mp009"]},
+    },
+    {
+        "nom": "mp104 Sinful Ambitions — je refuse : la carte gagne Surge (une carte de plus est revelee)",
+        "pourquoi": "« Otherwise, this card gains surge » : deck de 2 Sonic Boom, 1 reste apres la revelation de surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp101')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp104')"],
+        "choisir_option": "This_card_gains_surge",
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp104 Sinful Ambitions — TEMOIN : Blackheart absent, la carte gagne Surge",
+        "pourquoi": "contre-cas « If Blackheart is in play » faux : surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp104')"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp105 Sinful Ambitions — Blackheart en jeu et un BARGAIN : je le remelange, Blackheart recoit Tough",
+        "pourquoi": "« If Blackheart is in play, you may shuffle a BARGAIN attachment you control into the encounter deck. If you do, give Blackheart a tough status » (son Toughness 1 est use par 1 degat avant, sinon l'effet est invisible)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.PutIntoPlay('mp101')", "Puzzle.Damage('mp101', 1)", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp105')"],
+        "choisir_option": "Shuffle_a_BARGAIN_attachment_into_the_encounter_deck_and_give_Blackheart_a_tough_status",
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["mp101", "Tough"]], "dans_deck_rencontre": ["mp009"]},
+    },
+    {
+        "nom": "mp105 Sinful Ambitions — je refuse : la carte gagne Surge (une carte de plus est revelee)",
+        "pourquoi": "« Otherwise, this card gains surge » : deck de 2 Sonic Boom, 1 reste apres la revelation de surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp101')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp105')"],
+        "choisir_option": "This_card_gains_surge",
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp105 Sinful Ambitions — TEMOIN : Blackheart absent, la carte gagne Surge",
+        "pourquoi": "contre-cas « If Blackheart is in play » faux : surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.AttachReel('mp009', '01001b')"],
+        "declencher": ["Puzzle.Reveal('mp105')"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp111')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp111"]]},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — un allie qui serait vaincu perd 1 degat a la place et le pacte gagne 1 compteur corrupt",
+        "pourquoi": "« When a character you control would be defeated, place 1 corrupt counter here -> heal 1 damage from that character instead » : Black Cat (2 PV) recoit 2 degats : elle survit avec 1 degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01002')", "Puzzle.AttachReel('mp111', '01001b')"],
+        "declencher": ["Puzzle.Damage('01002', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01002"], "degats": [["01002", 1]], "compteurs": [["mp111", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — TEMOIN : sans le pacte l'allie est vaincue",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Damage('01002', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"]},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — When Revealed : je refuse, defausse et Mephisto s'active contre moi",
+        "pourquoi": "texte commun : SCH 2, menace 2 -> 4",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp111')"],
+        "choisir_option": "Discard_this_card_and_Mephisto_activates_against_you",
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp111"], "menace": [["mp004b", 4]]},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — Response libre : je defausse le pacte, 2 compteurs corrupt = 2 cartes du dessus du deck mises de cote (en Damnation)",
+        "pourquoi": "« Discard this card -> set-aside X[per_hero] cards from the top of your deck facedown, where X is equal to the number of corrupt counters here » : 2 compteurs, un joueur : 2 cartes (Gateway les envoie en Damnation)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp111', '01001b')", "Puzzle.Counter('mp111', 'corrupt', 2)"],
+        "declencher": ["Puzzle.Action('mp111')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"], "face_cachee": True},
+    },
+    {
+        "nom": "mp111 Deathless Persistence — Response libre, TEMOIN : zero compteur, rien n'est mis de cote",
+        "pourquoi": "X = 0",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp111', '01001b')"],
+        "declencher": ["Puzzle.Action('mp111')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": []},
+    },
+    {
+        "nom": "mp112 Famished Power — j'attaque (ATK 2) et je combine ATK + THW (2 + 1) : 3 degats",
+        "pourquoi": "« When you use a basic power, place 1 corrupt counter here -> combine the values of 2 basic powers of your hero » (lecture tranchee le 09/11 : la SOMME de deux pouvoirs remplace la valeur du pouvoir utilise)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp112', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "choisir_option": "Combine_ATK_and_THW_(3)",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 3]], "compteurs": [["mp112", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp112 Famished Power — TEMOIN : sans le pacte, ATK 2 seule",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 2]]},
+    },
+    {
+        "nom": "mp112 Famished Power — j'ai deja une Response libre : set-aside de 1 carte pour 1 compteur",
+        "pourquoi": "Response commune (libre) avec 1 compteur : 1 carte du deck en Damnation",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089')", "Puzzle.AttachReel('mp112', '01001b')", "Puzzle.Counter('mp112', 'corrupt', 1)"],
+        "declencher": ["Puzzle.Action('mp112')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01089"]},
+    },
+    {
+        "nom": "mp113 Pestilent Nature — un allie qui quitte le jeu retourne dans mon deck (+1 corrupt)",
+        "pourquoi": "« When a card you control leaves play, place 1 corrupt counter here -> shuffle that card into your deck instead » : Black Cat vaincue, remelangee dans le deck",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088')", "Puzzle.PutIntoPlay('01002')", "Puzzle.AttachReel('mp113', '01001b')"],
+        "declencher": ["Puzzle.Damage('01002', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "dans_deck_joueur": ["01002"], "compteurs": [["mp113", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp113 Pestilent Nature — TEMOIN : sans le pacte l'allie va en defausse",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Damage('01002', 2)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "defausse": ["01002"]},
+    },
+    {
+        "nom": "mp114 Warring Rage — apres avoir vaincu un ennemi : heros redresse, 1 degat soigne, 1 carte piochee (+1 corrupt)",
+        "pourquoi": "« After you attack and defeat an enemy, place 1 corrupt counter here -> ready your hero, heal 1 damage, and draw 1 card » : heros avec 3 degats, Weapons Runner (1 PV restant)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Damage('01001a', 3)", "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('01121')", "Puzzle.Damage('01121', 1)", "Puzzle.AttachReel('mp114', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["01121"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "pret": ["01001a"], "degats_identite": 2, "taille_main": 1, "compteurs": [["mp114", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp114 Warring Rage — TEMOIN : sans le pacte le heros reste epuise, sans soin ni pioche",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.Damage('01001a', 3)", "Puzzle.EmptyHand()", "Puzzle.PutIntoPlay('01121')", "Puzzle.Damage('01121', 1)"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["01121"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "exhausted": ["01001a"], "degats_identite": 3, "taille_main": 0},
+    },
+    {
+        "nom": "mp115 Soul Gambling — When Revealed : X cartes mises de cote (X = compteurs corrupt de mes BARGAIN)",
+        "pourquoi": "« Each player sets aside the top X[per_hero] cards of their deck, X = corrupt counters on each BARGAIN attachment they control » : 2 pactes (1 + 1 compteur), un joueur : 2 cartes (Gateway : en Damnation)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp111', '01001b')", "Puzzle.AttachReel('mp112', '01001b')", "Puzzle.Counter('mp111', 'corrupt', 1)", "Puzzle.Counter('mp112', 'corrupt', 1)", "Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp115')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"]},
+    },
+    {
+        "nom": "mp115 Soul Gambling — When Revealed, TEMOIN : aucun compteur, rien n'est mis de cote et la carte gagne Surge",
+        "pourquoi": "« Otherwise, this card gains surge » : deck de rencontre de 2 Sonic Boom, 1 reste apres surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp115')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp115 Soul Gambling — Boost : 1 compteur corrupt sur chacun de mes BARGAIN",
+        "pourquoi": "« Place 1 corrupt counter on each BARGAIN attachment you control » : Tiger Shark attaque l'alter-ego, mp009 et mp111 portent chacun 1 compteur",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.AttachReel('mp111', '01001b')", "Puzzle.GiveFacedownBoost('01131', 'mp115')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp009", "corrupt", 1], ["mp111", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp115 Soul Gambling — Boost, TEMOIN : sans BARGAIN la carte est remelangee dans le deck de rencontre",
+        "pourquoi": "« If no counters were placed this way, shuffle this card into the encounter deck »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp115')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 3}},
+    },
+    {
+        "nom": "mp116 Soul Gambling — When Revealed : X cartes mises de cote (X = compteurs corrupt de mes BARGAIN)",
+        "pourquoi": "« Each player sets aside the top X[per_hero] cards of their deck, X = corrupt counters on each BARGAIN attachment they control » : 2 pactes (1 + 1 compteur), un joueur : 2 cartes (Gateway : en Damnation)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp111', '01001b')", "Puzzle.AttachReel('mp112', '01001b')", "Puzzle.Counter('mp111', 'corrupt', 1)", "Puzzle.Counter('mp112', 'corrupt', 1)", "Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp116')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": ["01090", "01091"]},
+    },
+    {
+        "nom": "mp116 Soul Gambling — When Revealed, TEMOIN : aucun compteur, rien n'est mis de cote et la carte gagne Surge",
+        "pourquoi": "« Otherwise, this card gains surge » : deck de rencontre de 2 Sonic Boom, 1 reste apres surge",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01089', '01090', '01091')", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp116')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": [], "rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp116 Soul Gambling — Boost : 1 compteur corrupt sur chacun de mes BARGAIN",
+        "pourquoi": "« Place 1 corrupt counter on each BARGAIN attachment you control » : Tiger Shark attaque l'alter-ego, mp009 et mp111 portent chacun 1 compteur",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.AttachReel('mp009', '01001b')", "Puzzle.AttachReel('mp111', '01001b')", "Puzzle.GiveFacedownBoost('01131', 'mp116')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp009", "corrupt", 1], ["mp111", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp116 Soul Gambling — Boost, TEMOIN : sans BARGAIN la carte est remelangee dans le deck de rencontre",
+        "pourquoi": "« If no counters were placed this way, shuffle this card into the encounter deck »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp116')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 3}},
+    },
+    {
+        "nom": "mp121 Demon Amalgam — When Revealed : 1 compteur damned par sbire MYSTIC de la defausse de rencontre, et +1 PV par compteur",
+        "pourquoi": "« Place X damned counters ..., X = number of MYSTIC minions in the encounter discard pile » : Demon Soldier et Dweller Demon en defausse, un non-MYSTIC (Weapons Runner) aussi : X = 2, PV 1 + 2 = 3",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.CreateEncounterDiscardPile('mp123', 'mp125', '01121')"],
+        "declencher": ["Puzzle.Reveal('mp121')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp121", "damned", 2]], "pv_max": [["mp121", 3]]},
+    },
+    {
+        "nom": "mp121 Demon Amalgam — TEMOIN : defausse sans MYSTIC, aucun compteur, PV 1",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.CreateEncounterDiscardPile('01121')"],
+        "declencher": ["Puzzle.Reveal('mp121')"],
+        "verifier": "etat_attendu",
+        "attendu": {"compteurs": [["mp121", "damned", 0]], "pv_max": [["mp121", 1]]},
+    },
+    {
+        "nom": "mp122 Demon Lieutenant — ses attaques ont overkill : l'exces d'un allie qui defend passe a l'identite",
+        "pourquoi": "« Demon Lieutenant's attacks gain overkill » : ATK 3 contre Black Cat (2 PV) : 1 d'exces a l'identite",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp122')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Attack('mp122')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 1},
+    },
+    {
+        "nom": "mp122 Demon Lieutenant — TEMOIN : Tiger Shark (sans overkill) ne passe pas l'exces",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.PutIntoPlay('01002')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 0},
+    },
+    {
+        "nom": "mp122 Demon Lieutenant — Boost sur une attaque : overkill et +1 icone",
+        "pourquoi": "« If this activation is an attack, this attack gains overkill and this card gets +1 boost icon » : Tiger Shark ATK 3 + 3 icones (2 + 1) = 6 contre Black Cat : 4 d'exces",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.PutIntoPlay('01002')", "Puzzle.GiveFacedownBoost('01131', 'mp122')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01002"], "degats_identite": 4},
+    },
+    {
+        "nom": "mp123 Demon Soldier — When Revealed : 1 degat indirect",
+        "pourquoi": "« Take 1 indirect damage »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp123')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp123 Demon Soldier — Boost : apres l'activation, il entre en jeu engage avec moi",
+        "pourquoi": "« After this activation, put this minion into play engaged with you » : Tiger Shark attaque l'alter-ego avec ce soldat en boost",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp123')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp123"]},
+    },
+    {
+        "nom": "mp124 Demon Soldier — When Revealed : 1 degat indirect",
+        "pourquoi": "« Take 1 indirect damage »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp124')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp124 Demon Soldier — Boost : apres l'activation, il entre en jeu engage avec moi",
+        "pourquoi": "« After this activation, put this minion into play engaged with you » : Tiger Shark attaque l'alter-ego avec ce soldat en boost",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp124')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp124"]},
+    },
+    {
+        "nom": "mp127 Human Demon — When Revealed : 1 menace sur le complot principal",
+        "pourquoi": "« Place 1 threat on the main scheme »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp127')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 1]]},
+    },
+    {
+        "nom": "mp127 Human Demon — Boost : il entre en jeu contre moi tout de suite",
+        "pourquoi": "« Put Human Demon into play against you »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp127')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp127"]},
+    },
+    {
+        "nom": "mp128 Human Demon — When Revealed : 1 menace sur le complot principal",
+        "pourquoi": "« Place 1 threat on the main scheme »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp128')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 1]]},
+    },
+    {
+        "nom": "mp128 Human Demon — Boost : il entre en jeu contre moi tout de suite",
+        "pourquoi": "« Put Human Demon into play against you »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp128')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp128"]},
+    },
+    {
+        "nom": "mp125 Dweller Demon — When Revealed : X menace (X = autres sbires MYSTIC en jeu)",
+        "pourquoi": "« Place X threat on a scheme, X = number of other MYSTIC minions in play » : un autre MYSTIC en jeu (Demon Amalgam) : stade 3 (9 de depart) + 3 posees par le Teamwork des deux MYSTIC + 1 (X) = 13 ; un X mal compte (mutation X = 0) donne 12",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp121')"],
+        "declencher": ["Puzzle.Reveal('mp125')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 13]]},
+    },
+    {
+        "nom": "mp125 Dweller Demon — When Revealed, TEMOIN : aucun autre sbire MYSTIC, aucune menace",
+        "pourquoi": "contre-cas (un sbire non MYSTIC ne compte pas, et pas de Teamwork) : la menace reste a 9",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Reveal('mp125')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 9]]},
+    },
+    {
+        "nom": "mp125 Dweller Demon — Forced Response : seule engagee, apres son attaque je recois 1 carte de rencontre face cachee",
+        "pourquoi": "« After Dweller Demon attacks you, if there are no other minions engaged with you, deal yourself 1 facedown encounter card » : deck de 3 (l'attaque d'ATK 0 ne tire pas de boost) : 1 distribuee, 2 restent",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp125')"],
+        "declencher": ["Puzzle.Attack('mp125')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp125 Dweller Demon — Forced Response, TEMOIN : un autre sbire est engage avec moi, rien n'est distribue",
+        "pourquoi": "contre-cas : rien n'est distribue, 3 cartes restent",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp125')", "Puzzle.PutIntoPlay('01131')"],
+        "declencher": ["Puzzle.Attack('mp125')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 3}},
+    },
+    {
+        "nom": "mp126 Harmony Demon — Forced Response : apres son activation, 1 degat soigne sur chaque AUTRE sbire MYSTIC",
+        "pourquoi": "« After Harmony Demon activates, heal 1 damage from each other MYSTIC minion in play » : Demon Soldier a 2 degats : il n'en a plus qu'1 ; un sbire non MYSTIC garde ses degats",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp126')", "Puzzle.PutIntoPlay('mp123')", "Puzzle.Damage('mp123', 2)", "Puzzle.PutIntoPlay('01121')", "Puzzle.Damage('01121', 1)"],
+        "declencher": ["Puzzle.Activate('mp126')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp123", 1], ["01121", 1]]},
+    },
+    {
+        "nom": "mp126 Harmony Demon — Boost sur une manigance : l'ennemi qui active recoit Tough et la carte compte +1 icone",
+        "pourquoi": "« If this activation is a scheme, give the activating enemy a tough status card and this card gets +1 boost icon » : Tiger Shark manigance (SCH 1) avec mp126 en boost (1 + 1 icones) : menace 3, Tough sur le Shark",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp126')"],
+        "declencher": ["Puzzle.Scheme('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 3]], "statuts": [["01131", "Tough"]]},
+    },
+    {
+        "nom": "mp130 Dark Lord's Tactics — un sbire MYSTIC gagne guard et patrol",
+        "pourquoi": "« Each MYSTIC minion gains guard and patrol » : Dweller Demon (ni guard ni patrol imprimes) : guard 1 et patrol 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp130')", "Puzzle.PutIntoPlay('mp125')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["mp125", "guard", 1], ["mp125", "patrol", 1]]},
+    },
+    {
+        "nom": "mp130 Dark Lord's Tactics — TEMOIN : un sbire qui n'est pas MYSTIC ne gagne rien",
+        "pourquoi": "contre-cas : Weapons Runner",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp130')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01121", "guard", 0], ["01121", "patrol", 0]]},
+    },
+    {
+        "nom": "mp131 Hell's Legions — un sbire MYSTIC gagne toughness",
+        "pourquoi": "« Each MYSTIC minion gains toughness » : Human Demon (sans toughness imprimee) : toughness 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp131')", "Puzzle.PutIntoPlay('mp127')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["mp127", "toughness", 1]]},
+    },
+    {
+        "nom": "mp131 Hell's Legions — TEMOIN : un sbire non MYSTIC ne gagne pas toughness",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp131')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs_carte": [["01121", "toughness", 0]]},
+    },
+    {
+        "nom": "mp131 Hell's Legions — Boost : la carte est revelee (elle entre en jeu comme manigance annexe)",
+        "pourquoi": "« [star] Boost : Reveal this card » : Tiger Shark attaque avec mp131 en boost : mp131 en jeu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp131')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp131"]},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — When Revealed : je defausse un sbire non ELITE en jeu",
+        "pourquoi": "« Discard a non-ELITE minion in play » : Weapons Runner defausse",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Reveal('mp132')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"hors_jeu": ["01121"], "rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — When Revealed, TEMOIN : seul un sbire ELITE en jeu, rien n'est defausse et la carte gagne Surge",
+        "pourquoi": "« Otherwise, this card gains surge » : Blackheart (ELITE) reste, une carte du deck de rencontre est revelee en plus",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp101')"],
+        "declencher": ["Puzzle.Reveal('mp132')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — Forced Response : un sbire MYSTIC non ELITE vaincu est remelange dans le deck de rencontre",
+        "pourquoi": "« After a printed non-ELITE MYSTIC minion is defeated, shuffle that minion into the encounter deck » : Demon Soldier vaincu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp132')", "Puzzle.PutIntoPlay('mp123')"],
+        "declencher": ["Puzzle.Damage('mp123', 9)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp123"], "dans_deck_rencontre": ["mp123"]},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — Forced Response, TEMOIN : un sbire non MYSTIC vaincu va en defausse",
+        "pourquoi": "contre-cas : Weapons Runner",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp132')", "Puzzle.PutIntoPlay('01121')"],
+        "declencher": ["Puzzle.Damage('01121', 9)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01121"], "defausse_rencontre": ["01121"]},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — Forced Response, TEMOIN : un sbire MYSTIC ELITE vaincu (Blackheart) n'est pas remelange",
+        "pourquoi": "contre-cas « non-ELITE »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp132')", "Puzzle.PutIntoPlay('mp101')", "Puzzle.Damage('mp101', 1)"],
+        "declencher": ["Puzzle.Damage('mp101', 20)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp101"], "defausse_rencontre": ["mp101"]},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — Hero Action : sans sbire MYSTIC je depense 2 ressources et la defausse",
+        "pourquoi": "« If there are no MYSTIC minions in play, spend 2 resources of any type -> discard this card » : heros, 2 cartes de ressource",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp132')"],
+        "declencher": ["Puzzle.Action('mp132')"],
+        "accepter_choix": True,
+        "main_exclusive": ["01088", "01089"],
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp132"]},
+    },
+    {
+        "nom": "mp132 Condemned Soul Portal — Hero Action, TEMOIN : un sbire MYSTIC en jeu, l'action n'est pas offerte",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp132')", "Puzzle.PutIntoPlay('mp123')"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Action('mp132')"],
+        "accepter_choix": True,
+        "main_exclusive": ["01088", "01089"],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp132"]},
+    },
+    {
+        "nom": "mp129 Demonized — When Revealed : je defausse jusqu'a un allie, il entre en jeu avec Demonized et devient un sbire MYSTIC",
+        "pourquoi": "« Discard cards from the top of your deck until you discard an ally. Put that ally into play engaged with you with Demonized attached » : Genius defaussee (dessus du deck), puis Black Cat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01089', '01002', '01088')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp129')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01002"], "attaches": [["01002", "mp129"]], "traits_de": [["01002", "MYSTIC"]], "defausse": ["01089"]},
+    },
+    {
+        "nom": "mp129 Demonized — l'allie devenu sbire a Toughness, et SCH = son THW imprime (Black Cat THW 1)",
+        "pourquoi": "« SCH is equal to its printed THW ... gains the toughness keyword » : le sbire a le statut Tough et manigance pour 1 (THW imprime de Black Cat) : menace 0 -> 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.SetThreat('mp004b', 0)", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01089', '01002', '01088')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp129')", "Puzzle.Scheme('01002')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"statuts": [["01002", "Tough"]], "menace": [["mp004b", 1]]},
+    },
+    {
+        "nom": "mp142 Call of the Demoness — Forced Response : la carte du dessus de ma defausse entre en jeu face cachee comme sbire MYSTIC",
+        "pourquoi": "« After the villain phase begins, the first player puts the top card of their discard pile into play facedown engaged with them as a MYSTIC minion » : Strength (seule carte) devient un sbire MYSTIC",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01090')", "Puzzle.PutIntoPlay('mp142')"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01090"], "traits_de": [["01090", "MYSTIC"]]},
+    },
+    {
+        "nom": "mp142 Call of the Demoness — Forced Response, TEMOIN : defausse vide, rien n'entre en jeu",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.PutIntoPlay('mp142')"],
+        "declencher": ["Puzzle.BeginVillainPhase()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp142"]},
+    },
+    {
+        "nom": "mp142 Call of the Demoness — ne peut pas quitter le jeu tant qu'un sbire MYSTIC face cachee est en jeu",
+        "pourquoi": "« cannot leave play while facedown MYSTIC minion is in play » : toute la menace retiree, elle reste",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01090')", "Puzzle.PutIntoPlay('mp142')", "Puzzle.BeginVillainPhase()"],
+        "declencher": ["Puzzle.PlaceThreat('mp142', -99)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp142", "01090"]},
+    },
+    {
+        "nom": "mp142 Call of the Demoness — TEMOIN : sans sbire face cachee, elle est vaincue normalement",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.PutIntoPlay('mp142')"],
+        "declencher": ["Puzzle.PlaceThreat('mp142', -99)"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp142"]},
+    },
+    {
+        "nom": "mp141 Lilith — Forced Response : apres son activation contre moi, avec Call en jeu, la carte du dessus de ma defausse devient un sbire MYSTIC face cachee",
+        "pourquoi": "« After Lilith activates against you, if Call of the Demoness is in play, put the top card of your discard pile facedown engaged with you as a MYSTIC minion »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01090')", "Puzzle.PutIntoPlay('mp142')", "Puzzle.PutIntoPlay('mp141')"],
+        "declencher": ["Puzzle.Activate('mp141')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01090"], "traits_de": [["01090", "MYSTIC"]]},
+    },
+    {
+        "nom": "mp141 Lilith — TEMOIN : sans Call en jeu, rien",
+        "pourquoi": "contre-cas : « if Call of the Demoness is in play »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01090')", "Puzzle.PutIntoPlay('mp141')"],
+        "declencher": ["Puzzle.Activate('mp141')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01090"]},
+    },
+    {
+        "nom": "mp144 Spawn Magic — Call en jeu : les 2 cartes du dessus de ma defausse entrent en jeu face cachee comme sbires MYSTIC",
+        "pourquoi": "« If Call of the Demoness is in play, put the top 2 cards of your discard pile into play each facedown and engaged with you as a MYSTIC minion »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')", "Puzzle.PutIntoPlay('mp142')"],
+        "declencher": ["Puzzle.Reveal('mp144')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01089", "01090"], "traits_de": [["01089", "MYSTIC"], ["01090", "MYSTIC"]]},
+    },
+    {
+        "nom": "mp144 Spawn Magic — sans Call en jeu : je la cherche et la revele",
+        "pourquoi": "« Otherwise, find Call of the Demoness and reveal it » : Call dans le deck de rencontre",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp142', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')"],
+        "declencher": ["Puzzle.Reveal('mp144')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp142"], "hors_jeu": ["01089", "01090"]},
+    },
+    {
+        "nom": "mp144 Spawn Magic — Boost : je resous le When Revealed (Call en jeu : 2 sbires face cachee)",
+        "pourquoi": "« [star] Boost : Resolve this card's When Revealed ability » : Tiger Shark attaque avec cette carte en boost",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')", "Puzzle.PutIntoPlay('mp142')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp144')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01089", "01090"]},
+    },
+    {
+        "nom": "mp145 Spawn Magic — Call en jeu : les 2 cartes du dessus de ma defausse entrent en jeu face cachee comme sbires MYSTIC",
+        "pourquoi": "« If Call of the Demoness is in play, put the top 2 cards of your discard pile into play each facedown and engaged with you as a MYSTIC minion »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')", "Puzzle.PutIntoPlay('mp142')"],
+        "declencher": ["Puzzle.Reveal('mp145')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01089", "01090"], "traits_de": [["01089", "MYSTIC"], ["01090", "MYSTIC"]]},
+    },
+    {
+        "nom": "mp145 Spawn Magic — sans Call en jeu : je la cherche et la revele",
+        "pourquoi": "« Otherwise, find Call of the Demoness and reveal it » : Call dans le deck de rencontre",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp142', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')"],
+        "declencher": ["Puzzle.Reveal('mp145')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp142"], "hors_jeu": ["01089", "01090"]},
+    },
+    {
+        "nom": "mp145 Spawn Magic — Boost : je resous le When Revealed (Call en jeu : 2 sbires face cachee)",
+        "pourquoi": "« [star] Boost : Resolve this card's When Revealed ability » : Tiger Shark attaque avec cette carte en boost",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01089', '01090')", "Puzzle.PutIntoPlay('mp142')", "Puzzle.PutIntoPlay('01131')", "Puzzle.GiveFacedownBoost('01131', 'mp145')"],
+        "declencher": ["Puzzle.Attack('01131')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01089", "01090"]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — When Revealed : j'attache la carte a mon identite",
+        "pourquoi": "texte commun des pactes",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp143')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"attaches": [["01001b", "mp143"]]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — mon identite gagne le trait MYSTIC",
+        "pourquoi": "« You gain the MYSTIC trait »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.AttachReel('mp143', '01001b')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits": ["MYSTIC"]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — TEMOIN : sans le pacte l'identite n'est pas MYSTIC",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"traits_absents": ["MYSTIC"]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — Lilith ne peut pas s'activer contre moi",
+        "pourquoi": "« she cannot activate against you » : Lilith activee contre l'alter-ego (SCH 1) : aucune menace",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp141')", "Puzzle.AttachReel('mp143', '01001b')"],
+        "declencher": ["Puzzle.Activate('mp141')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 0]]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — TEMOIN : sans le pacte Lilith s'active (SCH 1 : menace 1)",
+        "pourquoi": "contre-cas",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.PutIntoPlay('mp141')"],
+        "declencher": ["Puzzle.Activate('mp141')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 1]]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — Response : je defausse le pacte, Lilith est trouvee dans le deck, revelee, et s'active contre moi",
+        "pourquoi": "« discard this card -> find Lilith and reveal her ... Lilith activates against you » : alter-ego, SCH 1 : menace 0 -> 1, Lilith en jeu",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp141', '01123')", "Puzzle.SetThreat('mp004b', 0)", "Puzzle.AttachReel('mp143', '01001b')"],
+        "declencher": ["Puzzle.BeginPlayerTurn()"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["mp143"], "en_jeu": ["mp141"], "menace": [["mp004b", 1]]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — mon heros gagne retaliate 2 et villainous",
+        "pourquoi": "« You gain the MYSTIC trait, retaliate 2, and villainous »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp143', '01001a')"],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"attributs": {"retaliate": 2, "villainous": 1}},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — je ne peux pas attaquer Lilith",
+        "pourquoi": "« You cannot attack Lilith » : mon heros (ATK 2) tente d'attaquer Lilith : aucun degat",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp141')", "Puzzle.AttachReel('mp143', '01001a')"],
+        "declencher": [],
+        "declencher_tolerant": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp141"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp141", 0]]},
+    },
+    {
+        "nom": "mp143 Lilin Remaking — TEMOIN : sans le pacte j'attaque Lilith normalement (Toughness : 1er coup use le statut)",
+        "pourquoi": "contre-cas : deux attaques, Lilith (sans Toughness) prend 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.PutIntoPlay('mp141')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "cibles": ["mp141"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp141", 2]]},
+    },
+    {
+        "nom": "mp151 Advance — le vilain manigance contre moi",
+        "pourquoi": "« The villain schemes » : Mephisto SCH 2, menace 0 -> 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp151')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp152 Advance — le vilain manigance contre moi",
+        "pourquoi": "« The villain schemes » : Mephisto SCH 2, menace 0 -> 2",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.SetThreat('mp004b', 0)"],
+        "declencher": ["Puzzle.Reveal('mp152')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp004b", 2]]},
+    },
+    {
+        "nom": "mp153 Assault — en alter-ego : la carte gagne Surge (une carte de plus est revelee)",
+        "pourquoi": "« When Revealed (Alter-Ego) : This card gains surge »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp153')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp153 Assault — en forme heros : le vilain m'attaque",
+        "pourquoi": "« When Revealed (Hero) : The villain attacks you » : heros epuise, Mephisto ATK 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('mp153')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp154 Assault — en alter-ego : la carte gagne Surge (une carte de plus est revelee)",
+        "pourquoi": "« When Revealed (Alter-Ego) : This card gains surge »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp154')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp154 Assault — en forme heros : le vilain m'attaque",
+        "pourquoi": "« When Revealed (Hero) : The villain attacks you » : heros epuise, Mephisto ATK 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('mp154')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 1},
+    },
+    {
+        "nom": "mp155 Shadow of the Past — mon sbire nemesis (Vulture) entre en jeu",
+        "pourquoi": "« Reveal your set-aside nemesis minion and put it into play engaged with you »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()"],
+        "declencher": ["Puzzle.Reveal('mp155')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["01167"]},
+    },
+    {
+        "nom": "mp156 Caught Off Guard — je defausse une amelioration ou un soutien que je controle",
+        "pourquoi": "« Discard an upgrade or support you control »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.PutIntoPlay('01073', under_control=True)"],
+        "declencher": ["Puzzle.Reveal('mp156')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"hors_jeu": ["01073"]},
+    },
+    {
+        "nom": "mp156 Caught Off Guard — TEMOIN : rien a defausser, la carte gagne Surge",
+        "pourquoi": "« If no cards were discarded this way, this card gains surge »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp156')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp157 Gang-Up — en alter-ego : la carte gagne Surge",
+        "pourquoi": "« When Revealed (Alter-Ego) : This card gains surge »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp157')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 2}},
+    },
+    {
+        "nom": "mp157 Gang-Up — en forme heros : le vilain et chaque sbire engage m'attaquent",
+        "pourquoi": "Mephisto (ATK 1) + Tiger Shark (ATK 3) : 4 degats sur le heros epuise",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('01131')", "Puzzle.ChangeForm('01001b')", "Puzzle.Exhaust('01001a')"],
+        "declencher": ["Puzzle.Reveal('mp157')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"degats_identite": 4},
+    },
+    {
+        "nom": "mp161 Exhaustion — j'epuise mon identite (et Surge)",
+        "pourquoi": "« Exhaust your identity card » : alter-ego pret -> epuise ; Surge : Armored Guard revele ensuite (filler inerte : Sonic Boom exhausterait l'identite lui-meme)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.Ready('01001b')", "Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01120', '01120')"],
+        "declencher": ["Puzzle.Ready('01001b')", "Puzzle.Reveal('mp161')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["01001b"]},
+    },
+    {
+        "nom": "mp162 Masterplan — 4 menaces sur chaque manigance annexe",
+        "pourquoi": "« Place 4 threat on each side scheme » : Culling the Damned remise a 1 (a 0 elle serait vaincue) : 1 + 4 = 5",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')", "Puzzle.PutIntoPlay('mp017')", "Puzzle.SetThreat('mp017', 1)"],
+        "declencher": ["Puzzle.Reveal('mp162')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp017", 5]]},
+    },
+    {
+        "nom": "mp163 Under Fire — Surge puis je revele la carte du dessus du deck de rencontre",
+        "pourquoi": "« Surge. When Revealed : Reveal the top card of the encounter deck » : deck de 3 : Surge + Under Fire en reveleraient 2, il en reste 1",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('01123', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp163')"],
+        "accepter_choix": True,
+        "verifier": "mp_damnation",
+        "attendu": {"rencontre": {"deck": 1}},
+    },
+    {
+        "nom": "mp162 Masterplan — sans manigance annexe : defausse jusqu'a en trouver une et la revele",
+        "pourquoi": "« If there are no side schemes in play, discard cards from the top of the encounter deck until a side scheme is discarded. Reveal that side scheme »",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.EmptyEncounterDeck()", "Puzzle.CreateEncounterDeck('mp017', '01123', '01123')"],
+        "declencher": ["Puzzle.Reveal('mp162')"],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp017"]},
+    },
+    {
+        "nom": "04003 Hawkeye's Quiver — aucune Flèche dans les 5 du dessus : on propose de VOIR les cartes (retour testeur)",
+        "pourquoi": "la recherche ne trouvait rien et n'ouvrait aucune fenêtre : la carte semblait ne rien faire. Elle propose maintenant « Continue Without Looking » / « Look At The Cards » avant de mélanger le deck",
+        "scenario": "rhino", "heros": "hawkeye",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.PutIntoPlay('04003')", "Puzzle.ChangeForm('04001b')"],
+        "declencher": ["Puzzle.Action('04003', 'HeroAction')"],
+        "options_attendues": ["Continue Without Looking", "Look At The Cards"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["04003"], "taille_deck_joueur": 6},
+    },
+    {
+        "nom": "04003 Hawkeye's Quiver — rien trouvé, « Look At The Cards » : la fenêtre montre les cartes cherchées",
+        "pourquoi": "le joueur qui accepte voit les 5 cartes du dessus avant le mélange",
+        "scenario": "rhino", "heros": "hawkeye",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.PutIntoPlay('04003')", "Puzzle.ChangeForm('04001b')"],
+        "declencher": ["Puzzle.Action('04003', 'HeroAction')"],
+        "choisir_option": "Look_At_The_Cards",
+        "options_attendues": ["Cards Searched"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["04003"], "taille_deck_joueur": 6},
+    },
+    {
+        "nom": "04003 Hawkeye's Quiver — TEMOIN : une Flèche dans les 5 du dessus, aucune question « rien trouvé », la Flèche est attachée",
+        "pourquoi": "la question ne se pose que quand la recherche échoue",
+        "scenario": "rhino", "heros": "hawkeye",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '04005', '01088', '01088', '01088')", "Puzzle.PutIntoPlay('04003')", "Puzzle.ChangeForm('04001b')"],
+        "declencher": ["Puzzle.Action('04003', 'HeroAction')"],
+        "questions_absentes": ["Continue Without Looking"],
+        "verifier": "etat_attendu",
+        "attendu": {"pose_sous": [["04003", "04005"]]},
+    },
+    {
+        "nom": "mp112 Famished Power — la somme REMPLACE le pouvoir utilise : j'attaque (ATK 2) avec THW + DEF (1 + 3) = 4 degats",
+        "pourquoi": "lecture tranchee le 09/11 : on choisit 2 pouvoirs de base et leur somme remplace la valeur du pouvoir utilise (le pouvoir utilise, ATK, n'est pas dans la paire). Prouve que ce n'est PAS « pouvoir utilise + un autre » (qui donnerait 2 + 1, 2 + 3, jamais 4)",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp112', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "choisir_option": "Combine_THW_and_DEF_(4)",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 4]], "compteurs": [["mp112", "corrupt", 1]]},
+    },
+    {
+        "nom": "mp112 Famished Power — ATK + DEF (2 + 3) = 5 degats",
+        "pourquoi": "autre paire, meme lecture",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": ["Puzzle.ChangeForm('01001b')", "Puzzle.AttachReel('mp112', '01001a')"],
+        "declencher": ["Puzzle.Attack('01001a')"],
+        "accepter_choix": True,
+        "choisir_option": "Combine_ATK_and_DEF_(5)",
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["mp001", 5]], "compteurs": [["mp112", "corrupt", 1]]},
+    },
+    {
+        "nom": "25003 Annabelle Riggs — aucune carte Valkyrie dans les 5 du dessus : meme question « voir les cartes ? » que le Carquois",
+        "pourquoi": "la question vient du moteur de recherche commun (search_internal.py), pas du Carquois : une AUTRE carte « search the top 5 » sans resultat la pose aussi",
+        "scenario": "rhino", "heros": "valkyrie",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.PutIntoPlay('25003', under_control=True)"],
+        "declencher": ["Puzzle.Action('25003', 'AlterEgoAction')"],
+        "options_attendues": ["Continue Without Looking", "Look At The Cards"],
+        "verifier": "etat_attendu",
+        "attendu": {"exhausted": ["25003"], "taille_deck_joueur": 6},
+    },
+    {
+        "nom": "[2 joueurs] mp007a Gateway to Corruption — 19 cartes en Damnation (10 + 9) : la limite est 20, personne ne perd",
+        "pourquoi": "« 10[per_hero] » = 20 a deux joueurs : le TOTAL des deux piles compte, 19 cartes ne font pas perdre",
+        "scenario": "mephisto", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation_total": 19, "perdue": False},
+    },
+    {
+        "nom": "[2 joueurs] mp007a Gateway to Corruption — 20 cartes en Damnation (10 + 10) : les joueurs perdent",
+        "pourquoi": "20 = 10[per_hero] a deux joueurs : la 20e carte fait perdre la partie (temoin du cas a 19)",
+        "scenario": "mephisto", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.EmptyPlayerDeck()", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088', '01088')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')", "Puzzle.MoveTo('01088', 'AsideDeck')"],
+        "declencher": [],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation_total": 20, "perdue": True},
+    },
+    {
+        "nom": "[2 joueurs] mp004b Battle for the Soul (1B) — Hidden Clause : 1[per_hero] = 2 cartes du dessus du deck",
+        "pourquoi": "« Put 1[per_hero] card from the top of your deck » : a deux joueurs, 2 cartes (temoin du cas a un joueur : 1)",
+        "scenario": "mephisto", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.EmptyPlayerDeck(siege=0)", "Puzzle.CreatePlayerDeck('01088', '01088', '01088', '01088', '01088', '01088', siege=0)"],
+        "declencher": ["Puzzle.ResolveSpecial('mp004b')"],
+        "verifier": "mp_damnation",
+        "attendu": {"damnation": 2, "face_cachee": True, "perdue": False},
+    },
+    {
+        "nom": "[2 joueurs] mp019 Hotel Inferno — « 6 cartes en Damnation » se compte sur le TOTAL des deux piles (3 + 3 = 6 : +6 menace)",
+        "pourquoi": "« for every 6 cards in Damnation » : pas par joueur, toutes piles confondues. Stade 3 (9[per_hero] = 18 a deux joueurs) + 6 = 24",
+        "scenario": "mephisto", "heros": "spider_man", "heros2": "hawkeye",
+        "mise_en_place": ["Puzzle.AdvanceMainScheme(2)", "Puzzle.EmptyEncounterDeck()", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('04005', 'DamnationArea', player=1)", "Puzzle.MoveTo('01088', 'DamnationArea', player=0)", "Puzzle.MoveTo('01088', 'DamnationArea', player=0)", "Puzzle.MoveTo('01088', 'DamnationArea', player=0)"],
+        "declencher": ["Puzzle.Reveal('mp019')"],
+        "verifier": "etat_attendu",
+        "attendu": {"menace": [["mp006b", 24]]},
+    },
+    {
+        "nom": "mp004a Battle for the Soul (1A) — Setup : Gateway to Corruption en jeu, Hell Lord mis de cote hors jeu, Damnation vide",
+        "pourquoi": "« Setup : put the Hell Lord attachment aside, out of play. Put the Gateway to Corruption environment into play. Create the Damnation game area » : porte par les DONNEES du scenario (data/scenarios/mephisto.json), aucun script. Le cas lit l'etat de depart",
+        "scenario": "mephisto", "heros": "spider_man",
+        "mise_en_place": [],
+        "declencher": [],
+        "verifier": "etat_attendu",
+        "attendu": {"en_jeu": ["mp007a"], "hors_jeu": ["mp008"]},
+    },
+    {
+        "nom": "04002 Hawkeye's Bow — une attaque de BASE ne gagne pas « à distance » : elle subit la Riposte 1 de l'Energy Shield (04073)",
+        "pourquoi": "« each of your [[Arrow]] attacks gain ranged » : seules les attaques FLECHE. Hawkeye attaque normalement un vilain portant Energy Shield (Attached villain gains retaliate 1) : il subit 1 degat",
+        "scenario": "rhino",
+        "heros": "hawkeye",
+        "mise_en_place": [
+                "Puzzle.ChangeForm('04001b')",
+                "Puzzle.AttachReel('04002', '04001a')",
+                "Puzzle.AttachReel('04073', '01094')"
+        ],
+        "declencher": [
+                "Puzzle.Attack('04001a')"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+                "degats": [
+                        [
+                                "04001a",
+                                1
+                        ]
+                ]
+        }
+},
+    {
+        "nom": "04002 Hawkeye's Bow — une attaque FLECHE (Electric Arrow) gagne « à distance » : aucune Riposte de l'Energy Shield",
+        "pourquoi": "Electric Arrow est une action d'attaque (Hero Action (attack)) portee par l'arc : elle gagne ranged, donc ignore la Riposte 1 du bouclier. Hawkeye ne subit aucun degat",
+        "scenario": "rhino",
+        "heros": "hawkeye",
+        "mise_en_place": [
+                "Puzzle.ChangeForm('04001b')",
+                "Puzzle.AttachReel('04002', '04001a')",
+                "Puzzle.AttachReel('04073', '01094')"
+        ],
+        "main_exclusive": [
+                "04007",
+                "01055",
+                "01055",
+                "01055"
+        ],
+        "declencher": [],
+        "jouer": [
+                "04007"
+        ],
+        "cibles": [
+                "01094"
+        ],
+        "accepter_choix": True,
+        "verifier": "etat_attendu",
+        "attendu": {
+                "degats": [
+                        [
+                                "04001a",
+                                0
+                        ],
+                        [
+                                "01094",
+                                3
+                        ]
+                ]
+        }
+},
 ]
 # ----------------------------------------------------- cas par bloc, hors fichier --
 # AJOUT (15/10/2026, coffret Skrull Menace) : plusieurs agents ecrivent leurs cas
@@ -56136,8 +59812,8 @@ def brawn_shockwave_a_agi(monde, aides):
     # 2 degats a chaque ennemi par [physical], 2 menaces par [mental].
     from game.operate.faces_counter import FacesCounter
     icones = FacesCounter.GetPrintedResources(defausse)
-    physiques = icones.r + icones.g
-    mentales = icones.b + icones.g
+    physiques = icones.r      # un wild imprime n'est ni [physical] ni [mental] (arbitrage du 26/10/2026)
+    mentales = icones.b
 
     if physiques == 0 and mentales == 0:
         return False, ("aucune icone [physical] ni [mental] parmi les cartes defaussees : "
@@ -56465,6 +60141,8 @@ IMPRIME = {
     "hazard": "printed_hazard",
     "retaliate": "printed_retaliate",
     "villainous": "printed_villainous",
+    "guard": "printed_guard", "patrol": "printed_patrol", "toughness": "printed_toughness",  # AJOUT 09/11/2026 (pack mephisto, mp130/mp131 : « each MYSTIC minion gains guard / patrol / toughness »)
+    "peril": "printed_peril",  # AJOUT 31/10/2026 (pack buffy, Hush : « each encounter card gains peril »)
     # AJOUT du 08/09/2026 (pack superior_spider_man) : `su015` Goblin Protocol
     # fait compter la menace des sbires pistes dans le seuil du complot
     # principal. Sans cette entree, `attributs_carte` levait `KeyError:
@@ -56481,6 +60159,8 @@ IMPRIME = {
     "guard": "printed_guard",
     "crisis": "printed_crisis",
     "amplify": "printed_amplify",
+    # AJOUT du 01/11/2026 (pack mantis) : Cotati Resiliency donne « stalwart » a l'ennemi porteur ; `attributs_carte` levait `KeyError: 'stalwart'`.
+    "stalwart": "printed_stalwart",
 }
 
 # ⚠ GARDE-FOU (11/09/2026, §9) : une cle `attendu` que `etat_attendu` ne lit pas
@@ -56490,6 +60170,7 @@ IMPRIME = {
 # le meme cas — leurs verificateurs dedies existaient, mais ces cas-la
 # appelaient `etat_attendu`. Toute cle inconnue fait desormais ECHOUER le cas.
 CLES_ETAT_ATTENDU = {
+    "deck_annexe", "deck_annexe_taille", "rencontre_compte",   # AJOUT 13/11/2026 (paquet Ninja d'Elektra)
     'absent_main', 'attaches', 'attributs', 'attributs_carte', 'compteurs', 'compteurs_identite', 'compteurs_total',
     'dans_deck_joueur', 'dans_deck_registered', 'dans_deck_rencontre', 'defausse',
     'defausse_joueur', 'defausse_dessus', 'defausse_rencontre', 'degats', 'degats_identite',
@@ -56498,6 +60179,8 @@ CLES_ETAT_ATTENDU = {
     'menace_min', 'mis_de_cote', 'pose_sous', 'pret', 'statuts', 'statuts_absents',
     'taille_deck_joueur', 'taille_deck_registered', 'taille_main', 'taille_mis_de_cote',
     'mis_de_cote_scenario', 'taille_attaches', 'taille_pose_sous', 'taille_reserve', 'traits', 'traits_absents',
+    # ajoutee le 26/10/2026 (relecture dt075 : « 3 cartes DIFFERENTES »)
+    'pose_sous_titres_distincts',
     # absorbees le 11/09/2026
     'pv_max', 'carte_du_surge', 'accroche_a', 'hotes', 'traits_de',
     # ajoutee le 21/09/2026 (signalement Aghenatak, cartes coincees en
@@ -56510,6 +60193,8 @@ CLES_ETAT_ATTENDU = {
     'face_identite',
     # ajoutees le 09/10/2026 (Hunting Season, bloc 5) : paquets de pieges.
     'paquet_pieges', 'defausse_pieges', 'pieges_distribues',
+    # ajoutee le 20/10/2026 (backlog 13, Zeus : Nyx et Total Eclipse).
+    'boosts_sur',
 }
 
 # ---------------------------------------------------------------- pack fne (bloc 1)
@@ -57261,6 +60946,86 @@ def fnefin_carnet_sortant(monde, aides):
 
 # ---- fin des verificateurs fnefin ----
 
+def mp_damnation(monde, aides):
+    """Pack mephisto : le contenu de la Damnation du joueur 0 (ids, dans l'ordre du tri), l'absence des cartes redirigees de la
+    zone « mise de cote », les cartes face cachee, et la defaite quand la limite est atteinte.
+
+    `attendu` : `damnation` (liste d'ids, tri), `pas_de_cote` (ids absents de la zone de cote du joueur), `face_cachee` (bool, toutes
+    les cartes de la Damnation sont face cachee), `perdue` (bool, partie finie ET perdue)."""
+    attendu = aides["cas"].get("attendu") or {}
+    joueur = monde.players[0]
+    soucis = []
+    dans = sorted(getattr(f.paper, "card_id", None) for f in joueur.damnation.GetAll())
+    if isinstance(attendu.get("damnation"), int):
+        if len(dans) != attendu["damnation"]:
+            soucis.append(f"Damnation = {dans} ({len(dans)} carte(s), attendu {attendu['damnation']})")
+    elif "damnation" in attendu and dans != sorted(attendu["damnation"]):
+        soucis.append(f"Damnation = {dans} (attendu {sorted(attendu['damnation'])})")
+    de_cote = [getattr(f.paper, "card_id", None) for f in joueur.set_aside_nemesis_sets.GetAll()]
+    for card_id in attendu.get("pas_de_cote") or []:
+        if card_id in de_cote:
+            soucis.append(f"{card_id} est dans la zone mise de cote : la redirection n'a pas eu lieu")
+    for card_id in attendu.get("de_cote") or []:
+        if card_id not in de_cote:
+            soucis.append(f"{card_id} n'est pas mise de cote")
+    if attendu.get("face_cachee") and any(f.card.IsFaceUp() for f in joueur.damnation.GetAll()):
+        soucis.append("une carte de la Damnation est face visible")
+    if "damnation_total" in attendu:
+        # TOUTES les piles (une par joueur) : la limite et les « tranches » se comptent sur le total.
+        total = sum(j.damnation.GetSize() for j in monde.players)
+        if total != attendu["damnation_total"]:
+            detail = [(j.player_id, j.damnation.GetSize(), j.player_deck.GetSize()) for j in monde.players]
+            soucis.append(f"Damnation, toutes piles = {total} carte(s) (attendu {attendu['damnation_total']}) ; (joueur, damnation, deck) = {detail}")
+    if attendu.get("invisible_a_tous"):
+        # Aucun joueur ne doit pouvoir lire une carte de la Damnation (ni la propriétaire, ni un autre) : ce qu'un « look at » a
+        # montré ne survit pas au mélange de la zone.
+        for camp in monde.players:
+            for f in joueur.damnation.GetAll():
+                if f.card.IsVisible(camp):
+                    soucis.append(f"{f.paper.card_id} de la Damnation est visible du joueur {camp.player_id}")
+    if "perdue" in attendu:
+        fini = bool(getattr(monde, "is_game_over", False))
+        if attendu["perdue"] and not fini:
+            soucis.append("la partie n'est pas finie alors que la limite est atteinte")
+        if not attendu["perdue"] and fini:
+            soucis.append("la partie est finie alors que la limite n'est pas atteinte")
+    if "deck_joueur_taille" in attendu and joueur.player_deck.GetSize() != attendu["deck_joueur_taille"]:
+        soucis.append(f"deck du joueur = {joueur.player_deck.GetSize()} carte(s) (attendu {attendu['deck_joueur_taille']})")
+    if "deck_joueur" in attendu:
+        deck = sorted(getattr(f.paper, "card_id", None) for f in joueur.player_deck.GetAll())
+        if deck != sorted(attendu["deck_joueur"]):
+            soucis.append(f"deck du joueur = {deck} (attendu {sorted(attendu['deck_joueur'])})")
+    if "rencontre" in attendu:
+        from game.operate.worlds import Worlds
+        vu = {
+            "defausse": sorted(getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDiscardPileCards(monde)),
+            "deck": sorted(getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)),
+        }
+        cartes_deck = list(Worlds.GetEncounterDeckCards(monde))
+        if "dessus" in attendu["rencontre"]:
+            dessus = getattr(cartes_deck[0].paper, "card_id", None) if cartes_deck else None
+            if dessus != attendu["rencontre"]["dessus"]:
+                soucis.append(f"dessus du deck de rencontre = {dessus} (attendu {attendu['rencontre']['dessus']})")
+        for pile, ids in attendu["rencontre"].items():
+            if pile == "dessus":
+                continue
+            if isinstance(ids, int):
+                if len(vu[pile]) != ids:
+                    soucis.append(f"rencontre.{pile} = {len(vu[pile])} carte(s) (attendu {ids}) ; vu = {vu}")
+            elif vu[pile] != sorted(ids):
+                soucis.append(f"rencontre.{pile} = {vu[pile]} (attendu {sorted(ids)}) ; vu = {vu}")
+    if "gagnee" in attendu:
+        fini = bool(getattr(monde, "is_game_over", False))
+        gagnee = bool(getattr(monde.game_over, "players_won", False))
+        if attendu["gagnee"] and not (fini and gagnee):
+            soucis.append(f"les joueurs n'ont pas gagne (finie={fini}, players_won={gagnee}, raison={getattr(monde.game_over, 'reason', None)!r})")
+        if not attendu["gagnee"] and fini and gagnee:
+            soucis.append("les joueurs ont gagne alors que ce n'etait pas attendu")
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, f"Damnation = {dans}"
+
+
 def etat_attendu(monde, aides):
     attendu = aides["cas"].get("attendu") or {}
     identite = aides["identite"](monde)
@@ -57511,6 +61276,25 @@ def etat_attendu(monde, aides):
         if n != attendu_n:
             soucis.append(f"{card_id} a {n} icone(s) de boost (attendu {attendu_n})")
 
+    # Cle `boosts_sur` (AJOUT 20/10/2026, backlog 13, Zeus) : [[card_id, n]] ->
+    # nombre de cartes de boost que la carte `card_id` a RECUES depuis le debut
+    # du cas, toutes activations confondues. Le compteur est pose par
+    # `executer_un_cas` sur `Boostable.GiveBoostCard` (voir le commentaire
+    # la-bas). Les cartes de boost sont defaussees en fin d'activation : aucune
+    # autre cle ne peut voir leur nombre.
+    if attendu.get("boosts_sur"):
+        from game.card.face.component.boostable import Boostable
+        recus = getattr(Boostable, "_harnais_boosts_recus", None)
+        if recus is None:
+            soucis.append("compteur de boosts absent (boosts_sur) : le crochet de "
+                          "executer_un_cas n'est pas pose")
+        else:
+            for card_id, attendu_n in attendu["boosts_sur"]:
+                n = recus.get(card_id, 0)
+                if n != attendu_n:
+                    soucis.append(f"{card_id} a recu {n} carte(s) de boost "
+                                  f"(attendu {attendu_n} ; compteur = {dict(recus)})")
+
     if attendu.get("dans_deck_rencontre"):
         from game.operate.worlds import Worlds
         ids = {getattr(f.paper, "card_id", None)
@@ -57518,6 +61302,26 @@ def etat_attendu(monde, aides):
         for card_id in attendu["dans_deck_rencontre"]:
             if card_id not in ids:
                 soucis.append(f"{card_id} absent du deck Rencontre")
+
+    # `deck_annexe_taille` : nombre de cartes de `additional_deck` du joueur 1. AJOUT (13/11/2026, heros Elektra : paquet
+    # Ninja de 6 cartes). `deck_annexe` : card_id des cartes qu'il contient (liste triee, doublons compris).
+    if "deck_annexe_taille" in attendu:
+        n_annexe = monde.players[0].additional_deck.GetSize()
+        if n_annexe != attendu["deck_annexe_taille"]:
+            soucis.append(f"deck annexe {n_annexe} carte(s) (attendu {attendu['deck_annexe_taille']})")
+    # `rencontre_compte` : [[[card_id, ...], n], ...] = combien de cartes de CES card_id sont dans le paquet de rencontre
+    # (AJOUT 13/11/2026 : on ne sait pas laquelle des cartes Ninja le melange a tiree, on compte donc par famille).
+    if "rencontre_compte" in attendu:
+        from game.operate.worlds import Worlds
+        ids_renc = [getattr(f.paper, "card_id", None) for f in Worlds.GetEncounterDeckCards(monde)]
+        for ids_voulus, n_voulu in attendu["rencontre_compte"]:
+            n_reel = sum(1 for i in ids_renc if i in ids_voulus)
+            if n_reel != n_voulu:
+                soucis.append(f"paquet de rencontre : {n_reel} carte(s) parmi {ids_voulus} (attendu {n_voulu})")
+    if "deck_annexe" in attendu:
+        reel_annexe = sorted(getattr(f.paper, "card_id", None) for f in monde.players[0].additional_deck.Get())
+        if reel_annexe != sorted(attendu["deck_annexe"]):
+            soucis.append(f"deck annexe {reel_annexe} (attendu {sorted(attendu['deck_annexe'])})")
 
     if "forme" in attendu:
         courante = "Hero" if monde.players[0].IsHero() else "AlterEgo"
@@ -57799,6 +61603,17 @@ def etat_attendu(monde, aides):
         n = len(list(face.GetPlacedCardArea().Get(True)))
         if n != valeur:
             soucis.append(f"{n} carte(s) posee(s) sous {hote} (attendu {valeur})")
+
+    # AJOUT 26/10/2026 (relecture ligne a ligne de dt075 Multiverse Shenanigans : « choose any 3 DIFFERENT ... cards »). Nombre de TITRES
+    # distincts parmi les cartes posees sous une carte : un cas qui ne mesure que `taille_pose_sous` laisse passer trois exemplaires de la meme carte.
+    for hote, valeur in attendu.get("pose_sous_titres_distincts") or []:
+        face = aides["par_id"](monde, hote)
+        if face is None:
+            soucis.append(f"{hote} introuvable en jeu (pose_sous_titres_distincts)")
+            continue
+        titres = {getattr(f.paper, "name", None) for f in face.GetPlacedCardArea().Get(True)}
+        if len(titres) != valeur:
+            soucis.append(f"{len(titres)} titre(s) distinct(s) sous {hote} (attendu {valeur}) : {sorted(map(str, titres))}")
 
     if "defausse_joueur" in attendu:
         n = len(list(monde.players[0].discard_pile.Get()))
@@ -59382,6 +63197,25 @@ def wave_rising_tide_purge_fin_de_phase(monde, aides):
 
     return True, f"Rising Tide area purgee en fin de phase : {card_id_pose} envoye en defausse"
 
+def se_voie_redressee_fin_de_phase(monde, aides):
+    """Une VOIE (type Path, rangee dans l'aire de soutien) incline par son cout se REDRESSE en fin de phase joueur.
+
+    Regle : en fin de phase joueur, tout joueur redresse TOUTES ses cartes inclinees. Defaut constate le 30/10/2026
+    sur Ashigaru (se009) : `GetControlCardsByType(support=True)` ne rend plus que les VRAIS soutiens (la Voie n'en
+    est pas un, voir path.py), et `PlayerPhase.EndPhase()` ne redressait donc plus la Voie : elle restait inclinee
+    pour toujours apres avoir servi une fois. On appelle directement `player.phase.EndPhase()`, le chemin que la
+    boucle de jeu emprunte a chaque phase joueur.
+    """
+    voie = aides["par_id"](monde, "se009")
+    if voie is None:
+        return False, "se009 Ashigaru introuvable en jeu"
+    if not voie.IsExhaust():
+        return False, "mise en place ratee : la Voie n'est pas inclinee avant la fin de phase"
+    monde.players[0].phase.EndPhase()
+    if voie.IsExhaust():
+        return False, "la Voie est encore inclinee apres la fin de phase joueur (attendu : redressee)"
+    return True, "la Voie inclinee est redressee en fin de phase joueur"
+
 def wave_pearls_lolo_retourne_et_soigne(monde, aides):
     """65008 Pearl's Lolo : « Flip a faceup card in your Rising Tide area
     facedown -> heal 3 damage. » Preuve de `CoutRetournerUneCarteRisingTide`
@@ -60040,6 +63874,228 @@ def kb_bow_fin_de_phase(monde, aides):
                        f"(attendu {avant + 1} : {avant} avant + 1 place en fin de phase)")
     return True, f"1 compteur fleche pose en fin de phase joueur ({avant} -> {apres})"
 
+def pc_diagnostic_en_jeu(monde, aides):
+    """DIAGNOSTIC temporaire : liste tout ce qui est en jeu, pour trouver le
+    vrai card_id du complot principal sur ce deck."""
+    ids = []
+    for objet in monde.object_manager.card_dict.values():
+        face = getattr(objet, "face", None)
+        if face is not None and face.IsInPlay():
+            ids.append(getattr(face.paper, "card_id", "?"))
+    return False, f"en jeu : {sorted(ids)}"
+
+def pc_valeur_thw(monde, aides):
+    """pc006 Newhaven (et toute carte « gains +N THW until the end of the
+    round ») : verifie `identite.thwart` DIRECTEMENT plutot que via
+    `Puzzle.Thwart`, inutilisable sur ce deck (voir le commentaire du cas :
+    souci preexistant du harnais, independant de cette carte, isole par
+    diagnostic le 05/11/2026 — meme SANS blocage pc001a/b ni carte pc, un
+    Thwart minimal ne retire aucune menace alors que `identite.thwart` vaut
+    bien la valeur attendue)."""
+    attendu = aides["cas"].get("attendu") or {}
+    identite = aides["par_id"](monde, "pc001a")
+    if identite is None:
+        return False, "pc001a introuvable"
+    if identite.thwart != attendu.get("thw"):
+        return False, f"thwart={identite.thwart} (attendu {attendu.get('thw')})"
+    return True, f"thwart={identite.thwart}"
+
+def pc_black_hole_reparti(monde, aides):
+    """pc016 Black Hole : au debut de la PROCHAINE phase joueur, la carte est
+    retiree de la partie ET le mechant encore marque la-bas en repart
+    (decision utilisateur du 05/11/2026, QUESTIONS-AUTEUR.md Q2). Verifie le
+    marqueur `pc_planete_actuelle` DIRECTEMENT (pas via une nouvelle attaque :
+    ATK 2 de Rhino contre DEF 2 de Silver Surfer donnerait 0 degat de toute
+    facon une fois defendue, meme sans blocage -- preuve ambigue)."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    rhino = aides["par_id"](monde, "01094")
+    if rhino is None:
+        return False, "01094 Rhino introuvable"
+    if EstÀUnePlanète(rhino) is not None:
+        return False, "Rhino est encore marque « a une planete » apres le retrait de Black Hole"
+    pc016 = aides["par_id"](monde, "pc016")
+    if pc016 is not None and pc016.IsInPlay():
+        return False, "pc016 Black Hole est encore en jeu"
+    return True, "Black Hole retiree, Rhino reparti"
+
+def pc_ego_fin_de_round(monde, aides):
+    """pc018 Ego The Living Planet : « At the end of the round, each
+    character here takes damage equal to my ATK, then departs. » Verifie
+    que 02023 Goblin Soldier (5 PV, arrive via l'Action du cas) a subi 3
+    degats (ATK imprime de pc018, survit) ET que son marqueur « a une
+    planete » est efface (le « then departs » n'est pas qu'un degat)."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    sbire = aides["par_id"](monde, "02023")
+    if sbire is None:
+        return False, "02023 introuvable"
+    degats = sbire.max_health - sbire.health
+    if degats != 3:
+        return False, f"degats sur 02023 = {degats} (attendu 3, ATK imprime de pc018)"
+    if EstÀUnePlanète(sbire) is not None:
+        return False, "02023 est encore marque « a Ego The Living Planet » apres la fin du round"
+    return True, f"3 degats infliges a 02023 (ATK de pc018), puis reparti"
+
+def pc_planet_deck_peuple(monde, aides):
+    """pc001b : « Shuffle the planet deck and set it aside facedown » (regle
+    hors carte). Le planet deck personnel doit contenir Sakaar/Newhaven/
+    Xandar/Ego des le Setup -- avant le premier correctif du 05/11/2026, rien
+    ne le remplissait jamais (toujours vide, l'Action « put the top card... »
+    ne faisait donc jamais rien en vraie partie). REVIREMENT, meme jour :
+    `PlanetDeck` reutilise desormais le slot natif `joueur.additional_deck`
+    (plus `joueur.pc_planet_deck`, invisible du plateau) -- voir le
+    commentaire de `PlanetDeck` dans `cards/pack/silver_surfer_power_cosmic/
+    __init__.py`."""
+    joueur = monde.players[0]
+    deck = getattr(joueur, 'additional_deck', None)
+    if deck is None:
+        return False, "additional_deck absent du joueur"
+    ids = sorted(getattr(c.paper, 'card_id', '?') for c in deck.Get(True))
+    attendu = ["pc005", "pc006", "pc007", "pc017"]
+    if ids != attendu:
+        return False, f"planet deck = {ids} (attendu {attendu})"
+    return True, f"planet deck peuple : {ids}"
+
+def pc_planet_deck_action_tire(monde, aides):
+    """pc001b : « Action: Exhaust Cosmic Surfboard -> put the top card of
+    the planet deck into play. » Verifie qu'UNE des 4 cartes du planet deck
+    est bien entree en jeu (n'importe laquelle, l'ordre est melange) ET que
+    le deck en contient une de moins. Lit `additional_deck` (voir
+    `pc_planet_deck_peuple` ci-dessus)."""
+    joueur = monde.players[0]
+    deck = getattr(joueur, 'additional_deck', None)
+    if deck is None:
+        return False, "additional_deck absent du joueur"
+    restantes = len(deck.Get(True))
+    if restantes != 3:
+        return False, f"{restantes} cartes restantes dans le planet deck (attendu 3)"
+    candidats = ["pc005", "pc006", "pc007", "pc017"]
+    en_jeu = [cid for cid in candidats if aides["par_id"](monde, cid) is not None]
+    if len(en_jeu) != 1:
+        return False, f"cartes du planet deck en jeu = {en_jeu} (attendu exactement 1)"
+    return True, f"{en_jeu[0]} tiree du planet deck et mise en jeu, {restantes} restantes"
+
+def pc_terrax_immunise(monde, aides):
+    """pc019 Terrax : « Terrax cannot arrive at or depart a PLANET » --
+    verifie que la tentative d'arrivee n'a pose AUCUN marqueur."""
+    from cards.pack.silver_surfer_power_cosmic import EstÀUnePlanète
+
+    terrax = aides["par_id"](monde, "pc019")
+    if terrax is None:
+        return False, "pc019 introuvable"
+    if EstÀUnePlanète(terrax) is not None:
+        return False, "Terrax est marque « a une planete » malgre son immunite imprimee"
+    return True, "Terrax n'a jamais ete marque a une planete"
+
+def pc_marqueur_ui_planete(monde, aides):
+    """Etape 8 bis PROCESSUS-CARTE : pc001a marque « a la planete » pc003 doit
+    porter `info['ui_marker_object_id'] == <object_id de pc003>` sur son
+    `CardDescriptor` RENDU (`card.Render()`), pas seulement sur l'attribut
+    Python interne `pc_planete_actuelle` (qui ne traverse jamais vers le
+    client)."""
+    surfer = aides["par_id"](monde, "pc001a")
+    zenn_la = aides["par_id"](monde, "pc003")
+    if surfer is None:
+        return False, "pc001a introuvable"
+    if zenn_la is None:
+        return False, "pc003 introuvable"
+    descripteur = surfer.card.Render()
+    marqueur = descripteur.info.get("ui_marker_object_id")
+    if marqueur != zenn_la.card.object_id:
+        return False, (f"info['ui_marker_object_id'] = {marqueur!r} "
+                        f"(attendu l'object_id de pc003, {zenn_la.card.object_id})")
+    return True, f"info['ui_marker_object_id'] = {marqueur} : le client peut retrouver pc003"
+
+def pc_power_cosmic_deux_icones(monde, aides):
+    """pc014 The Power Cosmic : desc.RES doit valoir 2 icones [wild] (« GG »),
+    pas une seule -- lu directement sur la carte EN MAIN (pas en jeu, `par_id`
+    filtre sur IsInPlay() -- une Resource ne vit jamais en jeu)."""
+    carte = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and getattr(getattr(face, "paper", None), "card_id", None) == "pc014":
+            carte = face
+            break
+    if carte is None:
+        return False, "pc014 introuvable"
+    valeur = carte.printed_resource.val
+    if valeur != 2:
+        return False, f"printed_resource.val = {valeur} (attendu 2, desc.RES devrait valoir \"GG\")"
+    return True, f"printed_resource.val = {valeur} : deux icones [wild] bien imprimees"
+
+def pc_herald_apres_attaque(monde, aides):
+    """pc020 Herald of Galactus : « add threat here equal to the amount of
+    damage dealt by that attack. Then, if 5 or more, remove a random
+    PLANET from the game. » Terrax (ATK 2) attaque pc004 (DEF 0, pc001a
+    exhaust pour ne pas voler la defense) -> 2 degats, menace imprimee 1 +
+    2 = 3 (< 5, aucune planete retiree ; pc003 doit rester)."""
+    herald = aides["par_id"](monde, "pc020")
+    if herald is None:
+        return False, "pc020 introuvable"
+    if herald.threat != 3:
+        return False, f"menace sur pc020 = {herald.threat} (attendu 3, 1 imprimee + 2 degats de l'attaque de Terrax)"
+    zenn_la = aides["par_id"](monde, "pc003")
+    if zenn_la is None:
+        return False, "pc003 Zenn-La a disparu alors que la menace est < 5 (aucune planete ne doit etre retiree)"
+    return True, f"menace sur pc020 = {herald.threat}, pc003 toujours en jeu"
+
+def pc_axe_attachee_au_mechant(monde, aides):
+    """pc021 Terrax's Axe : « if Terrax is not in play attach to the
+    villain instead ». Terrax absent -> doit s'attacher a Rhino (01094)."""
+    hache = aides["par_id"](monde, "pc021")
+    if hache is None:
+        return False, "pc021 introuvable"
+    porteur = hache.GetBindFace()
+    porteur_id = getattr(getattr(porteur, "paper", None), "card_id", None)
+    if porteur_id != "01094":
+        return False, f"pc021 est attachee a {porteur_id} (attendu 01094 Rhino, Terrax absent)"
+    return True, "pc021 attachee au mechant (Terrax absent)"
+
+def pc_hungry_master_surge(monde, aides):
+    """pc023 Hungry Master, TEMOIN Terrax absent : « If no attack was made
+    this way, this card gains surge. » `this.GainSurge(1, effect)`
+    (`ThisCardGainSurge`) se lit sur la propriete `surge` (`CanSurge`,
+    can_surge.py:25) -- doit valoir au moins 1 (surge imprime 0 + 1 gagne).
+
+    ⚠ `aides["par_id"]` filtre sur `IsInPlay()` : une Treachery se defausse
+    AUTOMATIQUEMENT juste apres la resolution de son `WhenRevealed` (meme
+    tick), donc introuvable par ce chemin au moment ou le verificateur
+    tourne. L'objet Python (et son attribut `surge`) survit au discard --
+    seul `IsInPlay()` devient faux -- donc on cherche ici SANS ce filtre."""
+    carte = None
+    for objet in monde.object_manager.card_dict.values():
+        face = objet.face
+        if face is not None and getattr(getattr(face, "paper", None), "card_id", None) == "pc023":
+            carte = face
+            break
+    if carte is None:
+        return False, "pc023 introuvable (meme hors jeu)"
+    if carte.surge < 1:
+        return False, f"surge = {carte.surge} (attendu >= 1, ThisCardGainSurge aurait du l'ajouter)"
+    return True, f"surge = {carte.surge} : aucune attaque n'a eu lieu (Terrax absent), gagne bien surge"
+
+def pc_nova_fin_de_phase(monde, aides):
+    """pc004 Nova Frankie Raye : « At the end of the phase, deal 1 damage to
+    me. » Meme principe que `kb_bow_fin_de_phase` : `WhenPhaseEnd` n'est pas
+    atteignable par l'API Puzzle, le verificateur envoie le message lui-meme.
+    """
+    from game.message import Message
+
+    frankie = aides["par_id"](monde, "pc004")
+    if frankie is None:
+        return False, "pc004 Nova Frankie Raye n'est pas en jeu"
+    avant = frankie.max_health - frankie.health
+
+    message = Message.WhenPhaseEnd(monde.phase_id, "Player", monde)
+    message.Send()
+
+    apres = frankie.max_health - frankie.health
+    if apres != avant + 1:
+        return False, (f"degats sur pc004 = {apres} apres WhenPhaseEnd "
+                       f"(attendu {avant + 1} : {avant} avant + 1 inflige en fin de phase)")
+    return True, f"1 degat inflige a Nova Frankie Raye en fin de phase ({avant} -> {apres})"
+
 def kb_madame_masque_stats(monde, aides):
     """kb017 : ATK/SCH de Madame Masque = ATK/THW IMPRIMES de la face HEROS de
     l'identite engagee, quelle que soit la forme ACTUELLEMENT affichee.
@@ -60277,6 +64333,49 @@ def choix_option_unique_dit(monde, aides):
     if re.search(r"(only one option is possible|une seule option est possible)", contenu):
         return True, "le journal dit qu'une seule option est possible"
     return False, "aucune ligne « une seule option » : le choix est reste silencieux"
+
+
+def faits_piller_armurerie(monde, aides):
+    """Rapport n°102 : Piller l'Armurerie publie ce qu'elle defausse en chemin (Se Liguer) et ce qu'elle trouve (Pistolet d'Hydra), SANS
+    pretendre que le paquet rencontre a ete remelange (le deck n'est pas epuise)."""
+    erreur = _a2_distribue_puis_revele(monde, '04069')
+    if erreur:
+        return False, erreur
+    faits = [f for f in monde.stat.faits_mechant if f.get('genre') == 'revelation' and f.get('carte') == 'Raid the Armory']
+    if len(faits) != 1 or not faits[0].get('recherches'):
+        return False, f"aucune recherche publiee : {monde.stat.faits_mechant}"
+    recherche = faits[0]['recherches'][0]
+    attendu = {'trouve': ['Hydra Sidearm'], 'paquet': False, 'defausse': ['Gang-Up']}
+    if recherche != attendu:
+        return False, f"recherche = {recherche}, attendu {attendu}"
+    return True, f"recherche publiee : {recherche}"
+
+
+def dd_deck_sens_consultable(monde, aides):
+    """Rapport n°100 (BL-Stark) : le deck Sens de Daredevil est consultable par son proprietaire a tout moment (livret p.26) : TOUTES ses
+    cartes, y compris celles face cachee, lui sont visibles (l'interface n'ouvre la pile que dans ce cas)."""
+    joueur = monde.players[0]
+    cartes = joueur.additional_deck.Get()
+    if len(cartes) != 5:
+        return False, f"deck Sens attendu a 5 cartes, obtenu {len(cartes)}"
+    cachees = [f.paper.card_id for f in cartes if not f.card.IsVisible(joueur)]
+    if cachees:
+        return False, f"cartes du deck Sens invisibles pour son proprietaire : {cachees}"
+    return True, "les 5 cartes du deck Sens sont visibles pour Daredevil"
+
+
+def choix_option_unique_enregistre(monde, aides):
+    """Rapport n°99 : le choix reduit a une option est AUSSI inscrit pour l'interface (bandeau), avec la carte et l'option."""
+    liste = monde.stat.choix_uniques
+    if len(liste) == 1 and liste[0]["carte_id"] and liste[0]["option"] and "[" not in liste[0]["carte"]:
+        return True, f"un choix unique enregistre : {liste[0]['option']}"
+    return False, f"choix_uniques attendu avec 1 entree, obtenu {liste}"
+
+
+def choix_option_unique_non_enregistre(monde, aides):
+    """Temoin : deux options possibles, rien n'est enregistre pour le bandeau."""
+    liste = monde.stat.choix_uniques
+    return (not liste), (f"choix_uniques inattendu : {liste}" if liste else "aucun choix unique enregistre")
 
 
 def choix_option_unique_absent(monde, aides):
@@ -61012,6 +65111,106 @@ def cibles_legales_proposees(monde, aides):
     if manquantes or interdites:
         return False, f"cibles proposees {sorted(cibles)} ; manquantes {manquantes} ; interdites {interdites}"
     return True, f"cibles proposees {sorted(cibles)}"
+
+
+def echo_rendu_pour_le_plateau(monde, aides):
+    """60040a/b/c Photographic Reflexes, etape 8 bis (backlog 13, 20/10/2026).
+
+    Ce que le PLATEAU recoit, produit par le moteur lui-meme, pas ecrit a la
+    main : le descripteur du monde (`ToDescriptor.World`, celui que sert
+    `/get_world`) et le descripteur de chaque option offerte (`Effect.Render`,
+    celui que sert `/get_ask`). On exige ici, cote moteur :
+      - chaque variante de `attendu["en_main"]` est EN MAIN dans le
+        descripteur et porte une option disponible dont le `bind_id` est
+        SON objet (chemin A : c'est elle que le joueur clique) ;
+      - chaque carte de `attendu["glissees"]` est dans le descripteur,
+        rattachee a l'identite (`bind_object_id`), et porte une option
+        « Play » disponible (chemin B).
+    Puis on ecrit le tout dans `attendu["fixture"]` (si la variable
+    d'environnement ECHO_FIXTURE_DIR est posee) : le cas plateau
+    `ui-app/src/board/echo-photographic-reflexes-plateau.test.ts` le relit et
+    affirme ce que la table en DESSINE et ce qui y est CLIQUABLE.
+    Les options sont filtrees comme le fait le moteur au tour du joueur
+    (`WhenPlayerLikeInTurn` + `EventManager.FilterAvailableEffects`), le meme
+    chemin que les cles `action_en_main` / `jouer_glissee`."""
+    import json, os
+    from dataclasses import asdict, is_dataclass
+    from game.message import Message
+    from game.effect.rule import GameRule
+    from game.event.manager import EventManager
+    from game.render.to_descriptor import ToDescriptor
+    attendu = aides["cas"]["attendu"]
+    joueur = monde.players[0]
+    identite = joueur.GetIdentity()
+    message = Message.WhenPlayerLikeInTurn(joueur, GameRule(identite))
+    message.Send()
+
+    def options_de(face, effets):
+        dispo = EventManager.FilterAvailableEffects(message, effets, joueur, monde, None)
+        return [asdict(e.Render(None, 0)) for e in dispo]
+
+    soucis = []
+    options = []
+    for card_id in attendu.get("en_main", []):
+        face = next((f for f in joueur.hand_cards.GetAll()
+                     if getattr(f.paper, "card_id", None) == card_id), None)
+        if face is None:
+            soucis.append(f"{card_id} n'est pas en main")
+            continue
+        effets = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn)
+                  if not x.ability.is_play]
+        rendues = options_de(face, effets)
+        if not any(o["bind_id"] == face.card.object_id and not o["failure_reason"]
+                   for o in rendues):
+            soucis.append(f"{card_id} en main : aucune option rendue sur son objet "
+                          f"{face.card.object_id} (rendues : {rendues})")
+        options += rendues
+    zone = identite.GetPlacedCardArea()
+    for card_id in attendu.get("glissees", []):
+        face = next((f for f in zone.Get(True)
+                     if f is not None and getattr(f.paper, "card_id", None) == card_id), None)
+        if face is None:
+            soucis.append(f"{card_id} n'est pas glissee sous l'identite")
+            continue
+        rendues = options_de(face, face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn))
+        if not any(o["bind_id"] == face.card.object_id and not o["failure_reason"]
+                   for o in rendues):
+            soucis.append(f"{card_id} glissee : aucune option « Play » rendue sur son objet")
+        options += rendues
+
+    descripteur = ToDescriptor.World(monde, "", "")
+    brut = json.loads(json.dumps(asdict(descripteur) if is_dataclass(descripteur) else descripteur,
+                                 default=lambda o: asdict(o) if is_dataclass(o) else str(o)))
+    siege = brut["players"][0]
+    ids_main = [c.get("card_id") for c in siege.get("hand_cards", [])]
+    for card_id in attendu.get("en_main", []):
+        if card_id not in ids_main:
+            soucis.append(f"{card_id} absent de hand_cards du descripteur ({ids_main})")
+    id_identite = identite.card.object_id
+    tout = [c for zone_cartes in siege.values() if isinstance(zone_cartes, list)
+            for c in zone_cartes if isinstance(c, dict)]
+    for card_id in attendu.get("glissees", []):
+        portees = [c for c in tout if c.get("card_id") == card_id]
+        if not any(c.get("bind_object_id") == id_identite for c in portees):
+            soucis.append(f"{card_id} glissee absente du descripteur, ou non rattachee "
+                          f"a l'identite {id_identite} ({portees})")
+
+    dossier = os.environ.get("ECHO_FIXTURE_DIR")
+    if dossier and attendu.get("fixture"):
+        # Le siege 0 seulement, sans ses decks (des dizaines de cartes qui ne
+        # changent rien a ce qu'on mesure) : la fixture reste lisible.
+        for cle in ("player_deck", "player_discard_pile", "additional_deck"):
+            if cle in siege:
+                siege[cle] = []
+        fixture = {"monde": {"render_id": 1, "players": [siege]},
+                   "options": options, "identite": id_identite}
+        with open(os.path.join(dossier, attendu["fixture"]), "w", encoding="utf-8") as f:
+            json.dump(fixture, f, ensure_ascii=False, indent=1, sort_keys=True)
+
+    if soucis:
+        return False, " ; ".join(soucis)
+    return True, (f"{len(options)} option(s) rendue(s) sur "
+                  f"{sorted({o['bind_id'] for o in options})} ; identite {id_identite}")
 
 
 def sd021_chaines(monde, aides):
@@ -63733,6 +67932,27 @@ def a6_menace_acceleree(monde, aides):
     return True, (f"menace +{fait['montant']} = escalade {fait['escalade']} + acceleration "
                   f"{fait['acceleration']} ({fait['joueurs']} joueur(s))")
 
+def menace_nomme_la_source_acceleration(monde, aides):
+    """Rapport n°104 : le fait de menace du point 1 NOMME les cartes dont l'icone d'acceleration est comptee (Cloak, un allie)."""
+    from game.world.phase import Phase
+    from game.operate.worlds import Worlds
+
+    monde.phase.SetState(Phase.State.PlaceThreat)
+    monde.current_player = None
+    maniganes = Worlds.GetAllMainSchemes(monde)
+    if len(maniganes) != 1:
+        return False, f"{len(maniganes)} manigance(s) principale(s) (attendu 1)"
+    _a2_vider_le_journal(monde)
+    maniganes[0].Phase()
+    faits = _a2_faits(monde, 'menace')
+    if len(faits) != 1:
+        return False, f"{len(faits)} fait(s) de menace ; journal = {monde.stat.faits_mechant}"
+    fait = faits[0]
+    if fait.get('acceleration') != 1 or fait.get('sources_acceleration') != ['Cloak']:
+        return False, f"acceleration={fait.get('acceleration')} sources={fait.get('sources_acceleration')} (attendu 1 et ['Cloak'])"
+    return True, f"menace +{fait['montant']} : acceleration 1 venant de {fait['sources_acceleration']}"
+
+
 def a6_stade_porte_les_stats(monde, aides):
     """E5 : `avant_id`, `stats_avant`, `stats_apres` sur le fait `stade`."""
     from game.effect.rule import GameRule
@@ -64740,6 +68960,33 @@ def executer_un_cas(game_dir, port, index):
     WebServer.IsAuthenticate = lambda self, request=None: True
     WebServer.IsVersionMatch = lambda self, request=None: True
 
+    # COMPTEUR DES CARTES DE BOOST RECUES (AJOUT 20/10/2026, backlog 13, Zeus).
+    # Une carte de boost ne vit que le temps d'une activation : elle est
+    # retournee, appliquee puis defaussee, et l'etat final ne garde aucune trace
+    # de COMBIEN l'ennemi en a recu. « give Nyx 1 additional boost card »
+    # (ze013) et « Give the activating enemy an additional boost card » (ze016)
+    # etaient donc hors de portee du harnais depuis le 11/09/2026. Toutes les
+    # sources (activation, Villainous, capacites de cartes) finissent par
+    # `Boostable.GiveBoostCard` (boostable.py) : on y compte, par `card_id` de
+    # la face qui RECOIT la carte, chaque deplacement reussi. Lu par la cle
+    # `boosts_sur` de `etat_attendu`. Compte depuis le DEBUT du cas (mise en
+    # place comprise) : un cas qui active un ennemi pendant sa mise en place
+    # doit en tenir compte dans son attendu.
+    from game.card.face.component.boostable import Boostable
+    _boosts_recus = {}
+    _donner_d_origine = Boostable.GiveBoostCard
+
+    def _donner_et_compter(self, face, by_effect):
+        reussi = _donner_d_origine(self, face, by_effect)
+        if reussi:
+            receveur = getattr(getattr(self.parent, "face", None), "paper", None)
+            cle = getattr(receveur, "card_id", None)
+            _boosts_recus[cle] = _boosts_recus.get(cle, 0) + 1
+        return reussi
+
+    Boostable.GiveBoostCard = _donner_et_compter
+    Boostable._harnais_boosts_recus = _boosts_recus
+
     from engine.device.manager.base import DeviceManager
 
     etat = {"phase": "attente", "asks": 0, "resultat": None}
@@ -64916,8 +69163,13 @@ def executer_un_cas(game_dir, port, index):
             effet = DebugRule(monde.object_manager.card_dict[0].face)
             joueur.PlayCardsLikeInTurn([face], effet)
 
-        def jouer_carte_glissee(card_id):
+        def jouer_carte_glissee(card_id, hote_id=None):
             """Joue une carte GLISSEE sous l'identite, par le vrai chemin.
+
+            `hote_id` (ajoute le 20/10/2026, backlog 12, dz014 Lightbringr) :
+            une carte EN JEU autre que l'identite, sous laquelle la carte est
+            glissee (cle de cas `jouer_sous: [[hote, card_id]]`). Sans lui,
+            rien ne change.
 
             Cle de cas `jouer_glissee` (pack fne, Echo). Ajoutee le 21/09/2026.
 
@@ -64939,6 +69191,8 @@ def executer_un_cas(game_dir, port, index):
             from game.event.manager import EventManager
             joueur = monde.players[0]
             identite = joueur.GetIdentity()
+            if hote_id is not None:
+                identite = par_id(monde, hote_id)
             zone = identite.GetPlacedCardArea() if identite is not None else None
             face = None
             for f in (zone.Get(True) if zone is not None else []):
@@ -64946,7 +69200,8 @@ def executer_un_cas(game_dir, port, index):
                     face = f
                     break
             if face is None:
-                raise RuntimeError(f"{card_id} n'est pas glissee sous l'identite")
+                raise RuntimeError(f"{card_id} n'est pas glissee sous "
+                                   f"{hote_id or 'l identite'}")
             effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
             message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
             message.Send()
@@ -65111,6 +69366,19 @@ def executer_un_cas(game_dir, port, index):
                 except Exception as exc:
                     print(f"TOLERE: jouer_glissee {card_id} -> "
                           f"{type(exc).__name__}: {exc}", flush=True)
+            # `jouer_sous: [[hote, card_id]]` (20/10/2026, backlog 12, dz014
+            # Lightbringr) : joue une carte glissee sous une carte EN JEU autre
+            # que l'identite, par le meme chemin que `jouer_glissee`. ADDITIVE.
+            for hote_id, card_id in cas.get("jouer_sous") or []:
+                jouer_carte_glissee(card_id, hote_id)
+            # `jouer_sous_tolerant: [[hote, card_id]]` (02/11/2026, pack beast_proust) : le REFUS est le resultat attendu (meme
+            # raison d'etre que `jouer_glissee_tolerant`) : « Upgrades tucked under Beast's Lab » ne rend PAS jouable un evenement
+            # glisse sous le Lab. ADDITIVE.
+            for hote_id, card_id in cas.get("jouer_sous_tolerant") or []:
+                try:
+                    jouer_carte_glissee(card_id, hote_id)
+                except Exception as exc:
+                    print(f"TOLERE: jouer_sous {hote_id} {card_id} -> {type(exc).__name__}: {exc}", flush=True)
             for card_id in cas.get("action_en_main") or []:
                 declencher_action_en_main(card_id)
             # `declencher_final` (08/10/2026, rapport n68 Hellcat) : commandes
@@ -65394,7 +69662,10 @@ def executer_un_cas(game_dir, port, index):
             gestionnaire = monde_courant().object_manager
             for card_id in cas.get("payer_avec") or []:
                 trouve = None
-                for objet_id, objet in gestionnaire.card_dict.items():
+                # AJOUT 01/11/2026 (pack mantis) : « card_id@Nom de la capacite » designe UN des moyens de paiement d'une
+                # carte qui en porte deux (Empathetic Advantage : origine ennemie ou personnage) ; sans « @ », inchange.
+                card_id, _, nom_moyen = card_id.partition("@")
+                for objet_id, objet in ([] if nom_moyen else gestionnaire.card_dict.items()):
                     face = objet.face
                     if face is not None \
                             and getattr(face.paper, "card_id", None) == card_id \
@@ -65406,10 +69677,11 @@ def executer_un_cas(game_dir, port, index):
                         effet = gestionnaire.paying_effect_dict.get(int(x)) \
                             or gestionnaire.effect_dict.get(int(x))
                         source = getattr(getattr(effet, "this", None), "paper", None)
-                        if getattr(source, "card_id", None) == card_id and x not in priorite:
+                        if getattr(source, "card_id", None) == card_id and priorite.count(x) < candidates.count(x) \
+                                and (not nom_moyen or getattr(getattr(effet, "ability", None), "name", None) == nom_moyen):
                             trouve = x
                             break
-                if trouve is None:
+                if trouve is None and not nom_moyen:
                     for objet in gestionnaire.card_dict.values():
                         face = objet.face
                         if face is not None and getattr(face.paper, "card_id", None) == card_id:
@@ -65422,7 +69694,10 @@ def executer_un_cas(game_dir, port, index):
                             if res and len(disponibles) == 1:
                                 trouve = disponibles[0]
                             break
-                if trouve is not None and trouve not in priorite:
+                # CORRECTIF (25/10/2026, pack predator, pd010 Trophy Room « remove X counters -> generate X resources ») : une
+                # ressource a usages multiples (`SetToAvailableTimesFn`) est offerte N FOIS sous le MEME id ('12', '12', '12') ;
+                # `payer_avec: ["pd010", "pd010"]` doit alors la compter deux fois. Sans doublon dans `candidates`, rien ne change.
+                if trouve is not None and (trouve not in priorite or priorite.count(trouve) < candidates.count(trouve)):
                     priorite.append(trouve)
             ordonnees = priorite + [x for x in candidates if x not in priorite]
             choisies, couvert = [], 0
@@ -65628,7 +69903,11 @@ def executer_un_cas(game_dir, port, index):
             # proposees. On bascule alors en mode « cas », puis on joue le cas
             # depuis la reponse suivante : declencher depuis l'interieur de
             # DoGetInput garde le monde dans un etat coherent.
+            # AJOUT (26/10/2026, pack hp Wasp Hank Pym) : `noms_tour` = noms d'options qui prouvent AUSSI que le tour est atteint.
+            # Un heros « only by card abilities » n'offre aucun « Change Form » en alter ego, et sans degats aucune
+            # « Recover » : le pilote ne quittait jamais l'attente et jouait sa capacite en boucle. Additif : sans la cle, rien ne change.
             if {"Attack", "Thwart", "Change_Form", "Change Form", "Recover"} & noms \
+                    or set(cas.get("noms_tour") or []) & noms \
                     or any(str(n).startswith("Change_To_") for n in noms if n):
                 # « Change Form » (avec espace) : nom réel affiché par le moteur.
                 # Indispensable aux identités multi-faces (Moon Knight) dont le
@@ -65657,10 +69936,42 @@ def executer_un_cas(game_dir, port, index):
     # dont le texte parle des autres joueurs (« play under any player's
     # control », « give to the X player ») : en solo elles ne peuvent pas etre
     # exercees, et rien ne le signale.
+    # `assemblee_avant` (22/10/2026, Kingsfall multi-tables) : l'etat de l'assemblee AVANT la mise en place, comme le serveur le fait en creant /
+    # rejoignant l'assemblee avant de lancer la partie. Une liste d'etapes : {"creer": [table, joueurs], "code": "KING-TEST"} ou
+    # {"rejoindre": [table, joueurs], "code": ...} ; {"verser": n} / {"terminer": [table, victoire]} / {"envoyer": table} pour poser l'etat des AUTRES tables.
+    # Le fichier est propre au cas (`MCLCG_ASSEMBLEES`).
+    if cas.get("assemblee_avant"):
+        _chemin_assemblee = f"/tmp/capacites_assemblee_{os.environ.get('CAS_PREFIX', '')}{index}.db"
+        for _suffixe in ("", "-wal", "-shm"):
+            if os.path.exists(_chemin_assemblee + _suffixe):
+                os.remove(_chemin_assemblee + _suffixe)
+        os.environ["MCLCG_ASSEMBLEES"] = _chemin_assemblee
+        from game.operate.assemblee import Assemblee as _Assemblee
+        _code_assemblee = None
+        for _etape in cas["assemblee_avant"]:
+            if "creer" in _etape:
+                _code_assemblee = _Assemblee.Creer(_etape["creer"][0], _etape["creer"][1], code=_etape.get("code"))
+            elif "rejoindre" in _etape:
+                _Assemblee.Rejoindre(_etape.get("code") or _code_assemblee, _etape["rejoindre"][0], _etape["rejoindre"][1])
+            elif "verser" in _etape:
+                _Assemblee.VerserJetons(_code_assemblee, _etape["verser"])
+            elif "terminer" in _etape:
+                _Assemblee.Terminer(_code_assemblee, _etape["terminer"][0], bool(_etape["terminer"][1]))
+            elif "envoyer" in _etape:
+                _Assemblee.EnvoyerJeton(_code_assemblee, _etape["envoyer"])
     noms_heros = [cas["heros"]]
     if cas.get("heros2"):
         noms_heros.append(cas["heros2"])
-    scene = SceneLoader.NewScene(cas["scenario"], None, noms_heros, 42)
+    # `sans_modulaires` (22/10/2026, Shadowland) : le scenario SANS ses modulaires recommandes (Ninja Swarm) : les modulaires changent le nombre de cartes
+    # melangees avant le tirage du vilain, donc la graine donne un autre vilain.
+    sets_exacts = (["standard"] + (["expert"] if cas["scenario"].endswith("_expert") else [])) if cas.get("sans_modulaires") else None
+    # `modulaires_en_plus` (23/10/2026, Shadowland, livret FR p. 12) : des sets modulaires AJOUTES a ceux du scenario (« si les joueurs personnalisent ce scenario... »).
+    if cas.get("modulaires_en_plus") and sets_exacts is None:
+        import json as _json
+        with open(os.path.join("data", "scenarios", cas["scenario"] + ".json"), encoding="utf-8") as _f:
+            _sc = _json.load(_f)
+        sets_exacts = list(_sc.get("encounter_sets", [])) + list(_sc.get("modular_sets", [])) + list(cas["modulaires_en_plus"])
+    scene = SceneLoader.NewScene(cas["scenario"], sets_exacts, noms_heros, int(cas.get("graine", 42)))   # `graine` (22/10/2026) : tirages au hasard differents (vilain de Shadowland)
     # ⚠ LE HARNAIS NE JOUE PAS LES MEMES REGLES QU'UNE VRAIE PARTIE.
     # `launcher.js` pousse `v16_all` des que « regles v1.6 » est coche (c'est
     # le cas par defaut), et `SetRule` bascule alors TOUS les `v16_*` :
@@ -65698,6 +70009,10 @@ def executer_un_cas(game_dir, port, index):
         scene.campaign.campaign_log |= {str(k): str(v) for k, v in (cas.get("carnet") or {}).items()}
         if "mode_campaign" not in scene.rules:
             scene.rules.append("mode_campaign")
+    # `defis` (22/10/2026, defis MC×DC 2026 p279-p282) : les cartes `Challenge` a mettre en jeu, comme `launcher.js` (`challenges: raw.challenges`) les passe
+    # a `game_session` : sans cette cle le harnais montait les scenarios de defi SANS leur carte de regles speciales.
+    if cas.get("defis"):
+        scene.campaign.SetChallenge(*cas["defis"])
     remplir_les_decks_vides(scene)
     # `deck_ajoute` (17/10/2026, pack TMNT Shinobi) : card_id ajoutes au `player_deck` du joueur 1 AVANT la mise
     # en place, comme le ferait le constructeur de deck. Sert a prouver qu'un PATH choisi au deck-building
@@ -65981,10 +70296,13 @@ def main():
     # recoit toujours l'index ABSOLU dans CAS, et le rapport reste comparable
     # a celui d'une passe complete.
     filtre = sys.argv[4] if len(sys.argv) > 4 else None
+    # AJOUT 23/10/2026 : plusieurs sous-chaines separees par « | » (un cas est retenu s'il en contient UNE). C'est ce que produit
+    # `tools/cas_impactes.py` (selection des cas a rejouer apres un changement). Sans « | » : comportement inchange.
+    alternatives = [x for x in (filtre or "").split("|") if x]
     selection = [(i, c) for i, c in enumerate(CAS)
-                 if not filtre or filtre in c["nom"]]
+                 if not alternatives or any(x in c["nom"] for x in alternatives)]
     if filtre:
-        print(f"FILTRE « {filtre} » : {len(selection)}/{len(CAS)} cas retenus")
+        print(f"FILTRE « {filtre[:120]}{'...' if len(filtre) > 120 else ''} » : {len(selection)}/{len(CAS)} cas retenus")
 
     # ⚠ AVANT `preparer_dossiers_paralleles`, QUI CREE N DOSSIERS DE JEU : une
     # passe qu'on va refuser n'a pas a semer des dossiers derriere elle.

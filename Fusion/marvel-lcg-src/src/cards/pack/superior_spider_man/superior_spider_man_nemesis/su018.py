@@ -30,9 +30,6 @@ from . import *
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def pv_imprimes(face: 'CardFace') -> int:
-        return int(getattr(face, "printed_health", 0) or 0)
-
     def porte_deja_un_planeur(face: 'CardFace') -> bool:
         # ⚠ CORRECTIF DU 09/09/2026 — `GetAttachedAttachments()` MANQUAIT.
         # Goblin Glider est une ATTACHMENT, pas une Upgrade : `GetAttachedUpgrades`
@@ -57,12 +54,6 @@ def GetAbilities() -> Sequence['Ability']:
         Unused(joueur)
         this.GainSurge(1, effect)
 
-    def choisir_le_plus_gros(effect: 'Effect') -> 'CardFace|None':
-        candidats = [e for e in Worlds.GetOnFieldEnemies(effect) if cible_valide(e)]
-        if not candidats:
-            return None
-        return max(candidats, key=pv_imprimes)
-
     def se_defausser(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Attachment)
         Unused(message)
@@ -71,6 +62,9 @@ def GetAbilities() -> Sequence['Ability']:
     return [
         AbilityFactory.AttachToFaceWhenPutIntoPlay(
             CardFinder(check_face_fn=lambda f: f is not None and cible_valide(f)),
+            # « the enemy with the HIGHEST PRINTED hit points » : sans ce parametre le joueur choisissait librement parmi les ennemis
+            # valides (`choisir_le_plus_gros` etait defini mais jamais branche : releve par verifier_api_cartes le 26/10/2026).
+            highest_printed_hp=True,
             if_cannot_operation=sans_cible,
         ),
         AbilityFactory.WhenInYourPlayTurn(

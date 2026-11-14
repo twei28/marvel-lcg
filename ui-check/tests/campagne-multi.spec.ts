@@ -24,6 +24,7 @@
 // ouvre son lien doit lire « Tu tiens <héros> » et non « Choisis ton héros ».
 // Le salon vit hors du plateau, et rien ici ne l'atteint.
 import { test, expect, type Browser, type Page } from '@playwright/test'
+import { allerA, parcoursOuvert, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   lancer,
@@ -139,14 +140,9 @@ test.describe.serial('Campagne à plusieurs', () => {
 
     // --- Le siège distant, celui qui n'a jamais rien posé --------------------
     const distant = await ouvrirSiegeDistant(browser, 1)
-    await expect(
-      distant.locator('.camp-recomp'),
-      "Le siège 1 doit voir le panneau sans avoir jamais eu la clé."
-    ).toBeVisible({ timeout: 30000 })
-
-    // « Valider » est à l'hôte, et à lui seul.
-    await expect(distant.locator('.camp-recomp-valider')).toHaveText(/Envoyer mes champs/)
-    await expect(page.locator('.camp-recomp-valider')).toHaveText(/Valider et continuer/)
+    await parcoursOuvert(distant, 30000) // le siège 1 voit le parcours sans avoir jamais eu la clé
+    await allerA(distant, 'bilan')
+    await allerA(page, 'bilan')
 
     // Le champ « Tech Upgrade » porte une ligne par siège. Chez le distant, la
     // ligne du siège 0 est inerte et la sienne est ouverte.
@@ -155,27 +151,33 @@ test.describe.serial('Campagne à plusieurs', () => {
     await expect(chezDistant.nth(0).locator('.camp-carte').first()).toBeDisabled()
     await expect(chezDistant.nth(1).locator('.camp-carte').first()).toBeEnabled()
     // Et il lit à qui appartient la case qu'il ne peut pas remplir.
-    await expect(chezDistant.nth(0)).toContainText(/à remplir par/)
+    await expect(chezDistant.nth(0)).toContainText(/à remplir par|to be filled in by/i)
 
     // Exactement l'inverse chez l'hôte.
     const chezHote = lignesPersonnelles(page)
     await expect(chezHote.nth(0).locator('.camp-carte').first()).toBeEnabled()
     await expect(chezHote.nth(1).locator('.camp-carte').first()).toBeDisabled()
 
-    // --- Chacun remplit sa case, l'hôte valide ------------------------------
+    // --- Chacun remplit sa case, l'hôte lance la suite ----------------------
     await chezDistant.nth(1).locator('.camp-carte').nth(1).click() // le distant prend 04156
-    await distant.locator('.camp-recomp-valider').click()
-    await expect(distant.locator('.camp-recomp-attente-hote')).toContainText(/Envoyé/, {
-      timeout: 20000,
-    })
+    // « Continuer » envoie SES champs, et rien d'autre : le serveur doit les avoir.
+    await allerA(distant, 'carnet')
+    await expect
+      .poll(async () => (await relireCampagne(request, identifiant)).carnet?.['Player 2 Tech Upgrade'], {
+        timeout: 20000,
+      })
+      .toBe(TECH[1])
     // La liste « À choisir avant de continuer » ne s'affiche PAS chez lui : elle
-    // nommait des cases appartenant à d'autres joueurs, qu'il ne peut pas
-    // remplir. Défaut relevé par ce test, corrigé dans le panneau.
-    await expect(distant.locator('.camp-recomp-bloque')).toHaveCount(0)
+    // nommait des cases appartenant à d'autres joueurs, qu'il ne peut pas remplir.
+    await expect(distant.locator('.pf-info')).not.toContainText(/choisir|choose/i)
+    // « Commencer » est à l'hôte, et à lui seul : le distant attend.
+    await allerA(distant, 'suite')
+    await expect(distant.locator('.pf-bas .pf-btn-or')).toHaveCount(0)
+    await expect(distant.locator('.pf-attente')).toBeVisible()
 
     await chezHote.nth(0).locator('.camp-carte').nth(0).click() // l'hôte prend 04155
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     // --- Le carnet porte les DEUX saisies -----------------------------------
     const campagne = await relireCampagne(request, identifiant)

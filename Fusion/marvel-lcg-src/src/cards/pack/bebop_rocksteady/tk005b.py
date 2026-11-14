@@ -18,7 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
             for vilain in VilainsEnJeu(effect):
                 if effect.world.is_game_over:
                     return
-                if vilain.IsInPlay():
+                if vilain.IsInPlay() and AttaqueHorsPhase(vilain, joueur, effect):
                     vilain.DoAttackYou(joueur, effect)
 
     return [

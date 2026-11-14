@@ -17,6 +17,7 @@
 // `carte.name` a la source casserait ces comparaisons en silence. On ne touche
 // donc JAMAIS au champ : on traduit au dernier moment, au rendu.
 import { NOMS_FR } from './noms-fr'
+import { NOMS_FR_FANMADE } from './noms-fr-fanmade'
 import { scansFrActifs } from './scans-fr'
 
 /** Ce que nomAffiche() a besoin de lire. Volontairement plus petit qu'un
@@ -37,5 +38,5 @@ export type CarteNommee = {
 export function nomAffiche(carte: CarteNommee): string {
   const brut = carte.name ?? ''
   if (!carte.card_id || !scansFrActifs()) return brut
-  return NOMS_FR[carte.card_id] ?? brut
+  return NOMS_FR[carte.card_id] ?? NOMS_FR_FANMADE[carte.card_id] ?? brut
 }

@@ -9,8 +9,11 @@ def LogSet(name: str):
         return (CampaignLog.GetStrInternal(name, effect) != '')
     return check
 def PutSideSchemeIntoPlay(card_id: str) -> 'Ability':
+    # ⚠ La manigance de campagne est RECTO-VERSO (21184a/21184b...) : sans la face b, « Flip this card over » ne fait que la
+    # coucher face cachee (rapport #105 : Hack Sanctuary's Computer ne se retournait pas). Meme convention que Puzzle.PutIntoPlay('a,b').
+    paire = f'{card_id},{card_id[:-1]}b'
     def action(effect: 'Effect', message: 'Message.WhenCampaignSetup'):
-        card = CardFactory.GenerateCard(card_id, None, effect.world)
+        card = CardFactory.GenerateCard(paire, None, effect.world)
         card.face.PutIntoPlay('FirstPlayer', effect)
     return AbilityFactoryCampaign.WhenCampaignSetup(action)
 def PutIntoPlayIfPool(card_id: str, pool_name: str, *, under_control: bool = False) -> 'Ability':
@@ -123,6 +126,12 @@ def WriteCampaignLogAtGameOver(collect_fn, scenario_id: 'str|None'=None) -> 'Abi
         # premiere gate a jouer la FIN d'une partie. Le collecteur recoit donc
         # le message, seul porteur de la verite a cet instant.
         updates = collect_fn(effect, message)
+        # AJOUT (22/10/2026, Punisher MC×DC) : une carte de CAMPAGNE d'un AUTRE pack (l'environnement « Tracking the Buyer » joue sur les
+        # scenarios Fear No Evil, dont le 1A ecrit deja son propre releve) ne peut pas poser un second `WriteCampaignLogAtGameOver` : le
+        # dernier a ecrire gagnerait. Elle declare donc un COLLECTEUR sur le monde (`world.campagne_collecteurs`) que CHAQUE ecriture rejoue,
+        # et au besoin une estampille (`world.campagne_estampille`). Sans ces attributs, rien ne change.
+        for extra in getattr(world, 'campagne_collecteurs', []):
+            updates = {**updates, **extra(effect, message)}
         for key, value in updates.items():
             if (value == None):
                 out.pop(key, None)
@@ -144,7 +153,7 @@ def WriteCampaignLogAtGameOver(collect_fn, scenario_id: 'str|None'=None) -> 'Abi
         # `infiltrate_the_museum` et `escape_the_museum`. Le panneau de
         # recompenses ignore alors tout le releve du moteur (estampille
         # differente) et les unites gagnees ne parviennent jamais au Marche.
-        stamp = scenario_id
+        stamp = getattr(world, 'campagne_estampille', None) or scenario_id
         schemes = Worlds.GetAllMainSchemes(effect.world)
         if stamp is None and schemes:
             set_name = schemes[0].paper.set_name

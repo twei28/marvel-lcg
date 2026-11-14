@@ -1,0 +1,73 @@
+{
+    "version": "0.5.8",
+    "name": "The Big Apple (Uptown)",
+    "villain": [],
+    "expert": true,
+    "schemes": [
+        "pu001a,pu001b",
+        "pu002a,pu002b",
+        "pu003a,pu003b"
+    ],
+    "set_aside": [
+        "pu005",
+        "pu006",
+        "pu030",
+        "pu031",
+        "pu032",
+        "pu033",
+        "pu034",
+        "pu035",
+        "pu036",
+        "pu037",
+        "pu038",
+        "pu039",
+        "pu040",
+        "pu041",
+        "pu042",
+        "pu043",
+        "pu044",
+        "pu045",
+        "pu046",
+        "pu047",
+        "pu048b",
+        "pu049b",
+        "pu050b",
+        "pu051b",
+        "pu052b",
+        "pu053b",
+        "pu054b",
+        "pu055b",
+        "pu023",
+        "pu024",
+        "pu025",
+        "pu026",
+        "pu027",
+        "pu028"
+    ],
+    "encounters": [
+        "pu007",
+        "pu008",
+        "pu009",
+        "pu010",
+        "pu011",
+        "pu012",
+        "pu013",
+        "pu014",
+        "pu015",
+        "pu016",
+        "pu017",
+        "pu018",
+        "pu018",
+        "pu020",
+        "pu021",
+        "pu022"
+    ],
+    "encounter_sets": [
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "cops",
+        "tracksuit_mafia"
+    ]
+}

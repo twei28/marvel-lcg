@@ -1,0 +1,266 @@
+[
+ {
+  "id_scan": "65022",
+  "texte_fr": "Lié (Archpriestess, Gorgon ou Lady Bullseye).\nVilenie.\n[star] <b>Interruption forcée</b> : quand Lady Bullseye vous attaque, cette attaque gagne À Distance et elle attaque l'allié ayant le coût imprimé le plus élevé que vous contrôlez, si possible.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\" (Lié : sbire, masculin)"
+  ]
+ },
+ {
+  "id_scan": "65023",
+  "texte_fr": "Lié (Archpriestess, Daredevil ou Elektra).\nVilenie.\n<b>Une fois révélée</b> : subissez 2 dégâts indirects.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\""
+  ]
+ },
+ {
+  "id_scan": "65024",
+  "texte_fr": "Liée (Archpriestess, Elektra ou White Tiger).\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance retire de la partie un allié qu'il contrôle. Si aucun allié n'a été retiré par cet effet, ce joueur subit 3 dégâts.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\"",
+   "\"When Defeated\" sur une manigance annexe rendu \"Une fois déjouée\" (usage officiel pour les manigances, ex. 04070), et \"le défaiteur\" -> \"le joueur qui a déjoué cette manigance\""
+  ]
+ },
+ {
+  "id_scan": "65025",
+  "texte_fr": "Liée (Daredevil, Gorgon ou Lady Bullseye).\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance regarde les 3 cartes du dessus du deck Rencontre, en révèle 1 et défausse les autres.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\"",
+   "\"When Defeated\" sur une manigance annexe rendu \"Une fois déjouée\" (usage officiel pour les manigances, ex. 04070), et \"le défaiteur\" -> \"le joueur qui a déjoué cette manigance\""
+  ]
+ },
+ {
+  "id_scan": "65026",
+  "texte_fr": "Liée (Archpriestess, Gorgon ou Lady Bullseye).\n<b>Une fois révélée</b> : passez sous forme de héros. Le méchant vous attaque.\n---\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\""
+  ]
+ },
+ {
+  "id_scan": "65027",
+  "texte_fr": "Liée (Daredevil, Elektra ou White Tiger).\n<b>Une fois révélée</b> : le méchant manigance. Si 2 menaces ou moins ont été placées sur la manigance principale par cet effet, défaussez les 3 cartes du dessus du deck Rencontre.\n---\n[star] <b>Boost</b> : si cette activation est une attaque, placez 2 menaces sur la manigance principale.",
+  "citation_fr": null,
+  "notes": [
+   "Linked->Lié/Liée (X, Y ou Z) : aucune occurrence officielle de la liste à 3 noms ; accord au genre de la carte, \"or\" -> \"ou\""
+  ]
+ },
+ {
+  "id_scan": "65028",
+  "texte_fr": "Garde.\nTant que Black Mountain est engagé avec vous, chaque autre sbire <b>NINJA</b> engagé avec vous ne peut pas être attaqué.\n<b>★ Boost</b> : si un allié défend contre cette attaque, révélez ce sbire.",
+  "citation_fr": null,
+  "notes": [
+   "doute : le Boost « reveal this minion » est rendu littéralement (révélez ce sbire) ; le sens exact est à confirmer sur le scan"
+  ]
+ },
+ {
+  "id_scan": "65029",
+  "texte_fr": "Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui a vaincu Kirigi dépense soit 2 ressources de n'importe quel type, soit mélange Kirigi dans le deck Rencontre.\n<b>★ Boost</b> : si un allié défend contre cette attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)"
+  ]
+ },
+ {
+  "id_scan": "65030",
+  "texte_fr": "Collaboration (<b>NINJA</b>). Ténacité.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé par cet effet.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)",
+   "\"keyword\" -> \"mot-clé\" (officiel, ex. 08033)"
+  ]
+ },
+ {
+  "id_scan": "65031",
+  "texte_fr": "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent À Distance.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé par cet effet.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)"
+  ]
+ },
+ {
+  "id_scan": "65032",
+  "texte_fr": "Garde. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé par cet effet.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)"
+  ]
+ },
+ {
+  "id_scan": "65033",
+  "texte_fr": "Patrouille. Collaboration (<b>NINJA</b>).\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé par cet effet.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)"
+  ]
+ },
+ {
+  "id_scan": "65034",
+  "texte_fr": "Collaboration (<b>NINJA</b>).\n★ Les attaques de ce sbire gagnent Perçant.\n<b>Une fois vaincu</b> : le joueur qui l'a vaincu défausse les 2 cartes du dessus du deck Rencontre et révèle le premier sbire doté du mot-clé Collaboration défaussé par cet effet.",
+  "citation_fr": null,
+  "notes": [
+   "Teamwork -> Collaboration (officiel, ex. 32159)"
+  ]
+ },
+ {
+  "id_scan": "65035",
+  "texte_fr": "Chaque sbire <b>NINJA</b> gagne +1 point de vie.\nLes menaces ne peuvent pas être retirées de cette manigance tant qu'au moins 1 sbire <b>NINJA</b> est en jeu.\n<b>★ Boost</b> : révélez cette carte.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65036",
+  "texte_fr": "Renfort.\n<b>Une fois révélée</b> : mélangez chaque sbire <b>NINJA</b> de la pile de défausse Rencontre dans le deck Rencontre.\n<b>★ Boost</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de cette carte.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65037",
+  "texte_fr": "Robuste.\n<b>★ Interruption forcée</b> : quand Shifting Corridors est censé s'activer contre vous, retirez plutôt 1 compteur de passage de cette carte et révélez la carte du dessus du deck Piège.\n<b>Si le dernier compteur de passage est retiré de cette carte, les joueurs perdent la partie.</b>",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : passage counter -> compteur de passage (« compteur » comme dans « compteur de secret » du projet)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "\"from here\" -> \"de cette carte\""
+  ]
+ },
+ {
+  "id_scan": "65038A",
+  "texte_fr": "<b>Contenu</b> : Shifting Corridors (A). Les sets de rencontre Labyrinthe de l'Ombre, Protégé des Ténèbres, Engins Mortels et Standard. Un set de rencontre modulaire <i>(Essaim de Ninjas)</i>.\n<b>Mise en place</b> : créez le deck Piège <i>(voir livret de règles, p. 12)</i>. Mettez de côté le set de rencontre Protégé des Ténèbres. Choisissez 1 méchant au hasard dans ce set, puis mélangez dans le deck Rencontre chaque carte liée à ce méchant <i>(gardez le méchant choisi de côté)</i>.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Dark Protégé -> Protégé des Ténèbres (nom de set de rencontre ; les sets officiels sont traduits, ex. Patrouille d'Hydra)",
+   "terme nouveau : Shadow Labyrinth -> Labyrinthe de l'Ombre ; Deadly Contraptions -> Engins Mortels ; Ninja Swarm -> Essaim de Ninjas (noms de sets traduits comme les sets officiels ; à garder en anglais si la politique est de laisser les noms propres)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "« voir livret de règles, p. 12 » : livret = formule officielle (04128a)"
+  ]
+ },
+ {
+  "id_scan": "65038B",
+  "texte_fr": "<b>Une fois révélée :</b> placez 10[per_hero] compteurs de passage sur Shifting Corridors (7[per_hero] à la place en mode expert).\n<b>Interruption forcée</b> : quand Shifting Corridors est censé subir des dégâts, quel qu'en soit le montant, retirez plutôt autant de menaces de cette manigance.\n<b>Interruption forcée</b> : quand la dernière menace est retirée de cette manigance, avancez au stade 2A <i>(les joueurs gagnent en avançant)</i>.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : passage counter -> compteur de passage",
+   "formule de fin reprise de 16082b"
+  ]
+ },
+ {
+  "id_scan": "65039A",
+  "texte_fr": "<b>Une fois révélée</b> : faites chacune des actions suivantes :\n1. Mettez Shifting Corridors de côté.\n2. Trouvez le méchant Protégé des Ténèbres choisi. Défaussez-en chaque carte d'état, chaque jeton et chaque carte attachée.\n3. Révélez la face A du méchant choisi (face B à la place en mode expert).",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Dark Protégé -> Protégé des Ténèbres",
+   "terme nouveau : side A / side B d'un méchant -> face A / face B"
+  ]
+ },
+ {
+  "id_scan": "65039B",
+  "texte_fr": "<b>Une fois révélée</b> : en mode expert, le méchant s'active contre chaque joueur.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez avez contré cette manigance, révélez la carte du dessus du deck Piège. (Limite d'une fois par round par joueur.)\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "« thwarts » -> « a contré » (officiel, ex. 01058) ; l'accord « avez contré » avec le sujet composé « vous ou un allié » est un doute mineur (variante : « a contré »)"
+  ]
+ },
+ {
+  "id_scan": "65040",
+  "texte_fr": "<i>PIÈGE !</i>\nConsidérez le méchant attaché comme un sbire <b>ÉLITE</b> avec 6 points de vie imprimés. Il gagne : \"Garde. Vilenie. <b>Une fois vaincu</b> : mettez ce sbire de côté.\"\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mettez en jeu le méchant choisi mis de côté, engagé avec vous, face A visible, avec cette carte attachée ; sinon, mettez cette carte de côté et le méchant manigance.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "ELITE -> ÉLITE (usage officiel, ex. 04143) alors que les autres traits restent anglais",
+   "« Treat ... as » -> « Considérez ... comme » (officiel, ex. 34009)"
+  ]
+ },
+ {
+  "id_scan": "65041",
+  "texte_fr": "Patrouille.\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, mélangez les 2 cartes du dessus du deck Rencontre dans le deck Piège ; sinon, révélez la carte du dessus du deck Piège.\n<b>★ Boost</b> : mettez ce sbire en jeu engagé avec vous.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !"
+  ]
+ },
+ {
+  "id_scan": "65042",
+  "texte_fr": "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois révélée</b> : si Shifting Corridors est en jeu, retirez-lui 1 compteur de passage ; sinon, placez 1[per_hero] menace sur cette carte.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : passage counter -> compteur de passage",
+   "rappel d'Assaut recopié de 40087"
+  ]
+ },
+ {
+  "id_scan": "65043",
+  "texte_fr": "<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance retire 5 menaces de la manigance principale. Il défausse des cartes du deck Rencontre jusqu'à ce qu'un sbire ou une manigance annexe soit défaussé, puis le révèle.\n<b>★ Boost</b> : placez 3 menaces sur la manigance principale.",
+  "citation_fr": null,
+  "notes": [
+   "\"When Defeated\" sur une manigance annexe rendu \"Une fois déjouée\" (usage officiel pour les manigances, ex. 04070), et \"le défaiteur\" -> \"le joueur qui a déjoué cette manigance\""
+  ]
+ },
+ {
+  "id_scan": "65044",
+  "texte_fr": "Péril. <i>(Tant que vous résolvez cette carte, les autres joueurs ne peuvent pas vous aider.)</i>\n<b>Une fois révélée</b> : le méchant s'active contre vous.\n★ <b>Boost</b> : si cette activation est une attaque, cette carte gagne [boost][boost] et cette attaque gagne Déferlement.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65045",
+  "texte_fr": "<b>Une fois révélée</b> : mélangez la pile de défausse Piège et les 3 cartes du dessus du deck Rencontre dans le deck Piège. Révélez la carte du dessus du deck Piège.\n★ <b>Boost</b> : mélangez la pile de défausse Piège et les 2 cartes du dessus du deck Rencontre dans le deck Piège.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !"
+  ]
+ },
+ {
+  "id_scan": "65046",
+  "texte_fr": "Attachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Éviter</i>\" ou l'effet \"<i>Désarmer</i>\" sur une carte <b>PIÈGE !</b>, nommez un type de carte Rencontre, puis défaussez la carte du dessus du deck Rencontre. Si la carte ainsi défaussée n'est pas du type nommé, subissez 4 dégâts indirects et défaussez cette carte.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : effets Avoid / Disarm / Trip -> Éviter / Désarmer / Trébucher (verbes à l'infinitif, intitulés en italique)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "\"this attachment\" -> \"cette carte\" (pas de terme officiel pour attachement)"
+  ]
+ },
+ {
+  "id_scan": "65047",
+  "texte_fr": "Patrouille. Ténacité.\nTant qu'Iron Monk est engagé avec vous, vous ne pouvez pas choisir l'effet \"<i>Éviter</i>\" sur les cartes <b>PIÈGE !</b>.",
+  "citation_fr": "« Votre seul chemin passe par moi. Commençons. »",
+  "notes": [
+   "terme nouveau : effets Avoid / Disarm / Trip -> Éviter / Désarmer / Trébucher (verbes à l'infinitif, intitulés en italique)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !"
+  ]
+ },
+ {
+  "id_scan": "65048",
+  "texte_fr": "<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Trébucher</i>\" sur une carte <b>PIÈGE !</b>, défaussez les 3 cartes du dessus de votre deck.\n★ <b>Boost</b> : placez 1 menace sur la manigance principale pour chaque personnage que vous contrôlez.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : effets Avoid / Disarm / Trip -> Éviter / Désarmer / Trébucher (verbes à l'infinitif, intitulés en italique)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !"
+  ]
+ },
+ {
+  "id_scan": "65049",
+  "texte_fr": "<i>Chaque pas est une épreuve d'endurance.</i>\n<b>Interruption forcée</b> : quand vous choisissez l'effet \"<i>Éviter</i>\" ou l'effet \"<i>Trébucher</i>\" sur une carte <b>PIÈGE !</b>, subissez 2 dégâts indirects.\n★ <b>Boost</b> : infligez 1 dégât à chaque personnage que vous contrôlez.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : effets Avoid / Disarm / Trip -> Éviter / Désarmer / Trébucher (verbes à l'infinitif, intitulés en italique)",
+   "terme nouveau : trap deck -> deck Piège (calqué sur deck Rencontre) ; trap discard pile -> pile de défausse Piège ; TRAP! -> PIÈGE !",
+   "ligne en italique (texte d'ambiance dans le champ texte source) traduite et laissée dans texte_fr"
+  ]
+ },
+ {
+  "id_scan": "65050",
+  "texte_fr": "<b>Une fois révélée</b> : choisissez :\n• <i>Éviter</i> — Défaussez un événement <b>CONTRE</b> de votre main.\n• <i>Désarmer</i> — Défaussez 2 cartes prises au hasard dans votre main, puis donnez une carte d'état Tenace à un personnage que vous contrôlez.\n• <i>Trébucher</i> — Infligez 2 dégâts à votre identité et désorientez-la.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : effets Avoid / Disarm / Trip -> Éviter / Désarmer / Trébucher (verbes à l'infinitif, intitulés en italique)",
+   "THWART (événement) -> CONTRE (usage officiel [[CONTRE]])",
+   "« Choisissez : » avec puces conservées comme dans la source (officiel : « Choisissez : » + tirets/puces)"
+  ]
+ }
+]

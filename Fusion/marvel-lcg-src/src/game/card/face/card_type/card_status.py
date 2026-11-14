@@ -47,7 +47,8 @@ class StatusCard(FinalType):
             from game.message import Message
             from game.card.face.base import Unit2
             this = effect.this.CastTo(StatusCard)
-            if message.from_area.bind_card:
+            # Une carte d'etat peut attendre sur un SOUTIEN (heros inactif de The Warriors Three, `wt`) : pas un Unit2.
+            if message.from_area.bind_card and Unit2.IsType(message.from_area.bind_card.face):
                 unit = message.from_area.bind_card.face.CastTo(Unit2)
                 discard_message = Message.AfterStatusDiscardFrom(unit, this, message.by_effect)
                 discard_message.Send()

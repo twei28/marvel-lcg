@@ -102,9 +102,20 @@ def main() -> None:
                 [sys.executable, harnais, game_dir, str(port),
                  rapport, card_id + ' '],
                 capture_output=True, timeout=3600)
+            # ⚠ GARDE-FOU (20/10/2026, backlog 13) : un cas dont le PROCESSUS
+            # est mort (interpreteur sans `typing_extensions`, moteur qui ne
+            # demarre pas) sort « ok: False » comme un vrai rouge. Lance par un
+            # python3.10 hors du venv (lien symbolique vers le binaire du venv :
+            # `sys.executable` perd alors le venv), l'outil a ecrit « rouges
+            # 3/3 » pour ze013 et ze016 sans qu'AUCUN cas n'ait tourne. Ces
+            # morts ne prouvent rien : comptees a part, et la carte n'est pas
+            # declaree prouvee.
+            morts = 0
             try:
                 r = json.load(open(rapport))
-                rouges = sum(1 for c in r['cas'] if not c['ok'])
+                morts = sum(1 for c in r['cas'] if not c['ok']
+                            and 'processus mort' in (c.get('message') or ''))
+                rouges = sum(1 for c in r['cas'] if not c['ok']) - morts
                 total = r['total']
             except Exception:
                 rouges, total = -1, -1
@@ -115,6 +126,10 @@ def main() -> None:
 
         if total == 0:
             verdict = 'AUCUN CAS — gate non tenue'
+        elif morts:
+            verdict = (f'{morts}/{total} processus MORT(S) : mesure non probante '
+                       f'(voir /tmp/subst_{card_id}.json)')
+            rouges = 0
         elif rouges < 0:
             verdict = 'rapport illisible'
         elif rouges == total:

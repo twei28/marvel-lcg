@@ -320,6 +320,39 @@ class AbilityFactory(AbilityFactorySetup, AbilityFactoryTurnPhase, AbilityFactor
             )
         ]
 
+    # BRIQUE COMMUNE (20/10/2026) : « cannot be affected by player cards ».
+    # `which` : "This" (la carte elle-meme, ex. un mechant HIDDEN) ou
+    # "AttachedCharacter" (le porteur de cet attachement, ex. In the Crosshairs).
+    # `while_fn(face) -> bool` : condition supplementaire relue a chaque
+    # question (ex. `lambda face: face.HasTrait("HIDDEN")`).
+    # La protection est inscrite quand la carte entre en jeu (et a chaque
+    # retournement) et ne vaut que tant qu'elle y reste. Voir
+    # game/operate/immunity.py et RECETTES-MOTEUR.md §15.2.
+    @staticmethod
+    def CannotBeAffectedByPlayerCards(which: Literal["This", "AttachedCharacter"]="This",
+                                      while_fn: Callable[['CardFace'], bool]|None=None) -> 'Ability':
+        from game.operate.immunity import PlayerCardImmunity
+
+        def inscrire(effect: 'Effect', message: 'Message.AfterCardEnterPlay') -> None:
+            source = effect.this
+
+            def s_applique_a(face: 'CardFace') -> bool:
+                if which == "AttachedCharacter":
+                    porteur = getattr(source, 'bind_face', None)
+                    if porteur is None or face.card is not porteur.card:
+                        return False
+                elif face.card is not source.card:
+                    return False
+                return while_fn is None or bool(while_fn(face.card.face))
+
+            PlayerCardImmunity.Protect(source, s_applique_a)
+
+        return AbilityFactory.AfterCardEnterPlay(
+            AbilityType.NonKeyword,
+            "This",
+            inscrire,
+        )
+
     # TODO: Swap `which_upgrade` and `attached_to`
     @staticmethod
     def AfterCardGainUpgrade(ability_type: 'AbilityType',

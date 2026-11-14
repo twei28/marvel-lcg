@@ -18,7 +18,7 @@ import { coupsDeLEtape } from './coups-sur-table'
 import { TableSansModale } from './TableSansModale'
 import { contenuDuTrait } from './trait-phase'
 import type { EtapeDeroule } from './deroule-phase'
-import { detailEtape, lignesEtoileBoost, texteActivationAnnulee, texteCauseActivation, titreEtape } from './deroule-textes'
+import { detailEtape, lignesEtoileBoost, texteActivationAnnulee, texteBoostsDuCoup, texteCauseActivation, titreEtape } from './deroule-textes'
 import { t } from './langue'
 
 export function CoupHorsPhase({
@@ -48,6 +48,7 @@ export function CoupHorsPhase({
   const resultat = detailEtape(coup)
   const annulee = texteActivationAnnulee(coup)
   const cause = texteCauseActivation(coup)
+  const boosts = texteBoostsDuCoup(coup)
   return (
     <section className="deroule-phase est-hors-phase" role="dialog" aria-label={t('Hors de la phase du méchant')}>
       <p className="deroule-surtitre">{t('Hors de la phase du méchant')}</p>
@@ -60,6 +61,7 @@ export function CoupHorsPhase({
       ))}
       {annulee ? <p className="deroule-annulee">{annulee}</p> : null}
       {cause ? <p className="deroule-cause">{cause}</p> : null}
+      {boosts ? <p className="deroule-cause">{boosts}</p> : null}
       <div className="deroule-boutons">
         <button type="button" className="bh-bouton deroule-suivant" onClick={fermer}>
           {t('Continuer')}
@@ -121,6 +123,8 @@ export function CoupHorsPhaseSurTable({ etapes, ignorerLesPremiers = false }: { 
   const nombreEnClair = contenu.montant !== undefined ? `${contenu.montant}${contenu.unite ? ' ' + t(contenu.unite) : ''}` : contenu.unite ? t(contenu.unite) : ''
   const annulee = texteActivationAnnulee(coup)
   const cause = texteCauseActivation(coup)
+  // Les cartes de boost se disent AUSSI hors phase (rapport BL-Stark n°103) : sans elles, le coup paraissait n'en avoir retourne aucune.
+  const boosts = texteBoostsDuCoup(coup)
   return (
     <DansLeCadre>
       {/* 19/10/2026 : la meme fleche attaquant > cible que la phase du mechant (pas de relecture des boosts).
@@ -136,7 +140,7 @@ export function CoupHorsPhaseSurTable({ etapes, ignorerLesPremiers = false }: { 
         peutAgir={!estSpectateur()}
         avancer={fermer}
         libelleAction={`${titreEtape(coup)} — ${t('Suivant')}`}
-        suite={annulee || cause || undefined}
+        suite={[annulee, cause, boosts].filter(Boolean).join(' · ') || undefined}
       />
     </DansLeCadre>
   )

@@ -441,6 +441,14 @@ html[data-epure] .db-info * {
   text-shadow: none;
 }
 
+/* La traduction posée sur un scan anglais (traduction-posee.css) s'écrit en sombre sur le cartouche CLAIR de la carte : la règle
+   ci-dessus, qui rend tout le texte de ces colonnes clair, la rendait blanc sur blanc (signalé sur l'aperçu du deckbuilder,
+   23/10/2026, Helpful Bystander). Placée APRES elle, à spécificité égale. */
+html[data-epure] .traduction-posee,
+html[data-epure] .traduction-posee * {
+  color: #1a1a1a;
+}
+
 html[data-epure] .db-retour-prep,
 html[data-epure] .db-tri,
 html[data-epure] .db-recherche-zone,
@@ -855,12 +863,31 @@ html[data-epure] h1.affiche {
 html[data-epure] .acc-mode,
 html[data-epure] .acc-mode.cut {
   box-shadow: inset 4px 0 0 var(--ep-jaune), var(--ep-relief) !important;
-  transition: box-shadow 0.12s ease-out;
+  /* Se soulever et s'eclairer au survol (06/11/2026, demande de l'utilisateur) :
+     les tuiles etaient jugees trop plates. */
+  transition: box-shadow 0.12s ease-out, transform 0.12s ease-out, background-color 0.12s ease-out;
 }
 
 html[data-epure] .acc-mode:hover,
 html[data-epure] .acc-mode.cut:hover {
   box-shadow: inset 7px 0 0 var(--ep-jaune), var(--ep-relief-survol) !important;
+  transform: translateY(-2px);
+  background-color: #2c3a52 !important;
+}
+
+/* Les tuiles OUTILS (Bac a sable, Editeur de deck, Puzzle, Options, Mises a
+   jour) : accent vert irise au lieu du bleu des modes de jeu (06/11/2026,
+   demande de l'utilisateur). La barre degradee vit dans un pseudo-element
+   (prepare.css), ici on retire juste l'inset colore pour laisser la place. */
+html[data-epure] .acc-mode.acc-outil-tuile,
+html[data-epure] .acc-mode.cut.acc-outil-tuile {
+  box-shadow: var(--ep-relief) !important;
+}
+html[data-epure] .acc-mode.acc-outil-tuile:hover,
+html[data-epure] .acc-mode.cut.acc-outil-tuile:hover {
+  box-shadow: var(--ep-relief-survol) !important;
+  transform: translateY(-2px);
+  background-color: #1f3a30 !important;
 }
 
 html[data-epure] .acc-mode .mvl {
@@ -1480,6 +1507,27 @@ html[data-epure] .mod-chip.on {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4) !important;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
 }
+/* Le filtre « Fan-made » du choix du héros garde son contour doré --fan-made
+   MEME selectionne (06/11/2026) : sans cette regle, il retombait dans le bleu
+   relief ci-dessus comme n'importe quel autre tampon selectionne. Plus de
+   classes que « .tampon.on », donc plus specifique malgre le meme
+   !important. */
+html[data-epure] .tampon.fan-made.on {
+  background: var(--ep-champ) !important;
+  color: var(--fan-made) !important;
+  border: 1px solid var(--fan-made) !important;
+  box-shadow: none !important;
+  text-shadow: none;
+}
+/* Meme repere au REPOS (filtre heros ET bouton des createurs) : sans ceci, la
+   bordure generique de « html[data-epure] .tampon » plus haut (#4a5a7c,
+   un type-selecteur « html » en plus que prepare.css) la recouvrait malgre
+   la specificite plus grande de .tampon.fan-made/.createurs-bouton. */
+html[data-epure] .tampon.fan-made,
+html[data-epure] .tampon.createurs-bouton {
+  border-color: var(--fan-made);
+  color: var(--fan-made);
+}
 
 /* --- 24. Boutons : coins coupés petits, Bangers majuscules (choix du 17/10/2026) -- */
 html[data-epure] .btn,
@@ -1595,10 +1643,14 @@ html[data-epure] .acc-titre h1.affiche {
   font-size: 150px !important;
   line-height: 0.92 !important;
   margin: 0 !important;
-  /* Titre bleu Captain, double ombre BLANCHE puis noire, contour noir fin (18/10/2026 : le bleu devient la couleur principale de l'accueil, plus de rouge). */
+  /* Heroes Assemble, bleu Captain, ombre douce (halo), pas de contour BD
+     (06/11/2026, demande de l'utilisateur — remplace le traitement Bangers +
+     double ombre + contour noir du 18/10/2026). */
+  font-family: "HeroesAssemble", sans-serif !important;
+  font-style: normal !important;
   color: #3f86e0 !important;
-  text-shadow: 5px 5px 0 #ffffff, 10px 10px 0 #05070b !important;
-  -webkit-text-stroke: 3px #05070b !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 1.5px #ffffff !important;
 }
 
 /* --- 25. UN SEUL EN-TÊTE POUR TOUTES LES PAGES (17/10/2026) ---------------------
@@ -1686,15 +1738,24 @@ html[data-epure] header.g-entete {
   margin: 0 calc(-1 * clamp(12px, 3vw, 36px)) 14px !important;
 }
 html[data-epure] header.progress .brand .brand-lockup { margin: 0 !important; padding: 0 !important; }
+/* Le "<" tout seul faisait une petite boite moche, sans rapport avec le reste
+   du site (06/11/2026, demande de l'utilisateur) : un vrai bouton "Retour",
+   meme contour que celui du bas de page (fond transparent deja impose par la
+   regle generale des icones d'en-tete juste au-dessus : seul le contour
+   manquait, il est ajoute ici). */
 html[data-epure] header .brand-back {
-  border: 0 !important;
-  background: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+  border: 1px solid var(--ep-bord) !important;
+  border-radius: 8px !important;
+  padding: 8px 14px !important;
   min-width: 0 !important;
   width: auto !important;
   height: auto !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
   clip-path: none !important;
+}
+html[data-epure] header .brand-back:hover {
+  border-color: var(--ep-bord-fort) !important;
 }
 html[data-epure] header .btn-langue,
 html[data-epure] header .cmp-langue,
@@ -2005,9 +2066,8 @@ html[data-epure] .team-b.arsenal .tb-scene .tb-nomg { flex-direction: column; }
 @media (min-width: 900px) {
   html[data-epure] .team-b.eux .tb-roster-scn { gap: 16px; align-content: start; }
   html[data-epure] .team-b.eux .tb-roster-scn .tb-port { aspect-ratio: auto; width: 100%; height: 100%; }
-  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: 0.56; }
+  html[data-epure] .team-b.eux .ext-tab { aspect-ratio: auto; }
   html[data-epure] .team-b.eux .ext-tab .exname { font-size: 11px; max-height: 36px; line-height: 1.12; }
-  html[data-epure] .team-b.eux .ext-tab .box { inset: 3px 3px 36px 3px; }
 }
 /* Les pochettes gardent le format commun (18/10/2026) : plus d'étirement des rangées pour remplir le
    panneau, qui déformait le cadre de chaque image (voir app.js, ajusterPochettes, RATIO). */
@@ -2146,4 +2206,44 @@ html[data-epure] .cmp-boite.sel {
 html[data-epure] .roue-repere {
   border-color: #3f86e0;
   border-radius: 0;
+}
+
+/* --- Étape Decks : blocs, bouton « Proposition de deck », pastilles d'arts (29/10/2026) --- */
+html[data-epure] .deck-section {
+  color: var(--ep-doux);
+  font-family: var(--ep-police);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+html[data-epure] .tb-deck.deck-depart {
+  border-color: #3f86e0;
+}
+html[data-epure] .deck-vide {
+  color: var(--ep-doux);
+  border: 1px dashed var(--ep-bord);
+  border-radius: 8px;
+}
+html[data-epure] .art-vignette {
+  color: var(--ep-doux);
+  font-family: var(--ep-police);
+}
+html[data-epure] .art-vignette img {
+  border: 1px solid var(--ep-bord);
+  border-radius: 8px;
+}
+html[data-epure] .art-vignette:hover img,
+html[data-epure] .art-vignette:focus-visible img {
+  border-color: #3f86e0;
+}
+html[data-epure] .pastille-art {
+  background: #3f86e0;
+  color: #fff;
+  font-family: var(--ep-police);
+  font-weight: 600;
+}
+html[data-epure] .arts-aide {
+  color: var(--ep-doux);
+}
+html[data-epure] .prop-panneau .deck-section {
+  color: var(--ep-doux);
 }

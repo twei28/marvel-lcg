@@ -25,6 +25,7 @@
 //    pendant le tour du joueur, defense comprise, ou une carte revelee ;
 //  - la relecture depuis le journal (`RelectureJournal`, D38).
 
+import { scanUrl } from './card-model'
 import {
   createContext,
   useCallback,
@@ -496,7 +497,7 @@ function ActivationTris({ rangee, texteEtoile, grisee, totalBoosts, resolution =
           })}
           {Array.from({ length: lecture ? rangee.boosts.length === 0 ? 1 : 0 : Math.max(0, totalBoosts - rangee.boosts.length) }, (_, i) => (
             <div className="tris-boost tris-boost-cache" key={`cache-${i}`}>
-              <span className="essai-dos-rencontre" aria-hidden="true" />
+              <img className="essai-dos-rencontre" src={scanUrl('encounter')} alt="" aria-hidden="true" />
               <p>{t('Boost')} {rangee.boosts.length + i + 1} / {totalBoosts}</p>
             </div>
           ))}
@@ -898,7 +899,7 @@ function DistributionEssai({ distribution, grisee }: { distribution: VueDistribu
               </td>
               <td className="essai-distribution-dos" aria-label={`${ligne.cartes}`}>
                 {Array.from({ length: Math.max(ligne.raisons.length, ligne.cartes) }, (_, i) => (
-                  <span key={i} className="essai-dos-mini" aria-hidden="true" />
+                  <img key={i} className="essai-dos-mini" src={scanUrl('encounter')} alt="" aria-hidden="true" />
                 ))}
                 <b>{ligne.raisons.length > ligne.cartes ? ligne.raisons.length : ligne.cartes}</b>
               </td>
@@ -1718,7 +1719,7 @@ export function CartouchePhase(props: CartouchePhaseProps) {
   if (carteCacheeIci) {
     corps = (
       <div className="essai-revelation-cachee">
-        <span className="essai-dos-rencontre" aria-hidden="true" />
+        <img className="essai-dos-rencontre" src={scanUrl('encounter')} alt="" aria-hidden="true" />
         <p>{props.tris ? t('Une carte rencontre attend d’être révélée') : t('Clique sur Continuer pour la retourner.')}</p>
       </div>
     )

@@ -29,6 +29,16 @@ export const TITRES_FR = {
     50: "Agents du S.H.I.E.L.D.",
     60: "Peur de Rien",
     90: "Set modulaire Ronan",
+    210: "Custom (Défis)",
+};
+
+// Clé EN par numéro (29/10/2026, signalé par l'utilisateur : en anglais, « La ville ne dort
+// jamais » restait affiché tel quel). D'habitude la clé de sets_info.json EST déjà le titre
+// anglais (c'est TITRES_FR qui comble l'exception) ; ce pack-ci a été ajouté avec du français
+// dans sa clé elle-même. Nom officiel du dossier moteur :
+// src/cards/pack/punisher_mcdc_2026/campaign_the_city_never_sleeps/.
+export const TITRES_EN = {
+    208: "Custom (The City Never Sleeps)",
 };
 
 /** Le numéro que porte une clé d'extension (« 12. Ant-Man » -> 12), ou null. */
@@ -41,8 +51,8 @@ export function numeroDExtension(cle) {
  *  ("fr" par défaut). Toujours sans le numéro. */
 export function nomExtension(cle, langue = "fr") {
     const brut = String(cle || "").replace(/^\d+\.\s*/, "");
-    if (langue === "en") return brut;
     const numero = numeroDExtension(cle);
+    if (langue === "en") return (numero !== null && TITRES_EN[numero]) || brut;
     return (numero !== null && TITRES_FR[numero]) || brut;
 }
 

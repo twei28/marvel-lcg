@@ -1,0 +1,48 @@
+{
+  "version": "0.5.8",
+  "name": "Mephisto",
+  "villain": [
+    "mp001",
+    "mp002"
+  ],
+  "expert": false,
+  "schemes": [
+    "mp004a,mp004b",
+    "mp005a,mp005b",
+    "mp006a,mp006b"
+  ],
+  "set_aside": [
+    "mp008"
+  ],
+  "encounters": [
+    "mp007a,mp007b",
+    "mp009",
+    "mp010",
+    "mp011",
+    "mp012",
+    "mp013",
+    "mp014",
+    "mp015",
+    "mp016",
+    "mp017",
+    "mp018",
+    "mp019",
+    "mp020",
+    "mp021",
+    "mp022",
+    "mp023",
+    "mp024",
+    "mp025",
+    "mp026",
+    "mp027",
+    "mp028"
+  ],
+  "encounter_sets": [
+    "mp_blackheart",
+    "mp_damned",
+    "mp_standard"
+  ],
+  "modular_sets": [
+    "mp_mother_of_demons"
+  ]
+}

@@ -30,8 +30,14 @@ export function rect(el: Element | null | undefined): Rect | undefined {
  * ce n'est pas sa place (mesuré le 12/10/2026 sur Trafiquant d'Armes).
  */
 export function carteDeLaTable(id: number): HTMLElement | undefined {
-  const candidates = document.querySelectorAll<HTMLElement>(`.plateau-cadre .scan-card[data-card-id="${id}"]`)
-  for (const el of candidates) if (!el.closest('.deroule-phase, .rencontre-sur-table') && !el.classList.contains('is-facedown')) return el
+  const candidates = document.querySelectorAll<HTMLElement>(
+    `.plateau-cadre .scan-card[data-card-id="${id}"], .plateau-cadre .rond[data-card-id="${id}"]`
+  )
+  // Sur le plateau en ronds (telephone), la carte de la table est le rond lui-meme.
+  for (const el of candidates) {
+    if (el.closest('.deroule-phase, .rencontre-sur-table') || el.classList.contains('is-facedown') || el.classList.contains('est-cachee')) continue
+    return el
+  }
   return undefined
 }
 

@@ -71,6 +71,26 @@
 .traduction-posee .tp-encoche-droite {
   float: right;
 }
+/* Le filet qui sépare le Boost du reste du texte, comme sur la carte. */
+.traduction-posee .tp-filet {
+  border-top: 0.12em solid currentColor;
+  margin: 0.4em 0 0.3em;
+}
+/* Place gardée aux icônes imprimées entre deux paragraphes (hauteur posée par TraductionPosee). */
+.traduction-posee .tp-bande {
+  clear: both;
+}
+/* Contour d'une illustration qui entre dans le cadre par la droite (forme posée par TraductionPosee). */
+.traduction-posee .tp-contour-droit {
+  display: none;
+  float: right;
+}
+
+/* Contour d'un cadre qui penche à gauche : le français commence là où commencent les lignes anglaises (forme posée par TraductionPosee). */
+.traduction-posee .tp-contour-gauche {
+  display: none;
+  float: left;
+}
 
 /* La ligne des traits, comme sur la carte : centrée, en Komika. */
 .traduction-posee .tp-traits {
@@ -78,6 +98,13 @@
   font-size: 0.82em;
   text-align: center;
   margin-bottom: 0.25em;
+}
+
+/* Le texte des traits : un bloc en ligne qui ne se coupe pas, centré par `.tp-traits` ; TraductionPosee réduit sa taille au besoin
+   pour qu'il tienne sur UNE ligne (sans cela, « SUPER-POUVOIR. » se coupait au tiret, la seconde ligne décalée). */
+.traduction-posee .tp-traits-texte {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .traduction-posee .tp-trait,
@@ -97,7 +124,7 @@
 /* Les icônes de manigance imprimées sur le scan (Accélération, Crise...), que le cache recouvre : redessinées
    en bas de la boîte, centrées, le texte s'arrêtant au-dessus. */
 .traduction-posee.tp-avec-icones {
-  padding-bottom: 4.6em;
+  padding-bottom: 3.2em;
 }
 .traduction-posee .tp-icones-manigance {
   position: absolute;
@@ -107,5 +134,19 @@
   display: flex;
   justify-content: center;
   gap: 0.6em;
-  font-size: 3.6em;
+  font-size: 2.3em;
+}
+
+/* Paragraphes du texte posé (texteEnParagraphes) : espacés comme sur la carte imprimée. */
+.traduction-posee .tp-par + .tp-par {
+  margin-top: 0.3em;
+}
+.traduction-posee .tp-centre {
+  text-align: center;
+  font-weight: 700;
+}
+/* Citation (ligne entièrement en italique) : plus petite, comme sur la carte, et un peu détachée de la capacité. */
+.traduction-posee .tp-citation {
+  font-size: 0.82em;
+  margin-top: 0.55em;
 }

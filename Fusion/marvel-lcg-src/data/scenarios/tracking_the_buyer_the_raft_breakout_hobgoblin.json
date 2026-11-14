@@ -1,0 +1,28 @@
+{
+    "version": "0.5.8",
+    "name": "Tracking the Buyer: The Raft Breakout (Hobgoblin)",
+    "villain": [
+        "pu071a",
+        "pu072a"
+    ],
+    "expert": false,
+    "schemes": [
+        "60142a,60142b"
+    ],
+    "set_aside": [
+        "60143"
+    ],
+    "encounters": [
+        "pu142"
+    ],
+    "encounter_sets": [
+        "hobgoblin",
+        "the_raft_breakout",
+        "standard"
+    ],
+    "modular_sets": [
+        "punishers_hit_list",
+        "the_syndicate",
+        "capo_of_the_past"
+    ]
+}

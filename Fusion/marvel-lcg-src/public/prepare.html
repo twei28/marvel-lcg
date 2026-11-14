@@ -8,33 +8,36 @@
     <!-- Pictos de l'en-tete (refonte du 7 septembre) : un emoji est dessine par
          le systeme, donc different sur chaque machine et jamais dans nos couleurs. -->
     <link rel="stylesheet" href="/public/css/font-awesome.css">
-    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=bdabfb85">
+    <link rel="stylesheet" href="/public/css/prepare/prepare.css?v=467e1c74">
     <link rel="stylesheet" href="/public/css/prepare/prepare-v2.css?v=1">
-    <link rel="stylesheet" href="/public/css/prepare/selection-mechant.css?v=e320805d">
+    <link rel="stylesheet" href="/public/css/prepare/selection-mechant.css?v=ba1095f4">
+    <link rel="stylesheet" href="/public/css/prepare/page-difficulte.css?v=4">
     <link rel="stylesheet" href="/public/css/prepare/roue.css?v=1">
     <link rel="stylesheet" href="/public/css/prepare/arts-cartes.css?v=1">
     <link rel="stylesheet" href="/public/css/teinte-pages.css?v=1">
     <link rel="stylesheet" href="/public/css/affichage-sobre-pages.css?v=1">
     <link rel="stylesheet" href="/public/css/affichage-epure-pages.css?v=1">
     <link rel="stylesheet" href="/public/css/tel-pages.css?v=1">
-    <link rel="stylesheet" href="/public/css/prepare/prepare-tel.css?v=4">
+    <link rel="stylesheet" href="/public/css/prepare/prepare-tel.css?v=10">
     <script type="module" src="/public/js/teinte-page.js?v=1"></script>
 </head>
 <body>
     <div id="app">
         <div class="loading" style="padding:60px;text-align:center">Loading…</div>
     </div>
-    <script type="module" src="/public/js/prepare/app.js?v=b0031389"></script>
+    <script type="module" src="/public/js/prepare/app.js?v=ca773b2d"></script>
+    <script src="/public/js/prepare/langue-classique.js?v=1" defer></script>
     <script src="/public/js/prepare/reprise.js?v=4" defer></script>
     <!-- Preavis du site (mise a jour imminente, coupure) : module autonome,
          il se pose tout seul en haut de l'ecran. Voir annonce.js. -->
-    <script src="/public/js/prepare/annonce.js?v=1" defer></script>
+    <script src="/public/js/prepare/annonce.js?v=2" defer></script>
     <!-- « Une mise a jour est arrivee » : un onglet laisse ouvert garde son
          JavaScript apres un deploiement, et les empreintes anti-cache ne
          servent qu'au PROCHAIN chargement. Module autonome, voir maj.js. -->
     <script src="/public/js/prepare/maj.js?v=1" defer></script>
-    <!-- Pastille « un message t'attend » : rien ne s'affiche tant que personne
-         n'ecrit. Ne remet pas le tchat retire le 12/09. Voir messages.js. -->
+    <!-- Pastille « un message t'attend » : messagerie de COMPTE a compte,
+         separee du tchat (reconstruit le 06/11/2026, voir l'iframe
+         #tchat-iframe en fin de page). Voir messages.js. -->
     <script src="/public/js/prepare/messages.js?v=1" defer></script>
     <!-- Invitations a la table d'un autre joueur (13/10/2026) : la fenetre
          « X t'invite a sa partie ». Module autonome, voir invitations.js. -->
@@ -45,17 +48,96 @@
          toujours) : decommenter cette ligne suffit a le rallumer.
     <script src="/public/js/prepare/lien-galerie.js?v=1" defer></script>
     -->
-    <script src="/public/js/prepare/lien-admin.js?v=1" defer></script>
+    <script src="/public/js/prepare/lien-admin.js?v=3" defer></script>
     <!-- « Mes signalements », pour tout le monde : la page vit sur le site, et
          l'ecran de jeu est servi depuis pN.<domaine>. Voir lien-signalements.js. -->
     <script src="/public/js/prepare/lien-signalements.js?v=1" defer></script>
+    <!-- Bouton Discord (06/11/2026) : voir discord.js. -->
+    <script src="/public/js/prepare/discord.js?v=1" defer></script>
     <script type="module" src="/public/js/prepare/panneau-bug.js"></script>
-    <!-- Bouton et panneau « 🧩 Puzzles » : DEBRANCHES a la demande de
-         l'utilisateur. puzzles.js reste dans js/prepare/, les routes du moteur
-         (/list_puzzle_files, /load_puzzle) aussi : decommenter cette ligne
-         suffit a les rallumer. -->
+    <!-- Bouton et panneau « Puzzles » (bêta) : resoudre par code, creer, publier. -->
+    <script type="module" src="/public/js/prepare/puzzles.js"></script>
     <!-- Mention legale (10/10/2026) : ligne courte en pied de page, texte
          complet dans [data-mention-legale] s'il y en a un. Voir mention-legale.js. -->
     <script type="module" src="/public/js/mention-legale.js?v=1"></script>
+    <!-- Le tchat (reconstruit le 06/11/2026, apres son retrait du 12/09) :
+         bundle React dedie, le meme composant que sur le plateau (VoletTchat,
+         voir ui-app/src/prepare-chat.tsx). Une iframe plutot qu'un montage
+         direct dans ce DOM non gere par Vite : les noms de fichiers buildes
+         peuvent changer, l'iframe pointe juste vers la page.
+         L'iframe reste TOUJOURS en plein viewport (position:fixed;inset:0) :
+         c'est necessaire pour que le CSS interne du widget (VoletTchat.css,
+         `position:fixed; bottom:...; right:0`, pense pour s'ancrer aux bords
+         du VRAI viewport de la page, exactement comme sur le plateau) se
+         positionne correctement — une iframe retaillee a la taille du widget
+         casserait ces ancrages (le widget calculerait sa position par
+         rapport aux bords d'une iframe haute de quelques dizaines de pixels
+         au lieu des ~900px de la vraie page).
+         Pour autant, une iframe pleine page avec `pointer-events:auto` en
+         permanence bloquerait tous les clics de la page de preparation en
+         dessous. Solution : l'iframe reste `pointer-events:none` par defaut
+         (les clics la traversent vers prepare.html), et prepare-chat.tsx
+         mesure en continu l'emprise reelle du widget (languette + panneau +
+         fenetre detachee) et la transmet ici par postMessage ; ce script
+         suit alors la position du curseur (souris ou tactile) sur CETTE
+         page et bascule `pointer-events:auto` seulement quand le curseur
+         est au-dessus du rectangle recu, pour que le widget redevienne
+         cliquable pile a cet endroit, sans jamais changer sa taille/position
+         reelle a l'ecran. -->
+    <iframe id="tchat-iframe" src="/app/prepare-chat.html" title="Tchat"
+            style="position:fixed;inset:0;width:100%;height:100%;
+                   border:0;z-index:9500;background:transparent;pointer-events:none;"></iframe>
+    <script>
+      (function () {
+        var iframe = document.getElementById('tchat-iframe')
+        var rectWidget = null
+
+        window.addEventListener('message', function (evenement) {
+          if (evenement.origin !== window.location.origin) return
+          if (!evenement.data) return
+          // ⚠ CORRECTIF DE L'IMPASSE (06/11/2026). Ce document ne reçoit plus
+          // AUCUN `mousemove` tant que l'iframe est en `pointer-events:auto` :
+          // elle couvre tout le viewport, et un mouvement de souris au-dessus
+          // va a SON document a elle, jamais au notre (les evenements ne
+          // traversent pas une frontiere d'iframe). Sans ce message envoye
+          // PAR l'iframe elle-meme des que son propre `mousemove` la voit
+          // sortie du widget, plus aucun clic n'atteignait la vraie page tant
+          // qu'on n'avait pas recharge — voir prepare-chat.tsx.
+          if (evenement.data.type === 'marvel-tchat-hors-widget') {
+            iframe.style.pointerEvents = 'none'
+            return
+          }
+          if (evenement.data.type !== 'marvel-tchat-rect') return
+          var rect = evenement.data.rect
+          rectWidget = (rect && rect.width > 0 && rect.height > 0) ? rect : null
+        })
+
+        // Petite marge de tolerance : evite de "couper" le widget au pixel pres.
+        var MARGE_PX = 4
+
+        function dansLeRectangle(x, y) {
+          if (!rectWidget) return false
+          return x >= rectWidget.left - MARGE_PX && x <= rectWidget.left + rectWidget.width + MARGE_PX &&
+                 y >= rectWidget.top - MARGE_PX && y <= rectWidget.top + rectWidget.height + MARGE_PX
+        }
+
+        function majPointerEvents(x, y) {
+          iframe.style.pointerEvents = dansLeRectangle(x, y) ? 'auto' : 'none'
+        }
+
+        document.addEventListener('mousemove', function (evenement) {
+          majPointerEvents(evenement.clientX, evenement.clientY)
+        }, { passive: true })
+
+        // Tactile : pas de survol, on verifie au point de contact avant que
+        // le geste ne commence (meme logique que useGlisserPanneau.ts pour
+        // unifier souris/tactile).
+        document.addEventListener('touchstart', function (evenement) {
+          var point = evenement.touches[0]
+          if (!point) return
+          majPointerEvents(point.clientX, point.clientY)
+        }, { passive: true })
+      })()
+    </script>
 </body>
 </html>

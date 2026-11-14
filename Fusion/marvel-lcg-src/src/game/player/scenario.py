@@ -77,6 +77,16 @@ class Scenario(User):
         if villain:
             return villain
 
+        # BRIQUE 3 (20/10/2026) : un scenario a plusieurs mechants qui a pose
+        # sa regle (`Villains.SetRule`) dit lui-meme qui est « le mechant ».
+        # Sans regle (toutes les autres parties), l'ordre d'avant reste.
+        regle = getattr(self, 'regle_mechants', None)
+        if regle is not None:
+            from game.operate.villains import Villains
+            mechants = [v for v in self.area_villain.Get()
+                        if not game_area or v.card.GetGameArea() == game_area]
+            return Villains.Resolve(mechants, regle, by_effect)
+
         for villain in self.area_villain.Get():
             if villain.IsActive():
                 return villain

@@ -1,0 +1,13 @@
+{
+  "version": "0.5.8",
+  "name": "Apex Standard",
+  "encounters": [
+    "ap201",
+    "ap202",
+    "ap203",
+    "ap204",
+    "ap205",
+    "ap206",
+    "ap207"
+  ]
+}

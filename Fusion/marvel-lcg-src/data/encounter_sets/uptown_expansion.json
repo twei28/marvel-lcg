@@ -1,0 +1,12 @@
+{
+    "version": "0.5.8",
+    "name": "Uptown Expansion",
+    "encounters": [
+        "pu023",
+        "pu024",
+        "pu025",
+        "pu026",
+        "pu027",
+        "pu028"
+    ]
+}

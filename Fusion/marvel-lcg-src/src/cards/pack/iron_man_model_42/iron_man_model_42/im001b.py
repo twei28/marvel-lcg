@@ -33,12 +33,12 @@ from . import *
 #  - Le type imprime de l'Action est **nu**, comme le Setup : la carte EST la
 #    face civile.
 #
-# ⚠ ECART ASSUME, ET IL EST DANS LE MOTEUR. La carte dit « this **ROUND** » ;
-# `UpdateNextCardPlayCost` n'accepte que `in_this="Phase"` ou `"Turn"`
-# (worlds.py:815), il n'y a pas de portee « Round ». On prend `"Phase"`, la
-# plus large des deux. La difference ne se verrait que si une amelioration
-# etait jouee pendant la phase du VILAIN, ce qui n'arrive pas dans le jeu de
-# base. Signale plutot que masque.
+# « this ROUND » : `in_this="Round"` (portee ajoutee au moteur le 06/10/2026
+# pour dz003, worlds.py `UpdateNextCardPlayCost`). Jusqu'au 20/10/2026 ce
+# module prenait `"Phase"`, faute de mieux, et l'ecart etait avoue ici : la
+# reduction tombait a la fin de la phase des joueurs. Elle couvre desormais
+# une amelioration jouee pendant la phase du VILAIN du meme round (cas
+# test_capacites « im001b Inventor — ... TOUT LE ROUND »).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -76,7 +76,7 @@ def GetAbilities() -> Sequence['Ability']:
             -1,
             effect,
             finder=CardFinder(card_type=Upgrade),
-            in_this="Phase",
+            in_this="Round",
         )
 
     return [

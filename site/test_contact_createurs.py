@@ -110,7 +110,7 @@ except ValueError:
 o.changer_statut(o.ADMIN, "valide")
 cookie_admin = {"Cookie": "nc_session=" + o.ouvrir_session(o.ADMIN)}
 code, admin = appel("GET", "/admin", entetes=cookie_admin)
-verifier("l'admin voit la section", code == 200 and "Demandes des createurs" in admin, str(code))
+verifier("l'admin voit la section", code == 200 and "Demandes des créateurs" in admin, str(code))
 verifier("le nom est echappe", "<script>alert(1)</script>" not in admin
          and "&lt;script&gt;alert(1)&lt;/script&gt;" in admin)
 verifier("le message est echappe", "<img src=x onerror" not in admin and "&lt;img src=x" in admin)

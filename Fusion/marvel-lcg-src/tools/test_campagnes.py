@@ -185,6 +185,15 @@ def etat_conforme(monde, attendu):
         if n < mini:
             soucis.append(f"{n} carte(s) de trait {trait} en jeu (au moins {mini} attendue)")
 
+    # `avec_dos` : la carte en jeu est RECTO-VERSO (sa face arriere existe). Une manigance de campagne creee
+    # d'une seule face se couche face cachee au lieu de se retourner (rapport #105, 21184a).
+    for card_id in attendu.get("avec_dos") or []:
+        face = next((f for f in _faces(monde) if _id(f) == card_id and f.IsInPlay()), None)
+        if face is None:
+            soucis.append(f"{card_id} n'est pas en jeu (dos attendu)")
+        elif not face.card.back_faces:
+            soucis.append(f"{card_id} n'a pas de face arriere : « Flip this card over » la coucherait face cachee")
+
     for card_id, compteur, valeur in attendu.get("compteurs") or []:
         face = next((f for f in _faces(monde) if _id(f) == card_id and f.IsInPlay()), None)
         if face is None:

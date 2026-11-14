@@ -1,0 +1,46 @@
+{
+  "version": "0.5.8",
+  "name": "The Vault",
+  "villain": [],
+  "expert": false,
+  "schemes": [
+    "vt017a,vt017b"
+  ],
+  "set_aside": [
+    "vt001",
+    "vt003",
+    "vt005",
+    "vt007",
+    "vt009",
+    "vt011",
+    "vt013",
+    "vt015",
+    "vt018",
+    "vt019"
+  ],
+  "encounters": [
+    "vt020",
+    "vt020",
+    "vt022",
+    "vt022",
+    "vt022",
+    "vt022",
+    "vt026",
+    "vt026",
+    "vt028",
+    "vt029",
+    "vt030",
+    "vt030",
+    "vt030",
+    "vt030",
+    "vt034",
+    "vt034",
+    "vt034"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "sinister_syndicate"
+  ]
+}

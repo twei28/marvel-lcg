@@ -26,6 +26,12 @@ style.textContent = `
   html[data-affichage="sobre"] .mention-legale { color: var(--mute, #7d828a); }
   /* Une page qui affiche deja la mention complete (accueil de la preparation) n'a pas besoin de la ligne de pied. */
   body:has([data-mention-complete]) > footer.mention-legale { display: none; }
+  /* Le wizard de preparation (#app) est calibre pile sur 100vh a chaque etape
+     (voir prepare.css, ".recap{overflow:hidden}") : y ajouter ce pied en
+     dernier enfant de <body> le fait toujours deborder du viewport et fait
+     apparaitre la barre de defilement de la PAGE (constate le 06/11/2026,
+     choix du heros). Le pied n'a sa place que sur les pages SANS #app. */
+  body:has(#app) > footer.mention-legale { display: none; }
 `;
 document.head.appendChild(style);
 

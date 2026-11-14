@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « pas encore déployé » »). Preuve : `public/js/campagne/livre-pages.js` (commit `fce9ef4f`, 09/10) ; déploiement non établi (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°8).
+
 # Écran de campagne : livre ouvert au lieu des pages empilées (décidé et codé le 09/10/2026, validé par l'utilisateur, pas encore déployé)
 
 Problème : `public/js/campagne/app.js` empile les planches (colonne récit) et les pages de règles du scénario puis de la

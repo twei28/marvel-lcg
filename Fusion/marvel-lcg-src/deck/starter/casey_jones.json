@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Casey Jones",
     "metadata": {
+        "author": "Inkwire",
         "url": "",
         "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS étape 3) : le zip de Casey Jones v3 ne livre aucune decklist d'aspect. Le fichier ne contient que de l'IMPRIME : identité, 16 cartes signature (12 card_id, dont 4 en deux exemplaires), obligation, set némésis. Il reste indispensable : `catalog.heroes()` construit la liste des héros à partir de deck/starter/*.json.",
         "collision_note": "⚠ HOMONYME : « Casey Jones » est aussi l'ALLIE de Raphael (tr002, pack raphael, trait VIGILANTE, classe Hero) : meme nom, meme unicite. Le heros tc001a/tc001b et l'allie tr002 ne peuvent donc pas etre en jeu ensemble (regle d'unicite du moteur) ; l'allie de Raphael n'est PAS dans ce deck. Aucun module du pack ne cherche par le NOM : tout passe par card_id, par le TYPE (Hero/AlterEgo) ou par l'ensemble (set « Casey Jones »). Autres noms deja au depot : aucun (Clap Back, Cross Block, Face-Off, Grand Slam, Anything Goes, Baseball Bat, Casey's Mask, Cricket Willow, Driving Iron, Hockey Stick, Persuader, Casey's Bag, Daddy Issues, The Purple Dragons, Hun, Purple Dragon Goons verifies dans data/cards.json et cards_custom.json le 16/10/2026).",

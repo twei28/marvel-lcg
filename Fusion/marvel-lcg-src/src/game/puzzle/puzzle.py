@@ -136,6 +136,19 @@ class RunPuzzle:
         faces = [self.FindOrCreateFace(x) for x in cards]
         return faces
 
+    def _JoueurDeMiseEnPlace(self, siege: int|None=None) -> 'Player':
+        """Le joueur dont une commande de mise en place remplit ou vide les zones.
+
+        `siege` (22/10/2026, puzzles a 1 a 4 heros) est un rang dans
+        `const_seat_order_players`, l'ordre des SIEGES, qui ne bouge jamais.
+        Sans lui (`None`), le premier joueur : le comportement d'avant, dont
+        dependent tous les cas du depot. Un siege inexistant leve, jamais un
+        repli sur un autre joueur.
+        """
+        if siege is None:
+            return self.world.GetFirstPlayer()
+        return self.world.const_seat_order_players[siege]
+
     ################################################################################
     #
     def CreateEncounterDiscardPile(self, *cards: str):
@@ -194,19 +207,19 @@ class RunPuzzle:
         for card in cards:
             CardFactory.GenerateCard(card, villain.encounter_deck, self.world)
 
-    def CreateHandCards(self, *cards: str):
+    def CreateHandCards(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.hand_cards, self.world)
 
-    def CreatePlayerDiscardPile(self, *cards: str):
+    def CreatePlayerDiscardPile(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.discard_pile, self.world)
 
-    def EmptyPlayerDeck(self):
+    def EmptyPlayerDeck(self, siege: int|None=None):
         """Vide le deck du joueur, pour le reconstruire carte par carte.
 
         AJOUTEE le 09/09/2026, meme motif que `EmptyEncounterDeck` :
@@ -224,14 +237,14 @@ class RunPuzzle:
         # que 8 des 14 cartes (journal du 09/09/2026), `RemoveAllFromGame`
         # travaillant sur la liste que la zone est en train de modifier.
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.player_deck.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def EmptyPlayerDiscardPile(self):
+    def EmptyPlayerDiscardPile(self, siege: int|None=None):
         """Vide la defausse du premier joueur (AJOUTEE le 16/10/2026, pack alopex,
         Prowl : « 1 card with a printed [mental] resource from your discard pile »).
 
@@ -241,14 +254,14 @@ class RunPuzzle:
         sont RETIREES DE LA PARTIE, comme `EmptyPlayerDeck`.
         """
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.discard_pile.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def EmptyPlayerAdditionalDeck(self):
+    def EmptyPlayerAdditionalDeck(self, siege: int|None=None):
         """Vide le DECK ANNEXE du joueur (deck d'Invocation, deck REGISTERED...).
 
         AJOUTEE le 10/09/2026, meme motif que `EmptyPlayerDeck` et
@@ -261,32 +274,48 @@ class RunPuzzle:
         `RemoveAllFromGame` travaille sur la liste que la zone modifie.
         """
         from game.operate.faces import Faces
-        joueur = self.world.GetFirstPlayer()
+        joueur = self._JoueurDeMiseEnPlace(siege)
         for _ in range(50):
             faces = [f for f in joueur.additional_deck.GetAll() if f is not None]
             if not faces:
                 return
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
 
-    def CreatePlayerDeck(self, *cards: str):
+    def CreatePlayerDeck(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.player_deck, self.world)
 
-    def EmptyHand(self):
+    def SetFirstPlayer(self, siege: int):
+        """Donne le jeton de PREMIER JOUEUR au siege `siege` (puzzles, 22/10/2026).
+
+        L'ordre des joueurs vit dans `world.players`, dont `players[0]` est le
+        premier joueur et qui tourne comme `end_round` le fait (`Types.Rotate`) :
+        on fait tourner la liste jusqu'a ce que le siege visé soit en tete, ce qui
+        garde l'ordre autour de la table. Un siege inexistant leve.
+        """
+        voulu = self.world.const_seat_order_players[siege]
+        assert voulu in self.world.players, f"le siege {siege} est elimine"
+        for _ in range(len(self.world.players)):
+            if self.world.players[0] is voulu:
+                break
+            self.world.players = Types.Rotate(self.world.players, 1)
+        self.world.UpdatePlayersOrder(self.debug_rule)
+
+    def EmptyHand(self, siege: int|None=None):
         """Defausse toute la main du premier joueur (cas « main vide »). `Discard`
         ne peut pas viser une carte de la main : `FindOrCreateFace` n'y cherche pas."""
         from game.operate.faces import Faces
-        player = self.world.GetFirstPlayer()
+        player = self._JoueurDeMiseEnPlace(siege)
         faces = list(player.hand_cards.GetAll())
         if faces:
             Faces.DiscardAll(faces, DebugRule(faces[0]))
 
-    def EmptyAdditionalDeck(self):
+    def EmptyAdditionalDeck(self, siege: int|None=None):
         """Retire du jeu toutes les cartes du deck annexe du premier joueur (Sens de Daredevil, ecureuils...)."""
         from game.operate.faces import Faces
-        player = self.world.GetFirstPlayer()
+        player = self._JoueurDeMiseEnPlace(siege)
         faces = list(player.additional_deck.Get())
         if faces:
             Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
@@ -313,25 +342,75 @@ class RunPuzzle:
                     Faces.MoveAllToDeck([face], player.additional_deck, "Top", DebugRule(face))
                     break
 
-    def CreatePlayerAdditionalDeck(self, *cards: str):
+    def CreatePlayerAdditionalDeck(self, *cards: str, siege: int|None=None):
         from game.card.factory import CardFactory
-        first_player = self.world.GetFirstPlayer()
+        first_player = self._JoueurDeMiseEnPlace(siege)
         for card in cards:
             CardFactory.GenerateCard(card, first_player.additional_discard_pile, self.world)
 
+    def SetDeterrenceDeck(self, *cards: str, siege: int|None=None):
+        """CORRECTIF (26/10/2026, pack custom batman, `bm`) : remplace le DECK DE DISSUASION du joueur par exactement ces cartes, dans cet ordre
+        (la premiere est au dessus), et vide sa defausse. Chaque carte est preparee comme au Setup (`PreparerDissuasion` : defausse liee, crochet
+        de defausse non resolue, proprietaire). Un cas ne peut pas choisir lesquelles des 15 cartes le pilote retient au Setup."""
+        from game.card.factory import CardFactory
+        from game.operate.faces import Faces
+        from cards.pack.batman import PreparerDissuasion
+        joueur = self._JoueurDeMiseEnPlace(siege)
+        for pile in (joueur.additional_deck, joueur.additional_discard_pile):
+            for _ in range(50):
+                faces = [f for f in pile.GetAll() if f is not None]
+                if not faces:
+                    break
+                Faces.RemoveAllFromGame(faces, DebugRule(faces[0]))
+        for card in reversed(cards):
+            carte = CardFactory.GenerateCard(card, joueur.additional_deck, self.world)
+            PreparerDissuasion(joueur, carte.face)
+            carte.visible.Set(joueur)
+
+    def ShuffleDeterrence(self, *cards: str, siege: int|None=None):
+        """CORRECTIF (26/10/2026, pack custom batman) : melange dans le deck de rencontre les cartes de dissuasion NOMMEES, prises dans le deck de
+        dissuasion du joueur, comme le fait `MelangerUneDissuasion` (sans limite par round ni choix). `Puzzle.Reveal` ne cherche pas dans le
+        deck de dissuasion : il faut que la vraie carte, deja preparee, soit dans le deck de rencontre."""
+        from game.operate.faces import Faces
+        from game.operate.worlds import Worlds
+        from cards.pack.batman import EtatBm
+        joueur = self._JoueurDeMiseEnPlace(siege)
+        for card_id in cards:
+            for face in list(joueur.additional_deck.Get()):
+                if getattr(face.paper, "card_id", None) == card_id:
+                    etat = EtatBm(face)
+                    etat["resolu"], etat["sans_surge"], etat["sans_boost_sup"] = False, False, False
+                    Faces.MoveAllToDeck([face], Worlds.GetEncounterDeck(self.debug_rule), "Top", self.debug_rule)
+                    break
+
     ################################################################################
     #
-    def Gain(self, *cards: CardName, call_back: Callable[['CardFace'], None]|None=None):
-        player = self.world.GetCurrentPlayer()
+    def _JoueurDeJeu(self, siege: int|None=None) -> 'Player':
+        """Le joueur visé par une commande de JEU (piocher, gagner une carte) : celui dont c'est le tour, ou le siege `siege` (rang dans
+        `const_seat_order_players`, puzzles a 1 a 4 heros, 23/10/2026). Un siege inexistant ou elimine leve : jamais de repli sur un autre joueur."""
+        if siege is None:
+            return self.world.GetCurrentPlayer()
+        joueur = self.world.const_seat_order_players[siege]
+        assert not joueur.is_eliminated, f"le siege {siege} est elimine"
+        return joueur
+
+    def Gain(self, *cards: CardName, call_back: Callable[['CardFace'], None]|None=None, siege: int|None=None):
+        player = self._JoueurDeJeu(siege)
         for face in self.FindCommandCards(*cards):
             player.GainCard(face, self.debug_rule)
             if call_back:
                 call_back(face)
 
-    def Draw(self, num: int):
-        player = self.world.GetCurrentPlayer()
+    def Draw(self, num: int, siege: int|None=None):
+        player = self._JoueurDeJeu(siege)
         effect = DebugRule(player.GetIdentity())
         player.DrawUp(num, effect)
+
+    def DiscardAtRandom(self, num: int=1, siege: int|None=None):
+        """(25/10/2026, pack uw) Defausse `num` cartes de la main AU HASARD, par la voie des cartes
+        (`DiscardRandomHandCards` : marque `defausses_au_hasard` + compteur du round, lus par Wolverine's Claws)."""
+        player = self._JoueurDeJeu(siege)
+        player.DiscardRandomHandCards(num, DebugRule(player.GetIdentity()))
 
     ################################################################################
     # Card
@@ -390,6 +469,23 @@ class RunPuzzle:
             face.TakeDamage(source, val, self.debug_rule)
         else:
             self._RefuserEnManuel(face, "Degats")
+
+    def SetHealth(self, card: CardName, hp: int):
+        """Regle les POINTS DE VIE ACTUELS de la carte a `hp` (23/10/2026, puzzles : « le mechant est a 12 PV »). C'est un reglage ABSOLU, la ou
+        `Damage` et `Heal` sont relatifs : on lit les PV courants, puis on inflige ou on soigne la difference (par le chemin normal du moteur,
+        donc les capacites « When damaged / healed » partent comme en jeu). `hp` est borne a [0, PV max] ; une carte a PV infinis ne se regle pas."""
+        face = self.FindOrCreateFace(card)
+        from game.card.face.attribute.can_health import CanHealth
+        if not CanHealth.IsType(face):
+            self._RefuserEnManuel(face, "PV")
+            return
+        assert not face.is_infinite_health, "PV infinis : rien a regler"
+        voulu = max(0, min(int(hp), face.max_health))
+        ecart = face.health - voulu
+        if ecart > 0:
+            self.Damage(face, ecart)
+        elif ecart < 0:
+            self.Heal(face, -ecart)
 
     def PlaceCounters(self, card: CardName, name: str, val: int):
         """AJOUT (01/09/2026, pack custom doctor_doom) : poser des compteurs.
@@ -519,6 +615,24 @@ class RunPuzzle:
         for _ in range(n):
             Faces.GiveStatus([unit], "Intensified", DebugRule(unit))
 
+    def ArriveAtPlanet(self, card: CardName, planet_card: CardName):
+        """Pose le marqueur « a une planete » du pack `silver_surfer_power_cosmic`
+        (prefixe pc) sur `card`, comme si elle venait d'arriver a `planet_card`.
+        Outil de test uniquement (ArriverA n'est normalement appele que par les
+        cartes du pack elles-memes). `planet_card` n'a pas besoin d'etre une
+        vraie carte PLANET pour ce harnais : seule sa reference est stockee."""
+        from cards.pack.silver_surfer_power_cosmic import ArriverA
+        personnage = self.FindOrCreateFace(card)
+        planete = self.FindOrCreateFace(planet_card)
+        ArriverA(DebugRule(personnage), personnage, planete)
+
+    def DepartFromPlanet(self, card: CardName):
+        """Symetrique de `ArriveAtPlanet` : retire le marqueur « a une planete »
+        de `card`, comme si elle en partait (`Departir`). Outil de test uniquement."""
+        from cards.pack.silver_surfer_power_cosmic import Departir
+        personnage = self.FindOrCreateFace(card)
+        Departir(DebugRule(personnage), personnage)
+
     def ChangeToFace(self, card: CardName, to: str):
         """Bascule une identite vers une face PRECISE, designee par son card_id.
 
@@ -589,9 +703,15 @@ class RunPuzzle:
 
     ################################################################################
     #
-    def Reveal(self, card: CardName, *, call_back: Callable[['CardFace'], None]|None=None) -> 'CardFace':
+    def Reveal(self, card: CardName, *, call_back: Callable[['CardFace'], None]|None=None,
+               by: CardName|None=None) -> 'CardFace':
+        # `by` (ajoute le 20/10/2026, backlog 12, dz022 « Stealing Sound ») :
+        # l'identite du joueur qui REVELE la carte, dans une partie a plusieurs.
+        # Sans lui, c'est le joueur courant. Additif.
         face = self.FindOrCreateFace(card)
         player = self.world.GetCurrentPlayer()
+        if by is not None:
+            player = self.FindFaceInPlay(by).GetControlByPlayer() or player
         # La carte doit VENIR du deck Rencontre. `FindOrCreateFace` la fabrique
         # dans la reserve quand elle n'est nulle part ailleurs, et
         # `message.IsFromEncounterDeck()` est alors faux : toutes les
@@ -630,12 +750,16 @@ class RunPuzzle:
                              under_control=under_control, exhaust=exhaust)
             return face
 
-    def PlaceUnder(self, card: CardName, host: CardName) -> 'CardFace':
+    def PlaceUnder(self, card: CardName, host: CardName, face_up: bool=False) -> 'CardFace':
         """Glisse CARD face cachee sous HOST (en jeu), sans passer par une
-        capacite : sert a monter un plafond « Max N cards tucked here »."""
+        capacite : sert a monter un plafond « Max N cards tucked here ».
+
+        `face_up=True` (ajoute le 20/10/2026, backlog 12, pack dazzler) : pose
+        la carte FACE VISIBLE, comme Live Concert (dz017a) range une chanson
+        dans sa Setlist. Additif : sans l'argument, rien ne change."""
         face = self.FindOrCreateFace(card)
         hote = self.FindFaceInPlay(host)
-        hote.PlaceCardHere([face], False, self.debug_rule)
+        hote.PlaceCardHere([face], face_up, self.debug_rule)
         return face
 
     def TurnEncounterTopFaceUp(self) -> 'CardFace|None':
@@ -661,6 +785,21 @@ class RunPuzzle:
             card.MoveToArea(villain.encounter_deck, self.debug_rule)
             card.MoveToTop(card.area, self.debug_rule)
             villain.DoActivate(player, self.debug_rule)
+        return face
+
+    def GiveFacedownBoost(self, target: CardName, card: CardName) -> 'CardFace':
+        """Donne a TARGET (en jeu) une carte boost face cachee HORS
+        activation : pile persistante (`components.boostable.GetDeck()`),
+        comme `fne/kingpin/60165` James Wesley (« give him a facedown boost
+        card »), pas la pioche normale du dessus du deck rencontre (`Boost`).
+
+        Sans cette commande, aucun cas ne peut monter une pile de boost non
+        vide sur un ennemi en dehors d'une activation reelle (gs226 Lauri-Ell,
+        « discard each boost card on that enemy » : preuve par substitution
+        bloquee faute de pile a vider, voir CAMPAGNE-ALLIEES-GABARITS.md)."""
+        cible = self.FindFaceInPlay(target)
+        face = self.FindOrCreateFace(card)
+        cible.components.boostable.GiveBoostCard(face, self.debug_rule)
         return face
 
     def Deal(self, card: CardName, joueur: int|None=None) -> 'CardFace':
@@ -704,7 +843,8 @@ class RunPuzzle:
                     return face
         return self.FindOrCreateFace(card)
 
-    def Attack(self, card: CardName, defender: CardName|None=None) -> 'CardFace':
+    def Attack(self, card: CardName, defender: CardName|None=None,
+               against: CardName|None=None) -> 'CardFace':
         """Fait attaquer une carte : un ennemi frappe le joueur courant, un
         allie ou un heros fait son attaque de base.
 
@@ -714,12 +854,20 @@ class RunPuzzle:
         `WhenUnitWouldDefend` n'est jamais envoye et TOUTES les cartes
         « Hero Interrupt (defense) » (Unbeatable! sg016, Desperate Defense
         09015, Bulletproof vr002...) restent hors de portee des tests.
+
+        `against` (ajoute le 20/10/2026, backlog 12, dz006 « Doll ») : l'identite
+        du joueur VISE par l'activation d'un ennemi, dans une partie a plusieurs.
+        Sans lui l'ennemi frappe le joueur courant, et un « activate against
+        YOU » ne pouvait pas etre distingue d'une activation contre un autre
+        joueur. Additif : sans l'argument, rien ne change.
         """
         from game.card.face.base import Enemy, Friend
         from game.card.face.attribute.can_attack import AttackProperty
         from game.message import Message
         face = self.FindFaceInPlay(card)
         player = self.world.GetCurrentPlayer()
+        if against is not None:
+            player = self.FindFaceInPlay(against).GetControlByPlayer() or player
 
         if defender is not None:
             self._DeclareDefender(defender)
@@ -749,6 +897,149 @@ class RunPuzzle:
         else:
             assert False, f"{card=} n'est ni un ennemi ni un personnage allie"
         return face
+
+    def EnemyAttacks(self, card: CardName, target: CardName, defender: CardName|None=None,
+                     overkill_to: CardName|None=None, joueur: int|None=None,
+                     **options: Any) -> 'CardFace':
+        """Brique commune du 20/10/2026 : l'ennemi CARD attaque TARGET (allie,
+        sbire, mechant), par `Enemy.AttackCharacter`. `defender` arme un
+        defenseur comme `Attack` ; `overkill_to` designe la carte qui recoit
+        l'exces quand un sbire est abattu ; `options` passe tel quel
+        (`players_may_defend`, `overkill`, `additional_attack`, `give_boost`,
+        `ally_attack_is_against_player`)."""
+        from game.card.face.base import Enemy
+        face = self.FindFaceInPlay(card)
+        cible = self.FindFaceInPlay(target)
+        assert Enemy.IsType(face), f"{card=} n'est pas un ennemi"
+        if defender is not None:
+            self._DeclareDefender(defender)
+        if overkill_to is not None:
+            options['overkill_to'] = self.FindFaceInPlay(overkill_to)
+        if joueur is not None:
+            # L'INDICE du joueur « vous » des Boost (`for_player`), 0 = le premier.
+            options['for_player'] = self.world.const_players[joueur]
+        face.CastTo(Enemy).AttackCharacter(cible, self.debug_rule, **options)
+        return face
+
+    def ProtectFromPlayerCards(self, card: CardName, attached_to: CardName|None=None,
+                               trait: str|None=None) -> 'CardFace':
+        """Brique commune du 20/10/2026 : rend une carte « insensible aux cartes
+        joueur » en passant par la VRAIE fabrique
+        `AbilityFactory.CannotBeAffectedByPlayerCards`, comme le ferait le
+        script d'une carte de campagne.
+
+        - `attached_to=None` : CARD se protege elle-meme (« This », mechant
+          HIDDEN) ; `trait` ajoute la condition « tant qu'elle a ce trait ».
+        - `attached_to=X` : CARD (un attachement) est d'abord attachee a X, puis
+          protege son porteur (« AttachedCharacter », In the Crosshairs).
+
+        La fabrique ecoute l'entree en jeu de la carte : la commande inscrit la
+        capacite puis rejoue la fenetre d'entree en jeu (`ApplyAfterEnterPlay`,
+        en retournement pour ne rien relancer d'autre)."""
+        from game.ability.factory import AbilityFactory
+        from game.card.face.attribute.can_attach import CanAttach
+        source = self.FindFaceInPlay(card)
+        if attached_to is not None:
+            hote = self.FindFaceInPlay(attached_to)
+            if not source.IsInPlay():
+                source.PutIntoPlay(self.world.GetCurrentPlayer(), self.debug_rule)
+            source.CastTo(CanAttach).AttachTo2(hote, self.debug_rule)
+            which = "AttachedCharacter"
+        else:
+            which = "This"
+        while_fn = (lambda face: face.HasTrait(trait)) if trait else None
+        source.effect.RegisterTemp(
+            AbilityFactory.CannotBeAffectedByPlayerCards(which, while_fn).NoOutOfPlayLimit(),
+            unregister_after_exec=False,
+        )
+        area = source.card.area
+        source.ApplyAfterEnterPlay(area, area, self.debug_rule, True)
+        return source
+
+    # Brique commune du 20/10/2026 : plusieurs mechants (game/operate/villains.py).
+    def SetVillainRule(self, the_villain: str="Active", player_cards: str="TheVillain", activation_order: bool=False) -> None:
+        """Pose `Villains.Rule` sur le scenario (« le mechant » = actif, le
+        plus a gauche ou le plus petit Activation Order ; cartes joueur = le meme,
+        ou au choix du joueur ; `activation_order` : etape 2 de la phase du mechant
+        distribuee par Activation Order, The Vault, 25/10/2026)."""
+        from game.operate.villains import Villains
+        Villains.SetRule(self.world, Villains.Rule(the_villain=the_villain, player_cards=player_cards,  # type: ignore
+                                                   activation_order=activation_order))
+
+    def SetActiveVillain(self, card: CardName) -> 'CardFace':
+        """Pose le compteur « active » sur ce mechant (et l'ote aux autres)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        face = self.FindFaceInPlay(card)
+        Villains.SetActive(face.CastTo(Villain), self.debug_rule)
+        return face
+
+    def RemoveVillain(self, card: CardName) -> None:
+        """Retire ce mechant sans rien reporter (`Villains.Remove`)."""
+        from game.operate.villains import Villains
+        from game.card.face.base import Villain
+        Villains.Remove(self.FindFaceInPlay(card).CastTo(Villain), self.debug_rule)
+
+    def PlaceCountersOnVillains(self, name: str, val: int, skip: int=0) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : pose des compteurs sur TOUS les vilains en jeu (sauf les `skip` premiers). Les CAPO d'une
+        vraie mise en place sont tires au hasard : on ne peut pas les nommer."""
+        from game.operate.worlds import Worlds
+        for villain in list(Worlds.GetAllVillains(self.world))[skip:]:
+            villain.PlaceCountersInternal(val, name, self.debug_rule)
+
+    def DamageAllVillains(self, val: int) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : inflige `val` degats a chaque vilain en jeu (ceux d'une vraie mise en place sont tires au hasard)."""
+        from game.operate.worlds import Worlds
+        for villain in list(Worlds.GetAllVillains(self.world)):
+            self.Damage(villain, val)
+
+    def AddToVictoryDisplay(self, *cards: CardName) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : ces cartes vont dans la pile de victoire (Gang War : « after a LEAD card is added to
+        the victory display »). Envoie le message de deplacement habituel."""
+        from game.operate.faces import Faces
+        Faces.AddToVictoryDisplay([self.FindOrCreateFace(c) for c in cards], self.debug_rule)
+
+    def AddTraitToPaper(self, card_id: str, trait: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : donne un TRAIT a la fiche `card_id` pour la duree du processus (chaque cas de test a le
+        sien). Sert a faire jouer le role d'une carte ABSENTE du catalogue par une carte officielle de substitution (le trait
+        HELLMOUTH, qu'aucune carte livree ne porte). Les faces deja creees relisent la fiche (`ResetTrait`)."""
+        from cards.database import CardsDB
+        paper = CardsDB.FindCardPaper(card_id)
+        if trait not in paper.traits:
+            paper.traits.append(trait)
+        # Les cartes DEJA creees (le deck de rencontre du scenario l'est des la mise en place) ont calcule leurs traits a leur creation :
+        # on leur fait relire la fiche, sinon l'aide ne marche que sur une carte creee APRES elle.
+        for carte in self.world.object_manager.card_dict.values():
+            for face in carte.printed_faces:
+                if face.paper.card_id == card_id:
+                    face.ResetTrait()
+
+    def RenamePaper(self, card_id: str, name: str) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renomme la fiche `card_id` pour la duree du processus. Meme usage que `AddTraitToPaper` :
+        une carte officielle de substitution joue le role d'une carte nommee par un script (Mr. Pointy, Watcher's Guidance...)
+        mais absente du catalogue. A appeler AVANT de creer la carte."""
+        from cards.database import CardsDB
+        CardsDB.FindCardPaper(card_id).name = name
+
+    def CreateLeadsDeck(self, *cards: CardName) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC 2026) : cree le paquet LEADS (pistes) du banc avec ces cartes (le DESSUS est choisi en
+        n'en donnant qu'une). Proprietaire du paquet : le premier mechant en jeu."""
+        from game.operate.worlds import Worlds
+        from game.deck.deck_type import DeckType
+        villain = Worlds.GetVillains(self.debug_rule)[0]
+        Worlds.ScenarioDeck(self.debug_rule, "LeadsDeck").Create(
+            self.debug_rule, villain, list(cards), type=DeckType.AdditionalDeck, has_discard_pile=False)
+
+    def BuildVillainDeck(self, *cards: CardName) -> None:
+        """Melange ces mechants dans le deck de mechants (`Villains.BuildVillainDeck`)."""
+        from game.operate.villains import Villains
+        Villains.BuildVillainDeck([self.FindOrCreateFace(c) for c in cards], self.debug_rule)  # type: ignore
+
+    def RevealNextVillain(self, reveal: bool=False) -> 'CardFace|None':
+        """Revele le dessus du deck de mechants, en jeu le plus a droite. `reveal=True` : vraie revelation (le « When Revealed »
+        part ; The Vault, 25/10/2026)."""
+        from game.operate.villains import Villains
+        return Villains.RevealNextVillain(self.world.GetCurrentPlayer(), self.debug_rule, reveal=reveal)
 
     def _DeclareDefender(self, card: CardName) -> 'CardFace':
         """Arme un defenseur pour la PROCHAINE attaque, puis se retire.
@@ -826,6 +1117,162 @@ class RunPuzzle:
         controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["THW"])
         return face
 
+    def Recover(self, card: CardName) -> 'CardFace':
+        """Fait RECUPERER un personnage ami : son pouvoir de base REC.
+
+        AJOUT (01/11/2026, pack Mantis `mt`, mt001b Empathic Leveling : « After you use your REC »). Meme montage que `Thwart` :
+        `MakeBasicPowerLikeInTurn` avec le pouvoir "REC", par le CONTROLEUR de la carte. Additif."""
+        from game.card.face.base import Friend
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer()
+
+        assert Friend.IsType(face), f"{card=} n'est pas un personnage ami"
+        controleur = face.GetControlByPlayer() or player
+        controleur.MakeBasicPowerLikeInTurn([face], self.debug_rule, ["REC"])
+        return face
+
+    def EndPlayerTurn(self, siege: int|None=None) -> None:
+        """FERME le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnEnd
+        puis AfterPlayerTurnEnd).
+
+        AJOUT (20/10/2026, backlog 12, dz032 « Captivating Performance »). Ni
+        `EndPlayerPhase` ni `BeginVillainPhase` n'envoient la fin de TOUR : un
+        effet « this turn » (`RegisterTemp(until_turn_end=True)`) restait vivant et
+        un cas sur sa duree etait vert avec la mauvaise duree. Additif.
+        """
+        from game.message import Message
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (WhenPlayerTurnEnd / AfterPlayerTurnEnd de ce joueur).
+        player = self._JoueurDeJeu(siege)
+        turn_end_message = Message.WhenPlayerTurnEnd(player, self.world.round_id)
+        turn_end_message.Send()
+        Message.AfterPlayerTurnEnd(player, turn_end_message).Send()
+
+    def NewPlayerTurnStat(self) -> None:
+        """AJOUT (26/10/2026, pack smasher, sz001b « Limit once per TURN »). Remet a zero les compteurs « ce tour » du joueur courant
+        (`PlayerStat.OnEndTurn`, que `EndPlayerTurn` n'appelle pas) : monte un SECOND tour du meme joueur dans le meme round
+        (tour de plus de rm007) sans jouer la boucle d'actions. Additif."""
+        self.world.GetCurrentPlayer().stat.OnEndTurn()
+
+    def PutIntoRecruitedMutants(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, pack `hf`) : fabrique ces cartes DANS le deck de table « Recruited Mutants » (en
+        defausse si `discard=True`), comme la mise en place de campagne le fait des allies gagnes. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt.RecruitedMutants`). Les cartes y gardent `bind_discard_pile` : defaussees, elles reviennent dans la
+        defausse Recruited. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        deck, defausse = RecruitedMutants(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def PutIntoHellfireDeck(self, *cards: str, discard: bool=False) -> None:
+        """AJOUT (01/11/2026, campagne Hellfire Hunt, scenario Torn, `hf`) : fabrique ces cartes DANS le Hellfire deck de table (dans sa defausse si
+        `discard=True`), comme la mise en place du complot hf503a le fait des sbires ELITE HELLFIRE. Cree le deck a la demande
+        (`cards.pack.hellfire_hunt_torn.DeckHellfire`). Les cartes y gardent `bind_discard_pile` : defaussees ou vaincues, elles reviennent dans la
+        defausse Hellfire. Additif."""
+        from game.card.factory import CardFactory
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        deck, defausse = DeckHellfire(self.debug_rule)
+        cible = defausse if discard else deck
+        for carte in cards:
+            fabriquee = CardFactory.GenerateCard(carte, cible, self.world)
+            fabriquee.bind_discard_pile = defausse
+
+    def EmptyHellfireDeck(self) -> None:
+        """AJOUT (01/11/2026, Torn) : vide le Hellfire deck ET sa defausse (les cartes sont retirees de la partie). Additif."""
+        from cards.pack.hellfire_hunt_torn import DeckHellfire
+        from game.operate.faces import Faces
+        deck, defausse = DeckHellfire(self.debug_rule)
+        Faces.RemoveAllFromGame(list(deck.Get(True)) + list(defausse.Get(True)), self.debug_rule)
+
+    def PlayFromRecruitedDiscard(self, card: str) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt, hf014 Blink : « play Blink from Recruited Mutant discard pile during their own turn ») :
+        joue la carte designee DEPUIS la defausse Recruited Mutants par le VRAI chemin (comme `jouer_carte_glissee` du harnais) : on demande
+        les effets « Play » de la carte, on les passe au filtre du gestionnaire d'evenements (qui interroge `IsLikeInHand`), puis on resout en
+        PAYANT le cout. Si le moteur n'offre pas la carte, l'echec est le resultat. Additif."""
+        from game.message import Message
+        from game.effect.rule import GameRule
+        from game.event.manager import EventManager
+        from cards.pack.hellfire_hunt import RecruitedMutants
+        _, defausse = RecruitedMutants(self.debug_rule)
+        joueur = self.world.GetCurrentPlayer()
+        for face in defausse.Get(True):
+            if getattr(face.paper, "card_id", None) == card:
+                effets = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+                message = Message.WhenPlayerLikeInTurn(joueur, GameRule(joueur.GetIdentity()))
+                message.Send()
+                disponibles = EventManager.FilterAvailableEffects(message, effets, joueur, self.world, None)
+                assert disponibles, f"le moteur n'offre PAS de jouer {card} depuis la defausse Recruited Mutants"
+                joueur.ChooseEffects([disponibles[0]], message, forced=False)
+                return
+        raise AssertionError(f"{card} n'est pas dans la defausse Recruited Mutants")
+
+    def HellfireCampagne(self, level: int, carnet: 'dict|None'=None) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : joue la MISE EN PLACE de campagne du scenario `level` (`cards.pack.hellfire_hunt.campaign.Executer`)
+        avec un carnet donne (cles -> chaines, ecrites au store du monde). Banc de test : aucune campagne reelle n'est lancee. Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+        for cle, valeur in (carnet or {}).items():
+            self.world.store.SetStr(cle, valeur)
+        hc.Executer(self.debug_rule, level)
+
+    def HellfireReleve(self, level: int, gagne: bool=True) -> None:
+        """AJOUT (26/10/2026, campagne Hellfire Hunt) : calcule le RELEVE de carnet de fin de partie du scenario `level` (`campaign.Releve`) et le garde
+        dans `world.hf_releve` (lu par le verificateur `hf_etat`). Additif."""
+        from cards.pack.hellfire_hunt import campaign as hc
+
+        class _Fin:
+            players_won = gagne
+        self.world.hf_releve = hc.Releve(level, self.debug_rule, _Fin())
+
+    def HellfireReleveTorn(self, gagne: bool=True) -> None:
+        """AJOUT (01/11/2026, scenario Torn) : comme `HellfireReleve(4)` mais par `cards.pack.hellfire_hunt_torn.ReleveTorn` (le releve commun + les allies
+        qui ne sont plus dans la zone mise de cote). Garde le resultat dans `world.hft_releve`. Additif."""
+        from cards.pack.hellfire_hunt_torn import ReleveTorn
+
+        class _Fin:
+            players_won = gagne
+        self.world.hft_releve = ReleveTorn(self.debug_rule, _Fin())
+
+    def NewTurnWorldStat(self) -> None:
+        """AJOUT (26/10/2026, pack `hp` Wasp (Hank Pym), hp009 / hp012 : « X = formes changees CE tour » avec X = 0). Remet a zero les
+        compteurs « ce tour » du MONDE (`WorldStat.OnTurnEnd` : attaques, contres, formes changees), que `EndPlayerTurn` n'appelle pas.
+        Monte un tour SUIVANT sans jouer la boucle d'actions. Additif."""
+        self.world.stat.OnTurnEnd()
+
+    def BeginPlayerTurn(self, siege: int|None=None) -> None:
+        """OUVRE le tour du joueur courant, comme `player_phase.py` (WhenPlayerTurnBegin puis AfterPlayerTurnBegin).
+
+        AJOUT (26/10/2026, pack Rachel Summers `rm`, Chronoskimming rm001a et Hound Program rm014 : « After your turn
+        begins »). La mise en place d'un cas se joue DANS le tour deja ouvert : une Reponse « apres le debut du tour » d'une
+        carte posee par le cas ne partait jamais. Additif ; ne remet aucun compteur de tour a zero.
+        """
+        from game.message import Message
+        # `siege` (26/10/2026, mesure de wt022 Revelry) : le tour d'un AUTRE joueur (rang dans `const_seat_order_players`).
+        player = self._JoueurDeJeu(siege)
+        turn_begin_message = Message.WhenPlayerTurnBegin(player)
+        turn_begin_message.Send()
+        Message.AfterPlayerTurnBegin(player, turn_begin_message).Send()
+
+    def FinDeTourSupplementaire(self) -> None:
+        """Joue les trois etapes de fin de tour de rm007 Temporal Reversal (`PlayerPhase.FinDeTourSupplementaire`) pour le joueur
+        courant, sans jouer le tour en plus. AJOUT (26/10/2026, pack `rm`), pour la mesure des etapes seules."""
+        self.world.GetCurrentPlayer().phase.FinDeTourSupplementaire()
+
+    def ReadyAtEndOfPlayerPhase(self, siege: int|None=None) -> None:
+        """(25/10/2026, pack sq) Rejoue l'etape « redresser toutes ses cartes » de la FIN DE PHASE JOUEUR
+        (`player_phase.py`, `EndPhase`) : meme effet `EndPhase(joueur)` et meme perimetre, pour la Response de
+        Web-Sling (`AfterCardReady` dont le `by_effect` est cette regle). `EndPlayerPhase` ne l'envoie pas."""
+        from game.effect.rule import EndPhase
+        from game.operate.faces import Faces
+        player = self._JoueurDeJeu(siege)
+        faces: List['CardFace'] = []
+        for face in player.GetControlCards():
+            faces.append(face)
+            for upgrade in face.GetInventoryDeck().Get():
+                faces.append(upgrade)
+        Faces.ReadyAll(faces, EndPhase(player))
+
     def EndPlayerPhase(self) -> None:
         """FERME la phase des joueurs, comme `phase_end("Player")` du moteur.
 
@@ -850,6 +1297,12 @@ class RunPuzzle:
         world.stat.OnPhaseEnd()
 
         Message.AfterPhaseEnd(world.phase_id, "Player", phase_message).Send()
+
+    def PlayersEndPhaseDraw(self) -> None:
+        """CORRECTIF (26/10/2026, pack bg Batgirl, bg012 Utility Belt) : rejoue l'etape « fin de phase de chaque joueur » du moteur
+        (`World.PlayersEndPhase` : `WhenPlayerEndPhase`, redresser, defausser, PIOCHER jusqu'a la taille de main). `EndPlayerPhase`
+        n'envoie que `WhenPhaseEnd`, APRES la pioche : une capacite « quand la phase se termine, +1 taille de main » n'y est pas mesurable."""
+        self.world.PlayersEndPhase()
 
     def EndVillainPhase(self) -> None:
         """FERME la phase du mechant, comme `phase_end("Villain")` du moteur (Hunting Season : « quand la phase du mechant se termine »)."""
@@ -908,6 +1361,23 @@ class RunPuzzle:
 
         Message.AfterPhaseBegin(phase_message).Send()
 
+    def BeginPlayerPhase(self) -> None:
+        """AJOUT (01/11/2026, scenario Torn, hf503b « At the start of the player phase ») : ouvre la PHASE DES JOUEURS sans la jouer, comme
+        `BeginVillainPhase` ouvre celle du mechant (`world.py` `phase_begin("Player")`) : `WhenPhaseBegin("Player")` (les Interruptions forcees),
+        chaque joueur ouvre sa phase, puis `AfterPhaseBegin`. Additif."""
+        from game.message import Message
+
+        world = self.world
+        world.phase_id += 1
+
+        phase_message = Message.WhenPhaseBegin("Player", world)
+        phase_message.Send()
+
+        for player in world.const_players:
+            player.phase.BeginPhase()
+
+        Message.AfterPhaseBegin(phase_message).Send()
+
     def Scheme(self, card: CardName) -> 'CardFace':
         """Fait manigancer un ennemi contre le joueur courant."""
         from game.card.face.base import Enemy
@@ -927,7 +1397,32 @@ class RunPuzzle:
                                         would_act_message=would_act))
         return face
 
-    def Action(self, card: CardName, type: str|None=None, index: int=0) -> 'CardFace':
+    def Activate(self, card: CardName) -> 'CardFace':
+        """AJOUT (25/10/2026, pack uw) : ACTIVE un ennemi contre le joueur courant comme la phase du mechant (`Enemy.DoActivate` :
+        `WhenEnemyWouldActivate` d'abord, puis manigance en alter ego ou attaque en forme heros). `Scheme` et `EnemyAttacks` n'envoient
+        pas le meme message : « When X activates, ... instead » (Alonya Prostovich) ne se mesure qu'ici."""
+        from game.card.face.base import Enemy
+        face = self.FindFaceInPlay(card)
+        assert Enemy.IsType(face), f"{card=} n'est pas un ennemi"
+        face.CastTo(Enemy).DoActivate(self.world.GetCurrentPlayer(), self.debug_rule)
+        return face
+
+    def ResolveSpecial(self, card: CardName, siege: int|None=None) -> 'CardFace':
+        """Resout le « Special » imprime d'une carte EN JEU, pour le joueur courant (ou `siege`).
+
+        CORRECTIF (25/10/2026, pack custom roz, jakxin) : le banc de test n'avait aucune commande pour
+        « resolve the "Special" ability on X ». C'est exactement ce que font Driven, Hand-to-Hand ou Trained
+        Shots (`player.ResolveSpecialAbility(faces, effect)`) : cette commande isole le Special d'une carte,
+        cibles et couts compris (le pilote repond aux questions, comme pour `Action`).
+        """
+        from game.effect.rule import GameRule
+
+        face = self.FindFaceInPlay(card)
+        player = self.world.GetCurrentPlayer() if siege is None else self.world.const_players[siege]
+        face.ResolveSpecialAbility(player, GameRule(face))
+        return face
+
+    def Action(self, card: CardName, type: str|None=None, index: int=0, siege: int|None=None) -> 'CardFace':
         """Active une action offerte par une carte en jeu.
 
         `type` restreint au type de capacite (« HeroAction », « AlterEgoAction »,
@@ -939,7 +1434,8 @@ class RunPuzzle:
         from game.effect.rule import GameRule
 
         face = self.FindFaceInPlay(card)
-        player = self.world.GetCurrentPlayer()
+        # `siege` (AJOUT 22/10/2026, pu141 « any player may trigger ») : le joueur qui declenche l'action, quand ce n'est pas le courant.
+        player = self.world.GetCurrentPlayer() if siege is None else self.world.const_players[siege]
 
         ability_type = getattr(AbilityType, type) if type else None
         candidats = [x for x in face.effect.Find(when=Message.WhenPlayerInTurn,
@@ -987,6 +1483,7 @@ class RunPuzzle:
         'ResourcesArea':        lambda j: j.area_resources,
         'ReserveArea':          lambda j: j.reserve,
         'RisingTideArea':       lambda j: j.rising_tide, # AJOUT (pack wave)
+        'DamnationArea':        lambda j: j.damnation, # AJOUT (pack mephisto)
         # Correctif ronde 1 (18/09/2026) : `j.set_aside_deck` est un faux ami
         # herite du moteur de base (`player.py:100`), il vaut en realite
         # `additional_discard_pile` (`DeckType.AdditionalDiscardPile`), pas
@@ -1031,6 +1528,9 @@ class RunPuzzle:
         # Ne PAS renommer 'AsideDeck' : on ajoute, on ne deplace pas.
         'AsideScenario':        lambda w: w.aside_deck,
         'AsideModular':         lambda w: w.aside_modular,
+        # AJOUT (22/10/2026, scenario Shadow Labyrinth) : le paquet piege (« trap deck ») et sa defausse, crees a la mise en place de sl038a.
+        'TrapDeck':             lambda w: w.scenario_decks['TrapDeck'].deck,
+        'TrapDiscardPile':      lambda w: w.scenario_decks['TrapDeck'].discard_pile,
     }
 
     def _JoueurVise(self, player: int, siege: int|None) -> 'Player':
@@ -1162,6 +1662,136 @@ class RunPuzzle:
             self.world.PassFirstPlayerToken(camp, self.debug_rule)
         self.world.round_id += 1
 
+    def CreateGameArea(self) -> int:
+        """AJOUT (21/10/2026, PU-5, spec-ville-m1-m2 etape 1) : cree une zone de jeu et rend son INDICE dans `world.game_areas`
+        (0 = la premiere). Banc des territoires : aucune carte de campagne requise."""
+        self.world.CreateGameArea()
+        return len(self.world.game_areas) - 1
+
+    def CreateCommonGameArea(self) -> int:
+        """AJOUT (21/10/2026, PU-5 etape 2) : cree la zone COMMUNE (`world.game_area_commune`) et rend son indice."""
+        self.world.CreateCommonGameArea()
+        return len(self.world.game_areas) - 1
+
+    def MoveCardToGameArea(self, card: CardName, zone: int) -> None:
+        """AJOUT (21/10/2026, PU-5) : une carte (et ses attachements) change de zone."""
+        face = self.FindFaceInPlay(card)
+        self.world.game_areas[zone].AddCard(face.card)
+
+    def MovePlayerToGameArea(self, zone: int, player: int=0) -> None:
+        """AJOUT (21/10/2026, PU-5) : `GameArea.AddPlayer` (le joueur et tout ce qu'il possede changent de zone)."""
+        self.world.MovePlayerToGameArea(self.world.const_players[player], self.world.game_areas[zone])
+
+    def InstallerVille(self, grille: List[List[str]], depart: Tuple[int, int]=(1, 1), en_jeu: bool=False) -> None:
+        """AJOUT (21/10/2026, PU-5 etape 3) : pose la ville du banc : une zone COMMUNE, une zone par ligne de la grille, les cartes de
+        lieu (`grille[ligne][colonne]` : un identifiant de carte, juste une reference), tous les joueurs sur `depart`."""
+        from game.operate.ville import Ville
+        self.world.CreateCommonGameArea()
+        zones = {ligne: self.world.CreateGameArea() for ligne in range(len(grille))}
+        if en_jeu:
+            # (22/10/2026, PU-7) lieux REELS : chaque carte est mise en jeu dans la zone de SA rangee (spec G7), les capacites tournent.
+            joueur = self.world.GetCurrentPlayer()
+            cases = {}
+            for l, rang in enumerate(grille):
+                for c, cid in enumerate(rang):
+                    face = self.CreateCard(cid)
+                    face.PutIntoPlay(joueur, self.debug_rule)
+                    zones[l].AddCard(face.card)
+                    cases[(l, c)] = face
+        else:
+            cases = {(l, c): self.CreateCard(cid) for l, rang in enumerate(grille) for c, cid in enumerate(rang)}
+        Ville.Installer(self.world, cases, zones, tuple(depart))
+
+    def DeplacerDansLaVille(self, case: Tuple[int, int], player: int=0) -> None:
+        """AJOUT (21/10/2026, PU-5) : `Ville.Deplacer` (sans le cout : l'Action de The City le paie). Refus silencieux si la case n'est
+        pas voisine ; l'etat se lit ensuite avec `case_de`."""
+        from game.operate.ville import Ville
+        Ville.Deplacer(self.world, self.world.const_players[player], tuple(case))
+
+    def AttacherAuLieu(self, card: CardName, lieu: CardName) -> None:
+        """AJOUT (22/10/2026, PU-7 M5) : `Ville.AttacherSbire` (le sbire en jeu est glisse sous le lieu, sans choix ni condition de joueur).
+        Refus silencieux (lieu occupe...) : l'etat se lit avec `attache_a`."""
+        from game.operate.ville import Ville
+        Ville.AttacherSbire(self.debug_rule, self.FindFaceInPlay(card), self.FindFaceInPlay(lieu))
+
+    def PlacerDansLaVille(self, case: Tuple[int, int], player: int=0) -> None:
+        """AJOUT (22/10/2026, PU-7 M5) : `Ville.Placer` (deplacement SANS adjacence, avec les interruptions de depart / d'arrivee)."""
+        from game.operate.ville import Ville
+        Ville.Placer(self.world, self.world.const_players[player], tuple(case))
+
+    def AssembleeAutreTable(self, action: str, *arguments: Any) -> None:
+        """AJOUT (22/10/2026, Kingsfall multi-tables) : modifie l'etat COMMUN de l'assemblee COMME UNE AUTRE TABLE le ferait, EN COURS de partie
+        (`verser`, n) / (`envoyer`, table) / (`terminer`, table, victoire). Le harnais ne peut pas faire jouer deux tables a la fois : c'est le seul moyen de
+        prouver que cette table SE SYNCHRONISE (et ne se contente pas de lire l'etat posee avant la mise en place)."""
+        from game.operate.assemblee import Assemblee
+        pod = self.world.rule.assemblee
+        assert pod is not None, "la partie n'appartient a aucune assemblee"
+        code = pod[0]
+        if action == 'verser':
+            Assemblee.VerserJetons(code, int(arguments[0]))
+        elif action == 'envoyer':
+            Assemblee.EnvoyerJeton(code, str(arguments[0]))
+        elif action == 'terminer':
+            Assemblee.Terminer(code, str(arguments[0]), bool(arguments[1]))
+        else:
+            raise AssertionError(f"action d'assemblee inconnue : {action}")
+
+    def SendRoundEnd(self) -> None:
+        """AJOUT (21/10/2026, Punisher MC×DC, Target Lock DISTRACTED « At the end of the round, flip this card ») : envoie
+        `WhenRoundEnd`, que `EndRound` (mode manuel) ne partait jamais, pour tester un effet « a la fin de la manche »."""
+        from game.message import Message
+        Message.WhenRoundEnd(self.world).Send()
+
+    def ResetRoundStats(self) -> None:
+        """AJOUT (25/10/2026, pack uw, Wolverine's Claws « THIS round ») : ce que `World.RoundLoop` fait juste apres `WhenRoundEnd`, la remise a
+        zero du registre du round (`stat.OnRoundEnd`) ; `EndRound` / `SendRoundEnd` ne le font pas."""
+        self.world.stat.OnRoundEnd()
+
+    def NewPlayerTurn(self) -> None:
+        """AJOUT (26/10/2026, pack `rz`, rz003 « limit once per turn ») : clot le tour du joueur courant et en ouvre un AUTRE, comme `World.PlayerPhase`
+        (`world.stat.OnTurnEnd` / `OnTurnBegin`) et `PlayerPhase.EndTurn` / `BeginTurn` (registres du tour du joueur). Le joueur courant ne change pas."""
+        joueur = self.world.GetCurrentPlayer()
+        joueur.phase.EndTurn()
+        self.world.stat.OnTurnEnd()
+        self.world.stat.OnTurnBegin()
+        joueur.phase.BeginTurn()
+
+    def PlayersNewRound(self) -> None:
+        """AJOUT (26/10/2026, pack `cr`, cr007-cr009 « the last card you played ») : fin de round puis debut du round suivant POUR LES JOUEURS
+        (`PlayerPhase.EndRound` / `BeginRound` : remise a zero des registres `this_round_played_cards`, compteur du round des sbires vaincus).
+        `EndRound` (mode manuel) ne touche pas aux joueurs. Additif : le numero du round (`world.round_id`) n'avance pas."""
+        for joueur in self.world.const_players:
+            joueur.phase.EndRound()
+            joueur.phase.BeginRound()
+
+    def SendAfterRoundEnd(self) -> None:
+        """AJOUT (22/10/2026, PU-7 M5, Overdrive « After the round ends ») : `WhenRoundEnd` PUIS `AfterRoundEnd`, comme `World.RoundLoop`."""
+        from game.message import Message
+        fin = Message.WhenRoundEnd(self.world)
+        fin.Send()
+        Message.AfterRoundEnd(fin).Send()
+
+    def SendGameWouldBegin(self) -> None:
+        """AJOUT (22/10/2026, Punisher MC×DC, pu141 « Setup : ... ») : envoie `WhenGameWouldBegin`, que `AbilityFactory.AfterGameSetup` ecoute
+        et que le harnais manquait toujours (le message part une fois, a la FIN de la mise en place, avant le montage d'un cas)."""
+        from game.message import Message
+        Message.WhenGameWouldBegin(self.world).Send()
+
+    def SendGameBeginSetup(self) -> None:
+        """AJOUT (26/10/2026, relecture de dt075 Multiverse Shenanigans) : envoie `WhenGameBeginSetup` (les capacites `AbilityFactory.WhenGameBeginSetup`,
+        type Setup : « When the game begins, ... »). Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : on le
+        renvoie a la main, avec le descripteur de campagne de la scene."""
+        from game.message import Message
+        Message.WhenGameBeginSetup(self.world.scene.campaign, self.world).Send()
+
+    def SendCardSetup(self, card: CardName) -> None:
+        """AJOUT (31/10/2026, pack buffy) : renvoie `WhenCardSetup` (les capacites `AbilityFactory.WhenCardSetup("This", ..)`, type Setup d'une
+        identite) pour la carte nommee. Le message part une fois pendant la mise en place du monde, AVANT le montage d'un cas : sans cette
+        aide, un Setup qui lit le deck de rencontre ne peut etre mesure que sur le deck du scenario, pas sur un deck monte par le cas."""
+        from game.message import Message
+        face = self.FindOrCreateFace(card)
+        Message.WhenCardSetup(face, False).Send()
+
     def SwapWithDeckTop(self, card: CardName, player: int=0, siege: int|None=None):
         """« Switch Card with top Deck Card » d'OCTGN (menu de la main).
 
@@ -1279,7 +1909,116 @@ class RunPuzzle:
         villains[0].Advance(self.debug_rule)
 
     ################################################################################
+    # E4 : remise en etat depuis une capture du plateau (`puzzle_capture.py`).
     #
+    # Une capture nomme chaque carte posee par une CLE (« e1 », « e2 »...) : viser
+    # une carte par son identifiant serait ambigu des qu'un deck ou une defausse
+    # en contient un double (`FindOrCreateFace` fouille les decks d'abord). Le
+    # registre vit sur le monde, car `PuzzleHelper.Exec` fabrique un `RunPuzzle`
+    # neuf a chaque appel.
+    KINDS_RESTAURES = ('ally', 'support', 'minion', 'side_scheme', 'environment', 'upgrade')
+
+    def _Registre(self) -> Dict[str, 'CardFace']:
+        registre = getattr(self.world, 'puzzle_restaurees', None)
+        if registre is None:
+            registre = {}
+            self.world.puzzle_restaurees = registre
+        return registre
+
+    def _CarteRestauree(self, cible: str) -> 'CardFace':
+        face = self._Registre().get(cible)
+        if face is not None:
+            return face
+        return self.FindFaceInPlay(cible)
+
+    def _AppliquerEtat(self, face: 'CardFace', exhausted: bool|None, health: int|None,
+                       statuses: List[List[Any]]|None, counters: List[List[Any]]|None,
+                       tokens: List[List[Any]]|None, threat: int|None) -> None:
+        """Pose l'etat voulu sur `face`. L'ordre compte : les cartes d'etat, compteurs
+        et jetons d'abord, puis la menace, l'epuisement, et les PV EN DERNIER (une
+        amelioration deja attachee peut changer les PV max)."""
+        # Valeurs ABSOLUES : une carte qui arrive en jeu porte deja ses compteurs de
+        # depart (Web-Shooter : 3), la capture dit ce qu'elle porte A LA FIN.
+        composants = face.card.components
+        if statuses is not None:
+            voulus = {str(nom): int(n) for nom, n in statuses}
+            for nom in ("Confused", "Stunned", "Tough", "Exposed", "Cloaked", "Dazed", "Intensified"):
+                ecart = voulus.get(nom, 0) - getattr(composants.status, nom.lower())
+                if ecart > 0:
+                    self.AddStatus(face, nom, ecart)
+                elif ecart < 0:
+                    composants.status.DiscardStatusCard(nom, self.debug_rule, -ecart)
+        if counters is not None:
+            voulus = {str(nom): int(n) for nom, n in counters}
+            for nom in set(voulus) | set(composants.counter.counters):
+                ecart = voulus.get(nom, 0) - composants.counter.GetCounters(nom)
+                if ecart:
+                    self.Counter(face, nom, ecart)
+        if tokens is not None:
+            voulus = {str(nom): int(n) for nom, n in tokens}
+            for nom in set(voulus) | set(composants.token.token):
+                if nom == 'first_player_token' or (nom == 'threat' and threat is not None):
+                    continue
+                ecart = voulus.get(nom, 0) - composants.token.GetTokens(nom)
+                if ecart:
+                    self.Token(face, nom, ecart)
+        if threat is not None:
+            self.SetThreat(face, int(threat))
+        if exhausted is True and face.IsReady():
+            self.Exhaust(face)
+        elif exhausted is False and not face.IsReady():
+            self.Ready(face)
+        if health is not None:
+            self.SetHealth(face, int(health))
+
+    def RestoreState(self, target: str, key: str|None=None, exhausted: bool|None=None,
+                     health: int|None=None, statuses: List[List[Any]]|None=None,
+                     counters: List[List[Any]]|None=None, tokens: List[List[Any]]|None=None,
+                     threat: int|None=None) -> 'CardFace':
+        """Regle l'etat d'une carte DEJA EN JEU (identite, mechant, complot principal,
+        ou une carte posee par `RestoreCard`, designee par sa cle). `key` lui donne une
+        cle, pour que `RestoreCard` puisse y attacher des ameliorations."""
+        face = self._CarteRestauree(target)
+        if key:
+            self._Registre()[key] = face
+        self._AppliquerEtat(face, exhausted, health, statuses, counters, tokens, threat)
+        return face
+
+    def RestoreCard(self, key: str, card: str, kind: str, siege: int=0, host: str|None=None,
+                    engaged: bool=False, exhausted: bool|None=None, health: int|None=None,
+                    statuses: List[List[Any]]|None=None, counters: List[List[Any]]|None=None,
+                    tokens: List[List[Any]]|None=None, threat: int|None=None) -> 'CardFace':
+        """Cree une carte NEUVE (jamais celle d'un deck, meme si l'identifiant s'y
+        trouve) et la pose en jeu avec son etat. `kind` : ally, support, minion,
+        side_scheme, environment, ou upgrade (alors `host` est la cle de la carte
+        porteuse). `siege` est le joueur qui la controle (ou, pour un sbire, celui qui
+        l'engage quand `engaged` est vrai)."""
+        from game.card.face.base import ClassCard
+        from game.card.face.attribute.can_attach import CanAttach
+        assert kind in RunPuzzle.KINDS_RESTAURES, f"kind inconnu : {kind}"
+        joueur = self.world.const_seat_order_players[siege]
+        face = self.CreateCard(card)
+        if ClassCard.IsType(face):
+            face.card.SetOwner(joueur)
+        if kind == 'upgrade':
+            assert host, "une amelioration demande son porteur (host)"
+            hote = self._Registre()[host]
+            assert face.CastTo(CanAttach).AttachTo2(hote, self.debug_rule), f"{card} n'a pas pu s'attacher a {host}"
+        else:
+            # Les cartes des joueurs sont sous leur controle ; celles de la rencontre non.
+            face.PutIntoPlay(joueur, self.debug_rule, under_control=kind in ('ally', 'support'))
+            if kind == 'minion' and engaged and face.card.area is not joueur.engaged_minions:
+                self.Engage(face, siege=siege)
+        self._Registre()[key] = face
+        self._AppliquerEtat(face, exhausted, health, statuses, counters, tokens, threat)
+        return face
+
+    ################################################################################
+    #
+    def ValidateObjective(self, index: int):
+        """Valide a la main l'objectif LIBRE `index` (0 = le premier) ; peut finir le puzzle."""
+        self.world.puzzle_objectives.ValidateFree(int(index))
+
     def Win(self):
         """Termine la partie par une VICTOIRE des joueurs.
 

@@ -1,0 +1,82 @@
+/* Le choix attend (fenetre fermee sans annuler) : une ligne discrete en haut de la table, et l'onglet « Piles » qui clignote. */
+.plateau-choix-attente {
+  position: fixed;
+  top: 52px;
+  left: 8px;
+  right: 8px;
+  /* Sous le tiroir (640) et son voile (630) : le tiroir doit rester cliquable en entier. */
+  z-index: 620;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px 6px 12px;
+  color: #fff;
+  background: rgba(24, 28, 38, 0.96);
+  border: 1px solid rgba(240, 185, 95, 0.7);
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.plateau-choix-attente-texte {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.plateau-choix-attente-rouvrir {
+  flex: 0 0 auto;
+  min-height: 44px;
+  min-width: 96px;
+  padding: 8px 16px;
+  font: inherit;
+  font-weight: 800;
+  color: #1b1408;
+  background: #f0b95f;
+  border: 1px solid #f7d7a3;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* L'onglet « Piles » clignote tant qu'un choix attend (sobre : une pulsation de la bordure et de l'ombre). */
+.encoche.attend-un-choix {
+  animation: encoche-attend 1.3s ease-in-out infinite;
+  border-color: #f0b95f;
+  opacity: 1;
+}
+
+@keyframes encoche-attend {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(240, 185, 95, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(240, 185, 95, 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .encoche.attend-un-choix {
+    animation: none;
+    box-shadow: 0 0 0 4px rgba(240, 185, 95, 0.7);
+  }
+}
+
+/* Le tiroir : les piles ou l'on peut choisir une carte ressortent, avec leur nombre de cartes choisissables. */
+.tiroir-pile.est-choisissable {
+  border-color: #f0b95f;
+  box-shadow: 0 0 0 2px rgba(240, 185, 95, 0.6);
+  background: rgba(240, 185, 95, 0.12);
+}
+
+.tiroir-pile-choisir {
+  margin-left: auto;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1b1408;
+  background: #f0b95f;
+  border-radius: 999px;
+}

@@ -1,0 +1,32 @@
+{
+  "server_addresses": [
+    "127.0.0.1:2346"
+  ],
+  "password": "",
+  "translate_file": "./data/translate_fr.json",
+  "game_statistics_file": "/tmp/claude-1000/-mnt-c-Users-arnau-Desktop-Marvel-LCG-last-try/280ad223-ca50-48d7-b5dc-1070ffe25960/scratchpad/statistics-test.json",
+  "statistics": false,
+  "show_image_text": true,
+  "check_for_new_version_on_startup": false,
+  "image_servers": [
+    "https://cerebrodatastorage.blob.core.windows.net/cerebro-cards/official/{card_id:U}.jpg",
+    "https://marvelcdb.com/bundles/cards/{card_id}.jpg"
+  ],
+  "image_folders": [
+    "./assets/pics/",
+    "/mnt/c/Users/arnau/Desktop/Marvel LCG/Jeux original/assets/pics/"
+  ],
+  "sound_folders": [
+    "./assets/sounds/"
+  ],
+  "replay_folders": [
+    "../replays/"
+  ],
+  "starter_deck_folder": "./deck/starter/",
+  "cache_max_age": 60,
+  "deck_folders": [
+    "./deck/custom/"
+  ],
+  "cards_json_custom_file": "./data/cards_custom.json",
+  "games_history_file": "/tmp/claude-1000/-mnt-c-Users-arnau-Desktop-Marvel-LCG-last-try/280ad223-ca50-48d7-b5dc-1070ffe25960/scratchpad/games_history-test.json"
+}

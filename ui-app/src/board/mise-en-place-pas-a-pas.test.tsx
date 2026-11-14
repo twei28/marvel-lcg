@@ -300,8 +300,8 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
   it('dessine les pointillés des seules cartes en attente', () => {
     const vue = render(<PlacesEnAttente ids={new Set([20])} />)
     expect(vue.container.innerHTML).toContain('data-card-id="20"')
-    // La pile des stades derrière la carte attend avec elle.
-    expect(vue.container.innerHTML).toContain('.stage-arriere')
+    // La loupe des stades à venir attend avec la carte.
+    expect(vue.container.innerHTML).toContain('.stages-bouton')
     cleanup()
     expect(render(<PlacesEnAttente ids={new Set()} />).container.innerHTML).toBe('')
   })
@@ -322,4 +322,19 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
     fireEvent.click(vue.getByRole('button'))
     expect(appels).toBe(1)
   })
+})
+
+it('Spectrum : ne rejoue pas les formes Énergie face visible avant leur retournement de setup', () => {
+  const m = monde(1)
+  m.players[0].area_hero = [
+    carte(1, 'AlterEgo', { card_id: '21001b' }),
+    ...['21002', '21003', '21004'].map((code, i) => carte(10 + i, 'Upgrade', { card_id: code })),
+    carte(20, 'Upgrade', { card_id: '21011' }),
+  ]
+  const premiere = etapesNouvelles(new Map(), m, SANS_PANNEAU)
+  expect(premiere.etapes.map(e => e.carteId)).toEqual([20])
+  const finale = { ...m, render_id: 2, players: [{ ...m.players[0], area_hero: m.players[0].area_hero.map(c =>
+    ['21002', '21003', '21004'].includes(c.card_id) ? { ...c, is_face_up: false } : c
+  ) }] }
+  expect(etapesNouvelles(premiere.memoire, finale, SANS_PANNEAU).etapes).toEqual([])
 })

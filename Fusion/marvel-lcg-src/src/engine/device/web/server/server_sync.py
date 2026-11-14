@@ -90,6 +90,16 @@ class GameServerSync(GameServerBase):
         self.device_manager.AddSize("Ask", len(compressed_data))
         return web.Response(body=compressed_data, content_type='application/json', headers={'Content-Encoding': 'gzip'})
 
+    async def handle_get_assemblee(self, request: web.Request) -> web.Response:
+        """KINGSFALL MULTI-TABLES (22/10/2026) : l'etat COMMUN de l'assemblee, relu a la demande. Le rendu du monde ne se refait que quand CETTE table joue :
+        sans cette route, une table n'apprendrait qu'a son prochain coup qu'un autre groupe a rejoint, verse des jetons ou fini sa partie. `{}` hors assemblee."""
+        controller = self.get_first_controller(request)
+        monde = controller.world
+        if not monde:
+            return web.json_response({})
+        from game.render.to_descriptor import ToDescriptor
+        return web.json_response(ToDescriptor.Assemblee(monde))
+
     async def handle_get_world(self, request: web.Request) -> web.Response:
         player_ids = self.get_player_ids(request)
         controller = self.get_first_controller(request)
@@ -104,7 +114,8 @@ class GameServerSync(GameServerBase):
         # dictionnaire, qui n'a pas d'attribut.
         render_id = data.render_id
         data = self.MasquerCeQuOnNaPasLeDroitDeVoir(data, request)
-        compressed_data = Json.DumpGZip(data)
+        # Niveau 6 (decision du 20/10/2026) : la compression etait la plus grosse part du CPU par client.
+        compressed_data = Json.DumpGZip(data, 6)
 
         self.device_manager.AddSize("World", len(compressed_data))
         Log.DebugSilent("SYNC", f"[Client] Get world {render_id}, player_id: {player_ids}")
@@ -145,29 +156,13 @@ class GameServerSync(GameServerBase):
         if autorises is None:
             return descriptor
 
-        from dataclasses import asdict
-        brut = asdict(descriptor)
-
-        def masquer(noeud) -> None:
-            if isinstance(noeud, dict):
-                vus = noeud.get('visible_for_players')
-                if isinstance(vus, list) and 'name' in noeud and not (set(vus) & autorises):
-                    noeud['name'] = ''
-                    noeud['card_id'] = ''
-                    noeud['pic_id'] = ''
-                    noeud['card_type'] = ''
-                    noeud['traits'] = {}
-                    noeud['info'] = {}
-                    noeud['buffs'] = {}
-                    noeud['cost'] = 0
-                for valeur in noeud.values():
-                    masquer(valeur)
-            elif isinstance(noeud, list):
-                for valeur in noeud:
-                    masquer(valeur)
-
-        masquer(brut)
-        return brut
+        # Backlog 22 (20/10/2026) : conversion et masque en UNE passe. C'etait
+        # `dataclasses.asdict(descriptor)` puis un second parcours `masquer` de
+        # toute la copie, a chaque client et a chaque trame. Resultat identique,
+        # demonstration et regle du masque (inchangee) dans engine/lib/en_dict.py
+        # (`_masquer_noeud`) ; preuve octet pour octet : outils/banc-descripteur.py.
+        from engine.lib.en_dict import asdict_masque
+        return asdict_masque(descriptor, autorises)
 
     async def handle_post(self, request: web.Request) -> web.Response:
         post_data = await request.text()
@@ -198,6 +193,7 @@ class GameServerSync(GameServerBase):
         self.AddAwaitGetSecurity('/client_updated', self.handle_client_updated)
         self.AddAwaitGetSecurity('/get_ask', self.handle_get_ask)
         self.AddAwaitGetSecurity('/get_world', self.handle_get_world)
+        self.AddAwaitGetSecurity('/get_assemblee', self.handle_get_assemblee)
 
         self.AddPostSecurity('/post', self.handle_post)
 

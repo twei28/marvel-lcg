@@ -31,6 +31,10 @@ class ModelForm(ModelBase):
                 # to_form.FlipTo(by_effect, card_face=to_form)
                 # to_form.PutIntoPlay(player, by_effect, under_control=True)
                 # to_form.SetHealth(health, by_effect)
+            # CORRECTIF (25/10/2026, pack hp Wasp Hank Pym) : compte les changements de forme de CE tour (world_stat.py).
+            joueur_forme = this.GetControlBy()
+            if Player.IsType(joueur_forme):
+                this.card.world.stat.AddFormChange(joueur_forme)
             after_message = Message.AfterUnitChangeForm(to_form, None, by_effect, would_message)
             after_message.Send()
             end_message = Message.AfterUnitChangeFormEnd(to_form, by_effect, after_message)

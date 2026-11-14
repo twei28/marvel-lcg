@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « À FAIRE… RIEN N'EST ÉCRIT » »). Preuve : Même fiche en bas : « Livré le 13/09, déployé le 15/09 » ; `5493ea96`, `dbba4d35`, `ece47081` ; `public/js/prepare/legacy.js` présent (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°3).
+
 # À FAIRE : le mode Legacy
 
 **Idée de l'utilisateur, 13/09/2026.** On commence avec la seule boîte de base et

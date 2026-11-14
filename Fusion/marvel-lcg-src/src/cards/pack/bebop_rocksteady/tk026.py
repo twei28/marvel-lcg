@@ -24,7 +24,7 @@ def GetAbilities() -> Sequence['Ability']:
         egaux = [a for a in amis if a.health == mini]
         cible = egaux[0] if len(egaux) == 1 else joueur.AskChooseFace(
             egaux, effect, prompt="Choose the character with the fewest remaining hit points")
-        if cible is not None:
+        if cible is not None and AttaqueHorsPhase(v, joueur, effect):
             v.BasicAttack([cible], effect)
 
     def boost(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:

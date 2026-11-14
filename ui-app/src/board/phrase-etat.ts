@@ -42,12 +42,23 @@ export function phraseEtat(assistant: AssistantInteraction, prete: boolean): str
     }
     if (assistant.coutRequis !== undefined) {
       const manque = Math.max(0, assistant.coutRequis - assistant.coutPaye)
-      if (manque === 0) return t('Coût couvert')
+      if (manque === 0) return assistant.moyensChoisis ? `${t('Coût couvert')} · ${assistant.moyensChoisis}` : t('Coût couvert')
       return `${t('Il manque')} ${manque} ${manque > 1 ? t('ressources') : t('ressource')}`
     }
     return assistant.detail ?? ''
   }
-  if (assistant.etape === 'confirm' && prete) return t('Tout est prêt')
+  if (assistant.etape === 'confirm' && prete) {
+    // Coût X (ou texte « overpay ») : le coût imprimé est déjà couvert (0), mais
+    // payer EST l'effet. Rapport de bug n°116 (08/11/2026, Web Barrage) : la
+    // phrase disait « Tout est prêt » sans un mot sur le paiement, le joueur
+    // validait sans rien dépenser, et la carte ne faisait rien.
+    if (assistant.surpaiementRecompense) {
+      return assistant.coutPaye > 0
+        ? `${t('Payé')} : ${assistant.coutPaye}`
+        : t('Rien payé : tu peux encore ajouter des ressources avant de valider')
+    }
+    return assistant.moyensChoisis ? `${t('Tout est prêt')} · ${assistant.moyensChoisis}` : t('Tout est prêt')
+  }
   return assistant.detail ?? ''
 }
 

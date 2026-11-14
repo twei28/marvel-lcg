@@ -177,6 +177,20 @@
     width: 100%;
   }
 
+  /* UN SEUL conteneur de defilement sur telephone (signalement du 05/11/2026,
+     nicodede62 : « je ne peux pas choisir la 2e option et je suis oblige de
+     fermer la fenetre »). La feuille elle-meme (`.demande-centrale`, ci-dessus)
+     defile deja tout son contenu (titre + vignette + boutons) ; sans cette
+     regle, `.dc-boutons` garde EN PLUS son propre `max-height`/`overflow-y:auto`
+     de board.css (pense pour la fenetre flottante de PC, jamais mis a l'ecart
+     sur telephone) : deux conteneurs de defilement imbriques, dont un geste
+     tactile ne sait pas toujours lequel choisir -- le bouton du bas peut alors
+     rester hors d'atteinte malgre le defilement. */
+  body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .dc-boutons {
+    max-height: none;
+    overflow: visible;
+  }
+
   body.mode-plateau-portrait .demande-centrale:not(.est-en-scene) .af-action-wrap {
     flex: 1 1 140px;
   }

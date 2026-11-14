@@ -81,6 +81,13 @@ export type WorldPlayer = {
    */
   rising_tide?: WorldCard[]
   /**
+   * Damnation du pack Mephisto : une pile hors jeu PAR JOUEUR, toujours face
+   * cachée (les cartes y sont mises de côté depuis son deck). Absente des
+   * sauvegardes d'avant le pack, et vide hors scénario Mephisto : toujours la
+   * lire avec `?? []`.
+   */
+  damnation?: WorldCard[]
+  /**
    * Les cartes de CE joueur en cours de résolution : un événement joué, une
    * traîtrise qu'il subit, le temps que son texte s'applique.
    *
@@ -336,6 +343,8 @@ export type FaitMenace = FaitMechantCommun & {
    */
   escalade?: number
   acceleration?: number
+  /** Les cartes en jeu qui portent une icône d'accélération (rapport n°104). Absent des moteurs plus anciens. */
+  sources_acceleration?: string[]
   joueurs?: number
   /** 13/10/2026 : les cartes qui ont réduit cette pose, et de combien. */
   reductions?: Array<{ source: string; valeur: number; source_id?: number | null }>
@@ -409,7 +418,7 @@ export type FaitRevelation = FaitMechantCommun & {
    * `PlayerAction.NoterRecherche`) : ce qu'elle a trouvé (vide : rien), et si
    * le paquet rencontre a été fouillé, donc remélangé. Absent sur un moteur plus ancien.
    */
-  recherches?: Array<{ trouve: string[]; paquet: boolean }>
+  recherches?: Array<{ trouve: string[]; paquet: boolean; defausse?: string[] }>
   /** Son effet « Une fois révélée » a été ANNULÉ, par cette carte (04/10/2026). */
   annulee_par?: string
   annulee_par_id?: number
@@ -576,6 +585,21 @@ export type FaitMechant =
   | FaitSonne
 
 /** Un effet refusé en silence, et pourquoi (voir `refus-effets.tsx`). */
+export type ChoixUnique = {
+  id: number
+  carte_id: number
+  carte_code?: string
+  carte: string
+  /** Le libelle moteur de l'option appliquee (« Deal 1 damage to Robert Kelly »). */
+  option: string
+  joueur: number
+  /**
+   * Un AVIS libre du moteur (phrase anglaise), a montrer a la place de « une seule option possible » : une recherche sans resultat
+   * dont la suite n'est pas resolue (Safe House #30, 26/10/2026). Absent des moteurs non mis a jour.
+   */
+  texte?: string
+}
+
 export type RefusEffet = {
   /** Numéro croissant dans la partie : le plateau ne montre que les nouveaux. */
   n: number
@@ -592,7 +616,46 @@ export type RefusEffet = {
   source_code?: string
 }
 
+/** L'etat de la ville exporte par le moteur (`ToDescriptor.Ville`, campagne MC×DC 2026). Absent ou vide hors de la ville. */
+export type VilleCase = {
+  ligne: number
+  colonne: number
+  /** Identifiant d'objet de la carte de lieu : c'est ce que le moteur attend comme cible de « Move ». */
+  objet: number
+  card_id: string
+  joueurs: number[]
+  sbires_attaches: number[]
+  /** Une capacite « une fois par round » de ce lieu a deja servi ce round (limite commune a tous les joueurs). */
+  limite_utilisee: boolean
+  piste: { objet: number; card_id: string; porteur: number; compteurs: Record<string, number> } | null
+}
+export type VilleLigne = { ligne: number; capo: number | null; capo_card_id: string }
+export type VilleJoueur = { player_id: number; ligne: number; colonne: number }
+export type VilleExport = { lignes: VilleLigne[]; cases: VilleCase[]; joueurs: VilleJoueur[] }
+
+/** L'assemblee de Kingsfall multi-tables vue depuis cette table (`ToDescriptor.Assemblee`). Absente ou vide hors assemblee. */
+export type AssembleeGroupe = { tab: string; joueurs: number; noms: string; etat: 0 | 1 | 2 | 3; recus: number }
+export type AssembleeExport = {
+  code: string
+  /** Cette table. */
+  table: string
+  organisateur: string
+  total_jetons: number
+  seuil: number
+  retournee: boolean
+  degats: number
+  menace: number
+  joueurs: number
+  groupes: AssembleeGroupe[]
+  terminee: boolean
+  gagnee: boolean
+}
+
 export type World = {
+  /** L'assemblee de Kingsfall multi-tables (onglet « Assemblée »). */
+  assemblee?: Partial<AssembleeExport>
+  /** La ville de la campagne MC×DC 2026 (onglet « Ville »). */
+  ville?: Partial<VilleExport>
   /** Change a chaque rendu du moteur : sert a ne redessiner que si besoin. */
   render_id: number
   round_id: number
@@ -608,6 +671,8 @@ export type World = {
    * saura toujours si une victoire comptait.
    */
   mode_sandbox?: boolean
+  /** Mode « Puzzle » de la préparation : le plateau est un éditeur (bouton « Enregistrer le puzzle »). */
+  mode_createur_puzzle?: boolean
   /**
    * La RÈGLE : cette partie a été lancée comme un scénario de campagne
    * (`mode_campaign`). Seul critère fiable pour ouvrir le panneau de
@@ -725,6 +790,11 @@ export type World = {
    * Absent des sauvegardes anciennes et des moteurs non mis à jour : tout
    * lecteur doit tenir le cas où la liste manque.
    */
+  /**
+   * Les clés du carnet de campagne qu'une carte a RETIRÉES pendant la partie (« remove it from the campaign log » :
+   * Tactical Scanner 04155-04158), ex. « Player 1 Tech Upgrade ». Moteur du 14/11/2026 ; absent d'un moteur plus ancien.
+   */
+  campagne_retraits?: string[]
   faits_mechant?: FaitMechant[]
   /**
    * Effets REFUSES en silence par le moteur (`WorldStat.RecordRefusEffet`) :
@@ -732,6 +802,11 @@ export type World = {
    * plateau n'affiche que les nouveaux. Absent des moteurs non mis à jour.
    */
   refus_effets?: RefusEffet[]
+  /**
+   * Les choix a UNE SEULE option que le moteur a resolus d'office (`WorldStat.choix_uniques`, rapport BL-Stark n°99). Numerotes (`id`)
+   * pour que le plateau n'annonce que les nouveaux. Absent des moteurs non mis a jour.
+   */
+  choix_uniques?: ChoixUnique[]
   area_schemes_main: WorldCard[]
   main_schemes_deck: WorldCard[]
   area_schemes_side: WorldCard[]
@@ -770,6 +845,10 @@ export type World = {
   players_won?: boolean
   /** Texte du moteur : « The Final Stage of the Villain was Defeated »... */
   game_over_reason?: string
+  /** Objectifs d'un puzzle (vide hors puzzle a objectifs) : `kind` = defeat_villain, survive, complete_scheme ou free_text. */
+  puzzle_objectives?: { kind: string; text: string; target: string; done: boolean }[]
+  /** Enonce d'un puzzle de format 2 (titre, histoire, difficulte, indices, auteur) ; vide sinon. */
+  puzzle_info?: { title?: string; description?: string; difficulty?: number; hints?: string[]; author?: string; solution_text?: string; solution_visibility?: string }
   /**
    * Mode Bataille : le camp gagnant (-1 s'il n'y en a pas) et le camp de
    * chaque siege. Le meme ecran de fin sert aux deux tables : sans eux, il

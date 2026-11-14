@@ -85,6 +85,36 @@ def EvenementsGlissesSousEcho(effect: 'Effect') -> List['CardFace']:
             if face is not None and Event.IsType(face)]
 
 
+def JeuPayableSans(jeu: 'Effect', ecartee: 'CardFace') -> bool:
+    """Le jeu `jeu` (deja passe par `FilterAvailableEffects`) peut-il etre
+    paye sans la carte `ecartee` ? Somme des moyens listes par le moteur, une
+    entree par carte payeuse (la plus forte), comparee au cout de chaque cible.
+    Ajoute le 20/10/2026 (backlog 13, Q1) pour Photographic Reflexes."""
+    from game.element.resources import Resources
+    if jeu.context.ignore_resource_cost:
+        return True
+    couts = getattr(jeu.checker, "cost_for_different_target", None)
+    if couts is None or couts.IsEmpty():
+        return True
+    for cible in list(couts.target_cost):
+        paiement = couts.GetPayment(cible)
+        par_carte: Dict[Any, 'Resources'] = {}
+        for entree in paiement.payments:
+            for payeur, texte in entree.items():
+                if payeur.this is ecartee:
+                    continue
+                res = Resources(texte)
+                cle = payeur.this.card
+                if cle not in par_carte or res.val > par_carte[cle].val:
+                    par_carte[cle] = res
+        total = Resources("0")
+        for res in par_carte.values():
+            total += res
+        if total.IsMatchCost(paiement.cost):
+            return True
+    return False
+
+
 def AbilitesPhotographicReflexes() -> Sequence['Ability']:
     def check_pas_payer_sa_propre_glissee(effect: 'Effect', message: 'Message.CheckPlayerCanPayCost') -> bool:
         """CORRECTIF (25/09/2026, signale en jeu). Sur le CHEMIN B, la
@@ -108,6 +138,15 @@ def AbilitesPhotographicReflexes() -> Sequence['Ability']:
         joueur = message.GetToPlayer()
         if joueur is None:
             return True
+        # 20/10/2026 (backlog 13, Q1) : sur le CHEMIN A, la copie cliquee est
+        # deja defaussee comme cout (drapeau pose par `photographic_reflexes`).
+        # Celle qui resterait en main est donc une AUTRE carte : elle peut
+        # payer, exactement comme la « seconde copie » du paragraphe ci-dessus.
+        # Sans cela, le geste etait offert avec deux copies en main (le chemin
+        # B accepte cette position) puis echouait, et la copie cliquee etait
+        # perdue pour rien.
+        if joueur.flag.Get(REFLEXES_DEJA_PAYEES):
+            return True
         identite = joueur.GetIdentity()
         if identite is None or not identite.IsName('Echo'):
             return True
@@ -125,7 +164,46 @@ def AbilitesPhotographicReflexes() -> Sequence['Ability']:
         # Sans evenement sous Echo, la carte ne doit pas etre cliquable du
         # tout : la defausser pour rien recreerait le defaut d'origine sous
         # une autre forme.
-        return bool(EvenementsGlissesSousEcho(effect))
+        #
+        # 20/10/2026 (backlog 13, decision de l'utilisateur sur Q1) : il ne
+        # suffit pas qu'un evenement soit glisse, il faut qu'au moins un puisse
+        # REELLEMENT etre joue (cout reduit de 2 payable, cible legale). Le
+        # texte dit « discard ... TO play an event » : sans rien a jouer, le
+        # geste n'a pas de sens. Constate en autoplay (echo/rhino graine 4) :
+        # la carte partait en defausse et rien n'etait joue. On pose la MEME
+        # question que le moteur pour le chemin B (cliquer l'evenement glisse),
+        # qui refusait deja dans cette position : les deux chemins s'accordent.
+        from game.event.manager import EventManager
+        joueur = effect.GetInitiator()
+        faces = EvenementsGlissesSousEcho(effect)
+        if joueur is None or not faces:
+            return False
+        world = effect.world
+        # ⚠ `FilterAvailableEffects` remplace `world.render.derniers_refus`
+        # (les motifs de refus que le plateau affiche pour la question EN
+        # COURS) : cette verification imbriquee ne doit pas les ecraser.
+        #
+        # ⚠ L'OFFRE NE VERIFIE PAS LE PAIEMENT. `FilterAvailableEffects` ne
+        # fait que lister les moyens de payer (`cost_for_different_target`) ;
+        # le manque n'apparait qu'a l'activation (`check_pay`,
+        # effect_checker.py). Le chemin B « refusait » donc trop tard, au clic.
+        # On additionne ici les moyens listes, UNE entree par carte payeuse
+        # (la plus forte), en ECARTANT la Photographic Reflexes cliquee, qui
+        # part en cout avant le paiement, et on compare au cout de chaque
+        # cible possible (`Resources.IsMatchCost`, exigences de couleur
+        # comprises).
+        refus_en_cours = world.render.derniers_refus
+        try:
+            for face in faces:
+                jeux = face.effect.Find(func_name="Play", when=Message.WhenPlayerInTurn)
+                if not jeux:
+                    continue
+                for jeu in EventManager.FilterAvailableEffects(message, jeux, joueur, world, None):
+                    if JeuPayableSans(jeu, effect.this):
+                        return True
+            return False
+        finally:
+            world.render.derniers_refus = refus_en_cours
 
     def photographic_reflexes(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         joueur = effect.GetInitiator()

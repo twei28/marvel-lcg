@@ -1374,17 +1374,17 @@ html[data-epure] .fin-partie .fin-partie-onglet.est-actif {
   color: #ffffff;
 }
 
-/* Le bandeau « sur la table » (questions, ordre des sbires, ciblage) : bleu au lieu de jaune,
-   boutons à coins coupés comme le reste (17/10/2026). */
+/* Le bandeau « sur la table » (narration, questions, ordre des sbires, ciblage, bilan...) :
+   fond bleu nuit et boutons à coins coupés comme le reste du style Normal (17/10/2026), mais
+   bordure dorée et ombre marquée MEME en Normal sur TOUTE la famille, pas seulement la question
+   à choix (05/11/2026, decision explicite de l'utilisateur apres capture d'ecran montrant une
+   narration encore fondue dans l'ecran : il joue toujours en Normal, jamais en Coloré). */
 html[data-epure] .tsm-bandeau {
   background: linear-gradient(160deg, rgba(43, 58, 88, 0.96), rgba(23, 30, 46, 0.96));
-  border: 2px solid #3d5a8c;
-  border-top-color: #7fa9e6;
+  border: 2px solid #f3c623;
   border-left: 4px solid #3f86e0;
   border-radius: 0;
-}
-html[data-epure] .tsm-bandeau.est-question {
-  border-left-color: #5a9bf0;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75), 0 0 18px rgba(243, 198, 35, 0.4);
 }
 html[data-epure] .tsm-bouton {
   background: linear-gradient(180deg, #5a9bf0 0%, #3f86e0 50%, #2c63b0 100%);
@@ -1511,6 +1511,15 @@ html[data-epure] .deroule-phase .deroule-boutons .bh-bouton * {
   font-weight: 400;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+/* ⚠ ET LES PICTOGRAMMES DE RESSOURCES GARDENT LEUR POLICE (19/10/2026) : la règle ci-dessus, avec son !important, les
+   repassait en Bangers dans les boutons (« Dépenser [E][M][P] » montrait les LETTRES E, M, P au lieu des icônes). */
+html[data-epure] .demande-centrale .af-action i.icone-res,
+html[data-epure] .demande-centrale .dc-continue i.icone-res,
+html[data-epure] .deroule-phase .deroule-boutons .bh-bouton i.icone-res {
+  font-family: 'ChampionsIcons' !important;
+  letter-spacing: 0;
+  text-transform: none;
 }
 /* La croix et l'étiquette de la carte en scène : même habillage. */
 html[data-epure] .demande-centrale .dc-croix {
@@ -1663,6 +1672,12 @@ html[data-epure] .assistant-action .assistant-slot {
   border: 1px dashed #7fa9e6;
   background: rgba(63, 134, 224, 0.12);
   clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+}
+/* Emplacement rempli : la tuile en deux tons de la ressource l'habille (fond
+   de la couleur + picto voisin), sans le pointille bleu ni la teinte du panneau. */
+html[data-epure] .assistant-action .assistant-slot.est-rempli:has(.icone-res.deux-tons) {
+  border: 0;
+  background: transparent;
 }
 html[data-epure] .assistant-action .assistant-detail {
   color: #dbe3f3;
@@ -2149,3 +2164,31 @@ html[data-epure] .plateau-barre {
     min-width: 44px;
   }
 }
+
+/* =============================================================================
+   18. LE PLATEAU DU TELEPHONE EN EPURE (23/10/2026)
+   Le plateau portrait (board/mobile/portrait.css) a son propre bandeau (`.portrait-bandeau`) et ses bandes : les sections
+   ci-dessus ne visent que la barre du PC (`.plateau-barre`). On y pose la meme peau : table sombre et sa trame, barre du haut
+   bleue au filet bleu, titres de bandes en bleu clair, filets de la palette.
+   ============================================================================= */
+html[data-epure] .plateau-portrait {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.035) 0 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--ep-fond);
+  color: var(--ep-texte);
+}
+html[data-epure] .portrait-bandeau {
+  background: linear-gradient(180deg, #2a3a5a 0%, #1b2436 100%);
+  border-bottom: 2px solid #3f86e0;
+  box-shadow: inset 0 1px 0 rgba(140, 180, 240, 0.35);
+}
+html[data-epure] .portrait-bandeau-etat strong { color: #8fbcf5; font-family: var(--ep-titres); font-weight: 400; letter-spacing: 0.05em; font-size: 1rem; }
+html[data-epure] .portrait-bandeau-etat span { color: var(--ep-texte); }
+html[data-epure] .portrait-bandeau-etat em { color: var(--ep-doux); }
+html[data-epure] .bande { border-bottom-color: var(--ep-bord); }
+html[data-epure] .bande-titre { color: #8fbcf5; font-family: var(--ep-titres); font-weight: 400; letter-spacing: 0.08em; font-size: 0.9rem; }
+html[data-epure] .bande-vide, html[data-epure] .portrait-vide { color: var(--ep-doux); }
+html[data-epure] .bande-carte.est-epinglee { background: var(--ep-fond); }
+html[data-epure] .portrait-onglet { color: var(--ep-doux); border-color: var(--ep-bord); }
+html[data-epure] .portrait-onglet.est-actif { color: #fff; background: #2c63b0; border-color: #3f86e0; }
+html[data-epure] .encoche-corps { background: var(--ep-surface); border-color: #3f86e0; color: var(--ep-texte); }

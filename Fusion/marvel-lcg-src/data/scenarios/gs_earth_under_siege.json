@@ -1,0 +1,59 @@
+{
+  "version": "0.5.8",
+  "name": "Earth Under Siege",
+  "villain": [],
+  "expert": false,
+  "schemes": [
+    "gs161a,gs161b"
+  ],
+  "set_aside": [
+    "gs166",
+    "gs170",
+    "gs176",
+    "gs181",
+    "gs186",
+    "gs190",
+    "gs168",
+    "gs169",
+    "gs169",
+    "gs169",
+    "gs172",
+    "gs173",
+    "gs174",
+    "gs175",
+    "gs178",
+    "gs179",
+    "gs180",
+    "gs180",
+    "gs183",
+    "gs183",
+    "gs184",
+    "gs185",
+    "gs188",
+    "gs188",
+    "gs188",
+    "gs189",
+    "gs192",
+    "gs193",
+    "gs193",
+    "gs194",
+    "gs162a"
+  ],
+  "encounters": [
+    "gs163",
+    "gs164",
+    "gs165",
+    "gs165",
+    "gsr01",
+    "gsr02",
+    "gsr03",
+    "gsr05",
+    "gsr06",
+    "gsr08",
+    "gsr09"
+  ],
+  "encounter_sets": [],
+  "modular_sets": [
+    "gs_imperial_guard"
+  ]
+}

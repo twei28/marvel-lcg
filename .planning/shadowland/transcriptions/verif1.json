@@ -1,0 +1,128 @@
+[
+ {
+  "id_scan": "65028",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65029",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65030",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65031",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65032",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65033",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65034",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65035",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65036",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65037",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65038A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65038B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "StartingThreat ∞, escalade +1 par_joueur, TargetThreat 25 par_joueur, niveau_etape 1",
+    "nouveau": "StartingThreat 25 par_joueur, escalade +1 par_joueur, TargetThreat ∞, niveau_etape 1",
+    "raison": "Le rond en haut a gauche affiche ∞ (menace cible) ; le nombre en bas a droite est 25 avec icone par joueur (menace de depart)."
+   }
+  ],
+  "doutes": [
+   "Gras : sur l'image, le deux-points de « When Revealed: » semble en gras, celui de « Forced Interrupt: » semble hors gras ; la transcription est incoherente entre les deux, impact minime."
+  ]
+ },
+ {
+  "id_scan": "65039A",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65039B",
+  "ok": false,
+  "corrections": [
+   {
+    "champ": "stats",
+    "ancien": "StartingThreat 9 par_joueur, escalade +1 par_joueur, TargetThreat 1 par_joueur, niveau_etape 2",
+    "nouveau": "StartingThreat 1 par_joueur, escalade +1 par_joueur, TargetThreat 9 par_joueur, niveau_etape 2",
+    "raison": "Le rond en haut a gauche affiche 9 avec icone par joueur (menace cible) ; le nombre en bas a droite sous +1 est 1 par joueur (menace de depart)."
+   }
+  ],
+  "doutes": []
+ },
+ {
+  "id_scan": "65040",
+  "ok": true,
+  "corrections": [],
+  "doutes": [
+   "« TRAP! » en italique gras en tete : transcrit en <i>, pourrait etre un trait/mot-cle ; aucune autre lecture certaine."
+  ]
+ },
+ {
+  "id_scan": "65041",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65042",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ },
+ {
+  "id_scan": "65043",
+  "ok": true,
+  "corrections": [],
+  "doutes": []
+ }
+]

@@ -44,6 +44,9 @@ def GetAbilities() -> Sequence['Ability']:
                         # condition=has_web_warrior(effect),
                     ).SetTarget("Players")
                 )
+            else:
+                # RR « Then » : sans allie WEB-WARRIOR a mettre en jeu, « then choose a player » ne se resout pas ; avis au joueur.
+                player.NotifyNoResult(effect.this, "No Web-Warrior ally in your discard pile: no player is chosen.")
 
         initiator = effect.GetInitiator()
         this_ability(initiator)

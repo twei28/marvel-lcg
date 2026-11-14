@@ -71,6 +71,24 @@ une obligation révélée vit dans `obligations_area`, hors de `FindCardsOnField
   ennemi, et les dégâts qui en résultent varient. Le cas prouve la défausse du dessus du
   deck, pas le boost. **À vérifier en partie réelle** : outil manquant, une clé
   `boosts_sur` dans `etat_attendu`.
+  > **LEVÉE LE 20/10/2026 (backlog 13, branche `backlog-13-reserves`).** La clé
+  > `boosts_sur: [[card_id, n]]` existe : `executer_un_cas` compte chaque carte posée
+  > par `Boostable.GiveBoostCard` (le passage obligé de toutes les sources : activation,
+  > Villainous, capacités), par `card_id` de la face qui la reçoit. Les dégâts ne
+  > « varient » plus : le deck Rencontre est réduit à des Shocker (01103, boost 2, sans
+  > étoile). Trois cas nouveaux, ROUGES sans module (`substituer_pack.py`, lancé avec le
+  > python du venv) :
+  > - `ze013 Nyx — energie imprimee au dessus : 1 carte de boost SUPPLEMENTAIRE,
+  >   appliquee a l'attaque` : 2 cartes reçues, 3 dégâts. Sans module : « ze013 a recu
+  >   1 carte(s) de boost (attendu 2) », « degats sur l'identite = 1 (attendu 3) ».
+  > - `ze013 Nyx — CONTRE-CAS : carte du dessus sans energie` (Hephaestus) : 1 carte,
+  >   1 dégât. Rouge sans module lui aussi (Hephaestus n'est plus défaussé).
+  > - `ze016 Total Eclipse — Boost : l'ennemi qui s'active recoit 1 carte de boost
+  >   supplementaire` (`Puzzle.Boost`) : Rhino reçoit 2 cartes, 3 dégâts. Sans module :
+  >   « 01094 a recu 1 carte(s) de boost (attendu 2) ».
+  > Filtre `ze0` : 38/38. La mesure des dégâts prouve que la carte donnée est bien
+  > RETOURNÉE et appliquée, pas seulement posée (journal : « Nyx s'apprête à infliger
+  > 3 dégât(s) »).
 - **Mount Olympus en vraie partie** : l'ordre des moyens de paiement compte (une énergie
   doit être générée AVANT que Mount Olympus prélève). Le plateau laisse le joueur
   cliquer dans l'ordre qu'il veut ; si Mount Olympus est cliqué en premier, le moteur
@@ -218,6 +236,8 @@ Carte terminée : OUI.
 - [x] Étape 8 : 0 traceback.
 - [x] Étape 8 bis : NON.
 Carte terminée : NON pour le boost supplémentaire, non mesurable par le harnais (clé `boosts_sur` manquante) ; le reste OUI. À vérifier en partie réelle.
+- [x] 20/10/2026, Étape 7 complétée : boost supplémentaire mesuré par `boosts_sur` (2 cartes et 3 dégâts avec une énergie imprimée au dessus, 1 carte et 1 dégât sans), rouge sans module (rouges 3/3).
+Carte terminée : OUI (20/10/2026).
 
 ### ze014 : The Mother of Night
 - [x] Étape 2 : 01166 Highway Robbery (PlaceCardHere, GetPlacedCardArea, When Defeated) ; 03001b pour la recherche. Hazard : base.
@@ -248,3 +268,4 @@ Carte terminée : OUI.
 - [x] Étape 8 : 0 traceback.
 - [x] Étape 8 bis : NON.
 Carte terminée : OUI (la capacité Boost n'a pas de cas : `Puzzle.Boost` sans mesure du nombre de cartes de boost, même manque que Nyx).
+- [x] 20/10/2026 : la capacité Boost a son cas sujet (`Puzzle.Boost('ze016')`, Rhino reçoit 2 cartes, 3 dégâts), rouge sans module (rouges 3/3). La réserve entre parenthèses ci-dessus est levée.

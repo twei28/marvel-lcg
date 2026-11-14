@@ -73,12 +73,12 @@ class Upgrade(Asset2, HasModify, HasForm, HasRestricted, HasUses, HasHazard, Can
         return identity.OnDealDamage(units, damage, by_effect, property=property, attack_in_event=attack_in_event)
 
     @override
-    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect') -> int|None:
+    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect', *, thwart_in_event: bool=False) -> int|None:
         assert by_effect != None, f"{self=}"
         assert self == by_effect.this, f"{self=} {by_effect.this=}"
 
         hero = self.GetControlByOrOwnerFace()
-        return hero.OnRemoveSchemeThreat(schemes, value, by_effect)
+        return hero.OnRemoveSchemeThreat(schemes, value, by_effect, thwart_in_event=thwart_in_event)
 
     @override
     def CanAttachTo(self, face: 'CardFace') -> bool:

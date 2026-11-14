@@ -94,6 +94,12 @@ export type CarteDessinee = {
   /** Complot principal verrouillé : nom de la manigance annexe à Crise. */
   crise?: string
   /**
+   * Personnage marqué « à une planète » (Silver Surfer « Power Cosmic ») :
+   * nom + image de la carte PLANET, tels que l'infobulle (`ScanCard.tsx`)
+   * les montre. Absent = pas marqué, ou carte visée non résolue.
+   */
+  environnementMarque?: { nom: string; imageUrl: string }
+  /**
    * La face réellement dessinée (`card.card_id`, ex. `01097a` vs `01097b`),
    * telle que `toScanCard` la publie sous `codeCarte`. Absente si la carte est
    * `facedown` : dans ce cas le plateau ne montre que le dos, pas la face.
@@ -101,6 +107,8 @@ export type CarteDessinee = {
   codeCarte?: string
   /** Carte d'une paire jumelle posée en panorama (`panorama-jumelles.ts`). */
   panorama?: 'gauche' | 'droite'
+  /** Carte grisee (vilain en attente, ou d'un autre territoire de La ville). */
+  inactif?: boolean
   /** Inclinée (épuisée) : la carte est dessinée couchée. */
   exhausted: boolean
   /** Genre d'affichage (`status`, `upgrade`, `enemy`...), tel que `toScanCard` le publie. */
@@ -145,7 +153,9 @@ export function cartesDessinees(world: World, playerId = 0): CarteDessinee[] {
           peeking: !!unite.carte.peeking,
           facedown: !!unite.carte.facedown,
           crise: unite.carte.crise,
+          environnementMarque: unite.carte.environnementMarque,
           panorama: unite.panorama,
+          inactif: unite.carte.inactif,
           codeCarte: unite.carte.codeCarte,
           ...detailsDessines(unite.carte),
         })

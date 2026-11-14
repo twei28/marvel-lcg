@@ -40,6 +40,8 @@ Gabarit à copier pour chaque nouvelle fiche :
 - [x] vulnerable.md
 - [x] teamup.md
 - [x] alliance.md
+- [x] limit-max.md (« Limit X per [période] » et « Max X » : `Ability` partagée par les copies et par les joueurs ; AUCUN « once per turn » natif, `WorldStat.turn_serial`)
+- [x] find.md (RR FIND : fouiller toutes les zones ; `Search.EncounterCard` + `Reveal` ; pas « seek »)
 - [x] temporary.md
 - [x] piercing.md
 - [x] overkill.md
@@ -65,6 +67,14 @@ Gabarit à copier pour chaque nouvelle fiche :
       les ressources listees, elles ne s'ajoutent pas au cout)
 - [x] starting.md (Fear No Evil : choix FACULTATIF de prendre la carte en main
       avant la pioche, une seule carte starting par deck)
+- [x] assault.md (base native lue dans `desc.Assault` : le contre de BASE contre
+      cette manigance utilise l'ATQ ; Imprisoned on Chandilar `gs119`, Galactic Storm)
+- [x] chi-counter.md (compteur `chi` du héros officiel Iron Fist, MC64EN : posé
+      sur la CARTE d'identité, partagé par les deux faces, gardé au retournement ;
+      riposte dynamique d'Embody the Dragon `64009`)
+
+- [x] indirect-damage.md (« attacks deal indirect damage » : le joueur répartit les dégâts, la défense
+      s'applique avant ; le piège du harnais à un seul personnage)
 
 ⚠ **`Elite` n'est PAS un mot-clé** et n'a donc pas de fiche : c'est un TRAIT.
 Il se déclare dans le tableau `traits` de la carte (`"traits": ["ELITE"]`),
@@ -73,6 +83,8 @@ la plus fréquente sur un pack vilain.
 
 ## Maison
 
+- [x] wild-resource.md (règle officielle « Wild Resource », arbitrée le 26/10/2026 : un wild dépensé = UN type déclaré par le joueur, un wild imprimé = « wild » seulement ; `GetPaidResources(True)`, helper `Types` de Ch'od)
+- [x] activation-order.md (scénario `the_vault` : « Activation Order X » sur chaque vilain, distribution des activations par ordre entre vilains et joueurs, 25/10/2026)
 - [x] eclair.md (pack `zeus` : une RESSOURCE maison, cinquième couleur du
       moteur `L`, ajoutée le 11/09/2026. ⚠ Distincte de l'énergie, que le set
       némésis vise, lui)
@@ -194,6 +206,40 @@ la plus fréquente sur un pack vilain.
       HUIT événements FERAL, pas sept. `CostFunc.Rampage(X)`, une ligne par carte.
       Le ★ devant et sur le coût n'est qu'un rappel)
 
+## Briques communes des campagnes Punisher MC×DC et Galactic Storm (20/10/2026)
+
+- [x] immunite-cartes-joueur.md (« cannot be affected by player cards » : CIBLÉ du Punisher
+      p183, trait HIDDEN de Galactic Storm p.14 ; `PlayerCardImmunity`,
+      `AbilityFactory.CannotBeAffectedByPlayerCards`, RECETTES §16.2)
+- [x] mechants-multiples.md (« le méchant » parmi plusieurs : méchant actif, le plus à
+      gauche, choix du joueur, deck de méchants, retrait sans report ; `Villains`,
+      RECETTES §16.3)
+- un ennemi qui attaque un ennemi ou un allié n'est pas un mot-clé : `Enemy.AttackCharacter`,
+  RECETTES §16.1 ; l'excès d'overkill de ces attaques est dans overkill.md
+- ⚠ **PU-0 (20/10/2026) : pas de fiche séparée pour « CIBLÉ (TARGETED) / méchant actif » (M7 du
+  cadrage Punisher)**, vérifié en relisant tout ce dossier avant d'écrire : le recoupement est total
+  avec les deux fiches ci-dessus, déjà écrites pour Galactic Storm le 20/10/2026 et directement
+  réutilisables pour Punisher (p179-p183, p175-p178) sans redéveloppement — `immunite-cartes-joueur.md`
+  couvre déjà littéralement « CIBLÉ / TARGETED » dans son titre, `mechants-multiples.md` couvre déjà
+  « the active villain » (p180 *Justice or Punishment?* y est cité). Une fiche de plus aurait fait
+  doublon.
+
+## Punisher MC×DC 2026, lot PU-0 (20/10/2026, préparation sans script)
+
+- [x] lieu.md (type de carte LOCATION, grille 3×3, déplacement par l'action de *The City* p009 ;
+      mécanique M1 du cadrage, aucun mécanisme moteur existant, brique à écrire)
+- [x] territoire.md (« turf » de *Never Sleeps* p011 : rangée = zone de jeu d'un CAPO ; mécanique M2,
+      base partielle dans le moteur — `World.CreateGameArea`/`GameArea.AddPlayer`, modèle Kang — mais
+      manigances/deck rencontre partagés et changement de territoire en cours de partie restent à
+      écrire)
+- [x] piste-lead.md (trait *Lead* des 9 obligations p077-p093, deck LEADS commun à la table, pile de
+      victoire ; mécanique M3, aucun mécanisme moteur existant pour un deck de côté COMMUN — distinct
+      du deck annexe PAR JOUEUR d'Iron Patriot)
+- [x] jeton-recherche.md (« wanted counter » de SWAT p237, set modulaire SWAT Team : seconde condition
+      de défaite indépendante de la menace, compteur nommé ordinaire + seuil fixe)
+- uses.md complétée d'une note « ARMAMENT + Uses » (armes de Punisher p185-p219 : ARMAMENT est un TRAIT,
+  pas un mot-clé, comme ELITE ; le `Uses` lui-même suit la règle déjà fichée sans extension)
+
 ## Packs passés en revue, aucun mot-clé imprimé propre trouvé
 
 Vérification faite avec l'heuristique `<b>([A-Z][a-zA-Z ]{2,20})</b>` sur
@@ -296,3 +342,49 @@ vérifiés directement par l'agent contrôleur avec la même heuristique
 - **`luke_cage`** : `__init__.py` du pack entièrement vide, aucun
   mécanisme maison d'aucune sorte.
 - [x] controlled.md (take control / allié CONTROLLED, gabarit d allié à N dégâts consécutifs)
+- [x] flow.md (mot-clé maison Shang-Chi : pile State of Flow, correspondance stricte des icônes imprimées, message `AfterPlayerResolveFlow`)
+- [x] defausse-au-hasard.md (pack `new_ultimate_winter_soldier` : « discard 1 card from your hand at random » payé ou lu par neuf cartes ; marque `world.defausses_au_hasard` et compteur du round dans `world.stat`, CORRECTIF de `DiscardRandomHandCards`, 25/10/2026)
+- [x] deterrence.md (maison, pack batman)
+- [x] shielded-by-the-horde.md (scénario custom `the_hunger_core`, préfixe `hg` : vilain Hunger Core, réutilise
+      `CannotBeAffectedByPlayerCards` avec `while_fn` dynamique sur « au moins 1 Metazombie en jeu »)
+- [x] rupture-x.md (idem : Forced Response du vilain, `WhenUnitBeDefeated` filtré par `CardFinder(traits=["METAZOMBIE"])`)
+- [x] just-a-core-x.md (idem : moitié « attaque » du vilain, modèle HIDDEN de Galactic Storm)
+- [x] horde-metazombies.md (idem : jeton actif à rotation ronde, Horde deck séparé du deck de rencontre modèle
+      `player.additional_deck`, decks signature par Metazombie créés à la demande)
+- [x] infection.md (idem : compteur sur l'identité, morsure, limite 7/6 -> héros vaincu et version zombie en jeu,
+      récupération de base « soigner REC OU retirer 3 Infection »)
+- [x] tour-supplementaire.md (maison, pack `rachel_summers` : « take an additional turn » et « end this turn », drapeaux `RM_TOUR_SUPPLEMENTAIRE` / `RM_FIN_DE_TOUR`, CORRECTIFS `world.py` / `player_phase.py` / `event/manager.py`, 26/10/2026)
+
+## Maison (scénario Black King de Hellfire Hunt, 01/11/2026)
+
+- [x] absorb.md
+- [x] captive.md
+- [x] deck-hellfire.md (maison, scénario 4 « Torn » de Hellfire Hunt : deck de TABLE avec défausse propre, `DeckHellfire`, `bind_discard_pile`, remélange sans pénalité, piles de la table)
+
+## Pack Silver Surfer (3ᵉ version, planet deck), prefixe pc, depuis le 04/11/2026
+
+- [x] environnement-joueur.md (type de carte maison PLAYER ENVIRONMENT →
+      reutilise `Support` + trait PLANET, pas de nouveau type de carte ;
+      « être à une planète » = simple marqueur Python sur la carte, posé/retiré
+      par les helpers `ArriverA`/`Departir` ; AUCUNE carte ne change jamais de
+      zone. pc001a/b, pc002 Cosmic Surfboard, pc003 Zenn-La écrits et prouvés
+      en jeu (10 cas `test_capacites` verts, preuve par substitution faite).
+      Pack en cours, ~26 cartes restantes)
+
+## Ajoutés le 03/11/2026 (pack Sentry)
+
+- [x] stun.md
+- [x] confuse.md
+- [x] consequential.md
+- [x] malevolent.md (maison)
+- [x] cancel.md (ajoute le 03/11/2026, Sentry rr007)
+- [x] duplicate.md (trait maison, ajoute le 04/11/2026, Multiple Man mm)
+- [x] dupe.md (nom d'allie maison, Multiple Man mm)
+- [x] x-factor.md (trait officiel, Multiple Man mm)
+
+## Ajoutés le 09/11/2026 (pack Mephisto, en cours)
+
+- [x] bargain.md (trait maison)
+- [x] hidden-clause.md (capacité maison)
+- [x] damnation.md (zone maison)
+- [x] compteurs-corrupt-scorned.md (compteurs maison)

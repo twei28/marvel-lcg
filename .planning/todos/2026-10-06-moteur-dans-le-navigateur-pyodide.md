@@ -398,3 +398,6 @@ nouveaux scans paysage apparaissent : relancer alors `preparer-scans.py` sur le 
 ## 7. Reste non fait
 Firefox / Safari / mobile jamais testés ; ouverture publique non tranchée (l'adresse est joignable, SANS lien depuis le site) ;
 `publier.py` pas branché sur `deployer.ps1`.
+
+## 7 bis. Essai multi-navigateurs du 20/10/2026 (backlog 21)
+Chromium, Firefox (bureau et émulation 390×844) : parcours complet jusqu'au round 2, sans erreur de console. WebKit (build WPE de Playwright) : le processus de rendu plante à l'ouverture de la fiche du héros. Détail, corrections faites et questions : `.planning/todos/2026-10-20-backlog-21-questions.md`. Banc : `navigateur/essais/navigateurs.mjs` (voir son en-tête).

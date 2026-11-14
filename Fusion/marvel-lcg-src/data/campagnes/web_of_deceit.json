@@ -6,7 +6,23 @@
     "nom_en": "Web of Deceit",
     "resume": "Cinq rencontres au service d'un seul homme : le Caïd. Entre chacune, votre héros descend un ARBRE DE TALENTS — cinq voies au choix, dix cartes chacune, une par palier.",
     "resume_en": "Five encounters serving one man: the Kingpin. Between each, your hero walks down a TALENT TREE — five paths, ten cards each, one per tier.",
-    "pages_regles": [],
+    "pages_regles": [
+        "00-campagne-regles-1.jpg",
+        "00-campagne-regles-2.jpg",
+        "00-campagne-regles-3.jpg",
+        "00-campagne-regles-4.jpg",
+        "00-campagne-regles-5.jpg",
+        "00-campagne-regles-6.jpg",
+        "00-campagne-regles-7.jpg",
+        "00-campagne-regles-8.jpg",
+        "00-campagne-regles-9.jpg",
+        "00-campagne-regles-10.jpg",
+        "00-campagne-regles-11.jpg",
+        "00-campagne-regles-12.jpg",
+        "00-campagne-regles-13.jpg",
+        "00-campagne-regles-14.jpg",
+        "00-campagne-regles-15.jpg"
+    ],
     "scenarios": [
         {
             "id": "wd_shocker",
@@ -15,7 +31,15 @@
             "nom_fr": "Shocker",
             "resume": "Le Tireur cambriole la ville pendant la nuit la plus longue de sa carrière. Il ne meurt jamais vraiment : le vaincre le renvoie dans la mêlée, et la seule façon d'en finir est de survivre jusqu'au matin.",
             "enjeu": "Chaque héros choisit son ARBRE DE TALENTS et en prend le palier 0, puis le palier 1 une fois Shocker mis à terre.",
-            "pages": {},
+            "pages": {
+                "intro": [
+                    "01-wd_shocker-intro-1.jpg"
+                ],
+                "regles": [
+                    "01-wd_shocker-regles-1.jpg"
+                ],
+                "epilogue": []
+            },
             "victoire": [
                 {
                     "cle": "Talent Tier 0",
@@ -61,7 +85,15 @@
             "nom_fr": "Electro",
             "resume": "Electro et ses clones siphonnent le réseau électrique de New York avec l'aide de l'A.I.M. et l'argent du Caïd. Tant que vous n'êtes pas équipés, il est intouchable.",
             "enjeu": "Palier 2 de l'arbre : trois cartes proposées, une à prendre.",
-            "pages": {},
+            "pages": {
+                "intro": [
+                    "02-wd_electro-intro-1.jpg"
+                ],
+                "regles": [
+                    "02-wd_electro-regles-1.jpg"
+                ],
+                "epilogue": []
+            },
             "victoire": [
                 {
                     "cle": "Talent Tier 2",
@@ -97,7 +129,15 @@
             "nom_fr": "Le Lézard",
             "resume": "Curt Connors a repris le dessus sur la bête, mais elle veille. Le vaincre ne suffit pas : il faut lui rendre sa raison avant qu'elle ne revienne.",
             "enjeu": "Palier 3 de l'arbre : trois cartes proposées, une à prendre.",
-            "pages": {},
+            "pages": {
+                "intro": [
+                    "03-wd_the_lizard-intro-1.jpg"
+                ],
+                "regles": [
+                    "03-wd_the_lizard-regles-1.jpg"
+                ],
+                "epilogue": []
+            },
             "victoire": [
                 {
                     "cle": "Talent Tier 3",
@@ -133,7 +173,15 @@
             "nom_fr": "Le Vautour",
             "resume": "Le Vautour a couvert la ville de pigeons-espions pour le compte de Fisk. Sans prendre les airs, vous ne l'atteindrez pas.",
             "enjeu": "Palier 4 de l'arbre, le dernier : une seule carte, la plus forte.",
-            "pages": {},
+            "pages": {
+                "intro": [
+                    "04-wd_vulture-intro-1.jpg"
+                ],
+                "regles": [
+                    "04-wd_vulture-regles-1.jpg"
+                ],
+                "epilogue": []
+            },
             "victoire": [
                 {
                     "cle": "Talent Tier 4",
@@ -159,7 +207,18 @@
             "nom_fr": "Le Caïd",
             "resume": "Wilson Fisk, maire de New York. Chaque carte de votre deck peut devenir l'une de ses manigances, et son costume encaisse ce que vous lui donnez.",
             "enjeu": "Rien de plus à gagner : c'est la dernière rencontre de la campagne.",
-            "pages": {},
+            "pages": {
+                "intro": [
+                    "05-wd_kingpin-intro-1.jpg"
+                ],
+                "regles": [
+                    "05-wd_kingpin-regles-1.jpg"
+                ],
+                "epilogue": [
+                    "05-wd_kingpin-epilogue-1.jpg",
+                    "05-wd_kingpin-epilogue-2.jpg"
+                ]
+            },
             "final": true,
             "victoire": [
                 {
@@ -178,5 +237,8 @@
         "pv_persistants": false,
         "note": "En expert, « Vote for Fisk » entre en jeu sur sa face experte et un gobelin expert est mêlé au deck rencontre dès qu'on joue à plusieurs (livret p.3). Chaque scénario a sa propre variante experte, sélectionnable à la création de la partie."
     },
-    "victoire_commune_expert": []
+    "victoire_commune_expert": [],
+    "pages_intro": [
+        "00-campagne-intro-1.jpg"
+    ]
 }

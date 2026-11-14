@@ -6,10 +6,10 @@ ua004	tmnt_aspect_aggression	Aggression	Attack Training.png	Attack Training	MODI
 ua005	tmnt_aspect_aggression	Aggression	Blood Rage.png	Blood Rage	IDENTIQUE	45043	45043
 ua006	tmnt_aspect_aggression	Aggression	Bo-Wing.png	Bo-Wing (Donnie)	IDENTIQUE	53035	
 ua007	tmnt_aspect_aggression	Aggression	Bring It.png	Bring It!	IDENTIQUE	19030	19030
-ua008	tmnt_aspect_aggression	Aggression	Chain Reaction.png	Chain Reaction	NOUVELLE		
+ua008	tmnt_aspect_aggression	Aggression	Chain Reaction.png	Chain Reaction	NOUVELLE	63018	63018
 ua009	tmnt_aspect_aggression	Aggression	Clobber.png	Clobber	IDENTIQUE	18012	18012
 ua010	tmnt_aspect_aggression	Aggression	Combat Training.png	Combat Training	IDENTIQUE	01057	01057
-ua011	tmnt_aspect_aggression	Aggression	Combo Move.png	Combo Move	NOUVELLE		
+ua011	tmnt_aspect_aggression	Aggression	Combo Move.png	Combo Move	NOUVELLE	63017	63017
 ua012	tmnt_aspect_aggression	Aggression	Commando Raph.png	Commando (Raph)	NOUVELLE		
 ua013	tmnt_aspect_aggression	Aggression	Critical Wound.png	Critical Wound	NOUVELLE		
 ua014	tmnt_aspect_aggression	Aggression	Daito.png	Daitō	NOUVELLE		
@@ -17,7 +17,7 @@ ua015	tmnt_aspect_aggression	Aggression	Demolish.png	Demolish	NOUVELLE
 ua016	tmnt_aspect_aggression	Aggression	Drop Kick.png	Drop Kick	IDENTIQUE	10014	10014
 ua017	tmnt_aspect_aggression	Aggression	Exeen.png	Exeen	IDENTIQUE	18011	
 ua018	tmnt_aspect_aggression	Aggression	Firepower.png	Firepower	IDENTIQUE	54014	
-ua019	tmnt_aspect_aggression	Aggression	Flow of Battle.png	Flow of Battle	NOUVELLE		
+ua019	tmnt_aspect_aggression	Aggression	Flow of Battle.png	Flow of Battle	NOUVELLE	63020	63020
 ua020	tmnt_aspect_aggression	Aggression	Fusillade.png	Fusillade	IDENTIQUE	20026	20026
 ua021	tmnt_aspect_aggression	Aggression	Guerilla Trap.png	Guerilla Trap	NOUVELLE		
 ua022	tmnt_aspect_aggression	Aggression	He-Dude.png	He-Dude (Mikey)	IDENTIQUE	56010	
@@ -28,7 +28,7 @@ ua026	tmnt_aspect_aggression	Aggression	Leatherhead.png	Leatherhead	NOUVELLE
 ua027	tmnt_aspect_aggression	Aggression	Looking for Trouble.png	Looking for Trouble	IDENTIQUE	16043	16043
 ua028	tmnt_aspect_aggression	Aggression	Magic Attack.png	Magic Attack	IDENTIQUE	21043	21043
 ua029	tmnt_aspect_aggression	Aggression	Martial Prowess.png	Martial Prowess	IDENTIQUE	10018	10018
-ua030	tmnt_aspect_aggression	Aggression	Nerve Strike.png	Nerve Strike	NOUVELLE		
+ua030	tmnt_aspect_aggression	Aggression	Nerve Strike.png	Nerve Strike	NOUVELLE	63019	63019
 ua031	tmnt_aspect_aggression	Aggression	No Quarter.png	No Quarter	IDENTIQUE	28013	28013
 ua032	tmnt_aspect_aggression	Aggression	Now I_m Mad.png	Now I'm Mad	IDENTIQUE	43019	43019
 ua033	tmnt_aspect_aggression	Aggression	Pete.png	Pete	NOUVELLE		
@@ -193,13 +193,13 @@ up005	tmnt_aspect_protection	Protection	Change of Fortune.png	Change of Fortune	
 up006	tmnt_aspect_protection	Protection	Come Get Me, Bub.png	Come Get Me, Bub!	IDENTIQUE	48016	48016
 up007	tmnt_aspect_protection	Protection	Cyber Ninja Donnie.png	Cyber Ninja (sous-titre Donnie)	NOUVELLE		
 up008	tmnt_aspect_protection	Protection	Defensive Conditioning.png	Defensive Conditioning	IDENTIQUE	56046	56046
-up009	tmnt_aspect_protection	Protection	Demoralize.png	Demoralize	NOUVELLE		
+up009	tmnt_aspect_protection	Protection	Demoralize.png	Demoralize	NOUVELLE	64016	64016
 up010	tmnt_aspect_protection	Protection	Electrostatic Armor.png	Electrostatic Armor	IDENTIQUE	10031	
 up011	tmnt_aspect_protection	Protection	Energy Barrier.png	Energy Barrier	IDENTIQUE	05017	
 up012	tmnt_aspect_protection	Protection	Get Their Attention.png	Get Their Attention	IDENTIQUE	60049	60049
 up013	tmnt_aspect_protection	Protection	Groo the Wanderer.png	Groo the Wanderer	MODIFIEE	20016	
 up014	tmnt_aspect_protection	Protection	Grotto.png	Grotto (sous-titre Iron Fist)	IDENTIQUE	09014	
-up015	tmnt_aspect_protection	Protection	Helpful Bystander.png	Helpful Bystander	NOUVELLE		
+up015	tmnt_aspect_protection	Protection	Helpful Bystander.png	Helpful Bystander	NOUVELLE	64013	64013
 up016	tmnt_aspect_protection	Protection	Herman.png	Herman	NOUVELLE		
 up017	tmnt_aspect_protection	Protection	Honor Blade.png	Honor Blade (Leo, sous-titre Patriot)	IDENTIQUE	56041	
 up018	tmnt_aspect_protection	Protection	I Can Do This All Day.png	I Can Do This All Day	IDENTIQUE	56047	56047
@@ -214,7 +214,7 @@ up026	tmnt_aspect_protection	Protection	Primal Provisions.png	Primal Provisions	
 up027	tmnt_aspect_protection	Protection	Protection Training.png	Protection Training	MODIFIEE	32013	
 up028	tmnt_aspect_protection	Protection	Rabid Infection.png	Rabid Infection	NOUVELLE		
 up029	tmnt_aspect_protection	Protection	Ready for a Fight.png	Ready for a Fight	IDENTIQUE	52019	52019
-up030	tmnt_aspect_protection	Protection	Redirection Mastery.png	Redirection Mastery	NOUVELLE		
+up030	tmnt_aspect_protection	Protection	Redirection Mastery.png	Redirection Mastery	NOUVELLE	64018	64018
 up031	tmnt_aspect_protection	Protection	Road Rage Raph.png	Road Rage (sous-titre Raph)	MODIFIEE	01066	
 up032	tmnt_aspect_protection	Protection	Ronin.png	Ronin	IDENTIQUE	60053	60053
 up033	tmnt_aspect_protection	Protection	Senkon.png	Senkon	NOUVELLE		
@@ -223,7 +223,7 @@ up035	tmnt_aspect_protection	Protection	Shield Spell.png	Shield Spell	IDENTIQUE	
 up036	tmnt_aspect_protection	Protection	Stand Alone.png	Stand Alone	IDENTIQUE	60054	60054
 up037	tmnt_aspect_protection	Protection	Taunt.png	Taunt	IDENTIQUE	56048	56048
 up038	tmnt_aspect_protection	Protection	The Best Offense.png	The Best Offense...	IDENTIQUE	60052	60052
-up039	tmnt_aspect_protection	Protection	Tonfa.png	Tonfa	NOUVELLE		
+up039	tmnt_aspect_protection	Protection	Tonfa.png	Tonfa	NOUVELLE	64020	64020
 up040	tmnt_aspect_protection	Protection	Unflappable.png	Unflappable	IDENTIQUE	09020	09020
 up041	tmnt_aspect_protection	Protection	Usagi Yojimbo.png	Usagi Yōjimbō	NOUVELLE		
 up042	tmnt_aspect_protection	Protection	What Doesn_t Kill Me.png	What Doesn't Kill Me	IDENTIQUE	27016	

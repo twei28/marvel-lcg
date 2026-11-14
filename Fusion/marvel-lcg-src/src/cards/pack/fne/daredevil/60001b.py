@@ -9,6 +9,10 @@ def GetAbilities() -> Sequence['Ability']:
         Faces.FlipAllTo(faces[:-1], False, by_effect)
         face = faces[-1]
         face.FlipTo(by_effect, face_up=True)
+        # Le deck Sens se consulte A TOUT MOMENT (livret p.26, rapport n°100) : ses cartes restent face cachee pour la table, mais
+        # leur proprietaire les voit toutes, ce qui permet a l'interface d'ouvrir la pile.
+        for f in faces:
+            f.card.visible.Set(player)
     def move_to_sense_deck(effect: 'Effect', message: 'Message.WhenCardWouldMoveToArea') -> None:
         this = effect.this.CastTo(Upgrade)
         player = this.GetControlByPlayer()

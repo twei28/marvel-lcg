@@ -8,9 +8,10 @@
 const REQUETE = window.matchMedia("(max-width: 767px)");
 
 /** Téléphone portrait (sous 768 px). La V2 expérimentale (`ui_version=v2`)
- *  garde sa propre mise en page : on ne la touche pas. */
+ *  n'a pas de mise en page téléphone à elle : l'exclure laissait le compte
+ *  d'essai sur la mise en page PC, débordante (retour de l'utilisateur, 24/10/2026). */
 export function estTel() {
-    return REQUETE.matches && document.documentElement.dataset.uiVersion !== "v2";
+    return REQUETE.matches;
 }
 
 function majClasse() {

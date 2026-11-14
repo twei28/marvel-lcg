@@ -26,6 +26,8 @@ class Unit2(CanHealth, CanRetaliate, CanStatus, CanPlaceCounter, CanPlaceToken):
     def OnWouldDefeated(self, killer: 'CardFace|None', by_effect: 'Effect', being_message: 'Message.WhenSchemeBeingThwart|Message.WhenUnitBeingAttack|None') -> 'Message.WhenSchemeWouldBeDefeated|Message.WhenUnitWouldBeDefeated|None':
         assert isinstance(being_message, Message.WhenUnitBeingAttack|None)
         would_message = Message.WhenUnitWouldBeDefeated(self.card.face.CastTo(Unit2), by_effect, killer, being_message)
+        would_message.excess_damage = getattr(self, 'exces_en_cours', 0)
+        self.exces_en_cours = 0
         would_message.Send()
         return would_message
 

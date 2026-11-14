@@ -1,0 +1,43 @@
+{
+    "version": "0.5.8",
+    "name": "New Ultimate Winter Soldier",
+    "metadata": {
+        "url": "",
+        "auteur": "Dipsome",
+        "note": "Deck de depart reconstruit depuis le zip de l'auteur (24 images, aucune decklist d'aspect fournie : player_deck VIDE, decision utilisateur du 06/09/2026). Wolverine's Claws (uw002) est MIS DE COTE et mis en jeu au Setup par l'alter-ego, comme le Wolverine officiel (35002)."
+    },
+    "hero": [
+        "uw001a,uw001b"
+    ],
+    "hero_deck": [
+        "uw003",
+        "uw004",
+        "uw004",
+        "uw005",
+        "uw005",
+        "uw006",
+        "uw006",
+        "uw007",
+        "uw007",
+        "uw008",
+        "uw008",
+        "uw009",
+        "uw010",
+        "uw011",
+        "uw012"
+    ],
+    "set_aside": [
+        "uw002"
+    ],
+    "obligations": [
+        "uw013"
+    ],
+    "nemesis_set": [
+        "uw014",
+        "uw015",
+        "uw016",
+        "uw017",
+        "uw018"
+    ],
+    "player_deck": []
+}

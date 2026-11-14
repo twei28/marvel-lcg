@@ -89,11 +89,14 @@ export function avancement(t) {
 
 /** Pas d'animation : mouvement réduit demandé, ou affichage sobre. */
 export function sansMouvement() {
+    const racine = document.documentElement;
+    // Sur telephone, « Supprimer les animations » / l'economie d'energie d'Android annoncent « mouvement reduit » a tous les sites :
+    // la roue (24/10/2026, « on voit pas la roue tourner ») etait posee d'un coup. Elle ne dure que 4 s et c'est le joueur qui la lance.
+    const telephone = racine.classList.contains("tel");
     try {
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+        if (!telephone && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
     } catch (e) { /* navigateur ancien : on anime */ }
     // L'Épuré pose aussi `data-affichage="sobre"` : il garde la roue (18/10/2026, « on ne voit plus la roue tourner »).
-    const racine = document.documentElement;
     return racine.dataset.affichage === "sobre" && racine.dataset.epure === undefined;
 }
 

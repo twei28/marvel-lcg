@@ -53,6 +53,12 @@ export function nomDuVilain(nom, underlingId) {
  * le RANG DE LA MANIGANCE, donc stable d'un affichage à l'autre : la tuile ne
  * change pas de portrait sous les yeux du joueur.
  */
+/** La face B d'une manigance (« 60121a,60121b » -> « 60121b »), a defaut la face A. */
+export function faceB(paire) {
+    const [a, b] = String(paire || "").split(",");
+    return b || a || "";
+}
+
 export function regrouperUnderlings(scenarios, ext, memoire) {
     const manigances = (ext && ext.manigances) || [];
     const underlings = (ext && ext.underlings) || [];
@@ -64,13 +70,20 @@ export function regrouperUnderlings(scenarios, ext, memoire) {
         for (const u of underlings) {
             const sc = parId.get(`${manigance}_${u}`);
             if (!sc) continue;
-            choix.push({ id: u, scenarioId: sc.id, nom: nomDuVilain(sc.name, u), villainCardId: (sc.villainCards || [])[0] || sc.tileImage, scenario: sc });
+            // Le sous-fifre affiche SA carte, pas celle du vilain commun aux deux scenarios (ex. Punisher
+            // pour One Last Kill (Jigsaw) ET (Hobgoblin)) : voir tuile_sbire_scenarios de l'extension,
+            // deja utilise pour la tuile repliee (app.js), jamais pour la modale avant ce correctif
+            // (29/10/2026, signale par l'utilisateur : « il ne montre pas la bonne carte »).
+            const sbire = ext.tuileSbireScenarios && ext.tuileSbireScenarios[sc.id]
+            choix.push({ id: u, scenarioId: sc.id, nom: nomDuVilain(sc.name, u), villainCardId: sbire || (sc.villainCards || [])[0] || sc.tileImage, scenario: sc });
         }
         if (!choix.length) continue;
         const voulu = memoire && memoire[manigance];
         const courant = choix.find((c) => c.id === voulu) || choix[rang % choix.length];
         tuiles.set(manigance, {
             ...courant.scenario,
+            // 22/10/2026 (MC×DC) : l'image de la tuile est celle de l'AFFAIRE (face B de la manigance annexe, choix du 22/10/2026), pas du sous-fifre, qui se choisit au clic.
+            ...(ext.tuileManigance && (courant.scenario.schemes || [])[0] ? { tileImage: faceB(courant.scenario.schemes[0]) } : {}),
             id: manigance,
             name: nomDeManigance(courant.scenario.name),
             interchangeable: true,
@@ -104,4 +117,17 @@ export function tuileContient(tuile, scenarioId) {
     if (!tuile) return false;
     if (tuile.id === scenarioId) return true;
     return !!(tuile.scenarioIds && tuile.scenarioIds.includes(scenarioId));
+}
+
+
+/**
+ * Les scénarios que l'écran de campagne SEUL doit jouer : dans la liste libre ils doublaient les scénarios interchangeables (« Tracking the Buyer: Art Museum
+ * Heist (Jigsaw) » à côté de « Art Museum Heist (Jigsaw) »), ce qui donnait l'impression de voir plusieurs fois le même scénario (22/10/2026, MC×DC 2026).
+ * Déclarés dans data/sets_info.json, sur l'extension : "scenarios_campagne": [...]. `campagne: true` rend la liste COMPLETE (l'écran de campagne les choisit lui-même
+ * d'après le carnet) ; sinon (partie libre) ils sont retirés.
+ */
+export function sansVariantesDeCampagne(scenarios, ext, { campagne = false } = {}) {
+    const cachees = new Set((ext && ext.scenariosCampagne) || []);
+    if (campagne || !cachees.size) return scenarios.slice();
+    return scenarios.filter((sc) => !cachees.has(sc.id));
 }

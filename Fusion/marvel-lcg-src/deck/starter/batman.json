@@ -1,0 +1,93 @@
+{
+ "version": "0.5.8",
+ "name": "Batman",
+ "metadata": {
+  "url": "",
+  "author": "ES",
+  "note": "Pack « Batman (Sealed - 6.12.2022) » (ES). Decklist imprimee par l'auteur (Batman_StarterDeck.png) recopiee dans player_deck : 20 cartes resolues en cartes OFFICIELLES (Basic Genius/Strength/Endurance/Ingenuity + cartes Justice). 5 titres de la liste ne sont dans aucun pack du jeu et ne sont PAS dans le zip : Batgirl (allie), Red Robin (allie), Hall of Justice, Downtime, Creeper (voir metadata.manquantes). Les 15 cartes de dissuasion sont mises de cote par bm001b au choix du heros (set_aside documentaire) : le joueur en retient 8.",
+  "manquantes": [
+   "Batgirl",
+   "Red Robin",
+   "Hall of Justice",
+   "Downtime",
+   "Creeper"
+  ],
+  "hero_alts": [
+   {
+    "name": "Batman (Lantern)",
+    "hero": [
+     "bm001c,bm001d"
+    ]
+   }
+  ]
+ },
+ "hero": [
+  "bm001a,bm001b"
+ ],
+ "hero_deck": [
+  "bm002",
+  "bm003",
+  "bm003",
+  "bm004",
+  "bm004",
+  "bm005",
+  "bm005",
+  "bm006",
+  "bm007",
+  "bm008",
+  "bm008",
+  "bm009",
+  "bm010",
+  "bm011",
+  "bm012"
+ ],
+ "set_aside": [
+  "bm018",
+  "bm018",
+  "bm018",
+  "bm019",
+  "bm019",
+  "bm019",
+  "bm020",
+  "bm020",
+  "bm020",
+  "bm021",
+  "bm021",
+  "bm021",
+  "bm022",
+  "bm022",
+  "bm022"
+ ],
+ "obligations": [
+  "bm013"
+ ],
+ "nemesis_set": [
+  "bm014",
+  "bm015",
+  "bm016",
+  "bm016",
+  "bm017"
+ ],
+ "player_deck": [
+  "01089",
+  "01090",
+  "05023",
+  "29027",
+  "15013",
+  "15013",
+  "15012",
+  "04049",
+  "04049",
+  "04049",
+  "15015",
+  "15015",
+  "15015",
+  "22015",
+  "22015",
+  "22015",
+  "14030",
+  "04047",
+  "06031",
+  "01060"
+ ]
+}

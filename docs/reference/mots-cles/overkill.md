@@ -42,9 +42,27 @@ paiement).
   Wrecking Crew compris : **décision de l'utilisateur du 12/10/2026 pour Wrecking
   Crew, sans ruling officiel**. Le moteur le faisait déjà (`Worlds.FindVillain` →
   `Scenario.GetVillain`, qui renvoie le méchant `IsActive()` en premier).
+- **Un ENNEMI qui abat un sbire avec overkill** (brique commune du 20/10/2026, `Enemy.AttackCharacter`) : la règle
+  ne distingue pas l'attaquant, l'excès va à « le méchant » (`CanAttack.DefaultOverkillTarget`), donc au méchant
+  lui-même s'il attaque (Kree Sentry, Galactic Storm p.9). Une carte qui désigne une autre cible passe
+  `overkill_to=` (Punisher p185 : « His overkill damage on minions is dealt to the TARGETED villain »).
+- **Plusieurs méchants, règle `PlayerChooses`** (Galactic Storm p.16) : l'excès d'une attaque DU JOUEUR sur un sbire
+  va au méchant qu'il choisit (`mots-cles/mechants-multiples.md`).
+- **Méchant insensible aux cartes joueur** (CIBLÉ, HIDDEN) : l'excès d'une attaque de joueur ne le blesse pas
+  (`mots-cles/immunite-cartes-joueur.md`) ; celui d'une attaque d'ennemi, si.
 - Cas : « Overkill [regle] » dans `tools/test_capacites.py` (un méchant, deux
   défaites simultanées, Sinister Six, Wrecking Crew, ennemi sur un allié).
 
 **Variantes maison** : `ho016` (* Bullseye, pack `harry_osborn`) : « [star]
 Bullseye's attack gains piercing and overkill » — capacité étoile (Expert),
 pas un boost.
+
+## Pièges vus au portage de Raza Longknife (26/10/2026)
+
+- **Mesurer un « this attack gains overkill » porté par une carte de boost** (`rl017` Devour, comme `an013`) : faire attaquer le vilain CONTRE UN ALLIÉ, `Puzzle.EnemyAttacks('01094', '01002')`, avec `Puzzle.GiveFacedownBoost('01094', 'rl017')` et la clé de cas **`passer_sur_option="Defense"`**. Avec `accepter_choix=True` le HÉROS défend à la place de l'allié et l'excès n'apparaît jamais ; `Puzzle.Attack('01094', '<allié>')` (défenseur armé) n'a pas donné d'excès non plus.
+- ⚠ Mockingbird (`01083`) SONNE un ennemi en entrant en jeu : Rhino sonné n'attaquait plus (0 dégât partout, cas rouge pour rien). Alliés neutres : `01002` Black Cat, `rl002`.
+- Témoin obligatoire : même montage avec une carte de boost de même nombre d'icônes SANS overkill (`rl016` New Host) : 0 dégât d'excès au héros.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf616`, 01/11/2026)
+
+- « If this activation is an attack, this attack gains overkill and piercing » (boost de `hf616` Psychic Combo) : `message.would_atk_message.GainOverKill(effect)` + `.GainPiercing(effect)` dans `WhenCardBecomeBoost("This", op)`, branche `message.being_message.IsAttack()`. Cas visibles : `Puzzle.Attack('hf602', defender='01002')` (Black Cat, 2 PV) : 1 degat d'exces au heros avec la carte, 0 avec Psychic Leech (meme nombre d'icones, aucun effet) ; Black Cat Tenace est blessee avec la carte (piercing) et survit sans.

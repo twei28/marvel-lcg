@@ -31,7 +31,7 @@ import { questionDuRecit } from './table-calee'
 import { calculCoupTable } from './calcul-coup-table'
 import { reglesCachees } from './regles-cachees'
 import { createPortal } from 'react-dom'
-import { estSpectateur } from './moteur'
+import { estSpectateur, lireDelaiAutoPhase, suivreDelaiAutoPhase } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
 import {
   choisirPolitique,
@@ -209,6 +209,7 @@ export function DeroulePhase({
   carteScene,
   dosRencontre,
   nomFr,
+  compterBoosts,
   question,
   herosLocauxIds,
   herosDesAutresIds,
@@ -366,6 +367,13 @@ export function DeroulePhase({
    * « Le Boulet » et « Envoyer Bouler ». Absent, ou muet : le nom du fait.
    */
   nomFr?: (id: number) => string | undefined
+  /**
+   * Le nombre de cartes boost (face cachée) déjà attachées à cet ennemi, pour
+   * le trait de phase (demande du 07/11/2026) : la seconde ligne « + N carte(s)
+   * boost » sous « 2 dégâts »/« 2 menaces » tant que le coup n'est pas résolu.
+   * Même mécanique attaque ET manigance (CoucheTraitPhase.tsx, trait-phase.ts).
+   */
+  compterBoosts?: (enemyId: number) => number
   /**
    * LA QUESTION DU MOTEUR, RENDUE PAR LE PLATEAU (board.tsx : le panneau
    * `DemandeCentrale` en mode scene). Quand elle est donnee, la scene reste
@@ -913,6 +921,23 @@ export function DeroulePhase({
     document.documentElement.classList.toggle('essai-peril-autre', perilDUnAutre)
     return () => document.documentElement.classList.remove('essai-peril-autre')
   }, [perilDUnAutre])
+  // Plateau du telephone en ronds (Q68, 24/10/2026) : QUEL joueur resout la carte a Peril, pour dire « seul J1 peut reagir »
+  // et verrouiller les onglets des autres. Pose sur <html>, comme `essai-peril-autre`, que lit le plateau portrait.
+  const perilJoueur =
+    essai &&
+    etape?.titre === 'revelation' &&
+    etape.joueur !== undefined &&
+    etape.carteId !== undefined &&
+    (infoRevelee?.(etape.carteId)?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne))
+      ? etape.joueur
+      : undefined
+  useEffect(() => {
+    if (perilJoueur === undefined) return
+    document.documentElement.dataset.perilJoueur = String(perilJoueur)
+    return () => {
+      delete document.documentElement.dataset.perilJoueur
+    }
+  }, [perilJoueur])
   /**
    * LE COUP FATAL SE VOIT SUR LA TABLE AVANT SON PANNEAU.
    *
@@ -1002,8 +1027,9 @@ export function DeroulePhase({
         // Le moteur journalise parfois DEUX entrees pour la meme carte : des la premiere, elle est a l'ecran.
         .filter((id) => !etapesAffichees.slice(0, index + 1).some((e) => e.titre === 'entree' && e.carteId === id))
     : []
+  // 25/10/2026 : plus seulement sur la table. Au telephone (et dans le cartouche du PC), « Étape suivante » sautait de meme
+  // l'attaque de Klaw et son boost Weapons Runner pour aller droit a l'entree du sbire.
   const suiteDifferee =
-    surTable &&
     phaseRaconteeEnCours &&
     etape !== undefined &&
     (etape.titre === 'attaque' || etape.titre === 'manigance') &&
@@ -1688,7 +1714,17 @@ export function DeroulePhase({
   // NOTRE clic, le temps de voir le coup.
   // L'avance auto est retiree (pas a pas strict, 03/10/2026) : ce minuteur ne
   // sert plus qu'a cela.
-  const delaiAvant = surTable && viseUnAutreJoueur ? DELAI_ETAPE_D_UN_AUTRE_MS : undefined
+  // « Phase du mechant automatique » (reglage des options, 23/10/2026) : chaque etape se valide seule apres 2 s ou 5 s, pour les deux
+  // presentations a cartouche (le mode « Accelere » n'en a pas). Le delai ne court qu'une fois la lecture des cartes finie
+  // (`avantResultat`) : on ne passe pas une attaque dont les boosts sont encore en train d'arriver.
+  const [delaiAuto, setDelaiAuto] = useState(lireDelaiAutoPhase)
+  useEffect(() => suivreDelaiAutoPhase(setDelaiAuto), [])
+  const delaiAvant =
+    delaiAuto > 0 && !avantResultat
+      ? delaiAuto
+      : surTable && viseUnAutreJoueur
+        ? DELAI_ETAPE_D_UN_AUTRE_MS
+        : undefined
 
   // L'HORLOGE du cartouche, la seule de toute la phase. Elle passe seule, sur
   // la table, l'etape qui vise un autre joueur (delai de lecture).
@@ -1985,6 +2021,7 @@ export function DeroulePhase({
           // Pendant une question, le trait d'une étape déjà RÉSOLUE (la riposte) n'a plus rien à montrer.
           actif={!enVolDeJeton && !(questionAuJoueur && etape?.etat === 'resolu')}
           sansEtiquette={Boolean(essai && etape && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0))}
+          compterBoosts={compterBoosts}
         />
         <EffetsSurTable
           etape={etape}

@@ -123,10 +123,26 @@ export function estTypeJouable(c) {
  *  Skrull Menace campaign », livret p.5) : absentes du constructeur. */
 export const SETS_RESERVES_A_LA_CAMPAGNE = ["Skrull Menace Campaign"];
 
+/** Hellfire Hunt (E10, livret p.5) : « Cards 263-288 ... cannot be included in any deck unless playing the Hellfire Hunt campaign and the players are
+ *  directed to add them to a deck by the Campaign Instructions. Campaign-specific cards do not count toward players' minimum or maximum deck size. »
+ *  Ses allies RECRUITED (hf013-hf028, classe « Campaign;Basic ») et les allies CAPTIVE du scenario 2 (hf208-hf211) vivent dans le MEME set que des cartes
+ *  d'aspect ordinaires (hf001-hf012) : on les reconnait donc par leur classe « Campaign », dans les sets de la campagne. Le deck Recruited Mutants est un
+ *  deck de TABLE, hors du deck du joueur : la taille du deck ne les compte jamais. */
+export const SETS_CARTES_DE_CAMPAGNE_PAR_CLASSE = ["Hellfire Hunt", "Black King"];
+
+export function estReserveeALaCampagne(c) {
+    if (!c) return false;
+    if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return true;
+    return SETS_CARTES_DE_CAMPAGNE_PAR_CLASSE.includes(c.set_name)
+        && String(c.class || "").split(";").map((x) => x.trim()).includes("Campaign");
+}
+
 export function estCarteJoueur(c) {
     if (!c || !c.class) return false;
-    if (SETS_RESERVES_A_LA_CAMPAGNE.includes(c.set_name)) return false;
+    if (estReserveeALaCampagne(c)) return false;
     if (c.class === "Hero") return false;
+    // « Linked » : la carte est mise de côté par sa carte liée, jamais dans le deck d'un joueur (RR « Linked »).
+    if (c.desc && c.desc.Linked) return false;
     // TMNT Shinobi (17/10/2026) : une carte Shinobi (classe Bushido / Ninjutsu / Kuji-Kiri / Taijutsu, Dual
     // comprise) ou un PATH est une carte de joueur ; `validerDeck` exige alors un Path et applique ses regles.
     if (estPath(c)) return true;
@@ -164,7 +180,8 @@ export function maxParDeck(carte) {
  *          // + "types": ["Upgrade"] pour ne compter que certains types (Ares, 07/09/2026)
  *          // + "compte": "titres" : `max` compte des TITRES, pas des cartes (Maria Hill)
  *          "types_interdits": ["Ally"],
- *          "types_interdits_aspect": ["Ally"]   // seulement les cartes D'ASPECT (Iron Patriot)
+ *          "types_interdits_aspect": ["Ally"],  // seulement les cartes D'ASPECT (Iron Patriot)
+ *          "classes_interdites": ["Basic"]      // des CLASSES entieres (U.S. Agent, `us001b` : « cannot include basic cards »)
  *      }
  *
  *  La table cablee plus bas reste la pour les 112 heros officiels, qu'on ne va
@@ -214,6 +231,14 @@ export function reglesAspect(hero, t = brut) {
 export function typesInterditsAspect(hero) {
     const decl = reglesDeclarees(hero);
     const liste = decl && decl.types_interdits_aspect;
+    return Array.isArray(liste) ? liste.map(String) : [];
+}
+
+/** Classes de cartes que le heros s'interdit (U.S. Agent, us001b John Walker : « You cannot include allies or basic
+ *  cards » -> `types_interdits: ["Ally"]` + `classes_interdites: ["Basic"]`). */
+export function classesInterdites(hero) {
+    const decl = reglesDeclarees(hero);
+    const liste = decl && decl.classes_interdites;
     return Array.isArray(liste) ? liste.map(String) : [];
 }
 
@@ -313,6 +338,9 @@ export function exemptDeLaLimiteAspect(hero, carte) {
      * soit ecrite. Toutes ancrees sur `hero.id`, comme Cable. */
     // Scott Summers (33001b) : « You may include X-MEN allies from any aspect ».
     if (id === "cyclops") return carte.type === "Ally" && aTrait(carte, "X-MEN");
+    // Christopher Summers (cr001b) : « You may include STARJAMMER allies from any aspect in your deck ». Les deux decks du heros
+    // (obligation par defaut et alternative) portent la meme regle.
+    if (id === "corsair" || id === "corsair_making_amends") return carte.type === "Ally" && aTrait(carte, "STARJAMMER");
     // Kate Bishop (kb001b) : « you may include SKILL cards from any aspect ».
     if (id === "kate_bishop") return aTrait(carte, "SKILL");
     // Simon Williams (58001b) : « events with a printed [energy] resource icon
@@ -336,7 +364,14 @@ export function quotaHorsAspect(hero, t = brut) {
     const decl = reglesDeclarees(hero);
     const q = decl && decl.hors_aspect;
     if (!q) return null;
-    const max = Number(q.max);
+    // Quota PAR ASPECT (Shang-Chi, Multiple Forms, 24/10/2026) : au plus `max_titres_par_aspect` titre(s) admissible(s)
+    // dans CHAQUE autre aspect de la liste `aspects` ; `max` n'est alors qu'un total d'affichage.
+    const parAspect = q.par_aspect === true;
+    const maxTitresParAspect = Number(q.max_titres_par_aspect) > 0 ? Number(q.max_titres_par_aspect) : 1;
+    const aspects = Array.isArray(q.aspects) ? q.aspects.map(String) : null;
+    const max = parAspect && !(Number(q.max) > 0) && aspects
+        ? Math.max(1, aspects.length - 1) * maxTitresParAspect
+        : Number(q.max);
     if (!Number.isFinite(max) || max <= 0) return null;
     // Le catalogue ecrit « S.H.I.E.L.D » comme « S.H.I.E.L.D. » : le point final
     // ne doit pas decider de la legalite.
@@ -350,7 +385,10 @@ export function quotaHorsAspect(hero, t = brut) {
         max,
         // Maria Hill (50001b) : « the maximum number of copies of 3 S.H.I.E.L.D.
         // supports » compte des titres ; les exemplaires restent bornes par titre.
-        parTitre: q.compte === "titres",
+        parTitre: q.compte === "titres" || parAspect,
+        parAspect,
+        maxTitresParAspect,
+        aspects,
         // Sans liste de traits ni de types, le quota porte sur N cartes hors
         // aspect QUELLES QU'ELLES SOIENT : c'est le cas degenere, pas une erreur.
         test: (c) => (!traits.length || (c.traits || []).some((tr) => traits.includes(norme(tr))))
@@ -408,6 +446,34 @@ function identitePourUnicite(hero, carte) {
     return heros.flatMap((t) => (alters.length ? alters : [""]).map((alt) => ({ t, s: "", alt })));
 }
 
+/** « You must include an equal number of cards with a printed [energy], [mental],
+ *  and [physical] resource in your deck » (Carol Danvers, gs001b, Galactic Storm).
+ *  Declare dans `metadata.deckbuilding.ressources_egales` : `{ couleurs: ["Y","B","R"], label }`.
+ *  On compte des CARTES (une Energy YY compte une fois en [energy]) ; une carte a deux
+ *  couleurs compte pour chacune ; le [wild] (G) ne compte pour aucune. Signatures du heros
+ *  comprises (le livret p.22 : elles sont deja equilibrees, 5/5/5). Les cartes de CAMPAGNE
+ *  ne comptent pas (FAQ du livret 1.2 p.22). Ajoute le 20/10/2026 (lot GS-1). */
+export function problemesRessourcesEgales(hero, choisies, carte, t = brut) {
+    const decl = reglesDeclarees(hero);
+    const regle = decl && decl.ressources_egales;
+    if (!regle || !Array.isArray(regle.couleurs) || regle.couleurs.length < 2) return [];
+    const compte = new Map(regle.couleurs.map((c) => [String(c).toUpperCase(), 0]));
+    const ajouter = (c, n) => {
+        if (!c) return;
+        const classe = String(c.class || (c.desc && c.desc.Class) || "");
+        if (/Campaign/i.test(classe)) return;
+        const res = String((c.desc && c.desc.RES) || "").toUpperCase();
+        for (const couleur of compte.keys()) if (res.includes(couleur)) compte.set(couleur, compte.get(couleur) + n);
+    };
+    for (const id of ((hero.deck && hero.deck.hero_deck) || [])) ajouter(carte(String(id).split(",")[0]), 1);
+    for (const [id, n] of choisies) ajouter(carte(id), n);
+    const nombres = [...compte.values()];
+    if (Math.min(...nombres) === Math.max(...nombres)) return [];
+    const NOMS = { Y: t("énergie"), B: t("mentale"), R: t("physique"), G: t("joker") };
+    return [`${t("Il faut")} ${regle.label || t("autant de cartes de chaque ressource")} — ${t("actuellement")} `
+        + [...compte].map(([c, n]) => `${NOMS[c] || c} ${n}`).join(", ")];
+}
+
 function problemesUnicite(hero, choisies, carte, t) {
     const out = [];
     const uniques = [];
@@ -463,6 +529,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     const quota = quotaHorsAspect(hero, t);
     const interdits = typesInterdits(hero);
     const interditsAspect = typesInterditsAspect(hero);
+    const classesRefusees = classesInterdites(hero);
     const idHeros = hero.id || "";
     const horsDeckJoueur = [];   // cartes de rencontre, ou signatures d'un autre heros
     const typesRefuses = [];     // « no additional allies » et consorts
@@ -507,6 +574,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
         if (!estCarteJoueur(c) && !(marvelous && estCarteSignature(c))) horsDeckJoueur.push(c.name);
         else if (interdits.includes(String(c.type))) typesRefuses.push(c.name);
         else if (interditsAspect.includes(String(c.type)) && ASPECTS.includes(c.class)) typesRefuses.push(c.name);
+        else if (classesRefusees.includes(String(c.class))) typesRefuses.push(c.name);
         if (estSignature(c)) empruntees += n;
         else if (estShinobi(brute) || estPath(brute)) {
             // Ni aspect ni Basic (livret p.8) : rien a compter ici, les regles du Path sont jugees plus bas.
@@ -552,14 +620,25 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     if (quota && parAspect.size > 1) {
         const principal = [...parAspect.entries()].sort((a, b) => b[1] - a[1])[0][0];
         const sortis = [];
+        const trop = [];   // quota par aspect : « classe nombre-de-titres »
         for (const [classe, n] of parAspect) {
             if (classe === principal) continue;
+            // Quota par aspect : seules les classes LISTEES comptent comme des aspects (Shang-Chi) ; les autres
+            // (voies TMNT...) ne sortent jamais du decompte.
+            if (quota.aspects && !quota.aspects.includes(classe)) continue;
             if ((admissibles.get(classe) || 0) === n) {
-                horsAspect += quota.parTitre ? titresAdmissibles.get(classe).size : n;
+                const nbTitres = titresAdmissibles.get(classe).size;
+                // Trop de titres dans CET aspect : la classe reste comptee (la limite d'aspects parle) et on le dit.
+                if (quota.parAspect && nbTitres > quota.maxTitresParAspect) {
+                    trop.push(`${classe} ${nbTitres}`);
+                    continue;
+                }
+                horsAspect += quota.parTitre ? nbTitres : n;
                 sortis.push(classe);
             }
         }
         for (const classe of sortis) parAspect.delete(classe);
+        if (trop.length) problemes.push(`${t("Au plus")} ${quota.maxTitresParAspect} ${t("titre(s) par autre aspect")} — ${trop.join(", ")}`);
     }
     const aspects = new Set(parAspect.keys());
     // Multiverse (glossaire MC4DB, 29/09/2026) : une carte Multiverse REMPLACE
@@ -653,6 +732,7 @@ export function validerDeck({ hero, choisies, carte: carteBrute, t = brut }) {
     }
     if (nbStarting > 1) problemes.push(`${t("Une seule carte Starting par deck :")} ${starting.join(", ")}`);
     problemes.push(...problemesUnicite(hero, choisies, carte, t));
+    problemes.push(...problemesRessourcesEgales(hero, choisies, carte, t));
     // Autant de cartes de chaque aspect : Spider-Woman (04031b, ses deux
     // aspects) et Adam Warlock (21031b, les quatre).
     const egaux = idHeros === "spider_woman" ? 2 : idHeros === "adam_warlock" ? 4 : 0;

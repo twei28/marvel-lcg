@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Beast",
     "metadata": {
+        "author": "D0natello",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 31/08/2026).",
         "collision_note": "Trois noms du pack existent deja ailleurs : « Beast » est un allie Leadership officiel (33011, pack Cyclops), « Wonder Man » un allie Leadership (03014) et un heros (58001a), « Phoenix » un allie signature de Cyclops (33002), un heros (34001a) et un allie Leadership (49014). Aucun des trois n'est dans ce deck : la regle d'unicite interdirait de les avoir en jeu en meme temps que la carte du pack. « Peter Parker » (bt014, allie Discovery) porte le nom de l'ALTER-EGO de Spider-Man (01001b) : en multijoueur avec un Spider-Man a la table, une identite et un allie du meme nom peuvent coexister, le moteur ne l'interdit pas.",

@@ -74,9 +74,9 @@ def detecter(entete_cookie: str = "", accept_language: str = "") -> str:
 # ---------------------------------------------------------------------------
 DICO_EN: dict[str, str] = {
     # --- Le squelette de toutes les pages -----------------------------------
-    "Ton espace de jeu est a toi : tes decks, tes campagnes en cours et tes "
-    "hauts faits t'y attendent d'une fois sur l'autre. Eteindre le jeu "
-    "n'efface rien. Tes invites, eux, rejoignent ta partie par leur lien "
+    "Ton espace de jeu est à toi : tes decks, tes campagnes en cours et tes "
+    "hauts faits t'y attendent d'une fois sur l'autre. Éteindre le jeu "
+    "n'efface rien. Tes invités, eux, rejoignent ta partie par leur lien "
     "sans avoir besoin d'un compte. Extinction automatique au bout de "
     "{heures} h d'allumage.":
         "This space is yours: your decks, your campaigns in progress and your "
@@ -102,93 +102,95 @@ DICO_EN: dict[str, str] = {
 
     # --- Connexion et inscription -------------------------------------------
     "Se connecter": "Sign in",
-    "Creer un compte": "Create an account",
+    "Créer un compte": "Create an account",
     "Demander un compte": "Request an account",
     "Entrer": "Enter",
     "Pseudo": "Username",
     "Adresse e-mail": "Email address",
     "Pseudo ou adresse e-mail": "Username or email address",
-    "Tu es invite : ton compte sera actif tout de suite.":
+    "Tu es invité : ton compte sera actif tout de suite.":
         "You have an invitation: your account will be active right away.",
-    "Ton compte devra etre valide a la main avant de servir.":
+    "Ton compte devra être validé à la main avant de servir.":
         "Your account will have to be approved by hand before it works.",
-    'Deja un compte ? <a href="/connexion">Se connecter</a>.':
+    'Déjà un compte ? <a href="/connexion">Se connecter</a>.':
         'Already have an account? <a href="/connexion">Sign in</a>.',
     'Pas encore de compte ? <a href="/inscription">En demander un</a>.':
         'No account yet? <a href="/inscription">Request one</a>.',
-    "Mot de passe oublie ? Demande un lien de reinitialisation a l'administrateur.":
+    "Mot de passe oublié ? Demande un lien de réinitialisation à l'administrateur.":
         "Forgotten your password? Ask the administrator for a reset link.",
-    "Les places sont comptees : {jours} jours sans venir et la tienne"
-    " retourne au pot. Ecris-moi, je te la rends.":
+    "Les places sont comptées : {jours} jours sans venir et la tienne"
+    " retourne au pot. Écris-moi, je te la rends.":
         "Seats are limited: {jours} days without visiting and yours goes back "
         "to the pool. Write to me and I will give it back.",
 
     # --- La barre, en haut de chaque page -----------------------------------
-    "Connecte": "Signed in",
+    "Connecté": "Signed in",
     "Menu": "Menu",
-    "Se deconnecter": "Sign out",
+    "Se déconnecter": "Sign out",
     "Mes signalements": "My reports",
+    "Créateur de cartes": "Card Maker",
     "Accueil": "Home",
-    "siege": "seat",
-    "Envoye depuis un autre siege de ta table : la reponse part a la personne qui l'a ecrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
+    "siège": "seat",
+    "Envoyé depuis un autre siège de ta table : la réponse part à la personne qui l'a écrit.": "Sent from another seat at your table: the reply goes to whoever wrote it.",
 
     # --- Le suivi d'un signalement ------------------------------------------
-    "Ce que tu as signale, et ma reponse.": "What you reported, and my answer.",
-    "Rien a suivre pour l'instant.": "Nothing to follow yet.",
+    "Ce que tu as signalé, et ma réponse.": "What you reported, and my answer.",
+    "Rien à suivre pour l'instant.": "Nothing to follow yet.",
     "Aucun signalement": "No reports",
-    "Quand un bug te gene en partie, le bouton « Signaler un bug » l'envoie "
-    "avec ta capture d'ecran et le journal de la partie. Tu retrouveras ici ma "
-    "reponse.":
+    "Quand un bug te gêne en partie, le bouton « Signaler un bug » l'envoie "
+    "avec ta capture d'écran et le journal de la partie. Tu retrouveras ici ma "
+    "réponse.":
         "When a bug gets in your way during a game, the “Report a bug” button "
         "sends it along with your screenshot and the game log. My answer will "
         "be waiting for you here.",
-    "Pas encore de reponse.": "No answer yet.",
+    "Pas encore de réponse.": "No answer yet.",
     "Voir la capture": "View the screenshot",
     "Ajouter quelque chose": "Add something",
     "Envoyer": "Send",
-    "Reponse": "Answer",
+    "Réponse": "Answer",
     "Moi": "Me",
     # Les quatre etats d'un ticket, tels que le joueur les lit.
-    "Recu": "Received",
+    "Reçu": "Received",
     "En cours": "In progress",
-    "Corrige": "Fixed",
-    "Refuse": "Declined",
+    "Corrigé": "Fixed",
+    "Refusé": "Declined",
 
     # --- « Ta partie t'attend » ---------------------------------------------
-    "Tu etais en pleine partie.": "You were in the middle of a game.",
+    "Tu étais en pleine partie.": "You were in the middle of a game.",
     "Ta partie t'attend": "Your game is waiting",
-    "Interrompue le {quand}{motif}. Elle a ete sauvegardee : "
-    "tu peux la reprendre la ou tu l'avais laissee.":
+    "Interrompue le {quand}{motif}. Elle a été sauvegardée : "
+    "tu peux la reprendre là où tu l'avais laissée.":
         "Interrupted on {quand}{motif}. It was saved: you can pick it up right "
         "where you left off.",
     "Reprendre cette partie": "Resume this game",
     "On recharge la sauvegarde et on te remet au plateau.":
         "We load the save and put you back at the table.",
     "Commencer autre chose": "Start something else",
-    "La sauvegarde reste dans « Reprendre », sur l'ecran de preparation.":
+    "La sauvegarde reste dans « Reprendre », sur l'écran de préparation.":
         "The save stays under “Resume”, on the setup screen.",
 
     # --- Le temps que la table s'allume -------------------------------------
     "Un instant.": "One moment.",
-    "Ton jeu demarre": "Your game is starting",
+    "Ton jeu démarre": "Your game is starting",
     "Le premier allumage prend une minute ou deux. "
-    "Cette page bascule toute seule des que c'est pret.":
+    "Cette page bascule toute seule dès que c'est prêt.":
         "The first start takes a minute or two. This page will switch over on "
         "its own as soon as it is ready.",
-    "Quelque chose a coince.": "Something went wrong.",
-    "Ton jeu n'a pas demarre": "Your game did not start",
-    "Reessayer": "Try again",
+    "Quelque chose a coincé.": "Something went wrong.",
+    "Ton jeu n'a pas démarré": "Your game did not start",
+    "Réessayer": "Try again",
 
     # --- Ce qui peut refuser une connexion ou une inscription ---------------
-    "Pseudo invalide : 3 a 24 caracteres, lettres, chiffres, - et _.":
+    "Pseudo invalide : 3 à 24 caractères, lettres, chiffres, - et _.":
         "Invalid username: 3 to 24 characters, letters, digits, - and _.",
     "Adresse e-mail invalide.": "Invalid email address.",
-    "Mot de passe trop court : 8 caracteres au minimum.":
+    "Mot de passe trop court : 8 caractères au minimum.":
         "Password too short: 8 characters minimum.",
-    "Il faut un lien d'invitation pour creer un compte ici.":
+    "Il faut un lien d'invitation pour créer un compte ici.":
         "You need an invitation link to create an account here.",
-    "Ce pseudo est deja pris.": "That username is already taken.",
-    "Cette adresse est deja utilisee.": "That address is already in use.",
+    "Ce pseudo est déjà pris.": "That username is already taken.",
+    "Cette adresse est déjà utilisée.": "That address is already in use.",
+    "Le site est complet ({n} comptes).": "The site is full ({n} accounts).",
     "Plus aucun espace de jeu disponible.": "No game space left.",
     "Identifiant ou mot de passe incorrect.":
         "Incorrect username or password.",
@@ -197,9 +199,9 @@ DICO_EN: dict[str, str] = {
     "Changer la langue du site": "Change the language of the site",
 
     # --- L'appli sur le telephone -------------------------------------------
-    "Installer l'application sur ce telephone":
+    "Installer l'application sur ce téléphone":
         "Install the app on this phone",
-    "Sur iPhone : bouton Partager, puis « Sur l'ecran d'accueil ».":
+    "Sur iPhone : bouton Partager, puis « Sur l'écran d'accueil ».":
         "On iPhone: Share button, then “Add to Home Screen”.",
     "C'est un raccourci vers le jeu, pas une version hors ligne : "
     "il faut une connexion pour jouer.":
@@ -208,14 +210,14 @@ DICO_EN: dict[str, str] = {
 
     # --- Quand le reseau manque ---------------------------------------------
     "Pas de connexion": "No connection",
-    "NarwhalChampions a besoin du reseau pour tourner : la partie "
-    "se joue sur le serveur, pas sur ton telephone. Reconnecte-toi "
-    "et reessaie.":
+    "NarwhalChampions a besoin du réseau pour tourner : la partie "
+    "se joue sur le serveur, pas sur ton téléphone. Reconnecte-toi "
+    "et réessaie.":
         "NarwhalChampions needs the network to run: the game is played on the "
         "server, not on your phone. Get back online and try again.",
 
     # --- Apres une reinitialisation de mot de passe -------------------------
-    "Mot de passe enregistre": "Password saved",
+    "Mot de passe enregistré": "Password saved",
     "Ton nouveau mot de passe est en place : connecte-toi.":
         "Your new password is set: sign in.",
 
@@ -231,13 +233,13 @@ DICO_EN: dict[str, str] = {
     # --- Le nouveau mot de passe, depuis un lien de reinitialisation --------
     "Nouveau mot de passe": "New password",
     "Enregistrer": "Save",
-    "Huit caracteres au minimum. Tes sessions ouvertes seront fermees.":
+    "Huit caractères au minimum. Tes sessions ouvertes seront fermées.":
         "Eight characters minimum. Your open sessions will be closed.",
     '<a href="/connexion">Se connecter</a>.':
         '<a href="/connexion">Sign in</a>.',
 
     # --- Apres une demande d'inscription ------------------------------------
-    "Demande enregistree": "Request received",
+    "Demande enregistrée": "Request received",
     "Ton compte est actif : connecte-toi.": "Your account is active: sign in.",
     "Ton compte attend une validation manuelle. Reviens une fois"
     " qu'elle est faite.":
@@ -245,24 +247,36 @@ DICO_EN: dict[str, str] = {
 
     # --- L'activite Discord (salon vocal) -----------------------------------
     "Un instant": "One moment",
-    "La table de {hote} n'est pas encore prete. Cette page reessaie toute seule.":
+    "La table de {hote} n'est pas encore prête. Cette page réessaie toute seule.":
         "{hote}'s table isn't ready yet. This page will retry on its own.",
-    "Table complete": "Table full",
-    "La table de {hote} n'a plus de siege libre.":
+    "Table complète": "Table full",
+    "La table de {hote} n'a plus de siège libre.":
         "{hote}'s table has no seat left.",
     "Rejoindre la table de {hote}": "Join {hote}'s table",
     "Tu peux jouer avec ton compte (tu retrouveras ce qui t'appartient), "
-    "ou simplement en invite.":
+    "ou simplement en invité.":
         "You can play with your own account (you'll get back what's yours), "
         "or just join as a guest.",
     "J’ai un compte": "I have an account",
-    "Je suis invite": "I'm a guest",
+    "Je suis invité": "I'm a guest",
 
     # --- Liens de l'administrateur ------------------------------------------
     "Administration": "Administration",
+    "Decks des joueurs": "Players' decks",
+    "Aucun deck enregistré par les autres comptes.": "No deck saved by the other accounts.",
+    "cartes": "cards",
+    "Importer dans mon compte": "Import into my account",
+    "Importer le deck « {deck} » de {compte} dans votre compte ? L'original ne sera pas modifié.":
+        "Import the deck \u201c{deck}\u201d from {compte} into your account? The original will not be modified.",
+    "Deck importé dans votre compte sous le nom « {fichier} ».": "Deck imported into your account as \u201c{fichier}\u201d.",
+    "L'import a échoué.": "The import failed.",
+    "La liste des decks n'a pas pu être chargée.": "The deck list could not be loaded.",
+    "Les decks enregistrés par les autres comptes, en lecture seule. Chaque consultation et chaque import est journalisé.":
+        "The decks saved by the other accounts, read-only. Every consultation and every import is logged.",
+    "Actualiser": "Refresh",
     "Suivi des parties": "Game tracking",
 
-    # --- Demandes des createurs (12/10/2026) ---------------------------------
+    # --- Demandes des créateurs (12/10/2026) ---------------------------------
     "Crédits et retrait": "Credits and removal",
     "Si j'ai oublié de te créditer, ou si tu veux que tes créations soient"
     " retirées du site, dis-le-moi ici. Je lis chaque demande.":

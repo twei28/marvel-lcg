@@ -78,22 +78,37 @@ async function pointsDeVie(page: Page, id: number): Promise<number | undefined> 
   }, id);
 }
 
-test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
+/** Partie neuve, mise en place passee, heros en forme heros, plateau pret au geste. */
+async function preparerPlateau(page: Page, request: APIRequestContext): Promise<string> {
   await nouvellePartie(request);
   await page.goto('/app/board.html?p=0');
   await page.waitForSelector('.scan-card[data-card-id]', { timeout: 30000 });
 
-  // Le mulligan d'ouverture s'ouvre quelques instants apres le plateau : sans
-  // cette attente, on cliquait dans le vide et la partie restait bloquee.
-  // La mise en place carte par carte (manigance, méchant...) passe avant le mulligan : on la fait défiler.
-  for (let k = 0; k < 30 && (await page.locator('.mep-couche').count()) > 0; k++) {
-    const continuer = page.locator('.mep-couche .mep-continuer').first();
-    if (await continuer.isVisible().catch(() => false)) await continuer.click({ timeout: 1500, force: true }).catch(() => {});
+  // La mise en place carte par carte (manigance, mechant...) et le mulligan se succedent dans un ordre qui
+  // varie d'une partie a l'autre : on repond a ce qui est OUVERT, tour a tour, jusqu'a ce que la table soit
+  // libre. (Flake releve le 20/10/2026 : la couche de mise en place interceptait le clic du mulligan.)
+  const confirmer = page.getByRole('button', { name: /^(Confirmer|Garder ma main)/ }).first();
+  let confirme = false;
+  let calme = 0;
+  for (let k = 0; k < 120 && calme < 4; k++) {
+    const mep = page.locator('.mep-couche .mep-continuer').first();
+    if (await mep.isVisible().catch(() => false)) {
+      calme = 0;
+      await mep.click({ timeout: 1500, force: true }).catch(() => {});
+    } else if ((await page.locator('.mep-couche').count()) > 0) {
+      calme = 0;
+    } else if (!confirme && (await confirmer.isVisible().catch(() => false))) {
+      calme = 0;
+      confirme = true;
+      await confirmer.click({ timeout: 3000 }).catch(() => {
+        confirme = false;
+      });
+    } else if (confirme) {
+      calme++;
+    }
     await page.waitForTimeout(400);
   }
-  const confirmer = page.getByRole('button', { name: /^(Confirmer|Garder ma main)/ }).first();
-  await confirmer.waitFor({ state: 'visible', timeout: 40000 });
-  await confirmer.click();
+  expect(confirme, 'le mulligan ne s est jamais ouvert').toBe(true);
 
   // Le changement de forme se fait par la commande du bac à sable : depuis le 18/10/2026 le bouton de la barre du bas
   // n'existe plus (le menu de la carte propose « Changer de forme », mais ce cas teste le GLISSER, pas ce menu).
@@ -112,6 +127,11 @@ test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
     .first()
     .getAttribute('data-card-id');
   expect(heros, 'aucun heros sur la table').toBeTruthy();
+  return heros!;
+}
+
+test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
+  const heros = await preparerPlateau(page, request);
 
   // On souleve le heros et on s'arrete la : les cibles legales s'allument.
   const boite = await page.locator(`.scan-card[data-card-id="${heros}"]`).first().boundingBox();
@@ -158,4 +178,44 @@ test('glisser le heros sur le mechant l attaque', async ({ page, request }) => {
   // Le geste est fini : plus de couche, plus de cadre marque.
   await expect(page.locator('.couche-glisser')).toHaveCount(0);
   await expect(page.locator('.plateau-cadre.est-en-glisser')).toHaveCount(0);
+});
+
+// ⚠ LE CHEMIN DU REFUS DE `onDepot`, de bout en bout. Le cas du dessus prouve
+// le depot qui REUSSIT (le moteur recoit l'attaque) ; celui-ci prouve que la
+// raison renvoyee par `onDepot` arrive jusqu'a l'ecran (`setRefus`, puis la
+// bulle), et que le moteur n'a rien recu. Un `onDepot` qui ne serait plus
+// branche au geste, ou qui avalerait sa raison, ferait rougir ce cas.
+test('lacher le heros sur le deck rencontre affiche le refus et ne touche pas au mechant', async ({
+  page,
+  request,
+}) => {
+  const heros = await preparerPlateau(page, request);
+
+  const boite = await page.locator(`.scan-card[data-card-id="${heros}"]`).first().boundingBox();
+  expect(boite, "le heros n'est pas a l'ecran").not.toBeNull();
+  const depart = { x: boite!.x + boite!.width / 2, y: boite!.y + boite!.height / 2 };
+  await page.mouse.move(depart.x, depart.y);
+  await page.mouse.down();
+  await page.mouse.move(depart.x + 30, depart.y - 30, { steps: 8 });
+  await expect(page.locator('.plateau-cadre.est-en-glisser')).toBeVisible();
+
+  const cibles = await page.$$eval(
+    '.scan-card.is-target-pulse.kind-villain[data-card-id]',
+    (elements) => elements.map((element) => (element as HTMLElement).dataset.cardId)
+  );
+  expect(cibles.length, 'aucun mechant a viser').toBeGreaterThan(0);
+  const avant = await pointsDeVie(page, Number(cibles[0]));
+
+  // Le deck rencontre : une zone de la table que le heros ne peut pas viser. Le lacher y est REFUSE.
+  const pile = await page.locator('.zone-piles-rencontre .scan-card').first().boundingBox();
+  expect(pile, 'le deck rencontre n est pas a l ecran').not.toBeNull();
+  await page.mouse.move(pile!.x + pile!.width / 2, pile!.y + pile!.height / 2, { steps: 12 });
+  await page.mouse.up();
+
+  const refus = page.locator('.glisser-refus');
+  await expect(refus, "la raison du refus n'arrive pas a l'ecran").toBeVisible({ timeout: 3000 });
+  expect(((await refus.textContent()) ?? '').trim().length).toBeGreaterThan(0);
+
+  await page.waitForTimeout(1000);
+  expect(await pointsDeVie(page, Number(cibles[0])), 'le moteur a recu un coup').toBe(avant);
 });

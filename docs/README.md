@@ -5,7 +5,19 @@
 - Une carte : `reference/PROCESSUS-CARTE.md`
 - Un héros complet : `reference/PROCESSUS-HEROS.md`
 - Un scénario : `reference/GUIDE-CREATION-CONTENU.md` §6
+- **Une campagne complète à faire produire par une autre IA** (cartes, scénarios, scripts, carnet, textes,
+  preuves) : `kit-campagne-ia/` (manuel, liste des fichiers, architecture ; le zip se reconstruit avec
+  `python3 outils/construire-kit-campagne.py`)
+- **Un héros complet à faire produire par une autre IA** (cartes, deck de départ, scripts, textes, biographie,
+  preuves) : `kit-heros-ia/` (manuel, liste des fichiers ; le zip se reconstruit avec
+  `python3 outils/construire-kit-heros.py`)
+- **Un puzzle** (créer, publier, résoudre) : `puzzle/GUIDE-CREATEUR.md` ; comment ça marche, où est quoi, les pièges et les
+  tests : `puzzle/GUIDE-TECHNIQUE.md` ; le plan et l'avancement : `puzzle/PLAN.md`
 - Comprendre un mot-clé (officiel ou maison) : `reference/mots-cles/`
+- Comprendre ou modifier « Annuler » (instantané du tour, pourquoi pas `deepcopy`, les pièges) :
+  `reference/ANNULER-INSTANTANE.md`
+- Comprendre ou modifier l'étape « Difficulté » de la préparation (sets modulaires par boîte, propositions
+  VillainTheory, noms français, refaire l'import) : `reference/PAGE-DIFFICULTE.md`
 - Où vit chaque type de fichier, les deux copies du moteur, le format de
   `cards.json`, l'API de scripting : `reference/GUIDE-CREATION-CONTENU.md`
 
@@ -35,6 +47,8 @@
 - `rapports/CAMPAGNES.md` : état des lieux du mode campagne, figé au
   07/08/2026 (comprendre comment ça marchait à cette date, pas une
   référence tenue à jour)
+- `rapports/CAMPAGNES.md`, section « Hellfire Hunt » (en fin de fichier) : mode campagne de Hellfire Hunt, chaîne 1 -> 5, scans du livret,
+  règle de deck-building ; doutes restants dans `packs/hellfire-hunt/QUESTIONS.md`
 
 ## Packs custom avec leur propre dossier de conception
 

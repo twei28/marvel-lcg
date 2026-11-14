@@ -1,0 +1,28 @@
+{
+  "version": "0.5.8",
+  "name": "Cassandra Nova",
+  "villain": [
+    "hf602",
+    "hf603"
+  ],
+  "expert": true,
+  "schemes": [
+    "hf604a,hf604b",
+    "hf605a,hf605b",
+    "hf606a,hf606b"
+  ],
+  "set_aside": [
+    "hf607"
+  ],
+  "encounters": [],
+  "encounter_sets": [
+    "hf_cassandra_nova",
+    "hf_immensity",
+    "standard",
+    "expert"
+  ],
+  "modular_sets": [
+    "hf_mind_control",
+    "hf_mutant_extinction_agenda"
+  ]
+}

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sombre">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tchat - Marvel Champions</title>
+    <style>
+        /* Cette page n'existe que pour l'iframe injectee dans prepare.html.
+           L'iframe est redimensionnee cote hote (voir prepare-chat.tsx +
+           le <script> de prepare.html) pour ne jamais depasser l'emprise du
+           volet : ce pointer-events reste une securite locale au cas ou le
+           contenu deborderait un instant de cette emprise. */
+        html, body { margin: 0; background: transparent; pointer-events: none; }
+        #tchat-racine { pointer-events: none; }
+        .volet-tchat-languette, .volet-tchat { pointer-events: auto; }
+    </style>
+</head>
+<body>
+    <div id="tchat-racine"></div>
+    <script type="module" src="/src/prepare-chat.tsx"></script>
+</body>
+</html>

@@ -8,14 +8,17 @@ class GameArea(Object):
     def __init__(self, world: 'World') -> None:
         super().__init__('game_area', world)
 
-    def AddPlayer(self, player: 'Player') -> None:
+    def AddPlayer(self, player: 'Player', *, avec_manigances: bool=True) -> None:
+        # `avec_manigances=False` (PU-5, territoires de la ville) : un joueur qui change de rangee n'emmene PAS les manigances annexes de
+        # son ancienne zone (elles sont communes, livret p.2). Kang (par defaut) les emmene toujours.
         from game.message import Message
         from game.operate.worlds import Worlds
 
         game_area = player.GetIdentity().card.game_area
 
-        for face in Worlds.GetSideSchemes(game_area):
-            self.AddCard(face.card)
+        if avec_manigances:
+            for face in Worlds.GetSideSchemes(game_area):
+                self.AddCard(face.card)
         for face in player.GetControlCharacters():
             self.AddCard(face.card)
         for face in player.supports.Get():

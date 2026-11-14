@@ -4,23 +4,24 @@ import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublie
 import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/prepare/catalog.js";
-import { nomExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { nomExtension, numeroDExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { construirePageDifficulte } from "/public/js/prepare/page-difficulte.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=2f32932e";
+import { launch } from "/public/js/prepare/launcher.js?v=b0ca940a";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 // Arts alternatifs des cartes de deck (TMNT) : la fenêtre « arts alternatifs ? » à la sélection d'un deck.
 import { proposerArtsCartes } from "/public/js/prepare/arts-cartes-fenetre.js";
 import { picIdDeCarte } from "/public/js/prepare/arts-cartes-stockage.js";
-import { serieDuHeros } from "/public/js/prepare/arts-cartes-choix.js";
+import { serieDuHeros, cartesAvecArt, artsDe } from "/public/js/prepare/arts-cartes-choix.js";
 import { poserTraduction } from "/public/js/traduction/poser.js";
 import { versionsDe, deckDeLaVersion, optionsDuHeros, cleIdentite, apercuVersion } from "/public/js/prepare/variantes.js";
-import { regrouperUnderlings, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
+import { regrouperUnderlings, faceB, scenarioDuVilain, tuileContient } from "/public/js/prepare/underlings.js";
 import { aDeckDeBase } from "/public/js/prepare/catalog.js";
 import { nomAvecAuteur, createursDeTout, auteurConnuDeLExtension } from "/public/js/prepare/auteur.js";
 // LEGACY (13/09/2026) : la fiche du compte, et le verrou qui dit ce qui est
 // ouvert. Tout le calcul vit dans ces modules ; ici on ne fait que lire.
-import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy } from "/public/js/prepare/legacy-fiche.js";
+import { etat as etatLegacy, activer as activerLegacy, acheter as acheterLegacy, reinitialiser as reinitialiserFicheLegacy } from "/public/js/prepare/legacy-fiche.js";
 import { fabriquerVerrou } from "/public/js/prepare/legacy-verrou.js";
 import { fabriquerDisponibilite } from "/public/js/prepare/legacy-cartes.js";
 // Panneau « Documents ». Importe ICI plutot que pose en balise dans
@@ -32,6 +33,9 @@ import { livretDExtension, carnetDExtension } from "/public/js/prepare/panneau-d
 // session et par le tirage aleatoire, et un son s'y jouerait tout seul au
 // chargement de la page.
 import { jouerSon, jouerReplique, jouerClicRoue, SON, couperSurvolPendant } from "/public/js/prepare/sons.js";
+// L'intention du survol des héros : la scène garde le héros regardé le temps d'atteindre son bouton « Voir ses cartes ».
+import { creerSurvolHeros } from "/public/js/prepare/survol-heros.js";
+import { voletCreateurs } from "/public/js/prepare/section-createurs.js";
 import { herosTirables, scenariosTirables, tirer, tirerPlusieurs, creerBandeau, caseHeros, caseScenario,
          lireRoue, publierRoue } from "/public/js/prepare/roue.js";
 import { boutonLangue, synchroniserLangueServeur, t, langueActuelle,
@@ -41,12 +45,13 @@ import { estTel, suivreTel, installerHistorique, noterEcran, reculerVers,
          brancherBandeau, ajouterPoignee } from "/public/js/prepare/tel.js";
 import { montrerTableFermee } from "/public/js/prepare/table-fermee.js";
 import { ouvrirFeuille } from "/public/js/tel-pages.js";
-import { affichageActuel, boutonAffichage, appliquerAffichage, synchroniserAffichage, choisirAffichage, epurePermis, verifierEpurePermis } from "/public/js/prepare/affichage.js";
-import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, MODES as MODES_PHASE, normaliser as normaliserModePhase,
-         doitProposerLeChoix as doitProposerLaPhase, modeAEcrire as modePhaseAEcrire,
+import { boutonAffichage, appliquerAffichage, synchroniserAffichage } from "/public/js/prepare/affichage.js";
+import { CLE_MODE_PHASE, CLE_PHASE_MODE_VU, CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE, MODES as MODES_PHASE, normaliser as normaliserModePhase,
+         doitProposerLeChoix as doitProposerLaPhase, doitProposerLeChoixSurAppareil as doitProposerLaPhaseSurAppareil, modeAEcrire as modePhaseAEcrire,
+         CLE_JEU_AU_DOIGT, REQUETE_TABLETTE as REQUETE_TABLETTE_PHASE, estTablette as estTablettePhase, choixInitial as choixInitialPhase,
          migrerPhaseTroisChoix, PHASE_IMAGES_VISIBLES } from "/public/js/prepare/phase-mode-choix.js";
 import { faconParDefaut, lanceEnManuel, AUTO as FACON_AUTO, MANUEL as FACON_MANUEL } from "/public/js/prepare/facon-de-jouer.js";
-import { roueTeinte, teinteActuelle, choisirTeinte, synchroniserTeinte } from "/public/js/prepare/teinte.js";
+import { teinteActuelle, synchroniserTeinte } from "/public/js/prepare/teinte.js";
 // ⚠ MEME ADRESSE que la balise de prepare.html (`?v=1` compris) : une autre
 // adresse chargerait le module une seconde fois.
 import { appliquerTeintePage } from "/public/js/teinte-page.js?v=1";
@@ -69,6 +74,10 @@ import { filtrer, aspectsPresents, tagsPresents, aDesRangs } from "/public/js/ma
 import { lireFavoris, basculerFavori } from "/public/js/marvelcdb/favoris.js";
 import { validerDeck, choisiesDuDeck } from "/public/js/deckbuilder/regles.js";
 import { lireBrouillon, ecrireBrouillon } from "/public/js/campagne/brouillon.js";
+import { marquerTablette } from "/public/js/tablette.js";
+
+// Tablette (24/10/2026, decision 11) : <html data-tablette> et ses cibles de 44 px (css/tablette-pages.css).
+marquerTablette();
 
 // SURVOL : il n'existe pas sur un ecran tactile.
 //
@@ -100,6 +109,17 @@ const BROUILLON_CAMPAGNE = new URLSearchParams(window.location.search).has("camp
     ? lireBrouillon()
     : null;
 const creationCampagne = () => !!BROUILLON_CAMPAGNE;
+
+// Pseudos pre-selectionnes depuis le bouton « Creer une table » du tchat
+// (chantier du 06/11/2026) : /prepare.html?inviter=pseudo1,pseudo2. On ne les
+// invite qu'une fois la table reellement vivante en Coop en ligne (meme
+// condition que l'invitation manuelle, voir inviterAuSiege) — voir
+// `declencherInvitesDuTchat` et `sonderInvitationsHote`.
+const A_INVITER_DES_LE_DEBUT = (new URLSearchParams(window.location.search).get("inviter") || "")
+    .split(",")
+    .map((p) => { try { return decodeURIComponent(p.trim()); } catch (e) { return p.trim(); } })
+    .filter(Boolean);
+let inviteDuTchatFaite = A_INVITER_DES_LE_DEBUT.length === 0;
 
 // Le deck que la campagne a deja enregistre, par siege. Garde a part de
 // state.players : re-cliquer son propre heros appelle assignHero, qui remet le
@@ -171,6 +191,13 @@ const MODES = [
     // démarre garni côté vilain et le panneau de triche s'ouvre à côté.
     { id: "sandbox", label: t("Bac à sable"), desc: t("Test des cartes"), players: 1, fixed: true, mark: "T",
       aide: t("Mêmes règles, mais tu poses et retires ce que tu veux.") },
+    // Puzzle (24/10/2026, demande de l'utilisateur) : on cree un puzzle comme on lance une partie classique (heros, deck, mechant,
+    // scenario), puis le plateau s'ouvre en EDITEUR : bac a sable + table manuelle, et un bouton « Enregistrer le puzzle ».
+    // Resoudre un puzzle (par code, mes puzzles) reste dans le panneau « Puzzles » (puzzles.js).
+    // `fixed` : pas de boutons de nombre sur la tuile ; le clic ouvre le panneau « Puzzles » (creer avec 1 a 4 heros, resoudre par code,
+    // mes puzzles). Le panneau relance `partir` avec le nombre de heros (`window.creerPuzzle`).
+    { id: "puzzle", label: t("Puzzle"), desc: t("Créer ou résoudre"), players: 1, min: 1, max: 4, fixed: true, mark: "P",
+      aide: t("Crée un puzzle en arrangeant le plateau à ta main, ou résous celui d'un autre avec son code.") },
     // Bataille : le mode competitif de Civil War et Synthezoid Smackdown. Deux
     // equipes s'affrontent, chacune face au leader prepare par l'autre. Le
     // livret (mc56 p.14) n'en connait que deux formats, 1v1 et 2v2 : d'ou 2 ou
@@ -188,10 +215,10 @@ const MODES = [
     // coach qui donne une mission a la fois. Les lecons NOMMENT des cartes
     // precises, d'ou le seed impose : voir tools/test_seed_tutoriel.py.
 ];
-// QUATRE étapes, plus cinq : le niveau de menace et les sets modulaires se
-// choisissent sur l'écran de la cible, sous la grille des scénarios. C'est là
-// qu'on décide de la difficulté, en voyant le méchant.
-const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Final"])
+// CINQ étapes (30/10/2026) : le niveau de menace et les sets modulaires ont leur
+// page, « Difficulté », entre le méchant et le face à face. Ils se réglaient
+// avant sous la grille des scénarios, où on ne les voyait pas.
+const STEPS = (creationCampagne() ? ["Équipe", "Decks"] : ["Équipe", "Decks", "Méchant", "Difficulté", "Final"])
     .map((s) => t(s));
 const LAST_STEP = STEPS.length - 1;
 const rnd = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -239,6 +266,14 @@ function mechantsDe(sc) {
  *  la vignette PARTAGÉE entre ses méchants (deux moitiés, quatre quarts), pour
  *  qu'on voie d'un coup d'oeil que c'est un scénario à plusieurs (Wrecking
  *  Crew). Demande de l'utilisateur, 7 septembre 2026. */
+/** MC×DC (22/10/2026) : la tuile montre la MANIGANCE ANNEXE (affaire), pas le vilain. Les cartes manigance sont EN PAYSAGE ; le serveur
+ *  les sert tournees de 90° (cartes du jeu) : on les remet a l'endroit (rotation CSS dans un conteneur `cq`). null = pas une tuile d'affaire. */
+function portraitAffaire(ext, sc) {
+    if (!ext || !ext.tuileManigance) return null;
+    const id = sc.interchangeable ? sc.tileImage : ((ext.tuileManiganceScenarios || []).includes(sc.id) ? faceB((sc.schemes || [])[0]) : "");
+    if (!id) return null;
+    return el("div", { class: "portrait pivote" }, el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } }));
+}
 function portraitScenario(sc, cls) {
     const ids = mechantsDe(sc);
     if (ids.length < 2) {
@@ -287,6 +322,8 @@ const state = {
     playerCount: 1,
     players: [0, 1, 2, 3].map((i) => ({ index: i, hero: null, deck: null, deckSource: null })),
     activeSlot: 0,
+    // Parcours sequentiel : vrai quand on rouvre un heros depuis le recapitulatif.
+    modifDeck: false,
     // homebrew : decoche = uniquement les heros officiels, coche = uniquement
     // les fan-made (Stan Lee, Hulk (Rainy), Thor (Jane Foster)).
     heroFilters: { q: "", vague: "", fav: false, homebrew: false },
@@ -352,8 +389,116 @@ function enLigne() {
     return state.salon.multi && state.coopEnLigne !== false;
 }
 
+/**
+ * PLAY (sans compte) : « Coop en ligne » ouvre une table INVITE sur le site principal.
+ *
+ * Le moteur de Play tourne dans le navigateur du joueur : il ne sait pas être en multi
+ * (`get_choix_sieges` rend toujours `multi:false`), donc la tuile n'existait pas. Le shim
+ * de Play (`navigateur/src/shim.js`) pose `window.__playInvite = { origine }` ; ici, la
+ * tuile s'affiche comme sur le site et un clic envoie vers `<origine>/jouer-invite`,
+ * qui prête une vraie table (sans compte, 15 au plus). Partout ailleurs (le site, le jeu
+ * local) `__playInvite` n'existe pas et RIEN ne change.
+ */
+function invitePlay() {
+    return (typeof window !== "undefined" && window.__playInvite) || null;
+}
+
+/** La tuile « Coop en ligne » est proposée : table de compte (salon.multi) OU table invite de Play. */
+function coopEnLigneProposee() {
+    return !!state.salon.multi || !!invitePlay();
+}
+
+let placesInvite = null; // { prises, total, libres } du dernier relevé, null tant qu'inconnu
+
+async function chargerPlacesInvite() {
+    const invite = invitePlay();
+    if (!invite) return;
+    try {
+        const res = await fetch(invite.origine + "/places_invite", { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const lu = await res.json();
+        const change = !placesInvite || placesInvite.prises !== lu.prises || placesInvite.total !== lu.total;
+        placesInvite = lu;
+        if (change) render();
+    } catch (e) {
+        // Le compteur est un confort : sans lui, la tuile reste cliquable (le serveur répond « tables prises »).
+    }
+}
+
+/** Détail de la tuile « Coop en ligne » : le compteur de tables invite quand on est sur Play. */
+function detailCoopEnLigne() {
+    if (invitePlay() && placesInvite) {
+        return placesInvite.libres > 0
+            ? placesInvite.prises + "/" + placesInvite.total + " " + t("tables occupées")
+            : t("Toutes les tables sont prises");
+    }
+    return t("2 à 4 héros, chacun choisit le sien");
+}
+
+/** La pastille « 3/15 » de la tuile (les sous-titres des tuiles à nombres sont masqués par le CSS). */
+function badgeCoopEnLigne() {
+    if (!invitePlay() || !placesInvite) return null;
+    const complet = placesInvite.libres <= 0;
+    return { complet, texte: complet ? t("Complet") : placesInvite.prises + "/" + placesInvite.total };
+}
+
+function ouvrirTableInvite(nombre) {
+    const invite = invitePlay();
+    if (!invite) return;
+    const adresse = invite.origine + "/jouer-invite?joueurs=" + Math.max(2, Math.min(4, nombre || 2));
+    // Navigation de la page ENTIÈRE : les pages du jeu vivent dans un cadre de la coquille de Play.
+    try { window.top.location.assign(adresse); } catch (e) { window.location.assign(adresse); }
+}
+
 function activePlayers() {
     return state.players.slice(0, state.playerCount);
+}
+
+/**
+ * COOP LOCALE : UN HEROS APRES L'AUTRE (backlog 9, 20/10/2026).
+ * Vrai : a plusieurs heros sur le meme poste, chaque deck doit etre CHOISI
+ * (un clic) puis VALIDE, heros par heros ; plus aucun deck de base n'est pose
+ * d'office. Faux : l'ancien comportement (deck de base ou dernier deck utilise,
+ * Continuer ouvert des l'arrivee). Les trois questions encore ouvertes
+ * (retour arriere, recapitulatif, deck de base explicite) sont dans
+ * `.planning/todos/2026-10-20-backlog-9-questions.md` ; le comportement actuel
+ * est le plus simple de chacune.
+ */
+const COOP_DECKS_SEQUENTIELS = true;
+
+/** Ce parcours s'applique-t-il ? Coop locale (2 a 4 heros, meme poste) ; ni solo,
+ *  ni salon en ligne, ni creation d'equipe de campagne (decks deja fixes). */
+function decksSequentiels() {
+    return COOP_DECKS_SEQUENTIELS && state.playerCount > 1 && !enLigne() && !creationCampagne();
+}
+
+/** Le deck de ce siege est-il VALIDE ? (sans objet hors parcours sequentiel) */
+function deckValide(p) { return !!(p && p.deck && p.deckValide); }
+
+/** Le deck est-il montre comme choisi ? Hors parcours sequentiel, le deck pose
+ *  par defaut compte ; en parcours sequentiel, seul un deck CLIQUE compte. */
+function deckAffiche(p) {
+    return !!(p && p.deck && (!decksSequentiels() || p.deckChoisi) && (!sansDeckDeDepart(p) || p.deckChoisi));
+}
+
+/** Un héros sans deck de départ (fan-made, le plus souvent) : son deck de 15 cartes ne se joue pas, et aucun deck n'est
+ *  choisi à sa place (30/10/2026). Le joueur en prend un de la communauté ou une proposition. */
+function sansDeckDeDepart(p) {
+    // « Pas de deck de depart unique » = aucun deck choisi par defaut, le joueur DOIT en choisir un.
+    // Vrai quand le heros n'a pas de deck de base (fan-made nu) OU quand il a PLUSIEURS decks de depart
+    // (04/11/2026 : l'auteur en a prevu plusieurs, le choix se fait a la main). Voir versions-decks-selection.
+    return !!(p && p.hero && (!aDeckDeBase(p.hero) || versionsDe(p.hero).length > 1));
+}
+
+/** Le recapitulatif des decks est-il a l'ecran ? Tous les decks sont valides et
+ *  aucun heros n'est rouvert par « Modifier ». */
+function enRecap() {
+    return decksSequentiels() && premierSiegeAValider() < 0 && !state.modifDeck;
+}
+
+/** Premier siege dont le deck n'est pas encore valide, ou -1. */
+function premierSiegeAValider() {
+    return activePlayers().findIndex((p) => !deckValide(p));
 }
 
 function stepComplete(step) {
@@ -364,9 +509,14 @@ function stepComplete(step) {
         // heros sans rien pouvoir faire. Seul son propre siege le retient ; le
         // LANCEMENT, lui, attend tout le monde (validate + salon.prete).
         case 0: return !!state.mode && (enLigne() ? !!active[0] && !!active[0].hero : active.every((p) => p.hero));
-        case 1: return enLigne() ? !!active[0] && !!active[0].deck : active.every((p) => p.deck);
+        case 1:
+            if (decksSequentiels()) return active.every(deckValide);
+            // Un héros sans deck de départ n'en a un qu'une fois choisi (sinon il lancerait avec ses 15 cartes).
+            const aUnDeck = (p) => !!p.deck && (!sansDeckDeDepart(p) || !!p.deckChoisi);
+            return enLigne() ? !!active[0] && aUnDeck(active[0]) : active.every(aUnDeck);
         case 2: return !!state.scenario && (!estBataille() || !!state.scenario2);
-        case 3: return validate(state).ok;
+        case 3: return !!state.scenario && validate(state).ok;
+        case 4: return validate(state).ok;
         default: return false;
     }
 }
@@ -444,6 +594,9 @@ function assignHero(slotIndex, hero) {
     // Deck posé automatiquement : l'étape Decks pourra le remplacer par le
     // dernier deck utilisé pour ce héros (mémoire des choix).
     p.deckAuto = true;
+    // Parcours sequentiel : un nouveau heros repart sans deck choisi ni valide.
+    p.deckChoisi = false;
+    p.deckValide = false;
 }
 
 /* ---------------- Salon multijoueur ---------------- */
@@ -722,6 +875,70 @@ function surveillerGrilles() {
     });
 }
 
+/**
+ * Hauteur REELLE du bloc de remerciements de l'accueil (06/11/2026, bug
+ * remonte par un joueur) : au-dela de 830px de hauteur de fenetre, `.acc-merci`
+ * passe en `position:fixed` (prepare.css) et `.accueil-stage` reserve sa place
+ * avec un `padding-bottom` qui doit suivre cette hauteur, sinon elle est
+ * fausse des que le bloc est plus haut que prevu (texte plus long en anglais,
+ * police agrandie...) et la grille, centree dans `100dvh`, passe dessous —
+ * exactement ce qui se produit en passant en plein ecran (F11), qui franchit
+ * ce seuil de 830px et declenche le `position:fixed`.
+ */
+function ajusterReserveMerci() {
+    const bloc = document.querySelector(".acc-merci");
+    if (!bloc) return;
+    const hauteur = Math.ceil(bloc.getBoundingClientRect().height) + "px";
+    if (document.documentElement.style.getPropertyValue("--acc-merci-h") !== hauteur) {
+        document.documentElement.style.setProperty("--acc-merci-h", hauteur);
+    }
+}
+
+window.addEventListener("resize", ajusterReserveMerci);
+
+if (typeof document !== "undefined" && document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(ajusterReserveMerci);
+}
+
+const observateurMerci = typeof ResizeObserver === "function"
+    ? new ResizeObserver(ajusterReserveMerci)
+    : null;
+
+// CORRECTIF (07/11/2026, barre de scroll au chargement constatee par
+// l'utilisateur) : a sa toute premiere apparition, `.acc-merci` se mesure
+// une fraction de seconde trop tot (275px observes), PUIS se stabilise
+// quelques dizaines de ms plus tard sur sa vraie taille (153px) UNE FOIS
+// SEULEMENT, sans que le `ResizeObserver` ci-dessus livre cette seconde
+// mesure a temps (verifie en instrumentant la page : la bonne valeur existe
+// bien dans le DOM, mais la reserve CSS reste bloquee sur la premiere). La
+// reserve restait donc trop grande jusqu'au premier redimensionnement de
+// fenetre. Deux filets independants du `ResizeObserver`, qui ne dependent
+// que du temps ecoule (jamais d'un evenement qui peut se perdre) :
+//  - un rafraichissement sur DEUX frames (apres que la mise en page du
+//    rendu courant est posee) ;
+//  - un dernier sur un court delai, pour la mise en page qui se stabilise
+//    juste apres (webfont, image du bloc, etc.).
+// Reobserver seulement si le bloc a vraiment change evite aussi de
+// deconnecter/reconnecter le ResizeObserver a chaque rendu (tel.js,
+// survol...), ce qui semble avaler la notification du reglage naturel.
+let blocMerciObserve = null;
+
+function surveillerMerci() {
+    const bloc = document.querySelector(".acc-merci");
+    if (observateurMerci && bloc !== blocMerciObserve) {
+        observateurMerci.disconnect();
+        if (bloc) observateurMerci.observe(bloc);
+        blocMerciObserve = bloc;
+    }
+    ajusterReserveMerci();
+    requestAnimationFrame(() => requestAnimationFrame(ajusterReserveMerci));
+    // Plusieurs delais etages : verifie en instrumentant la page que le
+    // reglage naturel peut arriver n'importe quand entre quelques dizaines
+    // de ms et plus d'une seconde apres la creation du bloc (lie au nombre
+    // de rendus successifs pendant le chargement initial, pas constant).
+    for (const delai of [300, 800, 1500, 3000]) setTimeout(ajusterReserveMerci, delai);
+}
+
 /* ======================= MODE TÉLÉPHONE (< 768 px) ==========================
    Refonte du 09/10/2026 (.planning/todos/2026-10-09-mode-telephone-refonte.md).
    Au-dessus de 768 px, RIEN de ce bloc ne s'exécute : le PC reste identique.
@@ -809,8 +1026,62 @@ function gotoTel(i) {
     goto(i);
 }
 
+/**
+ * Parcours sequentiel : valide le deck du siege actif, puis passe au heros
+ * suivant (ou rend la main a « Continuer » apres le dernier).
+ */
+function validerDeckSiege() {
+    const p = state.players[state.activeSlot];
+    if (p && p.deckChoisi) p.deckValide = true;
+    const k = premierSiegeAValider();
+    if (k >= 0) state.activeSlot = k;
+    else state.modifDeck = false;   // tout est valide : retour au recapitulatif
+    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe();
+    loadDecks(state.activeSlot);
+    majNav();
+}
+
+/** Heros suivant, sans rien valider (le deck du siege actif l'est deja). */
+function heroSuivantSequentiel() {
+    const k = premierSiegeAValider();
+    if (k < 0) return;
+    state.activeSlot = k;
+    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe();
+    loadDecks(k);
+    majNav();
+}
+
+/** Le bouton de l'etape Decks en parcours sequentiel, ou null quand tous les
+ *  decks sont valides (alors c'est « Continuer »). */
+function boutonDeckSequentiel() {
+    if (state.step !== 1 || !decksSequentiels()) return null;
+    if (premierSiegeAValider() < 0) {
+        if (!state.modifDeck) return null;
+        return el("button", {
+            class: "btn primary", id: "btn-retour-recap",
+            onclick: () => { state.modifDeck = false; rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(state.activeSlot); majNav(); },
+        }, t("Retour au récapitulatif"));
+    }
+    const p = state.players[state.activeSlot];
+    const nom = p && p.hero ? nomAffiche(p.hero) : "";
+    if (deckValide(p)) {
+        return el("button", {
+            class: "btn primary", id: "btn-heros-suivant",
+            onclick: () => { jouerSon(SON.etapeSuivante); heroSuivantSequentiel(); },
+        }, t("Héros suivant"));
+    }
+    return el("button", {
+        class: "btn primary", id: "btn-valider-deck",
+        disabled: !(p && p.deckChoisi) || undefined,
+        title: p && p.deckChoisi ? undefined : t("Un deck doit d'abord être choisi"),
+        onclick: () => { jouerSon(SON.etapeSuivante); validerDeckSiege(); },
+    }, t("Valider le deck de") + " " + nom);
+}
+
 /** Le bouton principal de la barre du bas : Continuer, Valider ou Lancer. */
 function boutonPrincipalNav() {
+    const seq = boutonDeckSequentiel();
+    if (seq) return seq;
     return state.step < LAST_STEP
         ? el("button", {
             class: "btn primary",
@@ -820,7 +1091,7 @@ function boutonPrincipalNav() {
         : creationCampagne()
             ? el("button", {
                 class: "btn launch",
-                disabled: !stepComplete(1) || undefined,
+                disabled: (!stepComplete(1) || (enLigne() && !state.salon.prete)) || undefined,
                 onclick: validerEquipeCampagne,
             }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
             : el("button", {
@@ -893,10 +1164,14 @@ function feuilleTel(classe, ...contenu) {
     return overlay;
 }
 
-/** Une carte en grand, dans une feuille basse (toucher sur une vignette). */
+/** Une carte en grand, dans une feuille basse (toucher sur une vignette).
+ *  `cardImageUrl` (pas `cardImageUrlHd`, correctif du 05/11/2026) : ici le
+ *  joueur veut LIRE la carte, donc respecter la langue (le scan FR si actif).
+ *  `cardImageUrlHd` est réservée aux grands visuels d'ambiance toujours en
+ *  anglais (héros/méchant de l'assistant), voir sa doc dans api.js. */
 function ouvrirCarteGrande(id) {
     const overlay = feuilleTel("carte-grande",
-        el("img", { class: "cg-image", src: cardImageUrlHd(id), alt: "", onclick: () => fermerModale(overlay) }));
+        el("img", { class: "cg-image", src: cardImageUrl(id), alt: "", onclick: () => fermerModale(overlay) }));
 }
 
 /** Le bandeau du héros (étape 1). `h` : le héros montré, `choisi` : s'il est posé. */
@@ -946,7 +1221,7 @@ function rendreSceneDeckTel() {
         poserBandeauTel(scene, { art: el("div", { class: "tb-art vide" }), titre: t("Aucun héros"), sous: t("Arsenal") });
         return;
     }
-    const st = p.deck ? deckStats(p.deck) : null;
+    const st = deckAffiche(p) ? deckStats(p.deck) : null;
     const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
     const options = optionsDuHeros(h, contexteVariantes(h));
     poserBandeauTel(scene, {
@@ -1100,6 +1375,8 @@ function render() {
     fixMarvelText();
     ajusterGrilles();
     surveillerGrilles();
+    ajusterReserveMerci();
+    surveillerMerci();
     publierEquipeHote();
 }
 
@@ -1135,7 +1412,7 @@ function progressBar() {
     document.title = t("Préparation de mission") + " — Marvel Champions";
     const entete = el("header", { class: "progress" },
         el("a", { class: "brand", href: "main" },
-            el("span", { class: "brand-back" }, "<"),
+            el("span", { class: "brand-back" }, t("Retour")),
             el("span", { class: "brand-lockup logo" },
                 // Le narval, mascotte du site (image de l'utilisateur, 13/09/2026),
                 // a cote du logo officiel. Le meme sert d'icone d'onglet et
@@ -1205,7 +1482,7 @@ function navBar() {
                 onclick: () => { jouerSon(SON.aleatoire); randomize(); },
             }, t("Aléatoire"))
             : el("span"),
-        state.step < LAST_STEP
+        boutonDeckSequentiel() || (state.step < LAST_STEP
             ? el("button", {
                 class: "btn primary",
                 disabled: !canContinue() || undefined,
@@ -1214,14 +1491,14 @@ function navBar() {
             : creationCampagne()
                 ? el("button", {
                     class: "btn launch",
-                    disabled: !stepComplete(1) || undefined,
+                    disabled: (!stepComplete(1) || (enLigne() && !state.salon.prete)) || undefined,
                     onclick: validerEquipeCampagne,
                 }, BROUILLON_CAMPAGNE.modifie ? t("Valider les decks") : t("Valider l'équipe"))
                 : el("button", {
                     class: "btn launch",
                     disabled: (!validate(state).ok || (enLigne() && !state.salon.prete)) || undefined,
                     onclick: () => { jouerSon(SON.lancement); doLaunch(); },
-                }, t("Lancer la partie")),
+                }, t("Lancer la partie"))),
     );
 }
 
@@ -1289,6 +1566,7 @@ async function reprendreEquipeCampagne() {
         // entree, sinon il serait le seul choix impossible a re-selectionner.
         p.deckSource = "campagne";
         p.deckAuto = false;
+        p.deckChoisi = true; p.deckValide = true;
         DECKS_CAMPAGNE.set(i, m.deck);
     });
 }
@@ -1314,7 +1592,8 @@ function stepView() {
         case 0: return stepTeam();
         case 1: return stepDecks();
         case 2: return stepScenario();
-        case 3: return stepSummary();
+        case 3: return stepDifficulte();
+        case 4: return stepSummary();
     }
 }
 
@@ -1391,6 +1670,11 @@ function modeStrip() {
             onclick: () => {
                 jouerSon(SON.mode);
                 if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
+                // Des pseudos attendent une invitation depuis le tchat : la
+                // table doit s'ouvrir aux connectes des que l'hote choisit
+                // reellement le coop en ligne, sans qu'il ait a cliquer sur
+                // le bouton "Inviter quelqu'un de connecte" lui-meme.
+                if (tuile.distant === true && !inviteDuTchatFaite) void ouvrirInvitations();
                 // La campagne n'est plus un mode du wizard : elle a son écran,
                 // qui impose l'ordre des scénarios, les sets et la difficulté.
                 if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
@@ -1398,7 +1682,7 @@ function modeStrip() {
                 state.mode = m;
                 // Le catalogue de scénarios diffère en campagne : on repart d'une cible vierge.
                 if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
-                state.playerCount = m.fixed ? 1 : Math.max(m.min || 1, Math.min(m.max || 4, state.playerCount));
+                state.playerCount = (m.fixed && m.id !== "puzzle") ? 1 : Math.max(m.min || 1, Math.min(m.max || 4, state.playerCount));
                 if (state.activeSlot >= state.playerCount) state.activeSlot = state.playerCount - 1;
                 if (m.id === "decouverte") { preparerDecouverte(); return; }
                 render();
@@ -1436,9 +1720,16 @@ function modeStrip() {
  * l'autre bout : les proposer en coop locale serait faux.
  */
 function choixCoop() {
-    if (!state.salon.multi || state.mode.id !== "hotseat") return null;
-    if (state.coopEnLigne === false) return null;
-    return el("div", { class: "coop-zone" }, blocLiens());
+    if (!state.salon.multi || state.coopEnLigne === false) return null;
+    // Coop en ligne ordinaire (hotseat) : l'hote distribue des liens. CAMPAGNE :
+    // l'ecran de prepa invite AUSSI, pour que chaque joueur rejoigne et choisisse
+    // SON heros et SON deck avant que l'hote ne fige le roster. Les liens de
+    // campagne passent par la route de lobby dediee (voir genererLiens), qui ne
+    // marque pas la table « ordinaire ».
+    if (state.mode.id !== "hotseat" && !creationCampagne()) return null;
+    // Pas de zone vide quand il n'y a personne a inviter (un seul heros).
+    const liens = blocLiens();
+    return liens ? el("div", { class: "coop-zone" }, liens) : null;
 }
 
 /* ---------------- Liens d'invitation ---------------- */
@@ -1464,7 +1755,11 @@ function lienDuSiege(p) {
 async function genererLiens() {
     liensInvites.erreur = "";
     try {
-        const res = await fetch("get_liens_sieges?");
+        // En campagne, route de LOBBY dediee : memes cles, mais sans marquer la
+        // table « ordinaire » et sans exiger une partie deja lancee (voir
+        // get_liens_sieges_campagne_salon, server_get.py).
+        const route = creationCampagne() ? "get_liens_sieges_campagne_salon?" : "get_liens_sieges?";
+        const res = await fetch(route);
         const brut = await res.json();
         // ⚠ `res.ok` NE SUFFIT PAS : le moteur repond 403 avec un corps JSON
         // quand le client ne tient pas le siege 0. Sans ce test, `cles` serait
@@ -1499,6 +1794,22 @@ const invitationsHote = {
     minuteur: null,
 };
 
+/**
+ * Invite automatiquement, sur les premiers sieges libres, les pseudos
+ * choisis dans le tchat avant d'arriver ici — une seule fois (`inviteDuTchatFaite`),
+ * et seulement une fois la table reellement vivante (`invitationsHote.actif`).
+ */
+async function declencherInvitesDuTchat() {
+    if (inviteDuTchatFaite || !invitationsHote.actif) return;
+    inviteDuTchatFaite = true;
+    // « Libre » comme dans ligneDuSiege/blocLiens : pas encore d'invitation
+    // envoyee a ce siege (l'hote reglera ensuite le nombre de joueurs/heros).
+    const siegesLibres = [1, 2, 3].filter((p) => !invitationsHote.envoyees[String(p)]);
+    for (let i = 0; i < A_INVITER_DES_LE_DEBUT.length && i < siegesLibres.length; i++) {
+        await inviterAuSiege(siegesLibres[i], A_INVITER_DES_LE_DEBUT[i]);
+    }
+}
+
 async function sonderInvitationsHote() {
     const avant = invitationsHote.empreinte;
     try {
@@ -1512,6 +1823,7 @@ async function sonderInvitationsHote() {
         const b = await r.json();
         invitationsHote.envoyees = (b && b.sieges) || {};
     } catch (e) { /* idem */ }
+    await declencherInvitesDuTchat();
     // ⚠ ON NE REPEINT QUE SI QUELQUE CHOSE A CHANGE : `render()` reconstruit
     // tout l'assistant, et une liste deroulante ouverte se refermerait sous les
     // doigts de l'hote toutes les trois secondes.
@@ -1612,12 +1924,23 @@ function ligneDuSiege(p) {
             onclick: () => inviterAuSiege(p, invitationsHote.choisi[p] || choisi),
         }, etat && etat.relancer ? t("Réinviter") : t("Inviter")));
     }
+    // Le lien, VISIBLE et selectionnable : sans ca, « Copier le lien » copiait
+    // une URL qu'on ne voyait nulle part, a cote de la barre « inviter un
+    // connecte » — personne ne comprenait ce qui etait copie (28/10/2026).
+    const champLien = el("input", {
+        class: "liens-url", type: "text", readOnly: true, value: url, title: url,
+        onclick: (e) => e.currentTarget.select(),
+    });
+    // Siege libre (ou a relancer) : on donne son lien. Siege deja pris : inutile.
+    const montrerLien = !etat || etat.relancer;
     return el("div", { class: "liens-ligne invit-ligne" },
-        el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
-        etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
-        ...inviter,
-        // Un siege deja pris n'a plus besoin de son lien.
-        etat && !etat.relancer ? null : boutonCopier,
+        el("div", { class: "invit-rangee" },
+            el("span", { class: "liens-qui" }, t("Joueur") + " " + (p + 1)),
+            etat ? el("span", { class: "invit-etat " + etat.classe }, etat.texte) : null,
+            ...inviter),
+        montrerLien ? el("div", { class: "liens-url-ligne" },
+            el("span", { class: "liens-url-etiq" }, t("Lien :")),
+            champLien, boutonCopier) : null,
         invitationsHote.erreur[p] ? el("small", { class: "liens-erreur" }, invitationsHote.erreur[p]) : null,
     );
 }
@@ -1641,21 +1964,19 @@ function blocLiens() {
     // Un siege par INVITE, et le nombre suit celui des heros choisis : le
     // siege 0 est celui de l'hote, deja devant son ecran.
     for (let p = 1; p < state.playerCount; p += 1) bloc.append(ligneDuSiege(p));
-    bloc.append(el("small", { class: "liens-aide" },
-        invitationsHote.actif
-            ? t("Invite un joueur connecté, ou envoie un lien à un ami sans compte. Chacun choisit son héros et son deck de son côté.")
-            : t("Un lien par personne, à envoyer. Chacun choisit son héros et son deck depuis le sien.")));
+    // La ligne d'aide (« Invite un joueur connecté, ou envoie un lien… ») est
+    // retiree : elle redisait l'infobulle de la pastille « Partie en ligne », et
+    // prenait une ligne entiere sur la rangee « Ton equipe ».
     if (liensInvites.erreur) bloc.append(el("small", { class: "liens-erreur" }, liensInvites.erreur));
     return bloc;
 }
 
-function bandeauEnLigne() {
-    // A un seul joueur il n'y a pas d'« autres joueurs » : le bandeau mentirait.
-    if (!enLigne() || state.playerCount < 2) return null;
-
-    // Qui a choisi, et QUOI. Sans cette liste, l'hote ne savait que le nombre
-    // de manquants — d'ou le « on peut lancer ? » sur Discord a chaque partie.
-    // Sieges invites uniquement : le 0 est le sien, il le voit dans son wizard.
+/** Qui a choisi, et QUOI, une ligne par siege d'invite.
+ *
+ *  Sans cette liste, l'hote ne savait que le nombre de manquants — d'ou le
+ *  « on peut lancer ? » sur Discord a chaque partie. Sieges invites
+ *  uniquement : le 0 est le sien, il le voit dans son wizard. */
+function lignesDesSieges() {
     const lignes = [];
     for (let p = 1; p < state.playerCount; p += 1) {
         const choix = state.salon.choixParSiege.get(p);
@@ -1669,11 +1990,53 @@ function bandeauEnLigne() {
                 pret ? joueur.hero.name : t("en attente de son choix")),
         ));
     }
+    return lignes;
+}
+
+/** Bureau : l'etat de la partie en ligne, en PASTILLE dans l'en-tete des heros
+ *  (28/10/2026, variante D choisie sur maquette). Le bandeau pleine largeur,
+ *  la bande de campagne et l'invitation prenaient 340 px a eux trois : la
+ *  grille des heros tombait a une ligne. La phrase d'explication passe en
+ *  infobulle. Le telephone garde son bandeau (voir `bandeauEnLigne`). */
+function pastilleEnLigne() {
+    if (estTel() || !enLigne() || state.playerCount < 2) return null;
+    return el("span", {
+        class: "tb-pastille est-en-ligne",
+        title: t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation."),
+    },
+        el("span", { class: "tb-pastille-pt" }),
+        el("b", {}, t("Partie en ligne")),
+        el("ul", { class: "salon-sieges" }, ...lignesDesSieges()));
+}
+
+/** Bureau : la campagne en cours de creation, en pastille. Meme texte que la
+ *  tuile de `modeStrip` ; le detail passe en infobulle. */
+function pastilleCampagne() {
+    if (estTel() || !creationCampagne()) return null;
+    const difficulte = BROUILLON_CAMPAGNE.difficulte === "expert" ? t("Campagne experte") : t("Standard");
+    const detail = BROUILLON_CAMPAGNE.modifie
+        ? t("Équipe déjà en place. Change ce que tu veux au deck, jamais l'identité :")
+            + " " + (BROUILLON_CAMPAGNE.identites || []).join(", ")
+        : BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · " + difficulte
+            + " · " + t("identités figées pour toute la campagne");
+    return el("span", { class: "tb-pastille est-campagne", title: detail },
+        el("span", { class: "tb-pastille-c" }, "C"),
+        el("b", {}, (BROUILLON_CAMPAGNE.modifie ? t("Modifier les decks") : t("Campagne"))
+            + " — " + BROUILLON_CAMPAGNE.nom),
+        BROUILLON_CAMPAGNE.modifie ? null
+            : el("small", {}, BROUILLON_CAMPAGNE.nbJoueurs + " " + t("héros") + " · " + difficulte));
+}
+
+function bandeauEnLigne() {
+    // A un seul joueur il n'y a pas d'« autres joueurs » : le bandeau mentirait.
+    if (!enLigne() || state.playerCount < 2) return null;
+    // Bureau : l'etat vit dans la pastille de l'en-tete (`pastilleEnLigne`).
+    if (!estTel()) return null;
 
     return el("div", { class: "salon-bandeau" },
         el("b", { class: "mvl" }, t("Partie en ligne")),
         el("span", {}, t("Choisis seulement TON héros et TON deck. Les autres joueurs choisissent les leurs de leur côté, par ton lien ou ton invitation.")),
-        el("ul", { class: "salon-sieges" }, ...lignes),
+        el("ul", { class: "salon-sieges" }, ...lignesDesSieges()),
     );
 }
 
@@ -1776,76 +2139,36 @@ function demanderLaLangue() {
     });
 }
 
-/** « Choisis ton affichage » : la fenêtre d'Options (Normal, Coloré, Sobre, et la couleur du fond).
+/** La tuile « Options » de l'accueil ouvre le MEME panneau Réglages que le
+ *  plateau (icône ⚙ en partie), pas une resucée : demande de l'utilisateur,
+ *  06/11/2026 (« je veux exactement la même chose qu'en partie »). Le panneau
+ *  est React, câblé dans le bundle du plateau (ui-app) ; l'accueil est une
+ *  page classique, bundle différent — on le charge donc dans une iframe
+ *  isolée (`/app/reglages.html`, nouvelle entrée Vite) plutôt que de
+ *  dupliquer son CSS ou son code. Les réglages qu'on y bascule lisent/
+ *  écrivent les MÊMES clés localStorage que le plateau (reglages.tsx), donc
+ *  ils valent déjà pour la prochaine partie.
  *
- *  ⚠ ELLE NE S'IMPOSE PLUS À LA PREMIÈRE VISITE (18/10/2026, demande de l'utilisateur : « vire le choix au
- *  début, les gens sont en Normal et peuvent à la limite changer dans les options ») et SANS IMAGES d'aperçu
- *  (retirées le même jour). Elle ne s'ouvre que par la tuile « Options ».
- *
- *  ⚠ On ne la ferme pas en cliquant à côté : un clic distrait vaudrait réponse.
+ *  ⚠ On ne la ferme pas en cliquant à côté : un clic distrait vaudrait
+ *  fermeture, comme pour les autres feuilles de ce fichier.
  */
-async function demanderLAffichage({ rouvert = false } = {}) {
-    // L'épuré n'est proposé qu'à l'administrateur (16/10/2026) : on attend la réponse du serveur.
-    await verifierEpurePermis();
-    return new Promise((resolve) => {
-        // Les cartes SE CHOISISSENT, elles ne ferment plus : la roue de la
-        // couleur du fond vit dans la meme fenetre (choix de l'utilisateur,
-        // 04/10/2026), et c'est « Valider » qui ferme le tout.
-        let choixAffichage = rouvert ? affichageActuel() : "epure";
-        let choixTeinte = teinteActuelle();
-        const cartes = [];
-        const carte = (valeur, titre, sous) => {
-            const bouton = el("button", {
-                class: "af-choix" + (valeur === choixAffichage ? " on" : ""),
-                "aria-pressed": valeur === choixAffichage ? "true" : "false",
-                onclick: () => {
-                    choixAffichage = valeur;
-                    for (const c of cartes) {
-                        const on = c.dataset.valeur === valeur;
-                        c.classList.toggle("on", on);
-                        c.setAttribute("aria-pressed", on ? "true" : "false");
-                    }
-                },
-            },
-                el("b", {}, titre),
-                el("small", {}, sous));
-            bouton.dataset.valeur = valeur;
-            cartes.push(bouton);
-            return bouton;
-        };
-        const valider = () => {
-            choisirAffichage(choixAffichage);
-            if (choixTeinte) choisirTeinte(choixTeinte);
-            // La page elle-meme prend la teinte tout de suite (« partout »).
-            appliquerTeintePage(teinteActuelle());
-            fermerModale(overlay);
-            resolve();
-        };
-        const overlay = el("div", { class: "deck-modal affichage-modal" },
-            el("div", { class: "deck-modal-panel vh-panel" },
-                el("div", { class: "dm-head" },
-                    el("b", { class: "mvl" }, t("Choisis ton affichage")),
-                ),
-                el("div", { class: "af-choix-grille" },
-                    // Normal (valeur epure, celui de départ), Coloré (valeur normal), Sobre (18/10/2026).
-                    epurePermis() ? carte("epure", t("Normal"), t("Fond sombre, panneaux bleus biseautés, titres en Bangers et rouge Marvel en touche.")) : null,
-                    carte("normal", t("Coloré"), t("Couleurs du héros, animations.")),
-                    carte("sobre", t("Sobre"), t("Fond gris, sans couleurs ni animations, plus reposant.")),
-                ),
-                el("div", { class: "af-teinte" },
-                    el("b", {}, t("Couleur du fond")),
-                    el("small", {}, t("Des teintes douces pour la table, les bandeaux et les panneaux.")),
-                    roueTeinte(choixTeinte, (teinte) => { choixTeinte = teinte; }),
-                ),
-                el("div", { class: "vh-note" },
-                    t("Tu pourras changer à tout moment : bouton Affichage en haut de cette page, ou Réglages en partie.")),
-                el("div", { class: "af-valider" },
-                    rouvert ? el("button", { class: "btn ghost", onclick: () => { fermerModale(overlay); resolve(); } }, t("Annuler")) : null,
-                    el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
-            ),
-        );
-        ouvrirModale(overlay);
+function ouvrirReglagesEnJeu() {
+    const iframe = el("iframe", {
+        class: "reglages-iframe",
+        src: "/app/reglages.html",
+        title: t("Réglages"),
     });
+    const overlay = el("div", { class: "reglages-iframe-voile" }, iframe);
+    // Un seul message attendu, une seule fois : pas besoin de retirer l'écoute
+    // ailleurs qu'ici, `fermerModale` est le seul effet de bord qui en dépend.
+    const surMessage = (evenement) => {
+        if (evenement.source !== iframe.contentWindow) return;
+        if (evenement.data?.marvelReglages !== "fermer") return;
+        window.removeEventListener("message", surMessage);
+        fermerModale(overlay);
+    };
+    window.addEventListener("message", surMessage);
+    ouvrirModale(overlay);
 }
 
 /** « Choisis ta phase du méchant », posée une seule fois (05/10/2026).
@@ -1871,7 +2194,10 @@ function demanderLaPhaseDuMechant() {
         try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
         let brutAvant = null;
         try { brutAvant = localStorage.getItem(CLE_MODE_PHASE); } catch (e) { /* stockage indisponible */ }
-        let choix = normaliserModePhase(brutAvant);
+        let reglageDoigt = null;
+        try { reglageDoigt = localStorage.getItem(CLE_JEU_AU_DOIGT); } catch (e) { /* stockage indisponible */ }
+        const surTablette = estTablettePhase(reglageDoigt, window.matchMedia?.(REQUETE_TABLETTE_PHASE).matches);
+        let choix = choixInitialPhase(brutAvant, surTablette);
         const cartes = [];
         const dossiers = { "detaille": "etape", "sur-table": "sur-table", "instantane": "d-un-coup" };
         const NOMBRE = 4;
@@ -1934,10 +2260,11 @@ function demanderLaPhaseDuMechant() {
             return bouton;
         };
         const valider = () => {
-            const aEcrire = modePhaseAEcrire(brutAvant, choix);
+            const aEcrire = modePhaseAEcrire(brutAvant, choix, surTablette);
             try {
                 if (aEcrire) localStorage.setItem(CLE_MODE_PHASE, aEcrire);
                 localStorage.setItem(CLE_PHASE_MODE_VU, "1");
+                localStorage.setItem(CLE_PHASE_CHOIX_VU, VERSION_CHOIX_PHASE);
             } catch (e) { /* stockage refuse : la fenetre reviendra, c'est tout */ }
             arreter();
             fermerModale(overlay);
@@ -1946,7 +2273,7 @@ function demanderLaPhaseDuMechant() {
         const overlay = el("div", { class: "deck-modal affichage-modal phase-modal" },
             el("div", { class: "deck-modal-panel vh-panel" },
                 el("div", { class: "dm-head" },
-                    el("b", { class: "mvl" }, t("Choisis ta phase du méchant")),
+                    el("b", { class: "mvl" }, t("Choix de la phase du méchant")),
                     el("span", { class: "dm-sub" }, t("Trois façons de vivre la phase du méchant, du plus détaillé au plus rapide.")),
                 ),
                 el("div", { class: "af-choix-grille" },
@@ -1959,7 +2286,7 @@ function demanderLaPhaseDuMechant() {
                 ),
                 PHASE_IMAGES_VISIBLES ? visionneuse : null,
                 el("div", { class: "vh-note" },
-                    t("Tu pourras changer à tout moment : Réglages en partie, onglet Jeu.")),
+                    t("Modifiable à tout moment : Réglages en partie, onglet Jeu.")),
                 el("div", { class: "af-valider" },
                     el("button", { class: "btn primary", onclick: valider }, t("Valider"))),
             ),
@@ -2128,7 +2455,22 @@ function bandeLegacy() {
             : null,
         el("span", { class: "legacy-regle" },
             t("Seuls les méchants ouvrent la vague suivante. Les héros, eux, rapportent les jetons.")),
+        el("button", { class: "tampon legacy-reinit", onclick: reinitialiserLegacy },
+            t("Réinitialiser Legacy")),
     );
+}
+
+/** Remet toute la progression Legacy à zéro, après confirmation. */
+async function reinitialiserLegacy() {
+    const oui = await confirmerLegacy(
+        t("Repartir de zéro : jetons et héros débloqués oubliés. L'historique des parties reste."),
+        t("Réinitialiser Legacy ?"), t("Réinitialiser"));
+    if (!oui) return;
+    await reinitialiserFicheLegacy();
+    await rafraichirLegacy();
+    await refreshHeroGrid();
+    const bande = document.querySelector(".legacy-bande");
+    if (bande) bande.replaceWith(bandeLegacy());
 }
 
 /** La phrase de condition d'une étape, dans la langue de l'écran. */
@@ -2160,7 +2502,7 @@ async function acheterHerosLegacy(h, portraitEl) {
     recruterVraiment(h, portraitEl);
 }
 
-function confirmerLegacy(question, detail) {
+function confirmerLegacy(question, detail, libelleOk = t("Débloquer")) {
     return new Promise((resolve) => {
         const finir = (valeur) => { hideHover(); fermerModale(overlay); resolve(valeur); };
         const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) finir(false); } },
@@ -2171,7 +2513,7 @@ function confirmerLegacy(question, detail) {
                 ),
                 el("div", { class: "vh-actions" },
                     el("button", { class: "tampon", onclick: () => finir(false) }, t("Annuler")),
-                    el("button", { class: "tampon jaune", onclick: () => finir(true) }, t("Débloquer")),
+                    el("button", { class: "tampon jaune", onclick: () => finir(true) }, libelleOk),
                 ),
             ),
         );
@@ -2229,7 +2571,7 @@ function accueilTel(tuiles, partir) {
             vignette(t("Galerie"), t("Toutes les cartes"), "fa-th", "/galerie.html"),
             vignette(t("Éditeur de deck"), t("Construire un deck"), "fa-pencil", "/deck-builder.html"),
             vignette(t("Mises à jour"), t("Ce qui a changé"), "fa-bullhorn", () => ouvrirNouveautes()),
-            vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => demanderLAffichage({ rouvert: true })),
+            vignette(t("Options"), t("Affichage, couleurs"), "fa-cog", () => ouvrirReglagesEnJeu()),
         ),
         blocRemerciements(),
     );
@@ -2250,6 +2592,7 @@ function blocRemerciements() {
             el("a", { href: "https://hallofheroeslcg.com/", target: "_blank", rel: "noopener" }, "Hall of Heroes"), " · ",
             el("a", { href: "https://mc4db.merlindumesnil.net/", target: "_blank", rel: "noopener" }, "MC4DB"), ". ",
             t("Et à tous les créateurs de fan-made, ainsi qu'à ma maman.")),
+        voletCreateurs({ t, el, ouvrirModale, fermerModale }),
         el("p", {},
             t("Si j'ai oublié de te créditer pour une image, une carte ou un contenu, j'en suis désolé : dis-le-moi via"), " ",
             el("a", { href: "https://narwhalchampions.com/contact-createurs", target: "_blank", rel: "noopener" }, t("ce formulaire")), " ",
@@ -2269,11 +2612,11 @@ function blocRemerciements() {
 function accueilView() {
     const tuiles = [];
     for (const m of MODES) {
-        if (m.id === "hotseat" && state.salon.multi) {
+        if (m.id === "hotseat" && coopEnLigneProposee()) {
             tuiles.push({ mode: m, distant: false, mark: m.mark, libelle: m.label,
                           detail: m.desc, aide: m.aide, cle: m.id });
             tuiles.push({ mode: m, distant: true, mark: "@", libelle: t("Coop en ligne"),
-                          detail: t("2 à 4 héros, chacun choisit le sien"),
+                          detail: detailCoopEnLigne(), badge: badgeCoopEnLigne(),
                           aide: t("Chacun sur son écran. Tu envoies un lien, ils rejoignent."),
                           cle: m.id + "-en-ligne" });
             continue;
@@ -2295,6 +2638,14 @@ function accueilView() {
         // de nombre y aboutissent, d'où un seul appel au son.
         jouerSon(SON.mode);
         if (tuile.cle === "hasard") { void ouvrirRoue(nombre || 1); return; }
+        // Play : « Coop en ligne » ouvre une table invite sur le site (voir `invitePlay`).
+        if (tuile.distant === true && invitePlay()) { ouvrirTableInvite(nombre); return; }
+        // Puzzle : sans nombre de heros, le clic ouvre le panneau (puzzles.js) ; avec un nombre, c'est la creation qui demarre.
+        if (m.id === "puzzle") window.creerPuzzle = (n) => partir(tuile, n);
+        if (m.id === "puzzle" && !nombre) {
+            if (typeof window.ouvrirPanneauPuzzles === "function") { window.ouvrirPanneauPuzzles(); return; }
+            nombre = 1;
+        }
         if (tuile.distant !== null) state.coopEnLigne = tuile.distant;
         if (m.id === "campaign") { window.location.href = "/campagne.html"; return; }
         // On quitte Legacy dès qu'on choisit autre chose : le jeu libre n'est
@@ -2304,7 +2655,7 @@ function accueilView() {
         const wasCampaign = isCampaignMode();
         state.mode = m;
         if ((m.id === "campaign") !== wasCampaign) state.scenario = null;
-        state.playerCount = m.fixed ? 1
+        state.playerCount = (m.fixed && m.id !== "puzzle") ? 1
             : Math.max(m.min || 1, Math.min(m.max || 4, nombre || state.playerCount));
         if (state.activeSlot >= state.playerCount) state.activeSlot = state.playerCount - 1;
         goto(0);
@@ -2341,7 +2692,10 @@ function accueilView() {
         const idAide = "acc-aide-" + tuile.cle;
         grille.append(el("div", { class: "acc-tuile", "data-cle": tuile.cle },
             el("button", {
-                class: "acc-mode cut" + (nombres.length ? " avec-nombres" : ""),
+                class: "acc-mode cut" + (nombres.length ? " avec-nombres" : "")
+                    // Bac a sable et Puzzle : pas des modes de jeu a proprement parler,
+                    // meme accent que les tuiles outils (06/11/2026, demande de l'utilisateur).
+                    + (["sandbox", "puzzle"].includes(tuile.cle) ? " acc-outil-tuile" : ""),
                 onclick: () => partir(tuile, null),
                 ...(tuile.aide ? { "aria-describedby": idAide } : {}),
             },
@@ -2352,6 +2706,8 @@ function accueilView() {
                         ? el("b", { class: "mvl" }, tuile.libelle.slice(0, tuile.libelle.indexOf(" ") + 1), el("br"), tuile.libelle.slice(tuile.libelle.indexOf(" ") + 1))
                         : el("b", { class: "mvl" }, tuile.libelle),
                     el("small", {}, tuile.detail),
+                    tuile.badge ? el("span", { class: "acc-places" + (tuile.badge.complet ? " complet" : ""),
+                                               title: tuile.detail }, tuile.badge.texte) : null,
                 ),
                 nombres.length ? el("span", { class: "acc-nombres" },
                     el("small", {}, t("héros")), ...nombres) : null,
@@ -2364,7 +2720,7 @@ function accueilView() {
     // L'éditeur de deck, sur l'accueil (demande du 16/10/2026) : on ne le trouvait
     // qu'en passant par un héros, puis un bouton de l'étape Decks.
     grille.append(el("div", { class: "acc-tuile", "data-cle": "editeur" },
-        el("button", { class: "acc-mode cut acc-editeur-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
+        el("button", { class: "acc-mode cut acc-editeur-tuile acc-outil-tuile", onclick: () => { window.location.href = "/deck-builder.html"; }, "aria-describedby": "acc-aide-editeur" },
             el("span", { class: "acc-copy" },
                 el("b", { class: "mvl" }, t("Éditeur de deck")),
                 el("small", {}, t("Construire un deck")),
@@ -2374,19 +2730,6 @@ function accueilView() {
            t("Construire ou modifier un deck, puis l'utiliser en partie.")),
     ));
 
-    // PUZZLE (17/10/2026) : la tuile est posée, le mode viendra plus tard. Grisée,
-    // elle ne mène nulle part pour l'instant.
-    grille.append(el("div", { class: "acc-tuile", "data-cle": "puzzle" },
-        el("button", { class: "acc-mode cut acc-puzzle-tuile", disabled: true, "aria-disabled": "true", "aria-describedby": "acc-aide-puzzle" },
-            el("span", { class: "acc-copy" },
-                el("b", { class: "mvl" }, t("Puzzle")),
-                el("small", {}, t("Bientôt")),
-            ),
-        ),
-        el("span", { class: "acc-aide", id: "acc-aide-puzzle", role: "tooltip" },
-           t("Pas encore disponible : des situations de jeu à résoudre en quelques tours.")),
-    ));
-
     // ⚠ LES NOUVEAUTES SONT UNE TUILE, PLUS UNE LISTE SOUS LA GRILLE
     // (17/09/2026). Le journal a grossi au point de pousser les modes hors de
     // l'ecran : « tout ne rentre pas sur une page a cause des mises a jour ».
@@ -2394,7 +2737,7 @@ function accueilView() {
     // derriere, classe par famille.
     grille.append(el("div", { class: "acc-tuile", "data-cle": "nouveautes" },
         el("button", {
-            class: "acc-mode cut acc-nouv-tuile",
+            class: "acc-mode cut acc-nouv-tuile acc-outil-tuile",
             // PC : une page à part (nouveautes.html). Le téléphone garde la modale.
             onclick: () => { if (estTel()) ouvrirNouveautes(); else window.location.href = "/nouveautes.html"; },
             "aria-describedby": "acc-aide-nouveautes",
@@ -2408,12 +2751,13 @@ function accueilView() {
            t("Tout ce qui a été ajouté ou corrigé, du plus récent au plus ancien.")),
     ));
 
-    // Les options, comme en partie (demande du 15/10/2026) : la fenêtre
-    // d'affichage (Normal / Sobre / Épuré, couleur du fond), rouverte à volonté.
+    // Les options, EXACTEMENT comme en partie (demande du 15/10/2026, puis du
+    // 06/11/2026 : le panneau Réglages du plateau en entier, plus seulement
+    // l'affichage).
     grille.append(el("div", { class: "acc-tuile", "data-cle": "options" },
         el("button", {
-            class: "acc-mode cut acc-options-tuile",
-            onclick: () => demanderLAffichage({ rouvert: true }),
+            class: "acc-mode cut acc-options-tuile acc-outil-tuile",
+            onclick: () => ouvrirReglagesEnJeu(),
             "aria-describedby": "acc-aide-options",
         },
             el("span", { class: "acc-copy" },
@@ -2782,6 +3126,13 @@ function replique(hero) {
 /** Le héros en scène : celui du siège actif, sauf pendant un survol. */
 let herosSurvole = null;
 
+/** Qui est en scène, et quand : voir `survol-heros.js` (le bouton « Voir ses cartes » est dans la scène, pas sur la tuile : la scène ne
+ *  doit donc pas changer sous la souris qui va vers lui). Bug du Discord, 26/10/2026. */
+const survolHeros = creerSurvolHeros({
+    afficher: (h) => { herosSurvole = h; rendreScene(h); },
+    revenir: () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
+});
+
 function herosDuSiegeActif() {
     const p = state.players[state.activeSlot];
     return (p && p.hero) || null;
@@ -2789,20 +3140,34 @@ function herosDuSiegeActif() {
 
 function stepTeam() {
     const wrap = el("section", { class: "step team-b" },
-        el("div", { class: "tb-scene", id: "tb-scene" }),
+        el("div", {
+            class: "tb-scene", id: "tb-scene",
+            onmouseenter: estTel() ? undefined : () => survolHeros.entrerDansLaScene(),
+            onmouseleave: estTel() ? undefined : () => survolHeros.sortirDeLaScene(),
+        }),
     );
     const f = state.heroFilters;
+    const boutonFavoris = el("button", {
+        class: "tampon" + (f.fav ? " on" : ""),
+        onclick: (e) => { f.fav = !f.fav; e.currentTarget.classList.toggle("on", f.fav); refreshHeroGrid(); },
+    }, t("Favoris"));
     const droite = el("div", { class: "tb-droite" },
+        // Bureau (variante D, 28/10/2026) : l'etat en ligne et la campagne sont
+        // des pastilles de l'en-tete, l'invitation vit sur la rangee « Ton
+        // equipe » (voir rendreEquipe). Le telephone garde ses blocs d'origine.
         bandeauEnLigne(),
-        creationCampagne() ? el("div", { class: "command-band" }, modeStrip()) : null,
+        creationCampagne() && estTel() ? el("div", { class: "command-band" }, modeStrip()) : null,
         bandeLegacy(),
-        choixCoop(),
+        estTel() ? choixCoop() : null,
         // La vue « cartes du héros » prend la place du roster (voir
         // ouvrirCartesHeros) ; les deux vivent côte à côte, une seule visible.
         el("div", { class: "tb-vue-cartes", id: "tb-vue-cartes", hidden: true }),
         el("div", { class: "tb-entete" },
             el("b", { class: "mvl" }, t("Héros")),
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+            (pastilleEnLigne() || pastilleCampagne())
+                ? el("div", { class: "tb-pastilles" }, pastilleEnLigne(), pastilleCampagne())
+                : null,
             creationCampagne() ? null : el("button", {
                 class: "tb-mode",
                 title: t("Changer de mode de jeu"),
@@ -2816,21 +3181,22 @@ function stepTeam() {
                 value: f.q,
                 oninput: (e) => { f.q = e.target.value; refreshHeroGrid(); },
             }),
-            el("button", {
-                class: "tampon" + (f.fav ? " on" : ""),
-                onclick: (e) => { f.fav = !f.fav; e.currentTarget.classList.toggle("on", f.fav); refreshHeroGrid(); },
-            }, t("Favoris")),
+            boutonFavoris,
             el("select", {
                 class: "sel vague-select tampon",
                 onchange: (e) => { f.vague = e.target.value; refreshHeroGrid(); },
             }, el("option", { value: "" }, t("Toutes les vagues"))),
             el("button", {
-                class: "tampon" + (f.homebrew ? " on" : ""),
+                class: "tampon fan-made" + (f.homebrew ? " on" : ""),
                 title: t("Héros fan-made, hors de toute extension officielle"),
                 onclick: (e) => {
                     f.homebrew = !f.homebrew;
                     e.currentTarget.classList.toggle("on", f.homebrew);
                     f.vague = "";
+                    // Changer de famille remet « Favoris » à zéro, comme la vague : sinon, revenu des
+                    // fan-made, la grille restait vide (rapport de bug 126, Legacy).
+                    f.fav = false;
+                    boutonFavoris.classList.remove("on");
                     majMenuVagues();
                     refreshHeroGrid();
                 },
@@ -2844,11 +3210,25 @@ function stepTeam() {
     );
     wrap.append(droite);
     herosSurvole = null;
+    survolHeros.remettreAZero();
     herosApercuTel = null;
     loadHeroes();
     // La scène et l'équipe se dessinent une fois la section DANS la page :
     // elles se retrouvent par identifiant.
-    Promise.resolve().then(() => { rendreEquipe(); rendreScene(herosDuSiegeActif()); });
+    //
+    // ⚠ Si le siège actif a déjà un héros (étape reconstruite par `render()`,
+    // ex. après « Valider » dans la fenêtre des variantes), on la FIGE dessus
+    // (`geler`, pas `rendreScene`) : sans ça, `remettreAZero()` plus haut
+    // dégèlerait une scène que l'utilisateur venait tout juste de figer d'un
+    // clic, et le survol suivant l'écraserait aussitôt (signalé le 27/10/2026).
+    // Siège encore vide (premier passage sur l'écran) : on laisse le survol
+    // libre pour le tout premier choix.
+    Promise.resolve().then(() => {
+        rendreEquipe();
+        const actif = herosDuSiegeActif();
+        if (actif) survolHeros.geler(actif);
+        else rendreScene(null);
+    });
     return wrap;
 }
 
@@ -2997,9 +3377,14 @@ function cartesDuHeros(h) {
             for (const face of String(entree).split(",")) if (face) identites.push(face);
         }
     }
+    // `set_aside` : le petit side-deck pose a part au setup (le deck Invocation
+    // de Doctor Strange, les 5 cartes mises de cote de Daredevil...), une carte
+    // du heros comme les autres (06/11/2026, demande de l'utilisateur).
     const signatures = [
         ...((h.deck && h.deck.hero_deck) || []),
         ...((h.lie && h.lie.deck && h.lie.deck.hero_deck) || []),
+        ...((h.deck && h.deck.set_aside) || []),
+        ...((h.lie && h.lie.deck && h.lie.deck.set_aside) || []),
     ];
     // Ce que le héros apporte AUSSI, et qui se retourne contre lui : son
     // obligation et son set némésis. Ils font partie du paquet, on les montre.
@@ -3102,9 +3487,22 @@ function bioDuHeros(h) {
         el("p", { class: "hh-bio" }, champ(info.bio, info.bioEn)),
         info.civil ? detailRow(t("Identité civile"), champ(info.civil, info.civilEn)) : null,
         info.base ? detailRow(t("Base"), champ(info.base, info.baseEn)) : null,
-        info.equipes ? detailRow(t("Équipes"), champ(info.equipes, info.equipesEn)) : null,
+        // Équipes TOUJOURS en anglais, même site en français (demande du
+        // 21/10/2026) : ce sont des noms propres (Avengers, X-Men…), pas du
+        // texte à traduire. Repli sur la version FR si une fiche plus recente
+        // n'a pas encore sa version anglaise.
+        info.equipes ? detailRow(t("Équipes"), info.equipesEn || info.equipes) : null,
         info.ennemis ? detailRow(t("Ennemis"), champ(info.ennemis, info.ennemisEn)) : null,
         info.apparition ? detailRow(t("Première apparition"), info.apparition) : null,
+        // Auteur du pack fan-made (21/10/2026) : lu sur `custom` de la carte
+        // héros elle-même (seule source, déjà posée pack par pack à la
+        // création — voir `catalog.js` qui fait pareil pour les scénarios).
+        // Absent sur les héros officiels : rien à afficher.
+        (() => {
+            const carte = cards.get(h.heroCardId);
+            const auteur = carte && carte.custom;
+            return auteur ? detailRow(t("Pack créé par"), auteur) : null;
+        })(),
     ]);
 }
 
@@ -3122,24 +3520,44 @@ function rendreEquipe() {
             title: pilotable ? (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1)) : t("Ce joueur choisit depuis son propre écran"),
             onclick: () => {
                 if (!pilotable) return;
+                // Parcours sequentiel : pas de saut en avant, on ne passe au
+                // heros suivant qu'apres avoir valide le deck du courant.
+                if (state.step === 1 && decksSequentiels()) {
+                    if (enRecap()) state.modifDeck = true;
+                    const k = premierSiegeAValider();
+                    if (k >= 0 && i > k) return;
+                }
                 state.activeSlot = i;
                 herosApercuTel = null;
                 rendreEquipe();
                 // Chaque étape a sa scène : les héros la remplissent avec le
                 // héros du siège, l'arsenal avec son deck.
                 if (state.step === 1) { rendreSceneDeck(); rendreOutilsDeck(); loadDecks(i); }
-                else rendreScene(herosDuSiegeActif());
+                else {
+                    // Même logique de gel qu'un clic sur un héros (27/10/2026) :
+                    // changer de siège est aussi un choix délibéré, le survol
+                    // des tuiles ne doit pas effacer ce qu'on vient d'afficher.
+                    const actif = herosDuSiegeActif();
+                    if (actif) survolHeros.geler(actif);
+                    else { survolHeros.remettreAZero(); rendreScene(null); }
+                }
             },
         },
             pl.hero ? portraitHeros(pl.hero) : el("span", { class: "plus" }, "+"),
-            el("span", { class: "tb-siege-nom" }, state.step === 1 && pl.deck
+            el("span", { class: "tb-siege-nom" }, state.step === 1 && deckAffiche(pl)
                 ? cleanNomDeck(pl.deck.name)
                 : (pl.hero ? nomAffiche(pl.hero) : t("Joueur") + " " + (i + 1))),
         ));
     }
+    // L'invitation vit ICI, a cote de la place qu'elle remplit (variante D,
+    // 28/10/2026) : sur le bureau, la zone a droite des places etait vide
+    // pendant que trois blocs empiles au-dessus ecrasaient la grille des heros.
+    // Telephone : la rangee est dans la barre du bas, l'invitation reste en haut.
+    const invitation = estTel() ? null : choixCoop();
     poser(zone,
         el("span", { class: "tb-equipe-k" }, t("Ton équipe")),
         ...sieges,
+        invitation ? el("div", { class: "tb-inv-bas" }, invitation) : null,
     );
 }
 
@@ -3167,6 +3585,10 @@ function ouvrirFicheHeros(h, portraitEl) {
                 pvAffiches(h) ? el("span", { class: "tampon jaune" }, t("PV") + " " + pvAffiches(h)) : null,
                 h.handSize != null ? el("span", { class: "tampon" }, t("Main") + " " + h.handSize) : null,
                 vague ? el("span", { class: "tampon" }, vague) : null,
+                h.incomplet ? el("span", {
+                    class: "tampon",
+                    title: t("Pack officiel incomplet : Obligation et/ou set Nemesis pas encore publiés"),
+                }, "⚠ " + t("pack incomplet")) : null,
             ),
             bioDepliee_(bioDuHeros(h)),
             el("div", { class: "vh-actions" },
@@ -3217,7 +3639,16 @@ function recruterVraiment(h, portraitEl) {
     // La scène d'abord (elle se reconstruit), la carte qui surgit ensuite,
     // par-dessus : dans l'autre ordre, la reconstruction l'emportait.
     if (tel) { herosApercuTel = h; rendreSceneTel(h); }
-    else rendreScene(herosDuSiegeActif());
+    else {
+        const actif = herosDuSiegeActif();
+        // Desktop : la scène se FIGE sur le héros tout juste choisi — geler()
+        // l'affiche lui-même, le survol des autres tuiles ne la bougera plus
+        // jusqu'au prochain clic. Siège suivant encore vide (multijoueur,
+        // tous les héros ne sont pas choisis) : on NE fige PAS sur du vide,
+        // sinon plus aucun survol ne marcherait pour choisir le héros suivant.
+        if (actif) survolHeros.geler(actif);
+        else { survolHeros.remettreAZero(); rendreScene(null); }
+    }
     rendreEquipe();
     const jouerEclair = () => {
         const scene = document.getElementById("tb-scene");
@@ -3244,9 +3675,7 @@ function recruterVraiment(h, portraitEl) {
     // Ce héros a des variantes ? La modale s'ouvre tout de suite, pré-remplie
     // de la mémoire. Sans variante, rien : jamais de modale vide.
     if (avecVariantes) ouvrirModaleVariantes(siege, h);
-    // Téléphone : l'équipe est au complet, on file aux decks (le temps de voir
-    // « Choisi »). Le retour du système ramène ici.
-    if (tel && canContinue()) setTimeout(() => { if (!state.accueil && state.step === 0 && canContinue()) goto(1); }, 260);
+    // Plus d'avance automatique (24/10/2026) : le joueur change d'avis en touchant un autre héros, puis touche « Continuer ».
 }
 
 /** Libellé d'une vague : la vague 0 est le Set de base, qui n'en est pas une.
@@ -3389,24 +3818,26 @@ async function refreshHeroGrid(pre) {
         const ferme = !!verrou && !verrou.ouvert;
         return el("button", {
             class: "tb-port" + (chosen ? " chosen" : "") + (ferme ? " est-verrou" : "")
-                + (ferme && verrou.achetable ? " est-achetable" : ""),
+                + (ferme && verrou.achetable ? " est-achetable" : "") + (h.incomplet ? " incomplet" : ""),
             "data-hero": h.id,
             "aria-disabled": ferme && !verrou.achetable ? "true" : null,
-            title: ferme ? verrou.condition : nomAffiche(h),
+            title: ferme ? verrou.condition : (h.incomplet ? nomAffiche(h) + " — " + t("pack incomplet") : nomAffiche(h)),
             onclick: (e) => {
-                if (!ferme && estTel()) return apercevoirHerosTel(h, e.currentTarget);
+                // Téléphone : un toucher CHOISIT le héros (24/10/2026) ; on en touche un autre pour changer, puis « Continuer » en bas.
+                if (!ferme && estTel()) return recruterVraiment(h, e.currentTarget);
                 if (!ferme) return recruter(h, e.currentTarget);
                 if (verrou.achetable) return void acheterHerosLegacy(h, e.currentTarget);
             },
             // Téléphone : pas de survol (un doigt ne « quitte » jamais la tuile,
             // et mouseleave re-dessinerait le bandeau en plein toucher).
-            onmouseenter: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
-            onmouseleave: estTel() ? undefined : () => { herosSurvole = null; rendreScene(herosDuSiegeActif()); },
-            onfocus: estTel() ? undefined : () => { herosSurvole = h; rendreScene(h); },
+            onmouseenter: estTel() ? undefined : () => survolHeros.entrer(h),
+            onmouseleave: estTel() ? undefined : () => survolHeros.sortir(),
+            onfocus: estTel() ? undefined : () => survolHeros.entrerAuClavier(h),
         },
             portraitHeros(h),
             el("span", { class: "tb-port-nom" }, nomAffiche(h)),
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
+            h.incomplet ? el("span", { class: "tb-port-incomplet", title: t("Pack officiel incomplet : Obligation et/ou set Nemesis pas encore publiés") }, "⚠") : null,
             estTel() ? null : el("span", {
                 class: "hc-fav" + (prefs.isFavHero(h.id) ? " on" : ""),
                 title: t("Favori"),
@@ -3536,7 +3967,7 @@ function showExtHover(ext, tabEl) {
     }
     box.replaceChildren(
         el("img", { class: "hh-card", src: extensionImageUrl(ext.key), alt: ext.key }),
-        el("div", { class: "hh-name mvl" }, nomExtension(ext.key, langueActuelle())),
+        el("div", { class: "hh-name mvl" }, libelleExtension(ext, _auteursExtensions.get(ext.key))),
         detailRow(t("Scénarios"), String(ext.scenarios.length)),
         detailRow(t("Héros"), String(ext.heroes.length)),
         detailRow(t("Sets de rencontre"), String(ext.encounters.length)),
@@ -3569,6 +4000,9 @@ const COLLECTIONS_RESSOURCES = [
     { code: "dh_adamwarlock", nom: "Adam Warlock", apercu: "01089_dh_adamwarlock" },
     { code: "shield", nom: "Agents of SHIELD", apercu: "50026" },
     { code: "am", nom: "Ant-Man", apercu: "01089_am" },
+    // Ressources redessinees livrees avec le heros Binary (Galactic Storm, Kajislav, 20/10/2026) ;
+    // par defaut pour Binary (collectionDuHeros : meme nom que le heros).
+    { code: "binary", nom: "Binary", apercu: "01089_binary" },
     { code: "bp", nom: "Black Panther", apercu: "01089_bp" },
     { code: "bw", nom: "Black Widow", apercu: "01089_bw" },
     { code: "ca", nom: "Captain America", apercu: "01089_ca" },
@@ -3590,6 +4024,7 @@ const COLLECTIONS_RESSOURCES = [
     { code: "mm", nom: "Ms. Marvel", apercu: "01089_mm" },
     { code: "mutant", nom: "Mutant Genesis", apercu: "32023" },
     { code: "dh_nebula", nom: "Nebula", apercu: "01089_dh_nebula" },
+    { code: "quasar", nom: "Quasar", apercu: "01089_quasar" },  // Galactic Storm (Kajislav), reskins du deck de Quasar
     { code: "dh_quicksilver", nom: "Quicksilver", apercu: "01089_dh_quicksilver" },
     { code: "dh_rocket", nom: "Rocket", apercu: "01089_dh_rocket" },
     { code: "dh_scarletwitch", nom: "Scarlet Witch", apercu: "01089_dh_scarletwitch" },
@@ -3618,6 +4053,20 @@ const COLLECTIONS_RESSOURCES = [
     { code: "magneto", nom: "Magneto", apercu: "49044" },
     { code: "the_thing", nom: "The Thing", apercu: "th017" },
     { code: "wave", nom: "Wave", apercu: "65018" },
+    // Neuf packs fan-made de fin octobre 2026 (26/10/2026) : arts alternatifs des ressources doubles, par defaut pour leur
+    // heros (collectionDuHeros : meme nom que le heros). Aligne avec COLLECTIONS (ui-app/src/board/variantes.ts).
+    { code: "batgirl", nom: "Batgirl", apercu: "bg021" },
+    { code: "batman", nom: "Batman", apercu: "bm024" },
+    { code: "chod", nom: "Ch'od", apercu: "co018" },
+    { code: "corsair", nom: "Corsair", apercu: "cr018" },
+    { code: "hepzibah", nom: "Hepzibah", apercu: "hz017" },
+    { code: "raza", nom: "Raza Longknife", apercu: "rl019" },
+    { code: "roz", nom: "Roz", apercu: "rz014" },
+    { code: "smasher", nom: "Smasher", apercu: "sz017" },
+    { code: "warriors_three", nom: "The Warriors Three", apercu: "wt023" },
+    { code: "sunspot_hellfire", nom: "Sunspot (Hellfire Hunt)", apercu: "hf011" },
+    { code: "rachel_summers", nom: "Rachel Summers", apercu: "hf011" },
+    { code: "predator", nom: "Predator", apercu: "pd022" },
 ];
 
 /* ---- Arts alternatifs des CARTES DE HEROS ------------------------------
@@ -3925,6 +4374,16 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
         surChoix(options[idx].code);
     };
     const pousser = (sens) => (delegue ? delegue(sens) : aller(idx + sens));
+    // Vignettes : le survol montre l'art à droite sans rien changer, le clic
+    // le choisit. Avec « même série », le clic passe par la paire liée, comme
+    // une flèche.
+    const urlArt = (o) => cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+    const vignettes = el("div", { class: "ca-vignettes" }, options.map((o, i) => el("button", {
+        type: "button", class: "ca-vignette", title: o.nom, "aria-label": o.nom,
+        onmouseenter: () => dessiner(i), onmouseleave: () => dessiner(),
+        onfocus: () => dessiner(i), onblur: () => dessiner(),
+        onclick: () => (delegue ? delegue(i - idx) : aller(i)),
+    }, el("img", { src: urlArt(o), alt: "", loading: "lazy", draggable: "false" }))));
     const fleche = (sens, glyphe, libelle) => el("button", {
         type: "button", class: "ca-fleche ca-fleche-" + (sens < 0 ? "g" : "d"),
         "aria-label": libelle, onclick: () => pousser(sens),
@@ -3949,10 +4408,16 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
         el("div", { class: "ca-corps" },
             fleche(-1, "\u2039", t("Art précédent")), scene, fleche(1, "\u203A", t("Art suivant"))),
         el("div", { class: "ca-pied" }, nom, compteur),
+        vignettes,
     );
-    function dessiner() {
-        const o = options[idx];
-        image.src = cardImageUrlHd(o.code === STANDARD ? picId : `${picId}_${o.code}`);
+    // `voir` : l'art montré (l'aperçu au survol), `idx` reste l'art choisi.
+    function dessiner(voir = idx) {
+        const o = options[voir];
+        image.src = urlArt(o);
+        vignettes.querySelectorAll(".ca-vignette").forEach((b, n) => {
+            b.classList.toggle("ca-vignette-choisie", n === idx);
+            b.classList.toggle("ca-vignette-vue", n === voir);
+        });
         const ce_tirage = ++tirage;
         const carte = cards.get(picId);
         const temoin = el("div", { class: "ca-cadre-pose" });
@@ -3961,7 +4426,7 @@ function carrouselArts({ titre, picId, options, actuel, inactif, surChoix }) {
             .then(() => { if (ce_tirage !== tirage) temoin.remove(); });
         for (const ancien of cadre.querySelectorAll(".ca-cadre-pose")) if (ancien !== temoin) ancien.remove();
         nom.textContent = o.nom;
-        compteur.textContent = options.length > 1 ? `${idx + 1} / ${options.length}` : "";
+        compteur.textContent = options.length > 1 ? `${voir + 1} / ${options.length}` : "";
         noeud.classList.toggle("ca-seul", options.length < 2 && !delegue);
     }
     dessiner();
@@ -4069,7 +4534,7 @@ function ouvrirModaleUnderling(tuile) {
         tuile.underlings.map((u) => ({ code: u.id, nom: u.nom, apercu: u.villainCardId })),
         choix.vilain, (code) => { choix.vilain = code; });
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
-        el("div", { class: "deck-modal-panel vh-panel", style: { "--sections": "1" } },
+        el("div", { class: "deck-modal-panel vh-panel vh-compact", style: { "--sections": "1" } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, tuile.name),
                 el("span", { class: "dm-sub" }, t("Vilain de ce scénario")),
@@ -4124,7 +4589,7 @@ function ouvrirModaleVariantes(i, h) {
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
         // `--sections` : sur telephone, la feuille dimensionne ses vignettes
         // pour que TOUTES les sections tiennent sans defiler (prepare.css).
-        el("div", { class: "deck-modal-panel vh-panel" + (avecArts ? " vh-arts" : ""),
+        el("div", { class: "deck-modal-panel vh-panel" + (avecArts ? " vh-arts" : " vh-compact"),
             style: { "--sections": String(sections.length), "--autres": String(sections.length - (avecArts ? 1 : 0)) } },
             el("div", { class: "dm-head" },
                 el("b", { class: "mvl" }, nomAffiche(h)),
@@ -4141,6 +4606,7 @@ function ouvrirModaleVariantes(i, h) {
                     p.deck = deckDeLaVersion(h, choix.version);
                     p.deckSource = "base";
                     p.deckAuto = true;
+                    p.deckChoisi = false; p.deckValide = false;
                     p.identity = identites.find((v) => cleIdentite(v) === choix.identite) || null;
                     prefs.setArtsHeros(h.heroCardId, choix.art, choix.artAE);
                     prefs.setVariantes(h.id, { version: choix.version, identite: choix.identite });
@@ -4399,8 +4865,35 @@ function proposerArts(p) {
     });
 }
 
+/** Les cartes du héros, alter ego compris, SES cartes seulement : pas les
+ *  cartes d'aspect ni les cartes de base neutre de `deck.player_deck` (06/11/2026,
+ *  demande de l'utilisateur). `deck.set_aside` est inclus : c'est le petit
+ *  side-deck posé à part au setup (le deck Invocation de Doctor Strange, les
+ *  5 cartes mises de côté de Daredevil...), une carte du héros comme les
+ *  autres. `deck.linked_identity` ajoute, pour les heros a deux identites
+ *  (Cloak & Dagger), son propre heros/alter ego, son mini-deck signature, son
+ *  side-deck, son obligation et son set nemesis. */
 function showDeckCards(deck, hero, deckId) {
-    const ids = [...(deck.hero || []).flatMap((x) => String(x).split(",")), ...(deck.hero_deck || []), ...(deck.player_deck || [])];
+    const lie = deck.linked_identity;
+    const ids = [
+        ...(deck.hero || []).flatMap((x) => String(x).split(",")),
+        ...(lie ? (lie.hero || []).flatMap((x) => String(x).split(",")) : []),
+        ...(deck.hero_deck || []),
+        ...(lie ? lie.hero_deck || [] : []),
+        ...(deck.set_aside || []),
+        ...(lie ? lie.set_aside || [] : []),
+        ...(deck.obligations || []),
+        ...(lie ? lie.obligations || [] : []),
+        ...(deck.nemesis_set || []),
+        ...(lie ? lie.nemesis_set || [] : []),
+        // Le deck proprement dit (cartes d'aspect choisies par le joueur) :
+        // sans lui, « Voir les cartes » n'affichait que les cartes du HEROS
+        // (meme ensemble qu'a l'etape 1), jamais le contenu reel du deck que
+        // la tuile annonce pourtant (ex. « 25 cartes »). Demande utilisateur
+        // du 07/11/2026 : les deux doivent se voir ici.
+        ...(deck.player_deck || []),
+        ...(lie ? lie.player_deck || [] : []),
+    ];
     const counts = {};
     for (const id of ids) counts[id] = (counts[id] || 0) + 1;
     const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) { hideHover(); fermerModale(overlay); } } },
@@ -4465,7 +4958,7 @@ async function ouvrirPanneauCdb(i) {
                 alert(t("Ce deck n’a pas pu être converti proprement, il n’est pas proposé."));
                 return;
             }
-            p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
+            p.deck = deck; p.deckSource = "imported"; p.deckAuto = false; p.deckChoisi = true;
             fermerModale(overlay);
             render();
             proposerArts(p);
@@ -4555,19 +5048,31 @@ async function ouvrirPanneauCdb(i) {
 function stepDecks() {
     // En ligne, l'hôte ne pilote que son siège : les invités choisissent
     // depuis le leur. On revient donc toujours sur le siège 0.
+    state.modifDeck = false;
     if (enLigne()) state.activeSlot = 0;
+    else if (decksSequentiels()) {
+        const k = premierSiegeAValider();
+        if (k >= 0) state.activeSlot = k;
+    }
     const wrap = el("section", { class: "step team-b arsenal" },
         el("div", { class: "tb-scene", id: "tb-scene" }),
     );
+    // « Ton équipe » reste TOUJOURS visible sans scroller (06/11/2026, demande
+    // de l'utilisateur) : seul le contenu du milieu (liste de decks, outils,
+    // arts alternatifs) défile, dans son propre conteneur ; la rangée des
+    // sièges, elle, ne quitte plus jamais le bas de l'écran.
     const droite = el("div", { class: "tb-droite" },
-        el("div", { class: "tb-entete" },
-            el("b", { class: "mvl" }, t("Decks")),
-            el("span", { class: "tb-compte", id: "tb-compte" }, ""),
-            el("span", { class: "tb-mode" }, navStatus()),
+        el("div", { class: "tb-droite-scroll" },
+            el("div", { class: "tb-entete" },
+                el("b", { class: "mvl" }, t("Decks")),
+                el("span", { class: "tb-compte", id: "tb-compte" }, ""),
+                el("span", { class: "tb-mode" }, navStatus()),
+            ),
+            el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
+                el("div", { class: "loading" }, t("Chargement des decks..."))),
+            el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
+            el("div", { class: "tb-arsenal-arts", id: "deck-arts" }),
         ),
-        el("div", { class: "hero-grid tb-roster tb-roster-deck", id: "deck-liste" },
-            el("div", { class: "loading" }, t("Chargement des decks..."))),
-        el("div", { class: "tb-arsenal-outils", id: "deck-outils" }),
         estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
     wrap.append(droite);
@@ -4595,7 +5100,7 @@ function rendreSceneDeck() {
         ajusterNomGeant(scene);
         return;
     }
-    const st = p.deck ? deckStats(p.deck) : null;
+    const st = deckAffiche(p) ? deckStats(p.deck) : null;
     const aspects = st ? Object.keys(st.asp).filter((x) => x !== "basic") : [];
     poser(scene,
         // Scan anglais même en français : le scan FR porte un filigrane, très
@@ -4608,7 +5113,8 @@ function rendreSceneDeck() {
             el("small", {}, t("Arsenal de")),
             nomAffiche(h)),
         el("div", { class: "tb-tampons" },
-            p.deck ? el("span", { class: "tampon jaune" }, cleanNomDeck(p.deck.name) || t("Deck de base")) : null,
+            deckAffiche(p) ? el("span", { class: "tampon jaune" }, cleanNomDeck(p.deck.name) || t("Deck de base")) : null,
+            (!deckAffiche(p) && decksSequentiels()) ? el("span", { class: "tampon" }, t("Aucun deck choisi")) : null,
             st ? el("span", { class: "tampon" }, st.total + " " + t("cartes")) : null,
             ...aspects.map((x) => el("span", {
                 class: "tampon aspect",
@@ -4621,11 +5127,12 @@ function rendreSceneDeck() {
 
 /** Sous la liste : importer, parcourir, construire, et les cosmétiques. */
 function rendreOutilsDeck() {
+    rendreZoneArts();
     const zone = document.getElementById("deck-outils");
     if (!zone) return;
     const i = state.activeSlot;
     const p = state.players[i];
-    if (!p || !p.hero) { poser(zone); return; }
+    if (!p || !p.hero || enRecap()) { poser(zone); return; }
     if (estTel()) {
         // Téléphone : trois gros boutons au-dessus de la liste ; l'import
         // passe dans une feuille basse (le champ n'est plus posé en pleine page).
@@ -4637,7 +5144,6 @@ function rendreOutilsDeck() {
                     onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
                                                  + (state.legacy ? "&legacy=1" : ""), "_blank"); },
                 }, picto("fa-pencil"), " ", t("Éditeur de deck")),
-                el("button", { class: "tampon", onclick: () => ouvrirModaleRessources(i, p.hero) }, picto("fa-th"), " ", t("Ressources")),
             ),
             rappelVariantes(p, i),
         );
@@ -4670,17 +5176,64 @@ function rendreOutilsDeck() {
                 onclick: () => { window.open("/deck-builder.html?hero=" + encodeURIComponent(p.hero.id)
                                              + (state.legacy ? "&legacy=1" : ""), "_blank"); },
             }, t("Éditeur de deck")),
-            el("button", {
-                class: "tampon tb-ressources",
-                title: t("Choisir le dessin des cartes Energy, Genius et Strength de ce deck"),
-                onclick: () => ouvrirModaleRessources(i, p.hero),
-            }, t("Ressources : art alternatif")),
             el("span", { class: "mcdb-status", id: "mcdb-st-" + i }),
         ),
         // Version, identité, art de la carte de héros : dans la modale du
         // héros (11/09/2026), ici un rappel et « Modifier ». Les ressources,
-        // elles, ont leur bouton juste au-dessus (12/09/2026).
+        // elles, ont leur panneau juste en dessous (29/10/2026).
         rappelVariantes(p, i),
+    );
+}
+
+/** La zone des arts, APRÈS la liste (sur téléphone `#deck-outils` passe avant
+ *  elle : le panneau y aurait repoussé le deck de départ hors de l'écran).
+ *  Redessinée à chaque choix de deck et de vignette. */
+function rendreZoneArts() {
+    const zone = document.getElementById("deck-arts");
+    if (!zone) return;
+    const i = state.activeSlot;
+    const p = state.players[i];
+    poser(zone, (!p || !p.hero || enRecap()) ? null : panneauArts(p, i));
+}
+
+/** Le panneau « Arts alternatifs » de l'étape Decks (29/10/2026) : jusque-là
+ *  on ne découvrait les arts qu'en choisissant un deck, dans une fenêtre qui ne
+ *  revient jamais. Ici ils sont toujours visibles : une pastille « 🖼 n » sur
+ *  chaque carte qui en a (n = arts disponibles, l'officielle comprise), un clic
+ *  ouvre le choix de CETTE carte. Les ressources doubles ont leur rangée. */
+function panneauArts(p, i) {
+    if (!p || !p.hero || !deckAffiche(p)) return null;
+    const heros = p.hero.heroCardId;
+    const ids = cartesAvecArt(p.deck.player_deck || []);
+    const pastille = (n) => el("span", { class: "pastille-art", "aria-hidden": "true" }, picto("fa-image"), " " + n);
+    const vignette = (src, nom, n, ouvrir, titre) => el("button", {
+        type: "button", class: "art-vignette", title: titre, "aria-label": `${nom} — ${titre}`, onclick: ouvrir,
+    },
+        el("img", { src, alt: "", loading: "lazy" }),
+        pastille(n),
+        el("span", { class: "art-nom" }, nom));
+    const cartes = ids.map((id) => {
+        const c = cards.get(id);
+        const nom = c ? c.name : id;
+        return vignette(cardImageUrl(picIdDeCarte(id, heros)), nom, artsDe(id).length + 1, () => {
+            proposerArtsCartes({
+                deck: p.deck, heros, el, t, ouvrirModale, fermerModale, seulement: id,
+                imageUrl: (pic) => cardImageUrl(pic),
+                nomCarte: (cid) => { const k = cards.get(cid); return k ? k.name : cid; },
+                apresChoix: () => rendreOutilsDeck(),
+            });
+        }, t("Choisir un art alternatif"));
+    });
+    const code = prefs.resourceArt(heros, collectionDuHeros(p.hero.name, heros));
+    const col = COLLECTIONS_RESSOURCES.find((c) => c.code === code);
+    const apercuRes = (col && col.apercu) || "01089";
+    const ressources = vignette(cardImageUrl(apercuRes), t("Ressources"), COLLECTIONS_RESSOURCES.length,
+        () => ouvrirModaleRessources(i, p.hero), t("Ressources : art alternatif"));
+    return el("div", { class: "arts-panneau" },
+        el("div", { class: "deck-section" }, t("Arts alternatifs")),
+        el("div", { class: "arts-rangee" }, ressources, ...cartes),
+        cartes.length ? null : el("div", { class: "deck-vide" }, t("Aucune carte de ce deck n'a d'art alternatif.")),
+        el("div", { class: "arts-aide" }, t("Pastille avec image : d'autres illustrations existent. Touche-la pour choisir.")),
     );
 }
 
@@ -4694,7 +5247,7 @@ async function doImport(i, fichier) {
             ? await importO8d(i, await fichier.text(), fichier.name)
             : await importMarvelcdb(i, input.value);
         const p = state.players[i];
-        p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false;
+        p.hero = hero; p.deck = deck; p.deckSource = "imported"; p.deckAuto = false; p.deckChoisi = true;
         // Les lignes d'un fichier OCTGN qu'aucun GUID ni aucun nom n'a retrouvees : dites, pas tues.
         const manque = (inconnues || []).length
             ? `\n\n${t("Cartes non reprises (inconnues du jeu, souvent les cartes propres à un autre héros) :")} ` + inconnues.map((c) => `${c.qte}× ${c.nom}`).join(", ")
@@ -4719,11 +5272,6 @@ async function doImport(i, fichier) {
     }
 }
 
-/** Joueurs dont les paquets d'aspect sont dépliés. Voir loadDecks(). */
-const aspectsDeplies = new Set();
-/** Meme chose pour la section des decks du tableur. */
-const tableurDeplies = new Set();
-
 /** D'ou vient le tableur, en une phrase (info-bulle de la section : ca ne prend
  *  aucune place a l'ecran). Voir aussi credits.html. */
 const CREDIT_TABLEUR = "Decks du fichier « Marvel Champions Universal Prebuilt Decks » de acharlie1377 (Austin Charlie), sur BoardGameGeek. Conçus par un joueur : ce ne sont pas les decks officiels des héros.";
@@ -4737,7 +5285,33 @@ function nomDeckAffiche(dk) {
         .replace(/\s*[—-]\s*Mutant\s*$/i, " — " + t("Version tableur, mutant"));
 }
 
+/** Le panneau recapitulatif : un heros par ligne, son deck, et « Modifier ». */
+function rendreRecapDecks() {
+    const box = document.getElementById("deck-liste");
+    if (!box) return;
+    const compte = document.getElementById("tb-compte");
+    if (compte) compte.textContent = "";
+    box.replaceChildren(el("div", { class: "deck-recap", id: "deck-recap", style: { gridColumn: "1 / -1", display: "flex", flexDirection: "column", gap: "10px" } },
+        el("b", { style: { fontSize: "18px", letterSpacing: ".04em", textTransform: "uppercase" } }, t("Récapitulatif des decks")),
+        ...activePlayers().map((pl, idx) => el("div", {
+            class: "tb-deck recap-ligne", "data-siege": String(idx),
+            style: { display: "flex", alignItems: "center", gap: "14px", cursor: "default" },
+        },
+            el("span", { class: "tb-siege plein petit" }, portraitHeros(pl.hero)),
+            el("span", { style: { flex: "1" } },
+                el("div", { class: "do-name" }, nomAffiche(pl.hero)),
+                el("div", { class: "do-size" }, cleanNomDeck(pl.deck.name) || t("Deck de base"))),
+            el("button", {
+                type: "button", class: "tampon", "data-modifier": String(idx),
+                onclick: () => {
+                    state.activeSlot = idx; state.modifDeck = true;
+                    rendreSceneDeck(); rendreOutilsDeck(); rendreEquipe(); loadDecks(idx); majNav();
+                },
+            }, t("Modifier"))))));
+}
+
 async function loadDecks(i) {
+    if (enRecap()) { rendreSceneDeck(); rendreRecapDecks(); return; }
     const p = state.players[i];
     await cards.load();
     const catDecks = await catalog.decksForHero(p.hero);
@@ -4772,21 +5346,22 @@ async function loadDecks(i) {
     // Mémoire des choix : si le deck actuel a été posé automatiquement à
     // l'assignation du héros, on présélectionne le dernier deck utilisé pour
     // ce héros, s'il est encore disponible (base ou sauvegardé).
-    if (p.deckAuto) {
+    // Parcours sequentiel : aucun deck n'est presélectionné, le joueur choisit.
+    if (p.deckAuto && decksSequentiels()) p.deckAuto = false;
+    else if (p.deckAuto) {
         p.deckAuto = false;
         const dernierId = prefs.lastDeckFor(p.hero.heroCardId);
         let dk = dernierId != null ? decks.find((d) => d.id === dernierId) : null;
-        // Sans deck de base (player_deck vide : PROCESSUS-HEROS etape 3), le
-        // deck pose a l'assignation ne fait que 15 cartes et ne se joue pas :
-        // le premier paquet d'aspect (conseille en tete) prend sa place.
-        if (!dk && !aDeckDeBase(p.hero)) {
-            dk = decks.find((d) => d.source === "aspect" && verifierDeck(d.deck).length === 0)
-                || decks.find((d) => d.source === "aspect") || null;
-        }
+        // Sans deck de base (player_deck vide : PROCESSUS-HEROS etape 3), le deck pose a l'assignation ne fait que
+        // 15 cartes et ne se joue pas. Depuis le 30/10/2026 rien n'est choisi a sa place : le joueur prend un deck de la
+        // communaute ou une proposition. Le deck qu'il avait retenu la derniere fois, lui, compte comme choisi.
         if (dk && dk.deck !== p.deck) {
             p.deck = dk.deck;
             p.deckSource = dk.source;
+            if (sansDeckDeDepart(p)) p.deckChoisi = true;
             rendreSceneDeck();
+        } else if (dk && sansDeckDeDepart(p)) {
+            p.deckChoisi = true;
         }
     }
     const box = document.getElementById("deck-liste");
@@ -4797,8 +5372,10 @@ async function loadDecks(i) {
     if (compte) compte.textContent = decks.length + " " + t("decks");
 
     const option = (dk) => {
-        const on = p.deckSource === dk.source && p.deck && p.deck.name === dk.deck.name;
+        const on = deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name;
         const st = deckStats(dk.deck);
+        // Parcours sequentiel : repere (sans selection) du dernier deck joue avec ce heros.
+        const dernierUtilise = decksSequentiels() && dk.source !== "campagne" && String(prefs.lastDeckFor(p.hero.heroCardId)) === String(dk.id);
         // Contrôle de construction : signalé, jamais bloquant.
         const ecarts = verifierDeck(dk.deck);
         const etiquette = dk.source === "base" ? t("Deck de départ")
@@ -4807,7 +5384,9 @@ async function loadDecks(i) {
             : dk.source === "campagne" ? t("En cours")
             : t("Sauvegardé");
         const choisir = () => {
-            p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false;
+            // Parcours sequentiel : un AUTRE deck sur un heros valide retire sa validation.
+            if (decksSequentiels() && p.deckValide && !on) p.deckValide = false;
+            p.deck = dk.deck; p.deckSource = dk.source; p.deckAuto = false; p.deckChoisi = true;
             // « campagne » n'existe que sur cet ecran-ci : le retenir comme
             // dernier deck du heros ne designerait plus rien demain.
             if (dk.source !== "campagne") prefs.setLastDeck(p.hero.heroCardId, dk.id);
@@ -4852,6 +5431,7 @@ async function loadDecks(i) {
             el("div", { class: "do-name" }, nomDeckAffiche(dk)),
             el("div", { class: "do-tags" },
                 el("span", { class: "tag" }, etiquette),
+                ...(dernierUtilise ? [el("span", { class: "tag dernier" }, t("Dernier utilisé"))] : []),
                 ...dk.aspects.map((a) => el("span", { class: "tag asp", style: { background: ASPECTS[a] || "#555" } }, a)),
             ),
             aspectBar(st),
@@ -4869,63 +5449,70 @@ async function loadDecks(i) {
         );
     };
 
-    // Les paquets d'aspect conseillés sont repliés. Ils sont utiles, mais à
-    // quatre ils enterraient le deck de base et les decks sauvegardés — ceux
-    // qu'on vient chercher neuf fois sur dix.
-    //
-    // Le pli est mémorisé PAR JOUEUR dans un état de module : loadDecks() est
-    // rappelé à chaque render(), donc à chaque clic sur un deck. Un simple
-    // booléen local se refermerait sous les doigts.
-    const principaux = decks.filter((dk) => dk.source !== "aspect" && dk.source !== "tableur");
-    const aspects = decks.filter((dk) => dk.source === "aspect");
-    const duTableur = decks.filter((dk) => dk.source === "tableur");
-    const enfants = principaux.map(option);
+    // Trois blocs (29/10/2026) : le deck de départ en tête, puis les decks que
+    // les joueurs ont enregistrés, puis un petit bouton « Proposition de deck »
+    // qui ouvre les suggestions (decks du tableur, paquets d'aspect). Les
+    // suggestions ne sont plus dans la liste : elles enterraient les deux
+    // premiers blocs, ceux qu'on vient chercher neuf fois sur dix.
+    const depart = decks.filter((dk) => dk.source === "base" || dk.source === "campagne");
+    const communaute = decks.filter((dk) => dk.source === "saved");
+    const propositions = decks.filter((dk) => dk.source === "aspect" || dk.source === "tableur");
+    // Un héros sans deck de départ (fan-made) se présente comme les autres (30/10/2026) : les paquets d'aspect ne
+    // couvrent plus la liste (29 lignes avant la communauté, où se trouvent les decks importés), ils sont derrière
+    // « Proposition de deck ».
+    const sansBase = !aDeckDeBase(p.hero);
+    const aProposer = propositions;
+    // Une proposition déjà choisie reste visible dans la liste, sinon le deck
+    // actif n'apparaîtrait plus nulle part.
+    const choisieParmiPropositions = aProposer.filter((dk) => deckAffiche(p) && p.deckSource === dk.source && p.deck.name === dk.deck.name);
 
-    // Les decks par heros du tableur : leur propre section repliee, avec
-    // l'origine (et l'auteur) dans l'info-bulle, sans rien ajouter a l'ecran.
-    if (duTableur.length) {
-        const deplieT = tableurDeplies.has(i);
-        const listeT = el("div", { class: "deck-aspects" + (deplieT ? " est-deplie" : "") },
-            ...duTableur.map(option));
-        const bascule = el("button", {
-            type: "button",
-            class: "deck-aspects-bascule" + (deplieT ? " est-deplie" : ""),
-            "aria-expanded": deplieT ? "true" : "false",
-            title: t(CREDIT_TABLEUR),
-        }, `${t("Decks du tableur")} (${duTableur.length}) ⓘ`);
-        bascule.addEventListener("click", () => {
-            const ouvert = !tableurDeplies.has(i);
-            if (ouvert) tableurDeplies.add(i); else tableurDeplies.delete(i);
-            listeT.classList.toggle("est-deplie", ouvert);
-            bascule.classList.toggle("est-deplie", ouvert);
-            bascule.setAttribute("aria-expanded", ouvert ? "true" : "false");
-        });
-        enfants.push(bascule, listeT);
-    }
-
-    if (aspects.length) {
-        // Sans deck de base, les paquets SONT le choix : ils s'ouvrent d'office.
-        if (!aDeckDeBase(p.hero)) aspectsDeplies.add(i);
-        const deplie = aspectsDeplies.has(i);
-        const liste = el("div", { class: "deck-aspects" + (deplie ? " est-deplie" : "") },
-            ...aspects.map(option));
-        const bascule = el("button", {
-            type: "button",
-            class: "deck-aspects-bascule" + (deplie ? " est-deplie" : ""),
-            "aria-expanded": deplie ? "true" : "false",
-        }, `${t("Paquets d’aspect")} (${aspects.length})`);
-        bascule.addEventListener("click", () => {
-            const ouvert = !aspectsDeplies.has(i);
-            if (ouvert) aspectsDeplies.add(i); else aspectsDeplies.delete(i);
-            liste.classList.toggle("est-deplie", ouvert);
-            bascule.classList.toggle("est-deplie", ouvert);
-            bascule.setAttribute("aria-expanded", ouvert ? "true" : "false");
-        });
-        enfants.push(bascule, liste);
+    // Le compteur ne compte que ce qui est listé : les propositions sont derrière le bouton.
+    if (compte) compte.textContent = (depart.length + communaute.length) + " " + t("decks");
+    const titre = (texte) => el("div", { class: "deck-section" }, texte);
+    const enfants = [];
+    if (depart.length) enfants.push(titre(t("Deck de départ")), ...depart.map((dk) => { const o = option(dk); o.classList.add("deck-depart"); return o; }));
+    else if (sansBase) enfants.push(titre(t("Deck de départ")), el("div", { class: "deck-vide" },
+        t("Ce héros n'a pas de deck de départ : choisis un deck de la communauté ou une proposition.")));
+    if (choisieParmiPropositions.length) enfants.push(titre(t("Proposition choisie")), ...choisieParmiPropositions.map(option));
+    enfants.push(titre(`${t("Decks de la communauté")} (${communaute.length})`));
+    if (communaute.length) enfants.push(...communaute.map(option));
+    else enfants.push(el("div", { class: "deck-vide" }, t("Aucun deck partagé pour l'instant. Importe-en un depuis marvelcdb.")));
+    if (aProposer.length) {
+        enfants.push(el("button", {
+            type: "button", class: "tampon deck-proposition", title: t(CREDIT_TABLEUR),
+            onclick: () => ouvrirPropositionsDeck(aProposer, option, p),
+        }, picto("fa-magic"), " " + t("Proposition de deck") + "…"));
     }
 
     box.replaceChildren(...enfants);
+    rendreZoneArts();
 }
+/** La fenêtre du bouton « Proposition de deck » : decks du tableur, puis paquets
+ *  d'aspect. Choisir un deck ferme la fenêtre (le clic relance loadDecks). */
+function ouvrirPropositionsDeck(propositions, option, p) {
+    const tableur = propositions.filter((dk) => dk.source === "tableur");
+    const aspects = propositions.filter((dk) => dk.source === "aspect");
+    const fermer = () => fermerModale(overlay);
+    const groupe = (titre, liste) => liste.length
+        ? [el("div", { class: "deck-section" }, `${titre} (${liste.length})`),
+           ...liste.map((dk) => { const o = option(dk); o.addEventListener("click", (e) => {
+               // « Voir les cartes » / « Supprimer » laissent la fenêtre ouverte ; seul un choix la ferme.
+               if (!e.target.closest(".do-view, .ts-btn:not(.jaune)")) setTimeout(fermer, 0);
+           }); return o; })]
+        : [];
+    const overlay = el("div", { class: "deck-modal", onclick: (e) => { if (e.target === overlay) fermer(); } },
+        el("div", { class: "deck-modal-panel prop-panneau" },
+            el("div", { class: "dm-head" },
+                el("b", { class: "mvl" }, t("Proposition de deck")),
+                el("span", { class: "dm-sub" }, nomAffiche(p.hero))),
+            el("div", { class: "prop-liste" },
+                ...groupe(t("Decks du tableur"), tableur),
+                ...groupe(t("Paquets d’aspect"), aspects)),
+            el("div", { class: "vh-actions" },
+                el("button", { type: "button", class: "tampon", onclick: fermer }, t("Fermer")))));
+    ouvrirModale(overlay);
+}
+
 /* ---- Contrôle de construction (Rules Reference 1.8, Appendice I) ---------
    L'écran ne vérifiait rien, d'où les 37 cartes de Spider-Woman passées
    inaperçues. On avertit sans jamais bloquer : un deck hors clous reste
@@ -5000,6 +5587,37 @@ function verifierDeck(deck) {
             ecarts.push(`${propre} ×${nombre} — ${t("maximum")} ${max}`);
         }
     }
+
+    // Restriction de construction propre à CERTAINS héros (desc de l'alter-ego, ex. dm001b 3-D Man :
+    // "your deck must include only 3-cost cards (except for resource cards). You may have events from up to
+    // 3 total aspects"). Rien ici pour l'immense majorité des héros (desc.DeckCost / DeckMaxEventAspects absents).
+    const alterEgoId = (deck.hero && deck.hero[0] || "").split(",")[1];
+    const alterEgo = alterEgoId ? cards.get(alterEgoId) : null;
+    const coutImpose = alterEgo && alterEgo.desc && parseInt(alterEgo.desc.DeckCost, 10);
+    if (coutImpose) {
+        for (const id of personnalisable) {
+            const c = cards.get(id);
+            if (!c || c.type === "Resource") continue;
+            const cout = parseInt(c.cost, 10);
+            if (Number.isFinite(cout) && cout !== coutImpose) {
+                const propre = String(_titre(id)).replace(/^\*\s*/, "");
+                ecarts.push(`${propre} — ${t("coût")} ${cout} (${t("doit valoir")} ${coutImpose})`);
+            }
+        }
+    }
+    const aspectsMax = alterEgo && alterEgo.desc && parseInt(alterEgo.desc.DeckMaxEventAspects, 10);
+    if (aspectsMax) {
+        const aspectsEvenements = new Set(
+            personnalisable
+                .filter((id) => { const c = cards.get(id); return c && c.type === "Event"; })
+                .map((id) => cards.aspectOf(id))
+                .filter((a) => a && a !== "basic")
+        );
+        if (aspectsEvenements.size > aspectsMax) {
+            ecarts.push(`${[...aspectsEvenements].join(", ")} — ${t("événements de")} ${aspectsEvenements.size} ${t("aspects, maximum")} ${aspectsMax}`);
+        }
+    }
+
     return ecarts;
 }
 
@@ -5077,11 +5695,12 @@ function stepScenario() {
             el("span", { class: "tb-compte", id: "tb-compte" }, ""),
             el("span", { class: "tb-mode" }, navStatus()),
         ),
+        el("div", { class: "ext-groupes", id: "ext-groupes", role: "tablist" }),
         el("div", { class: "ext-tabs", id: "ext-tabs" }, el("div", { class: "loading" }, "...")),
         el("div", { class: "tb-merci", id: "tb-merci-vilains", hidden: true }),
         el("div", { class: "hero-grid tb-roster tb-roster-scn", id: "scn-grid" }),
-        // Le niveau de menace, ici même : c'est en voyant le méchant qu'on
-        // décide de la difficulté, pas un écran plus loin.
+        // Seulement la seconde table du mode Bataille : sans elle l'étape n'est pas complète. Le niveau et les
+        // sets modulaires sont à l'étape suivante (stepDifficulte).
         el("div", { class: "tb-menace", id: "tb-menace" }),
         estTel() ? null : el("div", { class: "tb-equipe", id: "tb-equipe" }),
     );
@@ -5223,19 +5842,21 @@ function verrouillerCible(sc) {
     majNav();
 }
 
-/** Le niveau de menace, sous la grille : règles en tampons, sets en chips. */
+/** Sous la grille des scénarios : seulement la seconde table du mode Bataille (le reste est à l'étape Difficulté). */
 function rendreMenace() {
     const zone = document.getElementById("tb-menace");
     if (!zone) return;
+    poser(zone, state.scenario && estBataille() ? blocSecondeTable() : null);
+}
+
+/** Le niveau de menace, dans la page Difficulté : règles en tampons, héroïque, environnement optionnel. */
+function rendreNiveau(zone, surChangement) {
     const sc = state.scenario;
-    if (!sc) {
-        poser(zone,el("div", { class: "tb-menace-vide" }, t("Choisis un méchant pour régler la menace.")));
-        return;
-    }
+    if (!sc) return;
     const d = state.difficulty;
     const regle = (libelle, actif, action) => el("button", {
         class: "tampon" + (actif ? " on" : ""),
-        onclick: () => { action(); rendreMenace(); rendreTable(); },
+        onclick: () => { action(); rendreNiveau(zone, surChangement); if (surChangement) surChangement(); },
     }, libelle);
 
     const heroique = el("div", { class: "tb-heroique" },
@@ -5271,21 +5892,8 @@ function rendreMenace() {
             regle("Skirmish", d.skirmish, () => { d.skirmish = !d.skirmish; }),
             heroique,
         ),
-        el("div", { class: "tb-menace-ligne" },
-            el("span", { class: "tb-menace-k" }, t("Sets modulaires")),
-            regle(t("Recommandés"), d.modularConfig === "recommended", () => { d.modularConfig = "recommended"; applyModularConfig(); }),
-            regle(t("Personnalisés"), d.modularConfig === "custom", () => {
-                d.modularConfig = "custom";
-                // Le choix des sets s'ouvre a DROITE, a la place du mechant (16/10/2026), sur PC.
-                if (!estTel()) setTimeout(ouvrirPanneauModulaires, 0);
-            }),
-            regle(t("Aléatoire"), d.modularConfig === "random", () => { d.modularConfig = "random"; applyModularConfig(); }),
-        ),
-        el("div", { class: "mod-chips", id: "modular-box" }),
         caseIntenseCombatants(sc),
-        estBataille() ? blocSecondeTable() : null,
     );
-    renderModular();
 }
 
 /**
@@ -5299,7 +5907,7 @@ function caseIntenseCombatants(sc) {
     if (!sc || !proposerIntense(sc.mandatoryEncounterSets)) return null;
     if (texteIntense === null) {
         texteIntense = "";
-        texteIntenseFr().then((txt) => { texteIntense = txt; if (txt) rendreMenace(); });
+        texteIntenseFr().then((txt) => { texteIntense = txt; if (txt) { const z = document.getElementById("tb-niveau"); if (z) rendreNiveau(z); } });
     }
     const d = state.difficulty;
     // En anglais, le texte imprime de la carte ; en francais, sa traduction.
@@ -5450,8 +6058,8 @@ async function preselectionDernierScenario() {
     const scs = await catalog.scenariosForExtension(ext.key);
     const sc = scs.find((s) => s.id === dernier);
     if (!sc) return false;
-    // Le dernier scénario joué est fan-made : le filtre s'allume pour qu'il reste visible.
-    state.extFanmade = /custom/i.test(ext.key);
+    // Le dernier scénario joué décide de l'onglet : sa boîte reste visible.
+    poserGroupeExtensions(groupeDeLExtension(ext.key));
     state.extensionTab = ext.key;
     selectScenario(sc);
     return true;
@@ -5481,16 +6089,73 @@ function libelleExtension(e, auteur) {
     return interne ? nomAvecAuteur(interne[1], auteur, true) : nom;
 }
 
+/** Les trois onglets de l'étape Vilain (29/10/2026, demande de l'utilisateur) : le type est celui que FFG imprime sur la
+ *  couverture (« Scenario Pack » / « Expansion » / « Rulebook » des grandes boîtes). Core Set + Extensions : Core Set,
+ *  Rise of Red Skull, Galaxy's Most Wanted, Mad Titan's Shadow, Sinister Motives, Mutant Genesis, NeXt Evolution,
+ *  Age of Apocalypse, S.H.I.E.L.D., Civil War, Fear No Evil. Tout autre officiel (même Mojo Mania, imprimé « Scenario Pack ») :
+ *  Packs scénario. Les « Custom » : Fan-made. */
+const GROUPES_EXTENSIONS = [
+    { id: "ext", libelle: "Core Set + Extensions" },
+    { id: "scn", libelle: "Packs scénario" },
+    { id: "fan", libelle: "Fan-made" },
+];
+const NUMEROS_CORE_ET_EXTENSIONS = new Set([1, 4, 16, 21, 27, 32, 40, 45, 50, 56, 60]);
+const CLE_GROUPE_EXTENSIONS = "mc_ext_groupe_v1";
+const SECTIONS_FANMADE = [
+    { id: "camp", libelle: "Campagnes" },
+    { id: "scn", libelle: "Scénarios" },
+    { id: "defis", libelle: "Défis et autres" },
+];
+// Campagnes : couverture « Expansion » / « Extension » / « Rulebook » ; défis : Challenges et Super Bouffon ; le reste : « Scenario Pack ».
+const NUMEROS_FANMADE_CAMPAGNES = new Set([120, 143, 144, 178, 208, 241]);
+const NUMEROS_FANMADE_DEFIS = new Set([210, 235]);
+function sectionDeLExtensionFanmade(cle) {
+    const numero = parseInt(String(cle).split(".")[0], 10);
+    if (NUMEROS_FANMADE_CAMPAGNES.has(numero)) return "camp";
+    return NUMEROS_FANMADE_DEFIS.has(numero) ? "defis" : "scn";
+}
+function groupeDeLExtension(cle) {
+    if (/custom/i.test(cle)) return "fan";
+    return NUMEROS_CORE_ET_EXTENSIONS.has(parseInt(String(cle).split(".")[0], 10)) ? "ext" : "scn";
+}
+function poserGroupeExtensions(id) {
+    state.extGroupe = id;
+    state.extFanmade = id === "fan";
+    try { window.localStorage.setItem(CLE_GROUPE_EXTENSIONS, id); } catch { /* navigation privée */ }
+}
+function lireGroupeExtensions() {
+    if (state.extGroupe) return state.extGroupe;
+    let id = "";
+    try { id = window.localStorage.getItem(CLE_GROUPE_EXTENSIONS) || ""; } catch { /* navigation privée */ }
+    state.extGroupe = GROUPES_EXTENSIONS.some((g) => g.id === id) ? id : "ext";
+    state.extFanmade = state.extGroupe === "fan";
+    return state.extGroupe;
+}
+
 async function loadExtTabs() {
     await preselectionDernierScenario();
     // « Weekly Challenges » et « Défis » ne se choisissent plus ici (17/10/2026, demande de l'utilisateur).
     const toutes = (await catalog.extensions()).filter((e) => e.scenarios.length
         && e.key !== "defis" && !/weekly/i.test(e.key));
-    const nbFanmade = toutes.filter((e) => /custom/i.test(e.key)).length;
-    // Le filtre « Fan-made » (16/10/2026, selection du mechant en trois colonnes) :
-    // decoche = les officielles seules, coche = les fan-made seules, comme sur l'ecran des heros.
-    // Décoché (19/10/2026) : seulement les boîtes officielles ; coché : seulement les fan-made, comme pour les héros.
-    const exts = toutes.filter((e) => /custom/i.test(e.key) === !!state.extFanmade);
+    const groupe = lireGroupeExtensions();
+    const exts = toutes.filter((e) => groupeDeLExtension(e.key) === groupe);
+    const barre = document.getElementById("ext-groupes");
+    if (barre) {
+        barre.replaceChildren(...GROUPES_EXTENSIONS.map((g) => el("button", {
+            class: "ext-groupe" + (g.id === groupe ? " on" : ""),
+            // Repere fan-made (06/11/2026) : la seule facon pour le CSS de distinguer
+            // cet onglet des deux autres, qui partagent la meme classe « ext-groupe ».
+            "data-id": g.id,
+            role: "tab",
+            "aria-selected": g.id === groupe ? "true" : "false",
+            onclick: () => {
+                if (g.id === state.extGroupe) return;
+                poserGroupeExtensions(g.id);
+                state.extensionTab = null;
+                loadExtTabs();
+            },
+        }, t(g.libelle))));
+    }
     // Si l'onglet courant n'existe plus dans la liste, on le recale.
     const validKeys = new Set(exts.map((e) => e.key));
     if (!state.extensionTab || !validKeys.has(state.extensionTab)) {
@@ -5500,38 +6165,46 @@ async function loadExtTabs() {
     if (!tabs) return;
     const auteurs = new Map();
     for (const e of exts) if (/custom/i.test(e.key)) auteurs.set(e.key, await auteurDeExtension(e));
-    const filtre = el("button", {
-        class: "ext-fanmade" + (state.extFanmade ? " on" : ""),
-        "aria-pressed": state.extFanmade ? "true" : "false",
-        onclick: () => { state.extFanmade = !state.extFanmade; loadExtTabs(); },
-    }, `${t("Fan-made")} (${nbFanmade})`);
-    // Le bouton vit dans l'en-tete du panneau (pas dans la grille des boites : il lui
-    // volerait une rangee), a cote du compte de scenarios.
-    const entete = tabs.parentElement && tabs.parentElement.querySelector(".tb-entete");
-    if (entete) {
-        entete.querySelectorAll(".ext-fanmade").forEach((x) => x.remove());
-        entete.insertBefore(filtre, entete.querySelector(".tb-mode"));
-    }
     majMerciVilains();
-    tabs.replaceChildren(...exts.map((e) => el("button", {
+    const tuileExtension = (e) => el("button", {
         class: "ext-tab cut" + (state.extensionTab === e.key ? " on" : ""),
-        title: e.key,
+        // Plus de fenetre au survol d'une extension (23/10/2026, demande de l'utilisateur) : ni l'apercu en grand (`showExtHover`) ni
+        // l'infobulle du navigateur (« 56. Civil War »).
+        "aria-label": e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key)),
         onclick: () => { hideHover(); state.extensionTab = e.key; loadExtTabs(); loadScnGrid(); },
-        onmouseenter: auSurvol((ev) => showExtHover(e, ev.currentTarget)),
-        onmouseleave: auSurvol(scheduleHide),
     },
-        e.key === "defis"
-            ? el("div", { class: "box box-defis" }, picto("fa-trophy"))
+        e.key === "defis" || e.key === "210. Custom (Challenges)" || e.key === "235. Custom (Super Bouffon / Jigsaw)"
+            ? el("div", { class: "box box-defis" }, picto(e.key === "235. Custom (Super Bouffon / Jigsaw)" ? "fa-mask" : "fa-trophy"))
             : el("div", { class: "box", style: { backgroundImage: `url("${pochetteBoite(e.key)}")` } }),
         el("span", { class: "exname" }, e.key === "defis" ? t("Défis") : libelleExtension(e, auteurs.get(e.key))),
-    )));
+    );
+    // Fan-made : trois sections avec un titre (29/10/2026, demande de l'utilisateur), le reste en une seule grille.
+    if (groupe === "fan") {
+        const enfants = [];
+        const effectifs = [];
+        for (const section of SECTIONS_FANMADE) {
+            const boites = exts.filter((e) => sectionDeLExtensionFanmade(e.key) === section.id);
+            if (!boites.length) continue;
+            enfants.push(el("div", { class: "ext-section" }, t(section.libelle)), ...boites.map(tuileExtension));
+            effectifs.push(boites.length);
+        }
+        tabs.dataset.sections = effectifs.join(",");
+        tabs.replaceChildren(...enfants);
+    } else {
+        delete tabs.dataset.sections;
+        tabs.replaceChildren(...exts.map(tuileExtension));
+    }
     ajusterPochettes();
     loadScnGrid();
 }
 
 /** Les boîtes dont on a une pochette recadrée au format commun (outils/pochettes-boites.py, 18/10/2026) :
- *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine. */
-const POCHETTES_RECADREES = new Set([1, 2, 4, 7, 11, 16, 21, 24, 27, 32, 39, 40, 45, 50, 55, 56, 57, 60, 119, 120, 136, 143, 178, 190, 192, 195]);
+ *  l'illustration de face, sans liseré de pack ni perspective. Les autres gardent leur image d'origine.
+ *  ⚠ 1, 56, 57, 119, 120, 143, 178 et 192 RETIRÉS le 29/10/2026 : nouvelles images d'origine (Core Set,
+ *  Civil War, Synthezoid Smackdown, The Spot, Web of Deceit, Skrull Menace, Hunting Season, Bebop &
+ *  Rocksteady) posées directement dans assets/textures/sets/, affichées entières (pochette carrée en
+ *  « contain », voir prepare.css) : plus besoin d'un recadrage manuel pour elles. */
+const POCHETTES_RECADREES = new Set([2, 7, 11, 24, 39, 136]);
 function pochetteBoite(cle) {
     const numero = parseInt(String(cle).split(".")[0], 10);
     return POCHETTES_RECADREES.has(numero) && /^\d+\. /.test(cle)
@@ -5552,13 +6225,18 @@ function ajusterPochettes() {
     const L = tabs.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     const H = tabs.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
     if (L <= 0 || H <= 0) return;
-    const ECART_X = 6, ECART_Y = 4, RATIO = 0.56;
+    // RATIO : largeur / hauteur totale d'une pochette, etiquette comprise (pas celui de la
+    // seule image). Pochette carree (29/10/2026, --boite-w/--boite-h) + ~25px d'etiquette.
+    const ECART_X = 6, ECART_Y = 4, RATIO = 0.75, TITRE_SECTION = 48;
+    // Fan-made : chaque section recommence une rangée et porte un titre (voir loadExtTabs).
+    const effectifs = tabs.dataset.sections ? tabs.dataset.sections.split(",").map(Number) : [n];
     let meilleur = 3;
     for (let c = 3; c <= 10; c++) {
         const w = (L - ECART_X * (c - 1)) / c;
-        const lignes = Math.ceil(n / c);
+        const lignes = effectifs.reduce((somme, k) => somme + Math.ceil(k / c), 0);
         const h = w / RATIO;
-        if (lignes * h + ECART_Y * (lignes - 1) <= H) { meilleur = c; break; }
+        const titres = tabs.dataset.sections ? effectifs.length * TITRE_SECTION : 0;
+        if (lignes * h + ECART_Y * (lignes - 1) + titres <= H) { meilleur = c; break; }
         meilleur = c;
     }
     tabs.style.setProperty("grid-template-columns", `repeat(${meilleur}, minmax(0, 1fr))`, "important");
@@ -5577,7 +6255,9 @@ async function loadScnGrid() {
     // vilain se choisit dans une modale au clic (decision utilisateur du
     // 18/09/2026). La tuile montre le dernier vilain choisi sur cet appareil.
     const ext = (await catalog.extensions()).find((e) => e.key === state.extensionTab);
-    const scs = regrouperUnderlings(bruts, ext || {}, prefs.underlingsMemoire());
+    // Les tuiles gardent TOUJOURS leur vilain d'origine (un par tuile) : on n'y applique plus le dernier vilain choisi sur l'appareil
+    // (22/10/2026, signalement de Yarro : « les images des scenarios ne sont pas les bonnes »). Le choix reste dans la fenetre des vilains.
+    const scs = regrouperUnderlings(bruts, ext || {}, undefined);
     grid = document.getElementById("scn-grid");
     if (!grid) return;
     const compte = document.getElementById("tb-compte");
@@ -5599,18 +6279,25 @@ async function loadScnGrid() {
             onclick: (e) => {
                 if (ferme) return;
                 if (estTel()) {
-                    // Toucher = aperçu dans le bandeau ; « Choisir » valide.
+                    // Toucher = CHOISIR le méchant (24/10/2026, comme les héros) : on en touche un autre pour changer,
+                    // puis « Continuer » en bas. Plus besoin de remonter au « Choisir » du bandeau.
                     mechantApercuTel = { sc, concret };
                     document.querySelectorAll(".tb-port.apercu").forEach((b) => b.classList.remove("apercu"));
                     e.currentTarget.classList.add("apercu");
-                    return rendreSceneMechantTel(concret);
+                    rendreSceneMechantTel(concret);
+                    return choisirMechantTel({ sc, concret });
                 }
                 if (plusieurs) ouvrirModaleUnderling(sc); else verrouillerCible(concret);
             },
             onmouseenter: estTel() ? undefined : () => rendreSceneMechant(concret),
             onmouseleave: estTel() ? undefined : () => rendreSceneMechant(state.scenario),
         },
-            portraitScenario(concret),
+            // MC×DC (22/10/2026) : la tuile d'une affaire montre la MANIGANCE ANNEXE (`tuile_manigance`), pas le sous-fifre.
+            portraitAffaire(ext, sc) || portraitScenario(
+                // One Last Kill : la tuile montre le SOUS-FIFRE (Jigsaw / Hobgoblin), pas le Punisher commun aux deux (22/10/2026).
+                ext && ext.tuileSbireScenarios && ext.tuileSbireScenarios[sc.id]
+                    ? { ...concret, tileImage: ext.tuileSbireScenarios[sc.id], villainCards: [ext.tuileSbireScenarios[sc.id]] }
+                    : concret),
             el("span", { class: "tb-port-nom" }, nomAvecAuteur(sc.name, sc.auteur || concret.auteur, sc.homebrew || concret.homebrew)),
             plusieurs ? el("span", { class: "st-exp" }, sc.underlings.length + " " + t("vilains au choix")) : null,
             ferme ? el("span", { class: "tb-verrou" }, verrou.etiquette) : null,
@@ -5705,69 +6392,7 @@ function nomDuSetModulaire(nomFichier) {
     return nomAvecAuteur(nomSetRencontre(nomFichier), auteur, true);
 }
 
-/** PC : le choix des sets modulaires dans un panneau qui prend la place de l'image du mechant (colonne de droite). */
-async function ouvrirPanneauModulaires() {
-    const ecran = document.querySelector(".team-b.eux");
-    if (!ecran) return;
-    ecran.querySelectorAll(".pm-droite").forEach((x) => x.remove());
-    const d = state.difficulty;
-    const sel = new Set(d.selectedModularSets);
-    const liste = el("div", { class: "mod-chips pm-liste" }, el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
-    const fermer = () => { panneau.remove(); renderModular(); };
-    const panneau = el("aside", { class: "pm-droite", role: "dialog", "aria-label": t("Sets modulaires") },
-        el("div", { class: "pm-tete" },
-            el("b", { class: "mvl" }, t("Sets modulaires")),
-            el("button", { class: "pm-fermer", "aria-label": t("Fermer"), onclick: fermer }, "×")),
-        liste,
-        el("div", { class: "pm-pied" }, el("button", { class: "btn primary", onclick: fermer }, t("Valider"))));
-    ecran.append(panneau);
-    const tous = (await catalog.encounterSets()).filter((x) => x.kind === "modular");
-    liste.replaceChildren(...tous.map((x) => el("span", {
-        class: "mod-chip" + (sel.has(x.name) ? " on" : ""),
-        onclick: (e) => {
-            sel.has(x.name) ? sel.delete(x.name) : sel.add(x.name);
-            d.selectedModularSets = [...sel];
-            e.currentTarget.classList.toggle("on");
-        },
-    }, nomAvecAuteur(x.displayName, x.auteur, true))));
-}
-
-async function renderModular() {
-    await Promise.resolve();
-    const box = document.getElementById("modular-box");
-    if (!box) return;
-    const d = state.difficulty;
-    if (d.modularConfig === "recommended") {
-        box.replaceChildren(el("div", { class: "mod-chips" },
-            ...state.scenario.recommendedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s))),
-            state.scenario.recommendedModularSets.length === 0 ? el("span", { class: "muted" }, t("Aucun set modulaire recommandé.")) : null,
-        ));
-    } else if (d.modularConfig === "random") {
-        box.replaceChildren(el("div", { class: "mod-chips" }, ...d.selectedModularSets.map((s) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(s)))));
-    } else if (!estTel() && document.querySelector(".team-b.eux")) {
-        // PC : un resume des sets choisis et un bouton, pas la liste entiere (elle
-        // ne tient pas dans la colonne du milieu) ; la liste est dans le panneau de droite.
-        box.replaceChildren(el("div", { class: "mod-chips" },
-            ...d.selectedModularSets.map((n) => el("span", { class: "mod-chip on" }, nomDuSetModulaire(n))),
-            el("button", { class: "tampon", onclick: () => ouvrirPanneauModulaires() },
-                d.selectedModularSets.length ? t("Modifier les sets") : t("Choisir les sets modulaires"))));
-    } else {
-        box.replaceChildren(el("div", { class: "loading" }, t("Chargement des sets modulaires...")));
-        const all = (await catalog.encounterSets()).filter((s) => s.kind === "modular");
-        const sel = new Set(d.selectedModularSets);
-        box.replaceChildren(el("div", { class: "mod-chips" }, ...all.map((s) =>
-            el("span", {
-                class: "mod-chip" + (sel.has(s.name) ? " on" : ""),
-                onclick: (e) => {
-                    sel.has(s.name) ? sel.delete(s.name) : sel.add(s.name);
-                    d.selectedModularSets = [...sel];
-                    e.target.classList.toggle("on");
-                },
-            }, nomAvecAuteur(s.displayName, s.auteur, true)))));
-    }
-}
-
-/* ---- Étape 4, le face à face : la splash page -------------------------------
+/* ---- Étape 5, le face à face : la splash page -------------------------------
    L'écran est coupé en diagonale, notre camp à gauche sur fond clair, le
    méchant à droite sur fond sombre, chacun en art plein cadre. L'étoile VS est
    posée sur la coupe. Les réglages de la partie sont en tampons sous les noms,
@@ -5776,6 +6401,16 @@ async function renderModular() {
 function sousTitre(texte, titre) {
     const propre = String(texte || "").trim();
     return propre && propre.toLowerCase() !== String(titre || "").trim().toLowerCase() ? propre : "";
+}
+
+/** Étape 4 : niveau de menace, sets modulaires, propositions VillainTheory (page-difficulte.js). */
+function stepDifficulte() {
+    return construirePageDifficulte({
+        state, el, poser, t, catalog, estTel, langueActuelle,
+        rendreNiveau, nomExtension, numeroDExtension, nomDuSetModulaire,
+        auteurDuSet: (id) => catalog.auteurSetRencontre(id),
+        appliquerSetsModulaires: applyModularConfig,
+    });
 }
 
 function stepSummary() {
@@ -5841,7 +6476,9 @@ function stepSummary() {
                 el("div", { class: "fo-reglages" },
                     ...reglages.map((x) => el("span", { class: "tampon" }, x))),
             ),
-            el("img", { class: "fo-vs", src: "/public/img/prepare/vs.png", alt: "VS", draggable: "false" }),
+            document.documentElement.classList.contains("tel")
+                ? el("div", { class: "fo-vs fo-vs-texte", "aria-label": "VS" }, "VS")   // téléphone : un VS blanc en Bangers, plus d'éclair (23/10/2026)
+                : el("img", { class: "fo-vs", src: "/public/img/prepare/vs.png", alt: "VS", draggable: "false" }),
             el("div", { class: "fo-side villain-side" },
                 vilain,
                 sc ? el("div", { class: "fo-nomg" }, sc.name) : el("div", { class: "fo-nomg" }, t("Méchant non défini")),
@@ -6012,6 +6649,11 @@ installerHistorique(appliquerCleTel);
         console.error("reprise equipe campagne:", e);
     }
     render();
+    // Play : le compteur de tables invite se charge tout de suite, avant les fenetres modales (langue, phase) qui bloquent la suite.
+    if (invitePlay()) {
+        void chargerPlacesInvite();
+        setInterval(() => { if (!document.hidden) void chargerPlacesInvite(); }, 30000);
+    }
     // ⚠ APRES `render()`, ET NON AVANT. La modale se pose sur `document.body` ;
     // posee avant, le premier rendu la balayait. Et on ne la montre pas en
     // creation d'equipe de campagne : on y arrive depuis un autre ecran, la
@@ -6025,14 +6667,15 @@ installerHistorique(appliquerCleTel);
     synchroniserTeinte(reponsePreferences);
     appliquerTeintePage(teinteActuelle());
     // Plus de fenetre « Choisis ton affichage » a la premiere visite (18/10/2026) : tout le monde commence en
-    // Normal et peut en changer dans Options (`demanderLAffichage({ rouvert: true })`) ou par le bouton de l'en-tete.
+    // Normal et peut en changer dans Options (`ouvrirReglagesEnJeu()`) ou par le bouton de l'en-tete.
     // Apres l'affichage : une seule fenetre a la fois, et la langue est deja
     // choisie. Chaque joueur la voit une fois, nouveau comme ancien.
     // Le passage unique aux trois choix se fait aussi pour qui n'a plus la fenêtre à voir (19/10/2026).
     try { migrerPhaseTroisChoix(localStorage); } catch (e) { /* stockage indisponible */ }
     let phaseVue = null;
-    try { phaseVue = localStorage.getItem(CLE_PHASE_MODE_VU); } catch (e) { /* stockage indisponible */ }
-    if (!creationCampagne() && doitProposerLaPhase(phaseVue)) {
+    try { phaseVue = localStorage.getItem(CLE_PHASE_CHOIX_VU); } catch (e) { /* stockage indisponible */ }
+    // Sur telephone la phase du mechant est d'office « Guidee » : pas de fenetre (26/10/2026).
+    if (!creationCampagne() && doitProposerLaPhaseSurAppareil(phaseVue, estTel())) {
         await demanderLaPhaseDuMechant();
     }
     // L'EQUIPE RESTE ENSEMBLE (13/10/2026) : l'hote qui rouvre la preparation

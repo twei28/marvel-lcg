@@ -16,6 +16,7 @@ const zonesDuJoueur = (joueur: WorldPlayer): (WorldCard[] | undefined)[] => [
   joueur.supports,
   joueur.reserve,
   joueur.rising_tide,
+  joueur.damnation,
   joueur.area_processing,
   joueur.additional_deck,
   joueur.additional_discard_pile,

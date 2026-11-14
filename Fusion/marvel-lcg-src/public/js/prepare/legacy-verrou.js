@@ -9,7 +9,7 @@
 // rend des tables de consultation. L'écran ne calcule rien, il lit.
 "use strict";
 
-import { cleNom, condition } from "./legacy.js";
+import { cleNom, condition, VAGUES_HEROS_LIBRES } from "./legacy.js";
 
 /** Le libellé d'une étape, court, pour la ligne de condition. */
 function nomCourt(etape, t) {
@@ -70,6 +70,9 @@ export function fabriquerVerrou(etat, heros, t = (x) => x) {
                     condition: jetons.restants > 0
                         ? t("1 jeton : clique pour le débloquer")
                         : t("1 jeton. Gagne d'abord avec un héros officiel.") };
+        } else if (VAGUES_HEROS_LIBRES.has(h.vague)) {
+            // Vague 1 : jouable avec le core set, sans jeton ni franchissement.
+            sortie = { ouvert: true, achetable: false, etiquette: "", condition: "" };
         } else {
             const etape = parVague.get(h.vague);
             const ouvert = !!(etape && etape.ouvert);

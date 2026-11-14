@@ -16,11 +16,11 @@ def GetAbilities() -> Sequence['Ability']:
         for cible in impaires:
             Faces.PlaceTokensOn([cible], 1, 'threat', effect)
         if len(impaires) <= 2:
-            player.AskDiscardHandCards(
-                (1, 1),
-                effect,
-                finder=CardFinder(is_odd_cost=True)
-            )
+            # Ni `AskDiscardHandCards` ni `CardFinder(is_odd_cost=...)` n'existent (AttributeError a chaque defausse, releve le
+            # 26/10/2026) : on filtre la main sur le cout IMPRIME impair, puis le joueur CHOISIT (defausse obligatoire s'il y en a).
+            impaires_en_main = [x for x in player.hand_cards.Get() if FacesCounter.GetPrintedCost([x]) % 2 == 1]
+            if impaires_en_main:
+                player.AskDiscardFaces(impaires_en_main, (1, 1), effect)
 
     def boost(effect: 'Effect', message: 'Message.WhenCardBecomeBoost') -> None:
         # « Boost: Place 2 threat on The Spot. »

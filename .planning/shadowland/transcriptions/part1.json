@@ -1,0 +1,449 @@
+[
+ {
+  "id_scan": "65001A",
+  "titre": "A Barricade of Blades",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1A",
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b>Contents</b>: Shadows in the Night, Dark Protégé, and Standard encounter sets. One modular encounter set <i>(Ninja Swarm)</i>.\n<b>Setup</b>: Put each The Streets Below environment into play. Set the Dark Protégé encounter set aside. Choose 1 random villain from that set and reveal its side A, then shuffle each card linked to that villain into the encounter deck.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "1/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 1A",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65001B",
+  "titre": "A Barricade of Blades",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "1B",
+  "traits": null,
+  "stats": {
+   "StartingThreat": "7 par_joueur",
+   "escalade": "+1 par_joueur",
+   "TargetThreat": "2 par_joueur"
+  },
+  "icones": null,
+  "texte": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "1/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 1B",
+  "orientation": "paysage",
+  "incertitudes": [
+   "Le texte 'In expert mode...' et le premier paragraphe ne sont pas en italique; 'If the villain is defeated on side B...' est en gras complet (pas un mot-clé)",
+   "7 = menace de depart (grand chiffre en haut a gauche) par joueur; 2 par joueur = seuil en bas a droite"
+  ]
+ },
+ {
+  "id_scan": "65002A",
+  "titre": "Fortress Lockdown",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "2A",
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<i>While the forces on the outside hold the heroes back, ninjas on the inside lock every door and window.</i>\nIn expert mode, the villain gets +3[per_hero] hit points.\n<b>When Revealed</b>: Change the villain's position. Each player searches the encounter deck and discard pile for a minion and reveals it. <i>(Shuffle.)</i>",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "2/13",
+  "pied": "Facundo Moyano © MARVEL © 2026 FFG [icône FFG] 2A",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65002B",
+  "titre": "Fortress Lockdown",
+  "unique": false,
+  "sous_titre": null,
+  "type": "MAIN SCHEME",
+  "face": "2B",
+  "traits": null,
+  "stats": {
+   "StartingThreat": "8 par_joueur",
+   "escalade": "+1 par_joueur",
+   "TargetThreat": "2 par_joueur"
+  },
+  "icones": null,
+  "texte": "In expert mode, the villain gets +1 SCH and +3[per_hero] hit points.\n<b>Forced Interrupt</b>: When the villain would be defeated on side A, instead flip it to side B, reset its hit points, and change the villain's position. Deal each player 1 facedown encounter card.\n<b>If the villain is defeated on side B, the players win the game.</b>\n<b>If this stage is completed, the players lose the game.</b>",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "2/13",
+  "pied": "Facundo Moyano © MARVEL © 2026 FFG [icône FFG] 2B",
+  "orientation": "paysage",
+  "incertitudes": []
+ },
+ {
+  "id_scan": "65003A",
+  "titre": "The Streets Below",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ENVIRONMENT",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "3/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 3A",
+  "orientation": "portrait",
+  "incertitudes": [
+   "'VILLAIN POSITION.' est en gras italique majuscules (style de trait), pas un mot-clé gras normal; balisage <b><i> a vérifier"
+  ]
+ },
+ {
+  "id_scan": "65003B",
+  "titre": "Atop the Tenshu",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ENVIRONMENT",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b><i>VILLAIN POSITION.</i></b>\nIf both positions are the same:\n• Each character gets +1 ATK.\nIf the positions are different:\n• Reduce the amount of damage each character takes from each attack by 1.\n• Threat cannot be removed from the main scheme.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "3/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 3B",
+  "orientation": "portrait",
+  "incertitudes": [
+   "'VILLAIN POSITION.' en gras italique majuscules (style de trait)"
+  ]
+ },
+ {
+  "id_scan": "65004A",
+  "titre": "The Streets Below",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ENVIRONMENT",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Place 3 threat on the main scheme and stun your identity.\n• Spend [physical] [physical] resources.\n• Spend 1 resource of any type and exhaust an <b><i>AERIAL</i></b> character you control.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "4/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 4A",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icone de ressource = poing noir (identifie comme [physical]), deux fois",
+   "AERIAL en gras italique majuscules (trait)"
+  ]
+ },
+ {
+  "id_scan": "65004B",
+  "titre": "Atop the Tenshu",
+  "unique": false,
+  "sous_titre": null,
+  "type": "ENVIRONMENT",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b><i>HERO POSITION.</i></b>\n<b>First Player Action</b>: Resolve one of the effects below, then flip this card:\n• Deal 3 damage to your identity.\n• Spend [energy] [energy] resources.\n• Discard an ally or upgrade you control.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "4/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 4B",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Icone de ressource = éclair noir (identifie comme [energy]), deux fois"
+  ]
+ },
+ {
+  "id_scan": "65005",
+  "titre": "Black Tarantula",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "BRUTE",
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2",
+   "HP": "5"
+  },
+  "icones": [
+   {
+    "nom": "icones rouges en forme de Y en bas a droite",
+    "nombre": 3
+   }
+  ],
+  "texte": "Guard.\n<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, Black Tarantula attacks you; otherwise, give the villain and Black Tarantula each a tough status card.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "5/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 5",
+  "orientation": "portrait",
+  "incertitudes": [
+   "HP=5 lu dans le cercle orange (minion); 3 icones rouges en bas a droite (probablement marqueur d'ensemble/nombre d'exemplaires), nature non certaine"
+  ]
+ },
+ {
+  "id_scan": "65006",
+  "titre": "Ghost Maker",
+  "unique": true,
+  "sous_titre": null,
+  "type": "MINION",
+  "face": null,
+  "traits": [
+   "HAND",
+   "NINJA"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "4"
+  },
+  "icones": [
+   {
+    "nom": "boost star (étoile rouge en bas a droite)",
+    "nombre": 1
+   }
+  ],
+  "texte": "<b>When Defeated</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, discard 1 card you control; otherwise, take 2 indirect damage.\n<b>[star] Boost</b>: If an ally is defending against this attack, reveal this minion.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "6/13",
+  "pied": "Kyle Petchock © MARVEL © 2026 FFG [icône FFG] 6",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Il y a une ligne de séparation horizontale avant la ligne Boost",
+   "Étoile du Boost: en texte, '★' noire devant 'Boost'; mis [star]"
+  ]
+ },
+ {
+  "id_scan": "65007",
+  "titre": "Sealed Entrances",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": null,
+  "stats": {
+   "StartingThreat": "4"
+  },
+  "icones": [
+   {
+    "nom": "crisis",
+    "nombre": 1
+   },
+   {
+    "nom": "icones rouges en forme de Y en bas a gauche",
+    "nombre": 2
+   }
+  ],
+  "texte": "Assault. <i>(Basic thwarts against this scheme use ATK instead of THW.)</i>\n<b>When Defeated</b>: Change the villain's position if it has not changed this phase.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "7/13",
+  "pied": "Eduardo Mello © MARVEL © 2026 FFG [icône FFG] 7",
+  "orientation": "paysage",
+  "incertitudes": [
+   "'Assault.' non en gras (mot-clé en texte normal sur le scan)",
+   "4 = menace de depart sans icone joueur",
+   "2 icones rouges en bas a gauche, nature non certaine"
+  ]
+ },
+ {
+  "id_scan": "65008",
+  "titre": "Strategic Positioning",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": null,
+  "stats": {
+   "StartingThreat": "3 par_joueur"
+  },
+  "icones": [
+   {
+    "nom": "icones rouges en forme de Y en bas a gauche",
+    "nombre": 2
+   }
+  ],
+  "texte": "<i>Under Shadowland, the Hand rules the streets.</i>\nWhile the villain's position is The Streets Below, this scheme gains 1 acceleration icon ([acceleration]).\nWhile the villain's position is Atop the Tenshu, this scheme gains 1 hazard icon ([hazard]).",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "8/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 8",
+  "orientation": "paysage",
+  "incertitudes": [
+   "2 icones rouges en bas a gauche, nature non certaine",
+   "Pas d'icone crisis visible"
+  ]
+ },
+ {
+  "id_scan": "65009",
+  "titre": "Surround the Fortress",
+  "unique": false,
+  "sous_titre": null,
+  "type": "SIDE SCHEME",
+  "face": null,
+  "traits": null,
+  "stats": {
+   "StartingThreat": "2 par_joueur"
+  },
+  "icones": [
+   {
+    "nom": "crisis",
+    "nombre": 1
+   },
+   {
+    "nom": "icone rouge en forme de Y en bas a gauche",
+    "nombre": 1
+   }
+  ],
+  "texte": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 1[per_hero] threat on the main scheme; otherwise, place 1[per_hero] threat here.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "9/13",
+  "pied": "© MARVEL © 2026 FFG [icône FFG] 9",
+  "orientation": "paysage",
+  "incertitudes": [
+   "1 icone rouge en bas a gauche, nature non certaine"
+  ]
+ },
+ {
+  "id_scan": "65010",
+  "titre": "Chaos in Hell's Kitchen",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": [
+   {
+    "nom": "boost star (étoile rouge en bas a droite)",
+    "nombre": 1
+   }
+  ],
+  "texte": "<b>When Revealed</b>: Change the villain's position if it has not changed this phase. If the villain's position is Atop the Tenshu, place 2 threat on the main scheme; otherwise, take 2 damage.\n<b>[star] Boost</b>: Resolve this card's \"<b>When Revealed</b>\" ability.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "10/13",
+  "pied": "Andrea Di Vito & Laura Villari © MARVEL © 2026 FFG [icône FFG] 10",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Ligne de séparation horizontale avant Boost"
+  ]
+ },
+ {
+  "id_scan": "65011",
+  "titre": "Moonlit Silhouette",
+  "unique": false,
+  "sous_titre": null,
+  "type": "TREACHERY",
+  "face": null,
+  "traits": null,
+  "stats": null,
+  "icones": null,
+  "texte": "<b>When Revealed (Alter-Ego)</b>: Change the villain's position if it has not changed this phase. You are confused.\n<b>When Revealed (Hero)</b>: If the villain's position is Atop the Tenshu, the villain schemes; otherwise, the villain attacks you.",
+  "citation": null,
+  "set": "SHADOWS IN THE NIGHT",
+  "numero_dans_set": "12/13",
+  "pied": "Sebastián Guidobono © MARVEL © 2026 FFG [icône FFG] 11",
+  "orientation": "portrait",
+  "incertitudes": [
+   "Numero dans le set = 12/13 alors que le numero de collection au pied = 11"
+  ]
+ },
+ {
+  "id_scan": "65012A",
+  "titre": "Archpriestess",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "1★",
+   "HP": "15 par_joueur"
+  },
+  "icones": null,
+  "texte": "<b>[star] Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "1/16",
+  "pied": "Bruno Frenda © MARVEL © 2026 FFG [icône FFG] 12A ; ligne de set: DARK PROTÉGÉ (1/16) / HIT POINTS 15[per_hero]",
+  "orientation": "portrait",
+  "incertitudes": [
+   "ATK '1' avec une petite étoile en exposant (valeur imprimée '1★')",
+   "Le set imprime 'DARK PROTÉGÉ (1/16) / HIT POINTS 15[per_hero]'"
+  ]
+ },
+ {
+  "id_scan": "65012B",
+  "titre": "Archpriestess",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "B",
+  "traits": [
+   "HAND"
+  ],
+  "stats": {
+   "SCH": "2",
+   "ATK": "2★",
+   "HP": "18 par_joueur"
+  },
+  "icones": null,
+  "texte": "Steady. Toughness.\n<b>[star] Forced Response</b>: After Archpriestess attacks you, give a minion a tough status card. If no tough status card was placed this way, discard the top 3 cards of the encounter deck, then deal 1 minion discarded this way to yourself as a facedown encounter card.",
+  "citation": null,
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "1/16",
+  "pied": "Bruno Frenda © MARVEL © 2026 FFG [icône FFG] 12B ; ligne de set: DARK PROTÉGÉ (1/16) / HIT POINTS 18[per_hero]",
+  "orientation": "portrait",
+  "incertitudes": [
+   "ATK '2' avec petite étoile en exposant",
+   "'Steady.' et 'Toughness.' en texte normal non gras"
+  ]
+ },
+ {
+  "id_scan": "65013A",
+  "titre": "Daredevil",
+  "unique": true,
+  "sous_titre": null,
+  "type": "VILLAIN",
+  "face": "A",
+  "traits": [
+   "HAND",
+   "POSSESSED"
+  ],
+  "stats": {
+   "SCH": "1",
+   "ATK": "2",
+   "HP": "15 par_joueur"
+  },
+  "icones": null,
+  "texte": "<b>Forced Response</b>: After you or an ally you control attacks Daredevil, choose: Either discard 1 random card from your hand, or Daredevil attacks you. (Limit once per round per player.)",
+  "citation": "\"Hell's Kitchen is now under the protection of the Hand!\"",
+  "set": "DARK PROTÉGÉ",
+  "numero_dans_set": "2/16",
+  "pied": "Joey Vazquez © MARVEL © 2026 FFG [icône FFG] 13A ; ligne de set: DARK PROTÉGÉ (2/16) / HIT POINTS 15[per_hero]",
+  "orientation": "portrait",
+  "incertitudes": [
+   "'(Limit once per round per player.)' non italique sur le scan"
+  ]
+ }
+]

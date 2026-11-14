@@ -17,6 +17,19 @@ export function nomAvecAuteur(nom, auteur, homebrew) {
     return `${n} (${a})`;
 }
 
+/** « Phenexian and Mysteltainn » sont DEUX personnes (26/10/2026) : un créateur
+ *  écrit « X + Y », « X and Y », « X et Y » ou « X & Y » (ou « X, Y ») compte pour
+ *  deux. Le libellé imprimé sur les cartes (`custom`) n'est pas touché : seul le
+ *  décompte des remerciements et la page « Crédits » séparent les noms. Les
+ *  mots « and » / « et » ne séparent que quand ils sont isolés par des espaces
+ *  (« Sandra Anderson » reste un seul nom). */
+export function separerCreateurs(brut) {
+    return String(brut || "")
+        .split(/\s*\+\s*|\s*&\s*|\s*,\s*|\s+and\s+|\s+et\s+/i)
+        .map((n) => n.trim())
+        .filter(Boolean);
+}
+
 /** Les créateurs d'une liste de héros, chacun une fois, dans l'ordre
  *  alphabétique : « BlueHG + DesignHacker » compte pour deux personnes. Sert
  *  au remerciement affiché sur le filtre fan-made. */
@@ -24,9 +37,8 @@ export function createursDe(heroes) {
     const vus = new Map();
     for (const h of heroes || []) {
         if (!h || !h.homebrew || !h.auteur) continue;
-        for (const brut of String(h.auteur).split("+")) {
-            const nom = brut.trim();
-            if (nom && !vus.has(nom.toLowerCase())) vus.set(nom.toLowerCase(), nom);
+        for (const nom of separerCreateurs(h.auteur)) {
+            if (!vus.has(nom.toLowerCase())) vus.set(nom.toLowerCase(), nom);
         }
     }
     return [...vus.values()].sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
@@ -67,9 +79,24 @@ export const AUTEURS_EXTENSIONS = {
     "gorr the god butcher": "BlueHG",
     // Le set « Custom (Shredder) » contient les cartes du scénario ET celles du set TMNT : le nom ne retrouve pas le créateur seul (18/10/2026).
     "shredder": "Inkwire",
+    // Campagne MC×DC 2026 (demande du 22/10/2026) : « La ville ne dort jamais (MCDC 2026) », et ses défis à part.
+    "la ville ne dort jamais": "MCDC 2026",
+    "the city never sleeps": "MCDC 2026",
+    "challenges": "MCDC 2026",
+    "hellfire hunt": "Dipsome",
+    "hunting season": "Nugget",
+    "saison de chasse": "Nugget",
+    "the hunger core": "Penasquequeman",
+    "the spot": "Designhacker",
 };
 
-/** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas. */
+/** Le créateur d'une extension par son nom, ou "" si on ne le connaît pas.
+ *  Essaie le nom entier, puis le nom AVANT un suffixe « - ... » : une sous-boîte de
+ *  campagne (« Hellfire Hunt - Black King ») hérite ainsi du créateur de la campagne.
+ *  La clé est le nom AFFICHE (donc selon la langue) : d'où les variantes FR/EN ci-dessus. */
 export function auteurConnuDeLExtension(nomInterne) {
-    return AUTEURS_EXTENSIONS[String(nomInterne || "").trim().toLowerCase()] || "";
+    const brut = String(nomInterne || "").trim().toLowerCase();
+    if (AUTEURS_EXTENSIONS[brut]) return AUTEURS_EXTENSIONS[brut];
+    const sansSuffixe = brut.split(" - ")[0].trim();
+    return AUTEURS_EXTENSIONS[sansSuffixe] || "";
 }

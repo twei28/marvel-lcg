@@ -1012,6 +1012,21 @@
     pointer-events: auto;
   }
 
+  /* Le bouton de refus (« Ne pas défendre », « Passer »...) reste TOUJOURS visible : avec plusieurs défenseurs possibles
+     la liste des boutons dépasse le panneau de la phase, et le refus, dernier de la liste, sortait de l'écran sans le
+     moindre indice (29/10/2026, signalé par l'utilisateur sur téléphone : « il faut toujours pouvoir voir tous les
+     boutons »). Collé en bas du défilement, sur un dégradé qui masque les boutons qui passent dessous. */
+  .demande-centrale.est-en-scene .dc-boutons > .dc-refus {
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    width: 100%;
+    padding: 14px 0 4px;
+    background: linear-gradient(to top, rgba(14, 18, 25, 0.98) 68%, rgba(14, 18, 25, 0));
+    /* Recouvre l'espace sous le bouton, où une ligne de la liste dépassait encore. */
+    box-shadow: 0 28px 0 0 rgba(14, 18, 25, 0.98);
+  }
+
   /* La croix du coin : remet la partie avant le choix de la carte (Echap). */
   .dc-texte:has(> .dc-croix) {
     position: relative;
@@ -2289,6 +2304,29 @@
      la largeur du porteur ; les upgrades debordent en absolu vers le bas-droite
      sans pousser les voisines. --attach-step-* = le cran d'une upgrade a la
      suivante (42 ~ 1/3 d'une carte de 127 de large). */
+  /* Étiquette d'une pile posée sur la table (Damnation) : au pied de la carte, bleu du site, coins ~4 px. */
+  .plateau-pile-etiquette {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 6px;
+    z-index: 30;
+    padding: 2px 4px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+    color: #e8eef6;
+    background: rgba(18, 21, 30, 0.92);
+    border: 1px solid #3f86e0;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
   .plateau-unite {
     position: relative;
     display: flex;
@@ -2316,18 +2354,9 @@
   }
 
   /* --- Phases A VENIR (vilain / complot) -----------------------------------
-     Un petit tas DERRIERE la carte actuelle (decalage haut-droite), en retrait,
-     purement decoratif. Le bouton loupe ouvre la vue de toutes les phases. */
-  .stage-arriere {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: calc(28 - var(--i, 1));
-    transform: translate(calc(var(--i, 1) * 9px), calc(var(--i, 1) * -9px));
-    pointer-events: none;
-    filter: brightness(0.72) saturate(0.85);
-  }
-
+     Le bouton loupe ouvre la vue de toutes les phases (le tas de cartes
+     empilees derriere la carte active a ete retire le 06/11/2026, illisible
+     des qu'un scenario a beaucoup de stades). */
   .stages-bouton {
     position: absolute;
     bottom: 7px;
@@ -2456,6 +2485,20 @@
      descend de 8 px sous le cadre. */
   .carte-apercu .statuts {
     transform: translate(-50%, 16px);
+  }
+
+  /* --- Texte d'un ART ALTERNATIF, sous la grande carte (Board.tsx) : lisible, police normale. */
+  .carte-apercu .apercu-texte-art {
+    margin-top: 8px;
+    max-width: 100%;
+    padding: 6px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    text-align: left;
+    color: var(--txt, #e8edf3);
+    background: rgba(12, 14, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
   }
 
   /* --- SOUS la grande carte : les jetons, puis les statuts -------------------
@@ -2658,9 +2701,11 @@
      sur leur soeur. Une seule source par largeur, donc aucun risque de voir le
      texte et la carte diverger. */
   .carte-apercu {
-    /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). */
-    --largeur-face: 345px;
-    --largeur-face-paysage: 506px;
+    /* Apercu agrandi ~15 % de plus, a la demande (300 -> 345, 440 -> 506). Depuis le 05/11/2026,
+       un curseur dans Reglages > Apparence (--zoom-apercu, 70% a 150%) multiplie ces deux tailles
+       de depart -- demande de Feyli, « je trouve ça un peu petit ». */
+    --largeur-face: calc(345px * var(--zoom-apercu, 1));
+    --largeur-face-paysage: calc(506px * var(--zoom-apercu, 1));
   }
 
   .carte-apercu .scan-card {
@@ -2695,6 +2740,18 @@
     display: flex;
     align-items: flex-start;
     gap: 14px;
+  }
+
+  /* PAIRE JUMELLE EN JEU (decision du 20/10/2026, APERCU_JUMELLES_DOUBLE) : les deux
+     moities, a la taille de l'apercu d'une carte, collees bord a bord pour retrouver
+     l'illustration continue. Chaque moitie garde son libelle (sur le scan) et son
+     encadre de regle dessous. L'apercu reste ancre a droite : il s'elargit vers la
+     gauche. */
+  .carte-apercu.a-jumelles {
+    --echelle-raccord: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
   }
 
   /* Le texte des cartes doit rester LISIBLE meme a trois faces : a 208px les
@@ -2738,31 +2795,65 @@
      le premier heros a depasser 3 faces. Un premier essai les avait retrecies
      (meme taper que .a-faces-2/.a-faces-3) : illisibles, revenu en arriere
      a la demande de l'utilisateur (26/09/2026). A la place : la taille de
-     depart (345px/506px, heritee de `.carte-apercu` de base, aucune des deux
-     classes ne la redefinit ici) et un RETOUR A LA LIGNE sur plusieurs
-     rangees.
-     ⚠ `width`, PAS SEULEMENT `max-width`. `.carte-apercu` est en position
-     fixed, largeur automatique : un conteneur flex qui enveloppe (wrap) sans
-     largeur EXPLICITE se dimensionne sur son plus PETIT contenu possible
-     (une carte par rangee, mesure a 345px de large et 2806px de haut pour 5
-     faces) au lieu de profiter de la place disponible. `max-width` seul ne
-     change rien a ce calcul ; il faut forcer la largeur pour que plusieurs
-     cartes tiennent sur une meme rangee avant de passer a la suivante. */
+     depart (345px/506px) et un RETOUR A LA LIGNE sur plusieurs rangees.
+
+     ⚠⚠ MAIS CE RETOUR A LA LIGNE SORTAIT PAR LE BAS (signale sur The Warriors
+     Three ET Conan, 27/10/2026, capture a l'appui : la rangee du BAS etait
+     coupee par le bord bas de l'ecran). La cause, mesuree : a 345px, DEUX
+     rangees font ~1024px de haut pour une fenetre de 900px ; l'apercu, plus
+     haut que la fenetre, est colle en haut par usePlacement (placer.ts : « on
+     prefere perdre le bas »), et sa rangee basse passe sous l'ecran.
+
+     LE CORRECTIF : une GRILLE a nombre de colonnes FIXE (4 faces -> 2 colonnes,
+     5 faces -> 3 colonnes), donc TOUJOURS DEUX rangees au plus, dont la taille
+     est BORNEE PAR LA HAUTEUR de la fenetre pour que ces deux rangees tiennent
+     entieres. On garde la plus grande taille lisible qui rentre : 345px sur un
+     ecran haut (>=1080px), moins sur un ecran bas — jamais coupe.
+     La grille a un nombre de colonnes figE (et pas un flex-wrap) : le nombre de
+     rangees ne doit PAS dependre de la largeur des cartes, sinon la borne de
+     hauteur, calculee pour deux rangees, serait fausse des qu'une troisieme
+     apparait. */
   .carte-apercu.a-faces-4,
   .carte-apercu.a-faces-5 {
-    flex-wrap: wrap;
+    display: grid;
     justify-content: center;
+    justify-items: center;
+    align-items: start;
+    gap: 14px;
     width: min(980px, 92vw);
+    /* 2.772 = 2 rangees x (hauteur de cadre = largeur x 176/127). 96px = marge
+       haut+bas de l'apercu (usePlacement) + etiquettes/espaces des deux rangees.
+       Paysage : hauteur de cadre = largeur x 127/176, soit 2 x 0.7216 = 1.443. */
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772));
+    --largeur-face-paysage: min(506px, calc((100vh - 96px) / 1.443));
+  }
+
+  /* La largeur est en plus bornee par la LARGEUR de la fenetre, selon le nombre
+     de colonnes, pour qu'une rangee ne deborde jamais sur le cote. */
+  .carte-apercu.a-faces-4 {
+    grid-template-columns: repeat(2, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 14px) / 2));
+  }
+
+  .carte-apercu.a-faces-5 {
+    grid-template-columns: repeat(3, auto);
+    --largeur-face: min(345px, calc((100vh - 96px) / 2.772), calc((92vw - 28px) / 3));
   }
 
   /* L'autre face n'est qu'une image de reference : on masque les pastilles/stats
      qui appartiennent a la face visible, pas a celle-ci. */
-  .apercu-face-autre .top-strip,
   .apercu-face-autre .scan-stats-calee,
   .apercu-face-autre .scan-stat,
   .apercu-face-autre .scheme-threat-badge,
   .apercu-face-autre .ally-hp-badge {
     display: none;
+  }
+
+  /* ⚠ La bande de pastilles (« Premier joueur », « Actif ») est INVISIBLE sur l'autre face, pas retiree : elle tient 24px dans le
+     flux de la face en jeu, et un `display: none` ici decalait l'illustration de l'autre face de 24px vers le haut
+     (signale en jeu le 09/11/2026, heros / alter ego). `visibility` garde la meme hauteur, donc les deux cartes s'alignent. */
+  .apercu-face-autre .top-strip {
+    visibility: hidden;
   }
 
   .apercu-face-label {
@@ -2821,6 +2912,13 @@
     );
   }
 
+  /* Les ENVIRONNEMENTS (et les lieux de La ville) restent visibles en entier, jamais a moitie sous leur voisine : seuls les allies et les
+     sbires se serrent (23/10/2026, demande de l'utilisateur). */
+  .zone-rencontre .plateau-groupe[data-brique='environnements'] > * + *,
+  .zone-terrain-combat .plateau-groupe[data-brique='environnements'] > * + * {
+    margin-left: 0;
+  }
+
   /* --- Largeur utile et ancrage du zoom, zone par zone ----------------------
      --place doit suivre grid-template-columns. L'ancrage evite qu'une carte de
      bord grandisse hors de l'ecran : une carte de gauche grandit vers la droite,
@@ -2857,6 +2955,11 @@
        PLUTOT que de chevaucher sa voisine, qui doit rester intouchee. */
     height: 100%;
     overflow-y: auto;
+    /* ⚠ ALIGNEMENT « SAFE » (09/11/2026, scenario Mephisto a DEUX joueurs : pile de mises de cote + une Damnation PAR joueur = 3 piles, donc deux
+       rangees de 192 px dans une zone de ~225 px). `.plateau-emplacement` cale ses enfants en bas (`align-items: flex-end`) : un contenu plus
+       haut que la zone debordait alors vers le HAUT, hors de portee du defilement (le haut des piles etait coupe, on n'en voyait qu'un liseré).
+       `safe` retombe sur le haut des que ca deborde : la premiere rangee reste visible et la zone defile vers la seconde, comme prevu ci-dessus. */
+    align-items: safe flex-end;
   }
 
   /* Les piles d'une meme zone forment UN groupe : c'est donc le groupe qui doit
@@ -2902,6 +3005,25 @@
     left: 4px;
   }
 
+  /* Le PAQUET DE PIEGES (Shadow Labyrinth, Kraven) forme un 2e groupe de piles : il se pose SOUS le deck et la defausse de rencontre, dans la case
+     vide de la grille juste dessous (23/10/2026, demande de l'utilisateur). Sans 2e groupe, rien ne change. */
+  .zone-piles-rencontre .plateau-cartes:has(.plateau-groupe + .plateau-groupe) {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    align-self: flex-start;
+    justify-content: flex-start;
+  }
+
+  /* INVERSION DU DECK ET DE LA DEFAUSSE (03/11/2026, reglage « Inverser le deck et la defausse », inversion-piles.ts) : la premiere pile de
+     chaque groupe (le deck) passe APRES la seconde (la defausse). `order` plutot que `row-reverse` : les piles restent calees a GAUCHE de leur
+     colonne. Vaut pour le joueur, la rencontre (et ses paquets de pieges / Hellfire) et le deck special. */
+  html[data-piles-inversees='oui'] .zone-piles-joueur .plateau-groupe > :first-child,
+  html[data-piles-inversees='oui'] .zone-piles-rencontre .plateau-groupe > :first-child,
+  html[data-piles-inversees='oui'] .zone-deck-special .plateau-groupe > :first-child {
+    order: 2;
+  }
+
   /* ⚠ « Mises de côté / autres piles » a couvert DEUX RANGÉES du 14/09 au
      18/09/2026 ; depuis, elle n'a que la rangée de la main (voir la grille).
      Elle grandissait alors vers le HAUT au-delà de deux piles, dans la rangée
@@ -2909,22 +3031,17 @@
      `height: 100%` + `overflow-y: auto` la gardent maintenant strictement
      dans sa propre rangée). */
 
-  /* ⚠ DEUX ÉTIQUETTES SE DISPUTAIENT LES MÊMES 20 PIXELS. Le titre de zone
-     (« Mises de côté / autres piles ») flotte à 4 px du haut ; la pastille
-     « NÉMÉSIS » de la pile se pose, elle, juste au-dessus de sa carte. Dans les
-     20 px de retrait que ces zones réservent, les deux se chevauchaient et le
-     badge rouge ressortait à moitié hors de la zone, détaché de tout.
-
-     Constat de l'utilisateur, capture à l'appui : « pourquoi la pile du némésis
-     est comme ça en deux morceaux, c'est nul ». C'est cette collision, pas la
-     pile elle-même.
-
-     Le retrait passe donc à 38 px POUR CETTE ZONE SEULEMENT : les deux autres
-     zones de piles n'ont aucune pastille au-dessus de leurs cartes et n'ont
-     donc rien à réserver. */
-  .zone-annexes .plateau-cartes {
-    padding-top: 38px;
-  }
+  /* ⚠ Le retrait de 38px ci-dessus (jusqu'au 08/11/2026) protegeait une
+     pastille « NÉMÉSIS » qui se posait au-dessus de la pile quand le set
+     nemesis etait encore affiche a part. Depuis le 05/10/2026
+     (`pileFondue`, zones.ts), le set nemesis est fondu dans la pile
+     « Cartes visibles » : la carte representant la pile est toujours un dos
+     de carte (`facedown = true`), sans aucune pastille au-dessus. Le retrait
+     special n'avait donc plus de raison d'etre et mangeait 18px de haut
+     utiles dans une zone deja plafonnee a sa rangee (`height: 100%`) --
+     signalement : « le deck nemesis est juste au-dessus a moitie cachee ».
+     Retire : `.zone-annexes` suit maintenant le retrait general de 20px,
+     comme les deux autres zones de piles. */
 
   .zone-rencontre {
     grid-area: rencontre;
@@ -3183,6 +3300,7 @@
 
   .zone-main:hover,
   .zone-main:focus-within,
+  .zone-main.main-ancree-par-choix,
   .plateau.main-visible-forcee .zone-main {
     z-index: 20;
     overflow: visible;
@@ -3196,8 +3314,18 @@
     transition: transform 180ms ease;
   }
 
+  /* `.main-ancree-par-choix` (05/11/2026) : posee par `PuceSurCarte`
+     (TableSansModale.tsx) tant qu'une carte DE LA MAIN est une option
+     cliquable sur la table (ex. Hero Interrupt pendant une attaque). Sans
+     elle, la main ne reste haute que par :hover/:focus-within -- la puce,
+     qui re-mesure la carte toutes les 120ms, la voit alors monter et
+     descendre au gre de ce survol et se desynchronise, d'ou la boucle
+     « monte-descend » tant que la souris reste immobile dessus (rapport de
+     partie reelle). La figer haute tout le temps que la puce existe
+     supprime la cause : la carte ne bouge plus sous elle. */
   .zone-main:hover .plateau-cartes,
   .zone-main:focus-within .plateau-cartes,
+  .zone-main.main-ancree-par-choix .plateau-cartes,
   .plateau.main-visible-forcee .zone-main .plateau-cartes {
     transform: translateY(0);
   }
@@ -3440,10 +3568,56 @@
      l'energie jaune. Pas de glyphe dans la police : un SVG a la place. */
   .icone-res.res-lightning { --res: #5ec8ff; }
 
+  /* Les icones en DEUX TONS (20/10/2026), comme imprimees dans le coin des
+     cartes : un fond de la couleur de la ressource, le picto dessus dans une
+     teinte voisine. Les valeurs viennent de TONS_RESSOURCES (icones-
+     ressources.tsx), posees en `--res-fond` / `--res-picto` sur chaque icone.
+     Active par le drapeau ICONES_DEUX_TONS (classe `deux-tons`). */
+  .icone-res.deux-tons {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 1.45em;
+    height: 1.45em;
+    font-size: 1em;
+    margin: 0 0.1em;
+    vertical-align: -0.3em;
+    border-radius: 0.3em;
+    background: var(--res-fond);
+    color: var(--res-picto);
+    -webkit-text-stroke: 0;
+    text-shadow: none;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.35);
+  }
+  .icone-res.deux-tons > svg {
+    width: 0.95em;
+    height: 0.95em;
+    vertical-align: 0;
+    fill: currentColor;
+    stroke: none;
+  }
+  /* Une icone de ressource : le glyphe a la taille du texte, le fond autour. */
+  .icone-res.deux-tons:not(:has(svg)) {
+    font-size: 0.95em;
+    width: 1.5em;
+    height: 1.5em;
+  }
+
   /* Crise sur le complot principal, dans l'apercu au survol. */
   /* Le pave rouge a laisse la place au filigrane sur la carte (ScanCard.css,
      .filigrane-crise). Il ne reste ici que ce que le picto ne peut pas dire :
      la manigance qui verrouille. */
+  .apercu-traducteur {
+    margin: 6px 0 0;
+    color: #9fb4d6;
+    font-size: 0.8em;
+    line-height: 1.3;
+  }
+
+  .apercu-traducteur b {
+    color: #dbe7fb;
+  }
+
   .apercu-crise-ligne {
     margin: 6px 0 0;
     color: #f0a59c;
@@ -4318,6 +4492,25 @@
     opacity: 0;
   }
 
+  /* RENFORT (Surge), point 4 du plan mode-sur-la-table-ux-plan (05/11/2026) :
+     meme famille que l'annonce de phase, mais DORE (pas le rouge du mechant)
+     et beaucoup plus bref -- le JS qui pose cette classe la retire apres
+     700ms, pas les 1 a 2 secondes de la phase. */
+  .bandeau-phase.est-renfort {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      #f3c623 12%,
+      #f3c623 88%,
+      transparent
+    );
+    box-shadow: 0 0 40px rgba(243, 198, 35, 0.6);
+  }
+
+  .bandeau-phase.est-renfort .bandeau-phase-texte {
+    color: #1c1500;
+  }
+
   /* La chronologie et, a sa droite, le rang de l'etape dans son temps. */
   .deroule-chrono {
     display: flex;
@@ -4899,6 +5092,31 @@
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.42);
   }
 
+  /* Un vol GROUPE (au-dela de dix cartes) : la pile fantome porte deux bords
+     decales derriere elle, et le nombre de cartes en pastille. */
+  .vol-carte.est-pile .vol-carte-geste {
+    box-shadow:
+      5px 5px 0 -1px rgba(30, 30, 40, 0.92),
+      10px 10px 0 -2px rgba(30, 30, 40, 0.8),
+      0 14px 28px rgba(0, 0, 0, 0.55);
+  }
+
+  .vol-carte-nombre {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    min-width: 26px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--rouge-marvel, #e23636);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  }
+
   .vol-carte-image {
     display: block;
     width: 100%;
@@ -5172,6 +5390,18 @@
   .bulle-refus-effet-icone {
     font-size: 1.1rem;
     color: #ffb3b3;
+  }
+
+  /* Choix a une seule option applique d'office (choix-uniques.tsx) : une information, pas un empechement, donc orange et non rouge. */
+  .bulle-choix-unique {
+    background: rgba(40, 28, 12, 0.96);
+    border-color: #ff9f43;
+    box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.25), 0 6px 18px rgba(0, 0, 0, 0.5);
+    animation-duration: 6s;
+  }
+
+  .bulle-choix-unique .bulle-refus-effet-icone {
+    color: #ffc78a;
   }
 
   @keyframes bulle-refus-effet {
@@ -7091,6 +7321,95 @@
   }
   .bandeau-maj button:hover { background: rgba(240, 180, 41, .18); }
 
+  /* PUZZLE (E3, 23/10/2026) : le panneau des objectifs, repliable, en haut a gauche, en ORANGE (choix de l'utilisateur), et le bilan de fin. */
+  .panneau-objectifs {
+    position: fixed;
+    top: 56px;
+    left: 12px;
+    z-index: 650;
+    min-width: 168px;
+    max-width: min(320px, 70vw);
+    border: 2px solid var(--puzzle-orange, #f08a24);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97));
+    color: #fbe3c4;
+    font: 14px/1.35 system-ui, sans-serif;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .55);
+  }
+  /* PUZZLE (E8, 23/10/2026) : l'enonce. Introduction plein ecran puis panneau repliable en haut a DROITE, meme orange. */
+  .enonce-fond { position: fixed; inset: 0; z-index: 900; display: flex; align-items: center; justify-content: center; background: rgba(12, 6, 0, .86); }
+  .enonce-boite { width: min(560px, 92vw); max-height: 86vh; overflow: auto; padding: 22px 26px; border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 14px; background: linear-gradient(180deg, rgba(48, 26, 6, .98), rgba(28, 15, 3, .98)); color: #fbe3c4; font: 15px/1.5 system-ui, sans-serif; box-shadow: 0 12px 50px rgba(0, 0, 0, .7); }
+  .enonce-boite h2 { margin: 0 0 4px; color: #fff; font-size: 1.4rem; }
+  .enonce-boite h3 { margin: 14px 0 4px; color: var(--puzzle-orange, #f08a24); font-size: 1rem; }
+  .enonce-difficulte { color: var(--puzzle-orange, #f08a24); letter-spacing: .1em; }
+  .enonce-auteur { font-size: .85rem; color: #c9a77c; }
+  .enonce-histoire { white-space: pre-wrap; margin: 12px 0; }
+  .enonce-objectifs { margin: 0; padding-left: 20px; }
+  .enonce-commencer { margin-top: 18px; padding: 10px 26px; border: 0; border-radius: 9px; background: var(--puzzle-orange, #f08a24); color: #1d1208; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  .panneau-enonce { position: fixed; top: 56px; right: 12px; z-index: 650; min-width: 120px; max-width: min(340px, 70vw); border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 10px; background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97)); color: #fbe3c4; font: 14px/1.35 system-ui, sans-serif; box-shadow: 0 8px 30px rgba(0, 0, 0, .55); }
+  .panneau-enonce-titre { display: block; width: 100%; padding: 7px 12px; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
+  .panneau-enonce-titre:hover { background: rgba(240, 138, 36, .18); }
+  .panneau-enonce-corps { padding: 4px 12px 12px; display: grid; gap: 8px; max-height: 60vh; overflow: auto; }
+  .panneau-enonce-corps p { margin: 0; white-space: pre-wrap; }
+  .panneau-enonce-corps .indice { color: #ffd9aa; }
+  .panneau-enonce-corps button { padding: 5px 10px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .14); color: #ffd9aa; cursor: pointer; font: inherit; }
+  .panneau-enonce-corps button:hover { background: rgba(240, 138, 36, .3); }
+  .panneau-enonce-corps button.danger { background: #8a2a14; border-color: #ff7a5a; color: #fff; }
+  .panneau-enonce-solution { border-top: 1px dashed rgba(240, 138, 36, .5); padding-top: 8px; display: grid; gap: 6px; }
+  .panneau-enonce-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  /* PUZZLE (createur, 24/10/2026) : le panneau « Creation de puzzle » en haut a gauche, et sa fenetre de details, en ORANGE comme le reste. */
+  .createur-puzzle strong { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .createur-puzzle { position: fixed; top: 46px; left: 350px; z-index: 650; display: flex; align-items: center; gap: 10px; padding: 4px 10px; max-width: min(420px, 90vw); border: 2px solid var(--puzzle-orange, #f08a24); border-radius: 10px; background: linear-gradient(180deg, rgba(48, 26, 6, .97), rgba(28, 15, 3, .97)); color: #fbe3c4; font: 14px/1.35 system-ui, sans-serif; box-shadow: 0 8px 30px rgba(0, 0, 0, .55); }
+  .createur-puzzle button { padding: 6px 12px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .18); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+  .createur-puzzle button:hover:not(:disabled) { background: rgba(240, 138, 36, .35); }
+  .createur-puzzle-fond { z-index: 5000; }
+  .createur-puzzle-boite { display: grid; gap: 8px; }
+  .createur-puzzle-boite h3 { margin: 10px 0 0; }
+  .createur-puzzle-champ { display: grid; gap: 3px; font-size: .9rem; color: #ffd9aa; }
+  .createur-puzzle-boite input, .createur-puzzle-boite textarea, .createur-puzzle-boite select { padding: 6px 8px; border: 1px solid #6b4a26; border-radius: 7px; background: #120a03; color: #f3e3d0; font: inherit; }
+  .createur-puzzle-boite button { padding: 5px 10px; border: 1px solid var(--puzzle-orange, #f08a24); border-radius: 7px; background: rgba(240, 138, 36, .14); color: #ffd9aa; cursor: pointer; font: inherit; }
+  .createur-puzzle-boite button.enonce-commencer { margin-top: 0; background: var(--puzzle-orange, #f08a24); color: #1d1208; }
+  .createur-puzzle-ligne { display: flex; gap: 6px; align-items: center; }
+  .createur-puzzle-ligne input { flex: 1; min-width: 0; }
+  .createur-puzzle-code { margin: 0; padding: 8px 12px; border-radius: 8px; background: #120a03; color: #fff; font: 700 1.2rem/1.2 ui-monospace, monospace; letter-spacing: .08em; user-select: all; }
+  .createur-puzzle-erreur { margin: 0; padding-left: 18px; color: #ff9a8a; font-size: .85rem; }
+  .createur-puzzle-avertissements { padding: 8px 10px; border: 1px dashed rgba(240, 138, 36, .6); border-radius: 8px; font-size: .85rem; }
+  .createur-puzzle-avertissements ul { margin: 4px 0 0; padding-left: 18px; }
+  .panneau-objectifs-titre {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 12px;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .panneau-objectifs-titre:hover { background: rgba(240, 138, 36, .18); }
+  .panneau-objectifs-compte { color: var(--puzzle-orange, #f08a24); }
+  .panneau-objectifs-liste {
+    margin: 0;
+    padding: 4px 12px 10px 12px;
+    list-style: none;
+    display: grid;
+    gap: 6px;
+  }
+  .panneau-objectifs-liste li.est-atteint { color: #9be58e; }
+  .panneau-objectifs-coche { display: inline-block; width: 1.1em; }
+  .bilan-objectifs {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 4px;
+    font: 15px/1.35 system-ui, sans-serif;
+  }
+  .bilan-objectifs .est-atteint { color: #7ddc6e; }
+  .bilan-objectifs .est-manque { color: #f2665a; }
+
   .bandeau-annonce {
     position: fixed;
     top: 0;
@@ -7328,7 +7647,7 @@
     left: 12px;
     z-index: 900;
     padding: 4px 12px;
-    border-radius: 999px;
+    border-radius: 4px;
     background: rgba(24, 18, 4, 0.92);
     border: 1px solid rgba(255, 255, 255, 0.25);
     color: rgba(255, 255, 255, 0.9);
@@ -8301,6 +8620,52 @@
       animation: none;
     }
   }
+
+  /* INFOBULLE D'ANNULER (29/10/2026). Le `title` natif tient en une ligne, ne se
+     lit qu'apres une seconde et ne se met pas en forme : elle dit ici comment
+     « Annuler » se comporte (instantane ou rejeu). Posee sous le bouton, elle
+     apparait au survol ET au focus clavier, jamais au toucher (pas de survol). */
+  .bh-undo[data-infobulle] {
+    position: relative;
+  }
+
+  .bh-undo[data-infobulle]::after {
+    content: attr(data-infobulle);
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 580;
+    width: 260px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(24, 28, 36, 0.98);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+    color: #cbd7e6;
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-align: left;
+    text-transform: none;
+    white-space: normal;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-3px);
+    transition: opacity 120ms ease-out 250ms, transform 120ms ease-out 250ms;
+  }
+
+  @media (hover: hover) {
+    .bh-undo[data-infobulle]:hover::after {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .bh-undo[data-infobulle]:focus-visible::after {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* --- Design essai (board/design-essai.ts) ----------------------------------
@@ -8414,6 +8779,28 @@
 
   .assistant-action.design-essai .assistant-slot.est-y .icone-res {
     --res: var(--fond);
+  }
+
+  /* Deux tons : l'icone REMPLIT l'emplacement (sa tuile fait office de
+     pastille), a la place du disque colore + picto uni. */
+  .assistant-action.design-essai .assistant-slot .icone-res.deux-tons {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-size: 1.1rem;
+    vertical-align: 0;
+    border-radius: 0;
+    -webkit-text-stroke: 0;
+  }
+  .assistant-action.design-essai .assistant-slot .icone-res.deux-tons > svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+  .assistant-action .assistant-slot.est-rempli:has(.icone-res.deux-tons) {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   .assistant-action.design-essai .assistant-eyebrow {
@@ -8725,6 +9112,33 @@
     position: relative;
   }
 
+  /* Cartes POSÉES SOUS une autre (State of Flow, cartes glissées) : une pile, pas des améliorations en jeu (26/10/2026). Contour
+     en pointillés sur chaque carte empilée, et une pastille « Pile : N » sur le porteur. */
+  .est-attachee.est-empilee .scan-card {
+    outline: 3px dashed rgba(242, 201, 76, 0.9);
+    outline-offset: -2px;
+    border-radius: inherit;
+  }
+  .pile-sous-carte {
+    position: absolute;
+    /* centree sous la carte PORTEUSE (~70 px : la moitie de sa largeur), pas sous toute l'unite */
+    left: 70px;
+    transform: translateX(-50%);
+    bottom: 6px;
+    z-index: 70; /* au-dessus du porteur (toujours devant ses attachements) */
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 900;
+    line-height: 1.35;
+    white-space: nowrap;
+    color: #0e1116;
+    background: var(--gold, #f2c94c);
+    border: 1px solid rgba(0, 0, 0, 0.55);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+  }
+
   .statut-nombre {
     position: absolute;
     right: -4px;
@@ -8990,6 +9404,17 @@
     font-family: Anton, Impact, system-ui, sans-serif;
     font-size: 15px;
     letter-spacing: 0.02em;
+  }
+
+  /* La seconde ligne « + N carte(s) boost » (07/11/2026) : ce qui est connu
+     AVANT résolution, jamais un total -- plus discrète que le nombre
+     principal, même esprit que la ligne sous « Ne pas défendre ». */
+  .trait-phase-etiquette text.trait-phase-boosts {
+    font-family: system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0;
+    fill: #cbd5e1;
   }
 }
 
@@ -9975,4 +10400,83 @@
   text-decoration: underline;
   cursor: pointer;
   white-space: nowrap;
+}
+
+/* Le lot d'un choix (« Role: Brawler ») : ses cartes cote a cote, au centre, devant le plateau (DemandeCentrale). */
+.apercu-lot {
+  position: fixed;
+  /* EN HAUT : le panneau de decision est au centre, et ce sont SES boutons qu'on vise pendant qu'on lit le lot. */
+  left: 50%;
+  top: 12px;
+  transform: translateX(-50%);
+  z-index: 545;
+  display: flex;
+  gap: 10px;
+  pointer-events: none;
+  filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.62));
+}
+
+.apercu-lot .scan-card {
+  --card-w: min(200px, 15vw);
+  --inspect-scale: 1;
+}
+
+
+/* Pastilles de traits du heros (28/10/2026). Sur le plateau : posees en bas du scan, comme `.pile-sous-carte`. */
+.pastilles-traits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  pointer-events: none;
+}
+.pastilles-traits.est-posee {
+  position: absolute;
+  left: calc(var(--nb-g, 0) * var(--attach-step-x));
+  width: 140px;
+  bottom: 3px;
+  z-index: 70;
+  padding: 0 4px;
+}
+.apercu-face > .pastilles-traits {
+  margin-top: 8px;
+  pointer-events: auto;
+}
+.pastille-trait {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.35;
+  padding: 1px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+  color: #f1f2f4;
+  background: #4a4f5c;
+  border: 1.5px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.pastille-trait.est-gagne {
+  background: #1f8a4c;
+  border-color: rgba(255, 255, 255, 0.75);
+}
+.pastille-trait.est-perdu {
+  background: rgba(20, 20, 24, 0.8);
+  border: 1.5px dashed #e5574d;
+  text-decoration: line-through;
+}
+
+/* Grande carte ouverte au telephone (cartes) : les pastilles se posent sur le bas de la carte, au-dessus de la barre de PV. */
+.carte-ouverte-scan { position: relative; }
+.pastilles-traits.est-sur-grande {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  z-index: 5;
+  padding: 0 8px;
+}
+.pastilles-traits.est-sur-grande .pastille-trait {
+  font-size: 0.8rem;
+  padding: 2px 10px;
 }

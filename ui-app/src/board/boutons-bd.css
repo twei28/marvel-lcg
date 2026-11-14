@@ -84,6 +84,16 @@
   white-space: nowrap;
 }
 
+/* Au telephone (25/10/2026, capture a l'appui : « Défendre avec Captain
+   America (DÉF 2 + 1 Innate Reflexes + 1 Armored Vest) » coupe des deux cotes) :
+   la ligne ne tient pas, le texte passe a la ligne dans le bouton. */
+body.mode-plateau-portrait .demande-centrale .af-action.est-defense,
+body.mode-plateau-portrait .demande-centrale .dc-pass.est-defense {
+  max-width: 100%;
+  white-space: normal;
+  text-wrap: balance;
+}
+
 /* Meme hauteur et meme corps pour les deux boutons de defense : le refus,
    ordinairement plus petit, s'aligne ici sur « Défendre avec X ». */
 .demande-centrale .af-action.est-defense,

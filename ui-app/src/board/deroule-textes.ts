@@ -387,6 +387,22 @@ export function texteCauseActivation(etape: EtapeDeroule): string {
 }
 
 /**
+ * Les cartes de boost d'un coup du mechant, dites en une ligne : « Carte de boost : Assault (+0) ».
+ *
+ * Rapport BL-Stark n°103 (23/10/2026) : hors de la phase du mechant (Crossbones' Assault vaincue pendant le tour du joueur : « Crossbones
+ * s'active contre le joueur »), le bandeau d'un seul coup ne montrait pas les cartes de boost, et le joueur croyait qu'il n'y en avait pas.
+ * Un apport nul se dit « (+0) » : une carte sans icone de boost compte, elle est retournee comme les autres.
+ */
+export function texteBoostsDuCoup(etape: EtapeDeroule): string {
+  if (!etape.boosts || etape.boosts.length === 0) return ''
+  const cartes = etape.boosts.map((boost) => {
+    const apport = `${boost.apport < 0 ? '−' : '+'}${Math.abs(boost.apport)}`
+    return `${nomNettoye(boost.nom) ?? boost.nom} (${apport}${boost.etoile ? ' ★' : ''})`
+  })
+  return t('Carte de boost : %1').replace('%1', cartes.join(', '))
+}
+
+/**
  * La mention de la fenetre de reponse, sous une etape d'INTENTION.
  *
  * Elle ne s'affiche QUE quand le moteur pose effectivement une question au

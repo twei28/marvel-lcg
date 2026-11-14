@@ -1,0 +1,29 @@
+{
+    "version": "0.5.8",
+    "name": "One Last Kill (Hobgoblin)",
+    "villain": [
+        "pu086b",
+        "pu087b"
+    ],
+    "expert": true,
+    "schemes": [
+        "pu088a,pu088b",
+        "pu089a,pu089b"
+    ],
+    "set_aside": [
+        "pu091a,pu091b",
+        "pu090a,pu090b",
+        "pu092",
+        "pu071b"
+    ],
+    "encounters": [],
+    "encounter_sets": [
+        "punishment",
+        "hobgoblin",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "punishers_armory"
+    ]
+}

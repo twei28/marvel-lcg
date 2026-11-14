@@ -17,6 +17,8 @@ class WorldDescriptor:
     # clic droit. Transmis a chaque rendu : il survit donc au
     # rechargement de page et au chargement d'une sauvegarde.
     mode_sandbox: bool = field(default=False)
+    # Mode « Puzzle » de la preparation : le plateau est un EDITEUR (bouton « Enregistrer le puzzle »).
+    mode_createur_puzzle: bool = field(default=False)
     # La REGLE : cette partie a ete lancee comme un scenario de CAMPAGNE
     # (`mode_campaign` de la liste `rules` de /new). C'est le seul critere
     # fiable pour savoir si une victoire doit s'ouvrir sur les recompenses
@@ -117,11 +119,28 @@ class WorldDescriptor:
     # Dictionnaires plutot qu'une dataclasse : ce journal ne sert qu'a
     # l'affichage, il traverse le meme JSON que le reste, et lui donner une
     # forme figee obligerait a la maintenir des deux cotes pour rien.
+    # Les cles du carnet de campagne qu'une carte a RETIREES pendant la partie (« remove it from the campaign log » :
+    # Tactical Scanner 04155-04158), ex. « Player 1 Tech Upgrade ». Le panneau de fin de scenario les retire du carnet
+    # enregistre, sinon l'amelioration revient au scenario suivant (signalement du 14/11/2026).
+    campagne_retraits: List[str] = field(default_factory=lambda: [])
     faits_mechant: List[Dict[str, Any]] = field(default_factory=lambda: [])
+    # Les choix a UNE SEULE option resolus d'office (voir WorldStat.choix_uniques) : l'interface en affiche un bandeau.
+    choix_uniques: List[Dict[str, Any]] = field(default_factory=lambda: [])
+    # LA VILLE (campagne MC×DC 2026 « La ville ne dort jamais », 22/10/2026) : la grille de lieux, le CAPO de chaque rangee, la case de chaque
+    # joueur, les sbires attaches, les compteurs des pistes et les limites « une fois par round » deja utilisees. Dictionnaire VIDE hors de la
+    # ville : l'onglet « Ville » de l'interface ne s'ouvre alors pas. Forme : `ToDescriptor.Ville` (to_descriptor.py).
+    ville: Dict[str, Any] = field(default_factory=lambda: {})
+    # L'ASSEMBLEE de Kingsfall multi-tables (22/10/2026) : code, cette table, groupes (nom, joueurs, etat), total de Longue vie et seuil, degats / menace
+    # du Roi, verdict. Dictionnaire VIDE hors assemblee. Forme : `ToDescriptor.Assemblee`.
+    assemblee: Dict[str, Any] = field(default_factory=lambda: {})
     # Fin de partie exposee au client (ajout local, lu par ui-app)
     game_over: bool = field(default=False)
     players_won: bool = field(default=False)
     game_over_reason: str = field(default='')
+    # Objectifs d'un puzzle (E3) : `[{kind, text, target, done}]`, vide hors puzzle a objectifs.
+    puzzle_objectives: List[Dict[str, Any]] = field(default_factory=lambda: [])
+    # Enonce d'un puzzle (E8) : `{title, description, difficulty, hints, author}`, vide hors puzzle v2.
+    puzzle_info: Dict[str, Any] = field(default_factory=lambda: {})
     # Mode competitif : le meme ecran de fin sert aux deux tables, il faut donc
     # dire QUI a gagne et a quel camp appartient chaque siege. -1 = pas de camp
     # gagnant (partie ordinaire, deux camps perdants, egalite parfaite) ; la
@@ -151,6 +170,7 @@ class WorldDescriptor:
         hand_cards: List[CardDescriptor] = field(default_factory=lambda: [])
         reserve: List[CardDescriptor] = field(default_factory=lambda: []) # CORRECTIF (pack brawn)
         rising_tide: List[CardDescriptor] = field(default_factory=lambda: []) # AJOUT (pack wave)
+        damnation: List[CardDescriptor] = field(default_factory=lambda: []) # AJOUT (pack mephisto)
         engaged_enemies: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_nemesis_sets: List[CardDescriptor] = field(default_factory=lambda: [])
         set_aside_deck: List[CardDescriptor] = field(default_factory=lambda: [])

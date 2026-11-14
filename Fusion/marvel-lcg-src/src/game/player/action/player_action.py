@@ -270,19 +270,23 @@ class PlayerAction:
         return True
 
     @staticmethod
-    def NoterRecherche(world: 'World', trouvees: 'Sequence[CardFace]', *, fouille_paquet: bool) -> None:
+    def NoterRecherche(world: 'World', trouvees: 'Sequence[CardFace]', *, fouille_paquet: bool,
+                       defaussees: 'Sequence[CardFace]' = ()) -> None:
         """Note une recherche rencontre sur la carte revelee en cours (13/10/2026).
 
         `trouve` : les noms des cartes trouvees, vide si rien ; `paquet` : le
-        paquet rencontre a ete fouille (donc remelange). Hors d'une revelation
+        paquet rencontre a ete fouille (donc remelange) ; `defausse` : les cartes defaussees en chemin
+        (« defausser jusqu'a trouver », rapport n°102), absent sinon. Hors d'une revelation
         de la phase du mechant, rien n'est note.
         """
         try:
             pile = PlayerAction._RevelationsEnCours(world)
             if not pile:
                 return
-            pile[-1].setdefault('recherches', []).append(
-                {'trouve': [face.name for face in trouvees], 'paquet': bool(fouille_paquet)})
+            note = {'trouve': [face.name for face in trouvees], 'paquet': bool(fouille_paquet)}
+            if defaussees:
+                note['defausse'] = [face.name for face in defaussees]
+            pile[-1].setdefault('recherches', []).append(note)
         except Exception:
             pass
 
@@ -646,6 +650,12 @@ class PlayerAction:
             if filtered_effects == []:
                 return None
             from game.message import Message
+            # Bug 129 (Nick Fury 01084) : les options de CE choix que le filtre vient d'ecarter, gardees pour le
+            # plateau, qui les montre grisees. Voir `WorldRender.choix_refuses`.
+            if type(message) is Message.WhenPlayerChooseAbility:
+                player.world.render.choix_refuses = (message, [
+                    refuse for refuse in player.world.render.derniers_refus
+                    if any(refuse is propose for propose in effects)])
             Message.PlayerOnEvent_Text(player, message)
             effect, cheat = self.ChoiceAndSpellEffect(filtered_effects, message, priority, forced, passer_refuse=passer_refuse)
             if cheat:
@@ -658,6 +668,10 @@ class PlayerAction:
         if effect is not None and len(filtered_effects) == 1 and len(effects) > 1 \
                 and type(message) is Message.WhenPlayerChooseAbility and not effect.IsName("Cancel"):
             Message.ChooseAbilityOnlyOption_Text(player, message.by_effect.this.GetDisplayName(), effect.GetDisplayName())
+            source = message.by_effect.this
+            player.world.stat.RecordChoixUnique(
+                source.card.object_id, str(source.paper.card_id), source.paper.name,
+                effect.GetDisplayName(), player.player_id)
         return effect
 
     def ChooseAbilities(self, by_effect: 'Effect', *abilities: 'Ability|None', forced: bool=True, repeat: int=1, choose_x_different_options: int|None=None, for_second_target: bool=False, titre: str="") -> List['Effect']:
@@ -1187,6 +1201,18 @@ class PlayerAction:
         return count_faces
 
     ################################################################################
+    # Avis au joueur
+    def NotifyNoResult(self, source: 'CardFace', notice: str) -> None:
+        """DIT au joueur qu'une partie de l'effet n'a pas ete resolue faute de resultat (« Then » apres une recherche vide) : une ligne
+        au journal et une bulle sur la carte (`choix_uniques`, champ `texte`). `notice` est une phrase ANGLAISE, traduite au plateau.
+        Signalement du 26/10/2026 : Safe House #30 ne piochait pas et personne ne savait pourquoi."""
+        from game.message import Message
+        player = self.GetPlayer()
+        Message.NoResultNotice_Text(player, source.GetDisplayName(), notice)
+        player.world.stat.RecordChoixUnique(
+            source.card.object_id, str(source.paper.card_id), source.paper.name, "", player.player_id, texte=notice)
+
+    ################################################################################
     # Hand Cards
     def DrawUp(self, size: int|Literal["Max"], by_effect: 'Effect') -> List['CardFace']:
         from game.message import Message
@@ -1296,13 +1322,25 @@ class PlayerAction:
             return []
         return player.AskDiscardFaces(player.reserve.Get(), (excess, excess), by_effect)
 
-    def DiscardRandomHandCards(self, size: int, by_effect: 'Effect', rule: Literal["", "IdentitySpecific"]="") -> List['CardFace']:
+    def DiscardRandomHandCards(self, size: int, by_effect: 'Effect', rule: Literal["", "IdentitySpecific"]="", exclude: 'Sequence[CardFace]'=()) -> List['CardFace']:
         from game.operate.faces import Faces
-        faces = self.GetRandomHandCards(size, rule)
-        Faces.DiscardAll(faces, by_effect)
+        faces = self.GetRandomHandCards(size, rule, exclude)
+        # CORRECTIF (25/10/2026, pack custom new_ultimate_winter_soldier, `uw`) : « discard a card from your
+        # hand AT RANDOM » devient un fait que les cartes peuvent lire. (1) `world.defausses_au_hasard` liste les
+        # faces tirees pendant le temps de la defausse : c'est ce qui distingue, dans `WhenCardWouldDiscard` /
+        # `AfterCardDiscard`, une defausse au hasard d'une autre (Phoenix, Winter Mask) ; (2) `world.stat` compte
+        # ces defausses par joueur et par round (Wolverine's Claws). Rien ne change pour les cartes existantes.
+        world = self.GetPlayer().world
+        precedentes = list(getattr(world, "defausses_au_hasard", []))
+        world.defausses_au_hasard = precedentes + list(faces)
+        try:
+            defaussees = Faces.DiscardAll(faces, by_effect)
+        finally:
+            world.defausses_au_hasard = precedentes
+        world.stat.RecordRandomDiscard(self.GetPlayer(), defaussees)
         return faces
 
-    def GetRandomHandCards(self, size: int, rule: Literal["", "IdentitySpecific"]="") -> List['CardFace']:
+    def GetRandomHandCards(self, size: int, rule: Literal["", "IdentitySpecific"]="", exclude: 'Sequence[CardFace]'=()) -> List['CardFace']:
         from game.card.face.base import ClassCard
         player = self.GetPlayer()
 
@@ -1313,10 +1351,14 @@ class PlayerAction:
                 if not ClassCard.IsType(face) or not face.IsClass("IdentitySpecific"):
                     faces.remove(face)
 
+        # CORRECTIF (25/10/2026, pack uw) : `exclude` ecarte des cartes du tirage (la carte qu'on est EN TRAIN de
+        # jouer, quand sa capacite se paie en defaussant au hasard : on ne peut pas se defausser soi-meme).
+        if exclude:
+            faces = [face for face in faces if face not in exclude]
         if len(faces) > size:
             from game.operate.rand import Rand
             return Rand.RandomChoice2(faces, size, player.world)
-        return player.hand_cards.Get()
+        return faces if exclude else player.hand_cards.Get()
 
     def DiscardAllHands(self, by_effect: 'Effect', finder: 'CardFinder|None'=None) -> int:
         from game.operate.faces import Faces
@@ -1848,6 +1890,7 @@ class PlayerAction:
 
     # Return from top to bottom
     def LookAtDeck(self, deck: 'Deck|Literal["EncounterDeck"]', num: int|Literal["2*"], by_effect: 'Effect', *, from_top: bool=True) -> List['CardFace']:
+        from game.message import Message
         from game.operate.faces import Faces
         from game.operate.worlds import Worlds
 
@@ -1855,11 +1898,22 @@ class PlayerAction:
 
         num = Worlds.ConvertPerPlayerIconToInt(num, by_effect)
 
+        encounter_deck = Worlds.GetEncounterDeck(by_effect)
         if deck == "EncounterDeck":
-            deck = Worlds.GetEncounterDeck(by_effect)
+            deck = encounter_deck
 
         faces = deck.Get(from_top)[:num]
         Faces.LookAt(faces, player, by_effect)
+
+        # AJOUT (04/11/2026, pack dm 3-D Man, carte Secret Initiative) : ce
+        # point de passage est le SEUL utilise par toute capacite "look at the
+        # top N cards of the encounter deck" (Precognition, Tri-Force Vision,
+        # Doctor Strange...). Le message n'est pose que pour le deck de
+        # rencontre : Secret Initiative ne parle que de lui, et la plupart des
+        # appels ici visent le deck du joueur (fouille de sa propre main
+        # future), hors de son texte.
+        if faces and deck == encounter_deck:
+            Message.AfterPlayerLookedAtEncounterDeck(player, faces, by_effect).Send()
 
         # reversed_face = faces[::-1]
         return faces

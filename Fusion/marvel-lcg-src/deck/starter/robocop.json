@@ -1,0 +1,40 @@
+{
+    "version": "0.5.8",
+    "name": "RoboCop",
+    "metadata": {
+        "url": "",
+        "note": "Pack « RoboCop » (Drive partage « Robocop (Released) » + cartes envoyees en images, MissSugarPink). Deck de heros = les 15 numeros « n/15 ». Obligation Classified (rc012) et set nemesis RoboCop Nemesis (rc013-rc016, Fugitives x2). Leg Holster (rc017, amelioration Basic) n'est pas dans le deck. Pas de decklist imprimee : player_deck vide."
+    },
+    "hero": [
+        "rc001a,rc001b"
+    ],
+    "hero_deck": [
+        "rc002",
+        "rc002",
+        "rc002",
+        "rc003",
+        "rc003",
+        "rc003",
+        "rc004",
+        "rc004",
+        "rc005",
+        "rc006",
+        "rc007",
+        "rc008",
+        "rc009",
+        "rc010",
+        "rc011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "rc012"
+    ],
+    "nemesis_set": [
+        "rc013",
+        "rc014",
+        "rc015",
+        "rc016",
+        "rc016"
+    ],
+    "player_deck": []
+}

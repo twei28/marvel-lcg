@@ -18,7 +18,10 @@ class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVi
         # self.stage = 0
         self.encounter_deck: 'Deck'
         self.encounter_discard_pile: 'Deck'
+        # AJOUT (25/10/2026, scenario The Vault) : « Activation Order X » imprime sur chaque vilain (0 = aucun).
+        self.activation_order = 0
         super().__init__(paper)
+        self.RegisterAttribute("ActivationOrder", "activation_order", int)
 
     # @override
     # def SetName(self, paper: 'Paper'):

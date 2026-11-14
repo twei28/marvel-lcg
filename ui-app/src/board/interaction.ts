@@ -19,6 +19,7 @@ import {
   paiementFacultatif,
   paiementNulDUneAutreCarte,
   nombreDeRessources,
+  ressourcesApresToucher,
   typesManquants,
   valeurMoyen,
   valeurPayee,
@@ -35,6 +36,13 @@ import type { Catalogue } from './catalogue'
 import { optionsDeLaSource } from './glisser/cibles'
 import { cibleRefuseeParLaRegle } from './regles-selection'
 import { libellesCible } from './libelles-cible'
+import {
+  choixDeJoueurNecessaire,
+  groupesVilainEtSbires,
+  joueurRetenu,
+  optionPourJoueur,
+  selectionDuJoueur,
+} from './vilain-et-sbires'
 import { demandeHorsPanneauManigance } from './manigance-face-a'
 import { t } from './langue'
 import type { ScanCardProps } from '../components/ScanCard'
@@ -78,7 +86,7 @@ export function lireValidationCourte(): boolean {
 export type ChoixPaiementAuto = 'pas-demande' | 'on' | 'off'
 export const CLE_PAIEMENT_AUTO = 'marvel-board-paiement-auto'
 
-function lirePaiementAuto(): ChoixPaiementAuto {
+export function lirePaiementAuto(): ChoixPaiementAuto {
   try {
     const brut = window.localStorage.getItem(CLE_PAIEMENT_AUTO)
     return brut === 'on' || brut === 'off' ? brut : 'pas-demande'
@@ -87,7 +95,7 @@ function lirePaiementAuto(): ChoixPaiementAuto {
   }
 }
 
-function ecrirePaiementAuto(choix: 'on' | 'off'): void {
+export function ecrirePaiementAuto(choix: 'on' | 'off'): void {
   try {
     window.localStorage.setItem(CLE_PAIEMENT_AUTO, choix)
   } catch {
@@ -126,6 +134,13 @@ export type EtatInteractif = {
   ordreReculer?: () => void
   /** Symetrique de `ordreReculer`, vers le voisin de rang superieur. */
   ordreAvancer?: () => void
+  /**
+   * Echange cette carte avec N'IMPORTE LAQUELLE des autres cartes choisies
+   * (glisser-deposer, voir `ordre-glisser.ts`) : meme `permuterCibles` que les
+   * boutons, mais sans se limiter au voisin. Absent hors selection ordonnee
+   * ou tant que la carte n'est pas choisie.
+   */
+  permuterAvec?: (autreId: number) => void
   /**
    * Assigne d'un coup tout ce que cette carte peut encore recevoir dans une
    * selection repetable (`cibleRepetable`), plutot qu'un clic par point.
@@ -171,6 +186,16 @@ export type AssistantInteraction = {
   typesManquants?: Record<string, number>
   /** Coût « jusqu'à N » (UpTo) : rien n'est exigé, `coutRequis` est un plafond. */
   coutFacultatif?: boolean
+  /** Quand une MÊME carte offre plusieurs moyens de payer (Mantis : source ennemie ou personnage), lequel est posé. */
+  moyensChoisis?: string
+  /**
+   * La carte récompense un SURPAIEMENT : coût X, ou texte qui parle
+   * d'« overpay ». Rapport de bug n°116 (08/11/2026, Web Barrage) : à la
+   * confirmation, la phrase disait « Tout est prêt » sans un mot sur le
+   * paiement, alors que rien n'était payé et que la carte n'allait RIEN
+   * faire. Voir `Interaction.surpaiementRecompense`, calculé plus haut.
+   */
+  surpaiementRecompense?: boolean
 }
 
 /** Une cible que la table ne montre pas : elle passe par le selecteur. */
@@ -184,6 +209,8 @@ export type CibleHorsTable = {
   ordreReculer?: () => void
   /** Voir `EtatInteractif.ordreAvancer`. */
   ordreAvancer?: () => void
+  /** Voir `EtatInteractif.permuterAvec`. */
+  permuterAvec?: (autreId: number) => void
   /** Voir `EtatInteractif.assignerReste`. */
   assignerReste?: () => void
   /** Voir `EtatInteractif.assignerResteQuantite`. */
@@ -322,6 +349,36 @@ function nombreDeFois(cibles: number[], id: number): number {
   return cibles.filter((cible) => cible === id).length
 }
 
+const MOT_RESSOURCE: Record<string, string> = { R: 'physique', B: 'mental', Y: 'énergie', G: 'joker' }
+
+/**
+ * « Mantis : mental + joker » : pour chaque carte qui offre PLUSIEURS moyens de payer dans ce paiement (Empathetic Advantage : défausser un
+ * Désorienté d'un ennemi donne [wild][mental], d'un de SES personnages [mental]), le moyen que le joueur a posé. Le moteur n'envoie que
+ * l'identifiant d'effet et les lettres de la ressource, d'où ce rendu par les lettres. Rien pour les cartes ordinaires.
+ */
+export function moyensChoisisDesAlternatives(
+  paiement: Paiement | undefined,
+  ressources: number[],
+  cartes: Iterable<WorldCard>
+): string | undefined {
+  if (!paiement || ressources.length === 0) return undefined
+  const texteParEffet = new Map<number, string>()
+  for (const moyen of paiement.payment) if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
+  const morceaux: string[] = []
+  for (const carte of cartes) {
+    const siens = new Set((carte.resources ?? []).filter((id) => texteParEffet.has(id)))
+    if (siens.size < 2) continue
+    const poses = ressources.filter((id) => siens.has(id))
+    if (poses.length === 0) continue
+    const mots = poses.map((id) => {
+      const lettres = libelleRessource(texteParEffet.get(id) ?? '')
+      return lettres.split('').map((l) => t(MOT_RESSOURCE[l] ?? l)).join(' + ')
+    })
+    morceaux.push(`${carte.name} : ${mots.join(' ; ')}`)
+  }
+  return morceaux.length > 0 ? morceaux.join(' · ') : undefined
+}
+
 function libelleRessource(resText: string): string {
   const lettres = (resText.match(/[rbyg]/gi) ?? []).join('').toUpperCase()
   return lettres || '*'
@@ -402,6 +459,17 @@ function reglesCout(paiement: Paiement | undefined): string[] {
   return (paiement?.rule ?? [])
     .filter((regle) => regle !== 'UpTo')
     .map((regle) => regle.replace(/([a-z])([A-Z])/g, '$1 $2'))
+}
+
+/**
+ * Les regles de selection « le vilain et ses sbires » (VillainAndMinionsEngagedSamePlayer / WithYou) imposent TOUTES leurs cibles : le moteur
+ * demande autant de cibles qu'il y a de candidats. Vrai quand c'est le cas, sans doublon (un doublon dit « repartir » et se choisit a la main).
+ */
+export function toutesLesCiblesImposees(option: Option): boolean {
+  if (!/^VillainAndMinionsEngaged/.test(option.select_rule)) return false
+  const [min, max] = option.target_num_range
+  const distinctes = new Set(option.all_legal_targets)
+  return min >= 1 && min === max && distinctes.size === min && option.all_legal_targets.length === distinctes.size
 }
 
 function optionDemarreAuto(option: Option): boolean {
@@ -555,7 +623,19 @@ export function useInteraction(
     [empreinte, idOption, cibles, ressources, carteFocus, cibleFocus, sourceDepot]
   )
 
-  const option = options.find((o) => o.id === idOption)
+  const optionBrute = options.find((o) => o.id === idOption)
+  // « Le vilain et les sbires d'UN joueur » a plusieurs joueurs engages : voir vilain-et-sbires.ts.
+  const groupesChoixJoueur = useMemo(() => {
+    const groupes = optionBrute ? groupesVilainEtSbires(optionBrute, world) : undefined
+    return choixDeJoueurNecessaire(groupes) ? groupes : undefined
+  }, [optionBrute, world])
+  const option = useMemo(
+    () =>
+      optionBrute && groupesChoixJoueur
+        ? optionPourJoueur(optionBrute, groupesChoixJoueur, joueurRetenu(groupesChoixJoueur, cibles, playerId))
+        : optionBrute,
+    [optionBrute, groupesChoixJoueur, cibles, playerId]
+  )
   const paiement = option ? paiementCourant(option, cibles) : undefined
   const requis = nombreDeRessources(paiement)
   const index = useMemo(() => indexerCartes(world), [world])
@@ -739,8 +819,22 @@ export function useInteraction(
         autoCibleFaite.current = option.id
         setCibles([seule])
       }
+      return
     }
-  }, [option, cibleMinimum, cibleMaximum, ciblePossibles, cibles.length])
+    // « Le vilain et chaque sbire engage avec ce joueur » (Morsure d'araignees de Shuri...) : TOUTES les cibles sont imposees, il n'y a rien
+    // a choisir. Les cliquer une a une etait penible (rapport BL-Stark du 22/10/2026) : on les coche toutes, le joueur peut encore decocher.
+    if (toutesLesCiblesImposees(option) && cibles.length === 0) {
+      autoCibleFaite.current = option.id
+      setCibles([...ciblesParOccurrence(option).keys()])
+      return
+    }
+    // A plusieurs joueurs engages : on propose le vilain et les sbires du joueur qui agit ; cliquer un sbire d'un autre joueur bascule
+    // sur celui-la (voir `basculerCible`).
+    if (groupesChoixJoueur && cibles.length === 0) {
+      autoCibleFaite.current = option.id
+      setCibles(selectionDuJoueur(groupesChoixJoueur, joueurRetenu(groupesChoixJoueur, [], playerId)))
+    }
+  }, [option, cibleMinimum, cibleMaximum, ciblePossibles, cibles.length, groupesChoixJoueur, playerId])
 
   const abandonnerOption = useCallback(() => {
     setIdOption(undefined)
@@ -767,6 +861,13 @@ export function useInteraction(
   const basculerCible = useCallback(
     (id: number, max: number, maxParCible = 1) => {
       setCibles((actuelles) => {
+        // Un sbire d'un AUTRE joueur que celui deja retenu : on change de joueur (le vilain et tous ses sbires), au lieu de melanger.
+        if (groupesChoixJoueur && !groupesChoixJoueur.vilains.includes(id)) {
+          const retenu = joueurRetenu(groupesChoixJoueur, actuelles, playerId)
+          for (const [place, sbires] of groupesChoixJoueur.parJoueur) {
+            if (place !== retenu && sbires.includes(id)) return selectionDuJoueur(groupesChoixJoueur, place)
+          }
+        }
         const deja = nombreDeFois(actuelles, id)
         if (deja > 0) {
           const peutAjouter = deja < maxParCible && (max <= 0 || actuelles.length < max)
@@ -779,7 +880,7 @@ export function useInteraction(
       // ne veulent plus rien dire.
       setRessources([])
     },
-    []
+    [groupesChoixJoueur, playerId]
   )
 
   /**
@@ -813,25 +914,11 @@ export function useInteraction(
 
   const basculerRessource = useCallback(
     (carte: WorldCard) => {
-      setRessources((actuelles) => {
-        const disponibles = carte.resources.filter(
-          (effectId) => foisDisponible(paiement, effectId) > 0
-        )
-        // On retire d'abord si cette carte a deja paye : un second clic rend la
-        // ressource au lieu d'en depenser une de plus.
-        const dejaPosee = disponibles.find((effectId) => actuelles.includes(effectId))
-        if (dejaPosee !== undefined) {
-          const position = actuelles.indexOf(dejaPosee)
-          return [...actuelles.slice(0, position), ...actuelles.slice(position + 1)]
-        }
-        for (const effectId of disponibles) {
-          const posees = actuelles.filter((x) => x === effectId).length
-          if (posees < foisDisponible(paiement, effectId)) return [...actuelles, effectId]
-        }
-        return actuelles
-      })
+      setRessources((actuelles) =>
+        ressourcesApresToucher(carte.resources, actuelles, paiement, requis ?? 0, surpaiementRecompense)
+      )
     },
-    [paiement]
+    [paiement, requis, surpaiementRecompense]
   )
 
   /**
@@ -962,6 +1049,7 @@ export function useInteraction(
           position >= 0 && position < cibles.length - 1
             ? () => permuterCibles(cible, cibles[position + 1])
             : undefined,
+        permuterAvec: position >= 0 ? (autre) => permuterCibles(cible, autre) : undefined,
         assignerReste:
           maxParCible > 1 && peutViser && resteQuantite > 1
             ? () => assignerReste(cible, resteQuantite)
@@ -1134,6 +1222,7 @@ export function useInteraction(
           position >= 0 && position < cibles.length - 1
             ? () => permuterCibles(cible, cibles[position + 1])
             : undefined,
+        permuterAvec: position >= 0 ? (autre) => permuterCibles(cible, autre) : undefined,
         assignerReste:
           maxParCible > 1 && resteQuantite > 1 ? () => assignerReste(cible, resteQuantite) : undefined,
         assignerResteQuantite: maxParCible > 1 && resteQuantite > 1 ? resteQuantite : undefined,
@@ -1163,7 +1252,14 @@ export function useInteraction(
 
   const coutAffiche =
     requis === 0
-      ? ''
+      ? // Coût X (surpaiementRecompense) : le coût imprimé (0) ne dit rien de ce
+        // qui compte vraiment, le montant PAYÉ. Rapport de bug n°116
+        // (08/11/2026, Web Barrage) : la pastille de coût restait muette, sans
+        // indiquer qu'on pouvait encore payer pour que la carte fasse quelque
+        // chose.
+        surpaiementRecompense && paye > 0
+        ? String(paye)
+        : ''
       : requis === undefined
       ? paiement?.cost && paiement.cost !== '0'
         ? paiement.cost
@@ -1213,6 +1309,8 @@ export function useInteraction(
     coutRegles: reglesCout(paiement),
     typesManquants: typesManquants(paiement, ressources),
     coutFacultatif: paiementFacultatif(paiement),
+    moyensChoisis: moyensChoisisDesAlternatives(paiement, ressources, index.values()),
+    surpaiementRecompense,
   }
 
   // La confirmation « ce coup ne fera rien » (11/09/2026). Le moteur accepte

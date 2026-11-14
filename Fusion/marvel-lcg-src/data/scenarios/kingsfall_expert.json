@@ -1,0 +1,27 @@
+{
+    "version": "0.5.8",
+    "name": "Kingsfall",
+    "villain": [
+        "60160a,60160b"
+    ],
+    "expert": true,
+    "schemes": [
+        "60161a,60161b",
+        "60162a,60162b"
+    ],
+    "set_aside": [
+        "60163a,60163b"
+    ],
+    "encounters": [
+        "pu147",
+        "pu149a,pu149b"
+    ],
+    "encounter_sets": [
+        "kingpin_fne",
+        "expert"
+    ],
+    "modular_sets": [
+        "swat_team",
+        "tracksuit_mafia"
+    ]
+}

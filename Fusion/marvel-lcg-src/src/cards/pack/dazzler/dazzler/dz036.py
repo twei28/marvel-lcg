@@ -33,18 +33,30 @@ def GetAbilities() -> Sequence['Ability']:
         if chansons <= 0:
             return
 
-        schemes = [s for s in Worlds.FindCardsOnField(effect, card_type=Scheme2)
-                   if s.threat > 0]
-        ennemis = list(Worlds.FindCardsOnField(effect, card_type=Enemy))
+        def choisir(candidats: List['CardFace']) -> 'CardFace|None':
+            if not candidats:
+                return None
+            if len(candidats) == 1:
+                return candidats[0]
+            choisie = joueur.AskChooseOneText(candidats)
+            return choisie if choisie in candidats else candidats[0]
 
         # « perform the following FOR EACH » : les trois lignes, autant de fois
-        # qu'il y a eu de chansons depensees.
+        # qu'il y a eu de chansons depensees. « a scheme » / « an enemy » : le
+        # JOUEUR choisit, a chaque passage (CORRECTIF du 20/10/2026, backlog 12 :
+        # le module prenait d'office la premiere manigance et le premier ennemi
+        # trouves). Les candidats sont relus a chaque passage : un sbire vaincu
+        # ou une manigance videe n'est plus proposee.
         for _ in range(chansons):
-            if schemes:
-                this.RemoveThreatFromSchemes([schemes[0]], 2, effect)
+            schemes = [s for s in Worlds.FindCardsOnField(effect, card_type=Scheme2)
+                       if s.threat > 0]
+            cible = choisir(schemes)
+            if cible is not None:
+                this.RemoveThreatFromSchemes([cible], 2, effect)
             Faces.GiveStatus([this], "Tough", effect)
-            if ennemis:
-                this.DealDamage([ennemis[0]], 1, effect)
+            ennemi = choisir(list(Worlds.FindCardsOnField(effect, card_type=Enemy)))
+            if ennemi is not None:
+                this.DealDamage([ennemi], 1, effect)
 
     return [
         AbilityFactory.AfterPlayerPlayedCard(

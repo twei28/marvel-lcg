@@ -5,6 +5,12 @@ from . import *
 #   enemy.
 # Meme montage differe que The Power of Forgiveness (ah007) : l'effet est
 # porte par l'identite, la ressource etant defaussee au moment du paiement.
+#
+# DECLENCHEUR : `AfterPlayerPlayedCard` (la carte payee a ete JOUEE), pas
+# `AfterCardResolveAbility`. Rapport de bug n°115 (08/11/2026) : le moteur
+# n'envoie `AfterEffectResolved` que pour une capacite d'evenement ; une
+# amelioration ou un allie payes avec Great Power n'en ont aucune, et les
+# 2 degats ne partaient jamais (seul l'evenement Thwip! marchait).
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -12,7 +18,7 @@ def GetAbilities() -> Sequence['Ability']:
         initiator = effect.GetInitiator()
         identity = initiator.GetIdentity()
 
-        def apres_resolution(effect2: 'Effect', message2: 'Message.AfterEffectResolved') -> None:
+        def apres_resolution(effect2: 'Effect', message2: 'Message.AfterPlayerPlayedCard') -> None:
             joueur = effect2.GetInitiator()
             ennemis = list(Worlds.FindCardsOnField(effect2, card_type=Enemy))
             if not ennemis:
@@ -26,15 +32,19 @@ def GetAbilities() -> Sequence['Ability']:
             )
 
         identity.effect.RegisterTemp(
-            AbilityFactory.AfterCardResolveAbility(
+            AbilityFactory.AfterPlayerPlayedCard(
                 AbilityType.Response,
-                None,
+                "You",
                 CardFace,
                 apres_resolution,
-                which_effect=message.for_effect,
+                conditions=[
+                    lambda effect2, message2: message2.play_effect == message.for_effect,
+                ],
             ),
+            # Pas de `until_resolve_effect` : il retirerait la reponse a la fin de la
+            # resolution, AVANT l'envoi de `AfterPlayerPlayedCard`. La condition sur
+            # `play_effect` la garde de tout autre jeu de carte.
             unregister_after_exec=True,
-            until_resolve_effect=message.for_effect,
         )
 
     return [

@@ -18,8 +18,9 @@
   // la lecture de localStorage['marvel-langue'] et un petit dictionnaire local
   // limité aux libellés de ce fichier (même contrat : clé FR -> texte EN,
   // clé absente = FR conservé).
+  // La langue passe par langue-classique.js (window.MarvelLangue : choix dans le jeu > cookie du site > navigateur > français).
   const LANGUE = (function () {
-    try { return localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'; }
+    try { return window.MarvelLangue ? window.MarvelLangue.actuelle() : (localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'); }
     catch { return 'fr'; }
   })();
   const DICO_EN_LOCAL = {

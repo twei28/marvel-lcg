@@ -1094,3 +1094,64 @@ CHAINES += [
             [{"scenario": "sk_skrull_empire_expert", "avant": avant_pv_au_dessus_de_la_base, "verifier_fin": vf_pv_depasses,
               "carnet_reporte_attendu": {CLE_PV: "10"}}]),
 ]
+
+
+# ================================================== MojoMania (28/10/2026) — la campagne en 3 scenarios
+#
+# Livret officiel (pack 39) : pages 9, 13-14, 17. Le moteur (`cards/pack/mojo/campaign.py`) ecrit « Longshot In Play: Scenario N »
+# et « Modular Sets Used » ; l'ecran pose « Modular Sets This Scenario » au lancement ; le joueur choisit au panneau « Player N
+# Support / Upgrade #1/#2 » parmi les cartes proposees. La chaine joue les trois scenarios A LA SUITE avec le carnet que le panneau
+# garderait : une cle que le moteur lit mais que `data/campagnes/mojo.json` ne declare pas serait PERDUE ici.
+STARK_TOWER = "01034"       # soutien, cout 2, deck de depart d'Iron Man
+GAUNTLETS = "01038"         # amelioration, cout 2, idem
+
+
+def _menace_manigance(monde):
+    from game.operate.worlds import Worlds
+    return sum(int(getattr(s, "threat", 0) or 0) for s in Worlds.GetAllMainSchemes(monde))
+
+
+def v_mojo_scenario2(monde):
+    en_jeu = _en_jeu(monde)
+    return _verif(
+        (STARK_TOWER in en_jeu, f"la carte du scenario 1 (Stark Tower) est en jeu : {en_jeu.count(STARK_TOWER)}"),
+        ("39071" in en_jeu, "Longshot, en jeu a la fin du scenario 1, est REVELE (en jeu)"),
+        ("39071" not in _deck_rencontre(monde), "et il n'est pas aussi dans le deck rencontre"),
+    )
+
+
+def v_mojo_scenario3(monde):
+    en_jeu = _en_jeu(monde)
+    return _verif(
+        (STARK_TOWER in en_jeu, "la carte du scenario 1 est toujours remise en jeu"),
+        (GAUNTLETS in en_jeu, "et celle du scenario 2 aussi"),
+        ("39071" in en_jeu, "Longshot, en jeu a la fin du scenario 2, est revele"),
+    )
+
+
+CHAINES += [
+    {"nom": "[campagne_mode] mojo — Magog, Spiral puis Mojo : cartes gardees, Longshot et sets modulaires voyagent",
+     "campagne": "mojo", "heros": ["iron_man"],
+     "carnet": {"Modular Sets This Scenario": "crime"},
+     "etapes": [
+         {"scenario": "magog",
+          "avant": [f"Puzzle.PutIntoPlay('{STARK_TOWER}')", "Puzzle.PutIntoPlay('39071', under_control=True)"],
+          "fin": "Win",
+          "carnet_attendu": {"gagnee": True, "scenario": "magog",
+                             "cles": {"Longshot In Play: Scenario 1": "1", "Modular Sets Used": "crime"},
+                             "cles_presentes": ["Player 1 Eligible Support / Upgrade"]},
+          # Ce que le joueur coche au panneau (une carte parmi celles proposees), puis ce que le panneau GARDE.
+          "choix": {"Player 1 Support / Upgrade #1": STARK_TOWER},
+          "carnet_reporte_attendu": {"Longshot In Play: Scenario 1": "1", "Modular Sets Used": "crime",
+                                     "Player 1 Support / Upgrade #1": STARK_TOWER}},
+         {"scenario": "spiral", "verifier": v_mojo_scenario2,
+          "avant": [f"Puzzle.PutIntoPlay('{GAUNTLETS}')", "Puzzle.PutIntoPlay('39071', under_control=True)"],
+          "fin": "Win",
+          "carnet_attendu": {"gagnee": True, "scenario": "spiral",
+                             "cles": {"Longshot In Play: Scenario 2": "1"}},
+          "choix": {"Player 1 Support / Upgrade #2": GAUNTLETS},
+          "carnet_reporte_attendu": {"Longshot In Play: Scenario 2": "1", "Player 1 Support / Upgrade #1": STARK_TOWER,
+                                     "Player 1 Support / Upgrade #2": GAUNTLETS}},
+         {"scenario": "mojo", "verifier": v_mojo_scenario3, "fin": "aucune"},
+     ]},
+]

@@ -142,6 +142,8 @@ une erreur.
 | `ui-app/src/board/campagne/contexte.ts` | Le plateau apprend qu'il joue une campagne |
 | `ui-app/src/board/campagne/preremplissage.ts` | D'où vient chaque valeur pré-remplie |
 | `ui-app/src/board/campagne/PanneauRecompenses.tsx` | Le panneau de fin de scénario |
+| `ui-app/src/board/campagne/ParcoursFinScenario.tsx` | Le parcours de fin de scénario en quatre pages (Victoire, Bilan, Carnet, Suite) : `PanneauRecompenses` garde l'état et les droits, ce composant ne fait que présenter, page par page, en plein écran (portail dans `document.body`). Maquette validée le 29/10/2026. |
+| `ui-app/src/board/campagne/ChampRecompense.tsx` | Les contrôles de saisie du carnet (une ligne par champ du livret), partagés par le bilan et l'onglet « Valeurs » |
 | `ui-app/src/board/board.css` | Style du panneau, en fin de fichier |
 
 ---
@@ -2226,3 +2228,65 @@ fin dès le tour du joueur. Une épreuve mesure donc une MISE EN PLACE, pas une
 partie complète. Les trois boîtes sans `WriteCampaignLogAtGameOver` (trors, sm,
 web_of_deceit) n'ont pas de carnet sortant : leurs épreuves ne mesurent que ce
 que le carnet CHANGE, la détection restant au panneau du plateau.
+
+## Fin de scénario : le parcours en quatre pages (29/10/2026)
+
+Demande de l'utilisateur : tout était empilé sur le splash de fin, illisible. Désormais, « Continuer » mène de page en page :
+
+1. **Victoire** : le grand mot, l'art du vilain vaincu, les rounds et les héros.
+2. **Bilan** : à gauche ce que le jeu a relevé (champs `auto`, lecture seule, « Corriger dans le carnet »), à droite les vrais choix du livret. « Continuer » reste grisé pour l'hôte tant qu'un choix obligatoire manque (celui des autres sièges compris).
+3. **Carnet** : quatre onglets (Valeurs corrigeables et champs des scénarios suivants grisés, Journal des scénarios, Les héros, Histoire du livret avec la page de BD d'épilogue).
+4. **Suite** : le scénario suivant (art, résumé, sets, enjeu). « Commencer » enregistre le carnet puis ouvre `/campagne.html?campagne=<id>&lancer=<scénario>` : l'écran des campagnes ouvre la campagne et lance d'office le scénario (`lancerScenario`), sans repasser par la liste. « Options du scénario » ouvre l'écran de la campagne sans lancer (decks, sets modulaires, assemblée). Le lancement d'office est refusé pour un scénario en assemblée, déjà terminé ou déjà en cours, et pour une campagne perdue ou à ordre libre. Au dernier scénario : page « Campagne terminée » ou « Campagne perdue » à la place.
+
+Multijoueur : chacun avance à son rythme ; « Continuer » du bilan envoie les champs du siège distant ; seul l'hôte a le bouton de la dernière page, le distant voit « En attente de l'hôte pour commencer » (le rechargement quand l'hôte lance reste celui de `attente-scenario.ts`).
+
+Tests : `ParcoursFinScenario.test.tsx` (unitaires) et, côté `ui-check`, `tests/aide-parcours-fin.ts` (`parcoursOuvert`, `allerA`, `validerParcours`) pour les cas e2e `campagne-*`. Ces cas cherchent des libellés français : les lancer avec un navigateur en `fr-FR`.
+
+
+## Hellfire Hunt (Dipsome, set 241) : le mode campagne bouclé (01-02/11/2026)
+
+`data/campagnes/hellfire_hunt.json`, cinq scénarios (`hellfire_white_queen` ... `hellfire_cassandra_nova`), une seule identité par joueur pour toute la campagne.
+
+**Scans du livret** (`public/stories/hellfire_hunt/`, 21 fichiers, 975 px) : carte des pages dans `tools/pages_livret.py` (entrée `hellfire_hunt`, PDF du livret dans `.planning/hellfire-hunt/reference/`).
+Rôles décidés en lisant chaque page : p1 couverture ; p2 présentation (`pages_intro`) ; p5-6, 3-4, 22-23 règles de campagne (mode campagne, Xavier's Institute / Potential Ally / Recruited Mutants,
+mots-clés, zone de victoire, FAQ ; la p23 de la FAQ n'a que des « Still thinking », livrée telle quelle) ; p7 `pages_expert` ; p8/10/12/14/16 page de chaque scénario ; p9/11/13/15/17 illustration de l'auteur,
+montrée en intro du scénario ; p18-19 planches de BD, épilogue du scénario 5 ; p20 (decks de départ), p21 (crédits), p24 (carnet imprimable) non montrées. L'outil calcule désormais le zoom PAR PAGE
+(le livret mêle des pages de 5000 et 4520 points : à zoom unique, 20 scans sortaient en 882 px).
+
+**Chaîne 1 -> 5** : `tools/cas/campagne_hellfire.py` (chargé par `tools/test_campagne_chaine.py`, qui lit maintenant une liste de fichiers de chaînes). 9 chaînes, le même carnet voyage
+(filtré comme le panneau : seules les clés déclarées dans le fichier de campagne passent) : standard 1 joueur, standard 2 joueurs, branche Emma non vaincue au 2, branche Cryptic non vaincue au 3,
+défaites rejouées sans pénalité (standard et expert), expert 1 joueur (soin accepté partout), expert avec soin REFUSÉ (« Cancel » à la question du pion d'accélération), expert 2 joueurs avec joueur éliminé.
+Chaque étape contrôle la mise en place (deck Recruited Mutants exact, alliés restants de côté, Potential Ally, cartes révélées, Xavier's Institute / Rally, PV et pions d'accélération en expert) ET le carnet sortant
+(alliés, Potential Ally retirées, cases Emma / Cryptic, identité).
+**Quatre défauts trouvés et corrigés en bouclant la chaîne** (aucun n'était vu par les cas par scénario) :
+1. le scénario 1 (`hf104a`) n'appelait PAS `CampaignSetup(1)` : ni mise en place de campagne ni carnet sortant ;
+2. la mise en place du scénario 4 ne révélait jamais Cryptic Threatening Message / Psychic Minefield (livret p.14) ;
+3. le relevé ne notait que les alliés EN JEU ou en pile de victoire : un allié recruté puis défaussé, ou mélangé au deck Recruited par la mise en place (Emma au scénario 3), était perdu pour les scénarios suivants.
+   Règle maintenant : tout allié qui a quitté la zone « mise de côté » est recruté ;
+4. une manigance Potential Ally était mélangée à CHAQUE scénario ; le livret ne le dit qu'aux scénarios 1, 3 et 4 (`NIVEAUX_POTENTIAL_ALLY`).
+   Garde en plus : Emma Frost, déjà notée recrutée, n'est pas créée une seconde fois.
+Choix de l'ensemble de scénarios : la boîte (set 241) liste désormais les cinq scénarios (ils étaient dans les sets 240, 242-245 : l'écran de campagne répondait « Scénario introuvable dans le catalogue »).
+
+**Limites assumées** : un joueur ÉLIMINÉ en expert garde, au carnet, l'ancienne valeur de PV (le panneau ne reporte rien pour lui) ; au scénario suivant il revient avec elle et peut être soigné par le pion d'accélération
+(livret p.7 : il « rejoint en payant un pion » ; le pion n'est pas imposé s'il revient plein). Défaite du scénario 5 en expert = campagne perdue : règle d'écran (`defaite-campagne.ts`, `defaite-hellfire.test.ts`), pas de chaîne moteur.
+
+**E10 (règle de deck-building)** : `estReserveeALaCampagne` (`public/js/deckbuilder/regles.js`) ; les alliés RECRUITED hf013-hf028 et les captifs hf208-hf211 (classe `Campaign;Basic`, que le client lit « Campaign » ) ne sont plus proposés
+par le deck-builder (ils l'étaient) ; les cartes d'aspect du même set restent proposées ; le deck Recruited Mutants est un deck de table, hors taille du deck. Test : `tools/tests-lanceur/deckbuilder-hellfire-campagne.test.mjs`.
+
+**Decks de départ** : Marvel Girl / Leadership (22 cartes) et Sunspot / Aggression (15 cartes) montent une partie (`verifier_tous_les_decks.py` : 179/179). Sunspot reste INCOMPLET : Finishing Blow x3, Cecilia Reyes, For What's Right x3 et X-Force Strike x3
+n'existent ni dans `data/cards.json` (recherche par nom dans tous les sets) ni dans le zip du livret ; pas de substitution inventée. Voir `docs/packs/hellfire-hunt/QUESTIONS.md`.
+
+**Navigateur** (Chromium, Playwright, `ui-check/tests/campagne-hellfire.spec.ts`, serveur de test `launcher_fast.py --config launch.hfm-web.json`, port 11060) : la boîte avec sa couverture et son résumé ; création avec Sunspot ;
+livre ouvert (couverture + présentation, règles de la campagne) ; scénario 1 lancé depuis l'écran jusqu'au plateau (White Queen, Cerebro Insights, Xavier's Institute, Roberto Da Costa) ; victoire forcée, parcours de fin,
+page Carnet (alliés Recruited, Potential Ally retirées) ; retour à l'écran avec le scénario 2 (Black King) et ses pages. Captures lues : `captures/hellfire-campagne/` (git-ignorées).
+
+## Cartes qui se retirent du carnet (14/11/2026)
+
+« Discard this card and remove it from the campaign log » (Tactical Scanner 04155-04158, Hydra Campaign) : le coût
+`CostFunc.RemoveFromCampaignLog` ne faisait RIEN, le carnet gardait la carte et `EachPlayerSearchTheirDeckForSetupKeyword`
+la remettait au scénario suivant (signalement d'un joueur). Il efface maintenant la clé du carnet du joueur qui la porte
+(`Player N Tech Upgrade`, `Basic Upgrade`, `Support / Upgrade #1/#2`) dans le monde et la note dans le store
+`Campaign Log Keys Removed` ; le descripteur l'expose en `campagne_retraits` et `PanneauRecompenses` retire ces clés du carnet
+enregistré (`campagne/retraits-carnet.ts`). Cas : `tools/cas/campagne_retraits.py` (7, rouges sans le correctif).
+Seules ces 4 cartes portent cette formule. Les rôles de Mutant Genesis (« remove from the game and the campaign pool ») ont
+leur propre mécanisme (`Role Upgrades Removed`, collecteur `mut_gen`) ; les unités du Marché sont consommées à l'achat.

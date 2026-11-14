@@ -170,6 +170,9 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
                     'escalade': self.escalation_threat,
                     'acceleration': message.escalation_threat - self.escalation_threat,
                     'joueurs': world.GetPlayerNumIcon(),
+                    # D'OU VIENT L'ACCELERATION (rapport BL-Stark n°104 : « la manigance a pris 2 menaces d'un coup », l'icone venait d'un allie,
+                    # Cloak) : les cartes en jeu qui portent une icone d'acceleration, par leur nom.
+                    'sources_acceleration': [face.name for face in acceleration_icons],
                 }
             except Exception:
                 decomposition = {}
@@ -217,6 +220,21 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             patrol_faces = MainScheme.GetPatrolFaces(by_effect)
             if patrol_faces:
                 ignored_patrol = True
+        elif getattr(by_effect.context, 'patrouille_levee_au_ciblage', False) and by_effect.IsPlayerInitiator():
+            # CORRECTIF (20/10/2026, gs315 Quantum Jump de Quasar ; vaut aussi
+            # pour hc006 On the Prowl) : la Patrouille ne verrouillait qu'AU
+            # CIBLAGE (`CanBeThwartBy` plus bas). Une carte dont l'ignorance
+            # DEPEND DU PAIEMENT (rien n'est paye au ciblage : la cible reste
+            # offerte) n'etait jamais rattrapee a la resolution : payee sans
+            # la ressource voulue, elle contrecarrait quand meme le complot
+            # principal sous Patrouille. Meme verrou que la Crise ci-dessus,
+            # mais SEULEMENT pour un effet dont le ciblage a franchi la
+            # Patrouille grace a une ignorance : tout le reste est inchange.
+            patrouilleurs = MainScheme.GetPatrolFaces(by_effect)
+            if patrouilleurs:
+                message = Message.IconsActivate_Text(self, patrouilleurs, 'Patrol')
+                message.Send()
+                return 0
 
         ret_value = super().RemoveThreatInternal(by_face, value, by_effect, thw_message)
 
@@ -276,6 +294,12 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
             if MainScheme.GetPatrolFaces(effect) != []:
                 if not effect.IsIgnoreKeyword('Patrol', effect) and effect.IsPlayerInitiator():
                     return False
+                # CORRECTIF (20/10/2026) : note que CE ciblage a franchi la
+                # Patrouille grace a une ignorance, pour la reverifier a la
+                # resolution (RemoveThreatInternal plus haut). Remis a faux
+                # par `EffectContext.ResetAfterOperation`.
+                if effect.IsPlayerInitiator():
+                    effect.context.patrouille_levee_au_ciblage = True
             # CRISE : meme verrou que Patrouille juste au-dessus, ajoute le
             # 11/09/2026 apres un rapport de joueur.
             #
@@ -299,6 +323,12 @@ class MainScheme(Scheme2, HasStage, EncounterCard, FinalType):
         return super().CanBeThwartBy(effect)
 
     def GainTargetThreatValue(self, value: int, effect: 'Effect'):
+        # AJOUT (20/10/2026, Galactic Storm gs198b Protectors of the Kree Empire) : « The target threat
+        # value of this scheme cannot be changed. » Toute modification (ajout ET retrait d'un bonus) est
+        # ignoree, ce qui garde l'aller-retour symetrique. Meme lecture du texte imprime que la regle
+        # « If this stage is completed, the players lose the game » (GetAbilities ci-dessus).
+        if "target threat value of this scheme cannot be changed" in self.paper.text:
+            return
         if self.target_threat != None:
             self.target_threat += value
 

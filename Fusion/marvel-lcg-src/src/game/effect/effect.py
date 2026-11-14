@@ -654,5 +654,6 @@ class Effect(Object):
             failure_reason=failure_reason,
             is_search=is_search,
             au_maximum=self.context.au_maximum,
+            is_text_choice=self.ability.flags.is_choose_ability,
         )
 

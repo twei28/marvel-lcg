@@ -446,3 +446,25 @@ describe('les donnees seules : aucune closure dans la vue', () => {
     expect(JSON.parse(JSON.stringify(vue))).toEqual(vue)
   })
 })
+
+describe('la demande a un autre joueur, seule dans la question (21/10/2026)', () => {
+  // Capture du 21/10/2026 : le heros attaque ne peut plus defendre, seule reste
+  // « Ask ». Le bouton prenait le nom imprime sur la carte de son porteur.
+  const ask = option(9, 'Ask', 40, { all_legal_targets: [41] })
+  const texteDuPorteur = { texteCapacite: () => '« Sens d’Araignée » — Interruption : il gagne 1 DÉF.' }
+
+  it('nomme la personne sollicitee et la defense, jamais la capacite du porteur', () => {
+    const vue = vueSousCadre(question(demande([ask]), undefined, texteDuPorteur), {})
+    expect(vue.genre).toBe('reponses')
+    if (vue.genre !== 'reponses') return
+    expect(vue.choix.map((c) => c.nom)).toEqual(['Demander à Black Widow de défendre'])
+    expect(vue.titre).toBe('Demander à Black Widow de défendre')
+    expect(vue.refus).toBe('Ne pas défendre')
+  })
+
+  it('pendant son tour, c’est une demande d’agir', () => {
+    const vue = vueSousCadre(question(demande([ask], { event_name: 'WhenPlayerInTurn' }), undefined, texteDuPorteur), {})
+    if (vue.genre !== 'reponses') throw new Error(vue.genre)
+    expect(vue.choix.map((c) => c.nom)).toEqual(['Demander à Black Widow d’agir'])
+  })
+})

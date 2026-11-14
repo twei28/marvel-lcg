@@ -3,7 +3,18 @@
 "use strict";
 
 export const DICO_EN_DECKBUILDER = {
+    "Le serveur n'a pas reconnu votre session (cookies bloqués, session expirée ou ancienne version en cache). Rechargez la page ; si cela persiste, reconnectez-vous depuis l'accueil et autorisez les cookies du site.":
+        "The server did not recognise your session (cookies blocked, expired session or an old cached version). Reload the page; if it persists, sign in again from the home page and allow the site's cookies.",
+    "Recharger": "Reload",
+    "Accueil / reconnexion": "Home / sign in again",
     "ARTS": "ARTS",
+    // Regle declaree `ressources_egales` (Carol Danvers, Galactic Storm, 20/10/2026).
+    "Il faut": "Required:",
+    "autant de cartes de chaque ressource": "the same number of cards of each resource",
+    "énergie": "energy",
+    "mentale": "mental",
+    "physique": "physical",
+    "joker": "wild",
     "Cartes réservées aux héros TMNT :": "Cards reserved to TMNT heroes:",
     "Illustration officielle": "Official artwork",
     "Illustration": "Artwork",
@@ -107,4 +118,15 @@ export const DICO_EN_DECKBUILDER = {
     "masquer": "hide",
     "voir": "show",
     "survol = aperçu": "hover = preview",
+    "toucher = aperçu": "tap = preview",
+    "Toucher = aperçu · − / + sur la carte": "Tap = preview · − / + on the card",
+    // Panneau Voie Shinobi (Path), 12/11/2026.
+    "Voie propre": "Own Path",
+    "cartes Shinobi de n’importe quelle combinaison, aucun aspect, cartes Basic.": "Shinobi cards of any combination, no aspect, Basic cards.",
+    "Voie": "Path",
+    "un aspect": "one aspect",
+    "Changer de Voie": "Change Path",
+    "Choisir une Voie Shinobi": "Choose a Shinobi Path",
+    "Ce deck suit-il une Voie Shinobi ? Sans Voie, aucune carte Shinobi n’est proposée.": "Does this deck follow a Shinobi Path? Without a Path, no Shinobi card is offered.",
+    "Sans Voie": "No Path",
 };

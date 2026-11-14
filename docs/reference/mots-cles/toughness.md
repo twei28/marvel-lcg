@@ -52,3 +52,9 @@ imprimée distincte nécessitant un script.
   lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+## Pieges vus au portage de Smasher (Cannonball sz002, 26/10/2026)
+
+- **Toughness conditionnel** (« has toughness if your identity has trait T ») : `ThisGainKeyword(fn_ui, toughness=1, change_on_event=OnEvent.Trait("YourIdentity"))`
+  (modele 49035 Bling!), pas la cle `desc.Toughness`. Une carte posee par `Puzzle.PutIntoPlay` sans trait aerien n'a PAS de Tough ; la meme carte JOUEE de la main en recoit une
+  de sa propre Response « after you play an AERIAL card » (elle est AERIAL et deja en jeu). Cas `[sz] sz002`.

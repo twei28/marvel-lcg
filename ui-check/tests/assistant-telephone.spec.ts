@@ -99,6 +99,12 @@ async function capturer(page: Page, w: number, nom: string) {
 for (const { w, h } of FORMATS) {
   test.describe(`assistant au téléphone, ${w} px`, () => {
     test.use({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+    // Le filet force l'affichage « Coloré » (global-setup) : pour les captures on montre l'Épuré, le défaut du jeu.
+    test.beforeEach(async ({ page }) => {
+      // Le français, quelle que soit la langue du navigateur de la machine : les assertions lisent le français.
+      await page.addInitScript(() => { try { localStorage.setItem('marvel-langue', 'fr'); localStorage.setItem('marvel-langue-choisie', '1'); } catch (e) { /* stockage indisponible */ } });
+      if (CAPTURER) await page.addInitScript(() => { try { localStorage.setItem('mc_affichage_v1', 'epure'); } catch (e) { /* stockage indisponible */ } });
+    });
 
     test('le parcours complet : sans débordement, zones de 44 px', async ({ page }) => {
       test.setTimeout(120_000);
@@ -107,7 +113,7 @@ for (const { w, h } of FORMATS) {
       await capturer(page, w, '0-accueil');
       await solo(page);
 
-      // --- Étape Héros : toucher = aperçu, « Choisir » = valide -------------
+      // --- Étape Héros : un toucher choisit, « Continuer » en bas ------------
       const tuile = page.locator('.tb-port[data-hero="storm"]');
       await tuile.waitFor({ timeout: 30_000 });
       await expect(page.locator('html')).toHaveClass(/\btel\b/);
@@ -124,7 +130,7 @@ for (const { w, h } of FORMATS) {
 
       await tuile.tap();
       await expect(page.locator('.ts-titre b')).toContainText(/storm/i);
-      await expect(tuile, 'un toucher n’en choisit pas : il présente').not.toHaveClass(/\bchosen\b/);
+      await expect(tuile, 'un toucher choisit le héros (24/10/2026)').toHaveClass(/\bchosen\b/);
       await expect(page.locator('.fiche-heros')).toHaveCount(0);
       const choisir = page.locator('.ts-btn.jaune');
       await expect(choisir).toBeVisible();
@@ -168,8 +174,8 @@ for (const { w, h } of FORMATS) {
       await page.mouse.up();
       await expect(fiche, 'glisser la poignée ferme la feuille').toHaveCount(0);
 
-      // Choisir : l'équipe est complète, on file aux decks sans « Options ».
-      await page.locator('.ts-btn.jaune').tap();
+      // Le héros est déjà choisi : « Continuer » en bas mène aux decks, sans « Options ».
+      await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/decks/i, { timeout: 8_000 });
       await expect(page.locator('.vh-panel'), 'plus de fenêtre « Options de ce héros »').toHaveCount(0);
 
@@ -200,7 +206,7 @@ for (const { w, h } of FORMATS) {
       await verifier(page, 'méchant');
       await scn.tap();
       await capturer(page, w, '8-mechant-apercu');
-      await page.locator('.ts-btn.jaune').tap();
+      // Un toucher choisit le méchant (24/10/2026) : « Continuer » s'allume sans passer par « Choisir ».
       await expect(page.getByRole('button', { name: /^continuer/i })).toBeEnabled({ timeout: 8_000 });
       // L'en-tête de l'étape nomme le méchant choisi (il restait « inconnu »).
       for (const mode of await page.locator('.tb-mode').all()) {
@@ -208,10 +214,21 @@ for (const { w, h } of FORMATS) {
       }
       await verifier(page, 'méchant choisi');
 
+      // --- Étape Difficulté (30/10/2026) : trois onglets, un panneau à la fois ----
+      await page.getByRole('button', { name: /^continuer/i }).tap();
+      await expect(page.locator('.pstep.active')).toContainText(/difficult/i);
+      await page.locator('.dp-sets').waitFor({ timeout: 30_000 });
+      for (const [i, nom] of ['sets', 'niveau', 'propositions'].entries()) {
+        await page.locator('.dp-onglets .tampon').nth(i).tap();
+        await page.waitForTimeout(400);
+        await capturer(page, w, '9-difficulte-' + nom);
+        await verifier(page, 'difficulté, onglet ' + nom);
+      }
+
       // --- Étape Final -----------------------------------------------------------
       await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/final/i);
-      await capturer(page, w, '9-final');
+      await capturer(page, w, '10-final');
       expect(await debordements(page), 'débordement : final').toEqual([]);
     });
 
@@ -234,7 +251,7 @@ for (const { w, h } of FORMATS) {
       await solo(page);
       await page.locator('.tb-port[data-hero="storm"]').waitFor({ timeout: 30_000 });
       await page.locator('.tb-port[data-hero="storm"]').tap();
-      await page.locator('.ts-btn.jaune').tap();
+      await page.getByRole('button', { name: /^continuer/i }).tap();
       await expect(page.locator('.pstep.active')).toContainText(/decks/i, { timeout: 8_000 });
       // Revenir par la barre d'étapes rejoue le recul de l'historique : la pile
       // reste propre (pas d'aller-retour Héros, Decks, Héros à défaire).

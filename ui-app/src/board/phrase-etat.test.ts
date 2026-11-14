@@ -47,6 +47,22 @@ describe('phraseEtat', () => {
     expect(phraseEtat(assistant({ etape: 'confirm' }), true)).toBe('Tout est prêt')
   })
 
+  // Rapport de bug n°116 (08/11/2026, Web Barrage) : coût X, donc coût
+  // imprimé déjà couvert à 0. « Tout est prêt » ne disait rien du paiement
+  // optionnel ; le joueur validait sans rien dépenser et la carte ne faisait
+  // rien.
+  it('à coût X, dit qu’il n’y a encore rien de payé plutôt que « Tout est prêt »', () => {
+    expect(
+      phraseEtat(assistant({ etape: 'confirm', coutPaye: 0, surpaiementRecompense: true }), true)
+    ).toBe('Rien payé : tu peux encore ajouter des ressources avant de valider')
+  })
+
+  it('à coût X, affiche le montant déjà payé une fois qu’on a commencé', () => {
+    expect(
+      phraseEtat(assistant({ etape: 'confirm', coutPaye: 2, surpaiementRecompense: true }), true)
+    ).toBe('Payé : 2')
+  })
+
   it('garde le détail du ciblage tel quel', () => {
     expect(phraseEtat(assistant({ etape: 'target', detail: '1/3 requise(s)' }), false)).toBe(
       '1/3 requise(s)'

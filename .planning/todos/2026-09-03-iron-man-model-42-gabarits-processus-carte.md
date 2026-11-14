@@ -117,11 +117,12 @@ fois la ressource offensive et la réserve de survie.
       tombé à 0.
 - [x] Étape 8 : voir preuve commune.
 
-> ⚠ **Écart assumé, et il est dans le moteur.** La carte dit « this **ROUND** »
-> mais `UpdateNextCardPlayCost` n'accepte que `in_this="Phase"` ou `"Turn"`
-> (`worlds.py:815`) : il n'y a pas de portée « Round ». On prend `"Phase"`, la
-> plus large. La différence ne se verrait que si une amélioration était jouée
-> pendant la phase du vilain.
+> ✅ **Écart corrigé le 20/10/2026 (backlog 12).** La carte dit « this
+> **ROUND** » ; le module prenait `in_this="Phase"`, faute de portée « Round »
+> dans le moteur. Cette portée existe depuis le 06/10/2026 (dz003) : le module
+> passe en `"Round"`. Cas « im001b Inventor — l'Action réduit la prochaine
+> amélioration de TOUT LE ROUND », rouge sous `"Phase"`, vert sous `"Round"`.
+> Gabarit à jour : `.planning/todos/2026-10-20-backlog-12-gabarits-processus-carte.md`.
 
 **Carte terminée : OUI**
 

@@ -40,8 +40,9 @@ def GetAbilities() -> Sequence['Ability']:
         # (« in your hand and reserve », et la carte n'y est plus).
         cartes = list(joueur.hand_cards.Get()) + list(joueur.reserve.Get())
         icones = FacesCounter.GetPrintedResources(cartes)
-        physiques = icones.r + icones.g
-        mentales = icones.b + icones.g
+        # Un wild IMPRIME n'est que « wild » (RR « Wild Resource », arbitrage du 26/10/2026) : ni [physical] ni [mental].
+        physiques = icones.r
+        mentales = icones.b
 
         for _ in range(physiques):
             ennemis = list(Worlds.FindCardsOnField(effect, card_type=Enemy))

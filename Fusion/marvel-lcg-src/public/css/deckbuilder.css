@@ -358,3 +358,25 @@ html[data-affichage="sobre"] .db-valide.est-ok { background: var(--vert-terni); 
 html[data-affichage="sobre"] .db-valide.est-ko { background: var(--rouge-terni); border-color: var(--rouge-terni-clair); }
 html[data-affichage="sobre"] .db-histo i { background: var(--rouge-terni-clair); }
 html[data-affichage="sobre"] .db-carte:hover > img { outline-color: #b3a588; }
+
+/* --- Tablette (24/10/2026, decision 11) : html[data-tablette], js/tablette.js --
+   Les boutons − / + toujours visibles et assez gros pour le doigt ; le survol
+   ne fait plus rien (toucher la carte la montre en grand). */
+html[data-tablette] .db-carte-boutons { display: flex; gap: 8px; bottom: 6px; }
+html[data-tablette] .db-carte-boutons button { width: 44px; height: 44px; font-size: 22px; }
+html[data-tablette] .db-entete button,
+html[data-tablette] .db-chip,
+html[data-tablette] .db-basmob button,
+html[data-tablette] .db-filtres-col button { min-height: 44px; }
+html[data-tablette] .db-pm { min-width: 40px; min-height: 40px; font-size: 18px; }
+#db-status .db-statut-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+/* Voie Shinobi (Path) : panneau au-dessus de la grille (choix du Path, « Sans Voie », Voie propre de Jennika). */
+.db-voie { margin: 8px 0; padding: 8px 10px; border: 1px solid #c9ced6; border-radius: 4px; }
+.db-voie[hidden] { display: none; }
+.db-voie-texte { margin: 0 0 6px; font-size: 14px; }
+.db-voie-grille { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.db-voie-carte { width: 110px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px; background: none; border: 1px solid transparent; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.db-voie-carte > img { width: 100%; aspect-ratio: 5 / 7; object-fit: contain; border-radius: 4px; }
+.db-voie-carte:hover, .db-voie-carte:focus-visible { border-color: #3f86e0; }
+.db-voie-bouton { padding: 4px 10px; border: 1px solid #3f86e0; border-radius: 4px; background: #fff; color: #3f86e0; cursor: pointer; font-size: 13px; }

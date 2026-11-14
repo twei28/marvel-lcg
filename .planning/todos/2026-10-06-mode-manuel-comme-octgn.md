@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « PLANIFIÉ, RIEN CODÉ » (l'annotation du 07/10 en tête le dit déjà périmé) »). Preuve : `git log --grep=manuel` : `a6370398`, `4a15c9a8`, `8a88b772`, `b134cd7a`, `3f5171f4`, `a6370398` ; lots 0 à 7 déployés le 06/10 (`56349b00`) ; branche `mode-manuel` ancêtre de HEAD ; fiche sœur `2026-10-07-manuel-100-pourcent-octgn.md` : « FAIT ». Les restes sont l'item 4 de la section 2 (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°1).
+
 # Mode manuel joué comme sur OCTGN : poser une carte, et le reste (06/10/2026)
 
 > **Mise à jour du 07/10/2026 (audit du backlog)** : L'en-tête « PLANIFIÉ, RIEN CODÉ » est PÉRIMÉ : les lots 0 à 7 sont faits, commités (`59759beb`, `7907eb5b`) et déployés le 06/10 (`56349b00`). RESTE : table éclatée et carte à deux faces non vérifiées en vraie partie ; l'amélioration à cibler ne propose pas les ennemis (question en suspens) ; glisser le dessus d'une pile (écart 32) ; volet d'aide à 1024 et 390 px qui couvre la main.

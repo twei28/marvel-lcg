@@ -19,6 +19,7 @@
 import { describe, expect, it } from 'vitest'
 import type { World } from '../world'
 import {
+  optionsProposees,
   cartesDansZone,
   cartesDuJoueurParmi,
   cartesEnJeu,
@@ -590,5 +591,33 @@ describe('cleCarnet', () => {
   it('laisse les champs communs tels quels', () => {
     expect(cleCarnet({ cle: 'Reputation Track', type: 'auto', libelle: '' }, 2))
       .toBe('Reputation Track')
+  })
+})
+
+describe('optionsProposees — les cartes que le moteur propose à CE joueur (MojoMania)', () => {
+  const champ = {
+    cle: 'Support / Upgrade #1',
+    type: 'choix' as const,
+    parJoueur: true,
+    optionsSuggerees: 'Eligible Support / Upgrade',
+    libelle: '',
+  }
+  const suggestions = {
+    'Player 1 Eligible Support / Upgrade': '01056;01092',
+    'Player 2 Eligible Support / Upgrade': '01034',
+  }
+
+  it('rend la liste du joueur demandé, et seulement la sienne', () => {
+    expect(optionsProposees(champ, 0, suggestions)).toEqual(['01056', '01092'])
+    expect(optionsProposees(champ, 1, suggestions)).toEqual(['01034'])
+  })
+
+  it("rend [] pour un joueur sans carte éligible, ou sans suggestion du moteur (carnet d'un autre scénario)", () => {
+    expect(optionsProposees(champ, 2, suggestions)).toEqual([])
+    expect(optionsProposees(champ, 0, undefined)).toEqual([])
+  })
+
+  it("ne propose rien pour un champ qui n'a pas `optionsSuggerees`", () => {
+    expect(optionsProposees({ ...champ, optionsSuggerees: undefined }, 0, suggestions)).toEqual([])
   })
 })

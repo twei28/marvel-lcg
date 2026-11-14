@@ -40,7 +40,7 @@ def JoueurDeCetteCarte(effect: 'Effect') -> 'Player|None':
     return None
 
 
-STATUTS = ("Stunned", "Confused", "Tough")
+STATUTS = ("Stunned", "Confused", "Tough", "Exposed", "Cloaked", "Dazed", "Intensified")
 
 
 def StatutsPresents(face: 'CardFace') -> List[str]:
@@ -57,16 +57,15 @@ def RetirerUneCarteDeStatut(effect: 'Effect', joueur: 'Player', face: 'CardFace'
     presents = StatutsPresents(face)
     if not presents:
         return False
-    methodes = {"Stunned": face.DiscardStunned,
-                "Confused": face.DiscardConfused,
-                "Tough": face.DiscardTough}
+    # LoseState(nom) couvre tous les statuts de STATUTS (Exposed, Cloaked,
+    # Dazed... n'ont pas de methode Discard dediee sur la face).
     if len(presents) == 1:
-        methodes[presents[0]](effect, rule=1)
+        face.LoseState(presents[0], effect, rule=1)
         return True
     joueur.ChooseAbilities(
         effect,
         *[AbilityFactory.ForChoiceAbility(
             "Discard a %s status card" % nom,
-            lambda cibles, nom=nom: methodes[nom](effect, rule=1))
+            lambda cibles, nom=nom: face.LoseState(nom, effect, rule=1))
           for nom in presents])
     return True

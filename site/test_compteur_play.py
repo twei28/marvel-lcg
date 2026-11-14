@@ -138,6 +138,34 @@ verifier("presence : affichee dans l'admin", "En ce moment sur play : 3" in o.bl
 verifier("presence : rien n'est ecrit en base",
          not any("presence" in r[0] for r in o._cx().execute("SELECT name FROM sqlite_master")))
 
+# --- mode de la phase du mechant ---------------------------------------------
+phase = lambda valeur, route="/compteur_phase_play": envoyer(json.dumps({"phase": valeur}).encode(), None, route)
+with o._cx() as cx:
+    _tables = {r[0] for r in cx.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+verifier("phase : la table existe sans avoir touche parties_play", "phase_play" in _tables and "parties_play" in _tables)
+verifier("phase : avant tout comptage, le bloc le dit", "Aucune donnée" in o.bloc_phase_play()
+         and "les parties passées ne sont pas comptées" in o.bloc_phase_play())
+o.COMPTEUR_PHASE_MAX_PAR_JOUR = 6
+verifier("phase : une valeur valide rend 204", phase("guidee") == 204)
+phase("guidee"); phase("accelere"); phase("telephone")
+verifier("phase : valeurs inconnues ignorees",
+         phase("<b>x</b>") == 204 and phase("Guidee") == 204 and envoyer(b"nimporte", None, "/compteur_phase_play") == 204)
+_st = o.stats_phase_play()
+verifier("phase : comptes par valeur", dict(_st["lignes"]) == {"guidee": 2, "accelere": 1, "telephone": 1}, str(_st))
+verifier("phase : le jour de debut est note", _st["depuis"] == time.strftime("%Y-%m-%d", time.gmtime()))
+verifier("phase : un corps trop gros est refuse (413)",
+         envoyer(b"", o.COMPTEUR_PHASE_MAX_OCTETS + 1, "/compteur_phase_play") == 413)
+phase("plateau_anime"); phase("plateau_anime"); phase("plateau_anime")  # le plafond du jour est 6
+verifier("phase : le plafond du jour est tenu", o.stats_phase_play()["total"] == 6, str(o.stats_phase_play()))
+with o._cx() as cx:
+    _cols = {r[1] for r in cx.execute("PRAGMA table_info(phase_play)")} | {r[1] for r in cx.execute("PRAGMA table_info(compteurs_depuis)")}
+verifier("phase : aucune identite stockee (jour, valeur, n seulement)", _cols == {"jour", "valeur", "n", "nom"}, str(_cols))
+_bloc = o.bloc_phase_play()
+verifier("phase : le bloc montre libelles, nombres et pourcentages",
+         "Mode de la phase du méchant" in _bloc and "Guidée" in _bloc and "Plateau animé" in _bloc and "33 %" in _bloc, _bloc[:400])
+verifier("phase : la mention de date est la", "Compté depuis le %s" % _st["depuis"] in _bloc)
+verifier("phase : le bloc est dans le sous-onglet Play", "Mode de la phase du méchant" in o.bloc_stats_play())
+
 _serveur.shutdown()
 print("\n%d echec(s)" % len(echecs))
 sys.exit(1 if echecs else 0)

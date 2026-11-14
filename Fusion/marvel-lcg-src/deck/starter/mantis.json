@@ -1,0 +1,66 @@
+{
+    "version": "0.5.8",
+    "name": "Mantis",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Mantis » (BlueHG, MC Hero Pack, planche imprimable PDF + images envoyees). Deck de heros = les 15 numeros « n/15 ». Obligation Psychic Tremor (mt011), set nemesis Mantis Nemesis (mt012-mt015, Cotati Resiliency x2). Mindlink (mt016, evenement Basic) n'est pas dans le deck. player_deck = la decklist d'aspect IMPRIMEE par l'auteur (Agressivite + Basic) : 25 cartes officielles."
+    },
+    "hero": [
+        "mt001a,mt001b"
+    ],
+    "hero_deck": [
+        "mt002",
+        "mt003",
+        "mt003",
+        "mt004",
+        "mt004",
+        "mt005",
+        "mt005",
+        "mt005",
+        "mt006",
+        "mt006",
+        "mt007",
+        "mt008",
+        "mt008",
+        "mt009",
+        "mt010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "mt011"
+    ],
+    "nemesis_set": [
+        "mt012",
+        "mt013",
+        "mt014",
+        "mt015",
+        "mt015"
+    ],
+    "player_deck": [
+        "18011",
+        "16040",
+        "21041",
+        "25014",
+        "20026",
+        "20026",
+        "13016",
+        "01057",
+        "22032",
+        "22032",
+        "16046",
+        "16046",
+        "16046",
+        "17020",
+        "19020",
+        "16047",
+        "01084",
+        "16019",
+        "01088",
+        "01089",
+        "01090",
+        "01091",
+        "17021",
+        "17022",
+        "16052"
+    ]
+}

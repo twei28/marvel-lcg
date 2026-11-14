@@ -42,7 +42,9 @@ def nombre(chemin, motif) -> int:
     return int(trouve.group(1)) if trouve else -1
 
 
-places_site = nombre(ORCHESTRATEUR, r'NB_EMPLACEMENTS = int\(os\.environ\.get\("NB_EMPLACEMENTS", "(\d+)"\)\)')
+# Total = emplacements des comptes + tables invite de Play (31..45).
+places_site = (nombre(ORCHESTRATEUR, r'NB_EMPLACEMENTS_COMPTES = int\(os\.environ\.get\("NB_EMPLACEMENTS_COMPTES", "(\d+)"\)\)')
+               + nombre(ORCHESTRATEUR, r'NB_PLACES_INVITE = int\(os\.environ\.get\("NB_PLACES_INVITE", "(\d+)"\)\)'))
 places_moteur = nombre(CONFIG_SERVEUR, r"^PLACES_MAX = (\d+)")
 
 caddy = open(CADDYFILE, encoding="utf-8").read()

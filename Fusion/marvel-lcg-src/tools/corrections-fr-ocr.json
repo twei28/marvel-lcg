@@ -1,0 +1,528 @@
+{
+  "01109": {
+    "texte": "<i>Des rapports indiquent que des agents d'Hydra ont caché une bombe dans un hôtel des environs.</i>\n<b>Une fois révélée</b> : placez 1[per_hero] menace supplémentaire sur cette carte.\n<i>(Icône d'Accélération : placez +1 menace sur la manigance principale au début de la phase du Méchant.)</i>"
+  },
+  "04026": {
+    "texte": "<b><i>Donnez cette carte au joueur de Clint Barton.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez Clint Barton → retirez Passé Criminel de la partie.\n• Défaussez du jeu l'Arc de Hawkeye. Défaussez cette obligation."
+  },
+  "16035": {
+    "texte": "Vous gagnez +3 points de vie.\nTant qu'il est sous forme de héros, Rocket Raccoon gagne +1 ATQ.",
+    "traits": "TECH.",
+    "ambiance": "« Ouais, ouais, regarde le monstre de foire tant que tu peux. » – Rocket Raccoon"
+  },
+  "16140": {
+    "texte": "Chaque ennemi gagne +1 ATQ.\n[star] <b>Boost</b> : révélez cette carte."
+  },
+  "17020": {
+    "texte": "<b>Interruption</b> : quand Cosmo attaque ou contre, nommez un type de carte, ensuite, défaussez la carte du dessus d'un deck Joueur ou du deck Rencontre. Si cette carte est du type nommé, Cosmo ne subit pas de dégâts consécutifs pour cette utilisation.",
+    "traits": "GARDIEN."
+  },
+  "21059": {
+    "texte": "Riposte 1. <i>(Après que ce personnage a été attaqué, infligez 1 dégât au personnage attaquant.)</i>\nTénacité. <i>(Ce personnage entre en jeu avec une carte d'état Tenace.)</i>",
+    "traits": "GARDIEN."
+  },
+  "21100b": {
+    "texte": "<b>Une fois révélée</b> : défaussez chaque autre Tour des Avengers en jeu.\n<b>Réponse forcée</b> : après qu'au moins un dégât a été placé sur cette carte, s'il y a au moins 9[per_hero] dégâts dessus, les joueurs perdent la partie.",
+    "traits": "ENDOMMAGÉ."
+  },
+  "21141": {
+    "texte": "Entrave 1[per_hero]. Victoire 3.\n<b>Une fois déjouée</b> : le premier joueur révèle la Forteresse de Nastrond et Nidhogg et les met en jeu. Attribuez 1 carte Rencontre face cachée à chaque autre joueur."
+  },
+  "21142": {
+    "texte": "Entrave 1[per_hero]. Victoire 4.\n<b>Une fois déjouée</b> : le premier joueur détache Odin de la manigance principale et en prend le contrôle. Attribuez 1 carte Rencontre face cachée à chaque joueur."
+  },
+  "21193": {
+    "texte": "Riposte 1. <i>(Après que ce personnage a été attaqué, infligez 1 dégât au personnage attaquant.)</i>\nTénacité. <i>(Ce personnage entre en jeu avec une carte d'état Tenace.)</i>",
+    "traits": "ASGARD. CAPTIF.",
+    "ambiance": "« Le puissant Volstagg va remettre les choses en ordre ! »"
+  },
+  "22020": {
+    "texte": "<b>Interruption</b> : quand Cosmo attaque ou contre, nommez un type de carte, ensuite, défaussez la carte du dessus d'un deck Joueur ou du deck Rencontre. Si cette carte est du type nommé, Cosmo ne subit pas de dégâts consécutifs pour cette utilisation.",
+    "traits": "GARDIEN."
+  },
+  "24049a": {
+    "texte": "<b><i>Mode Standard Uniquement.</i></b>\nPermanent. Mise en Place.\nLe méchant gagne Solide.\n<i>(Les personnages solides ont besoin de 2 cartes d'état du même type pour être sonné ou désorienté.)</i>"
+  },
+  "24049b": {
+    "texte": "<b><i>Mode Expert Uniquement.</i></b>\nPermanent. Mise en Place.\nChaque ennemi gagne Solide.\n<i>(Les personnages solides ont besoin de 2 cartes d'état du même type pour être sonné ou désorienté.)</i>"
+  },
+  "25007": {
+    "texte": "Vous gagnez +4 points de vie et le trait [[AÉRIEN]].",
+    "traits": "ASGARD. CRÉATURE.",
+    "ambiance": "« Un animal intrépide. Si par sa vie ou sa mort il peut nous sauver, il le fera. » — Valkyrie"
+  },
+  "29031": {
+    "texte": "Attachez cette carte au sbire ayant le plus de <i>traits</i>. Si vous ne pouvez pas, cette carte gagne Renfort.\nLe sbire attaché gagne +3 points de vie et Riposte 1.\n[star] <b>Boost</b> : attribuez-vous cette carte en tant que carte Rencontre face cachée.",
+    "traits": "TECH."
+  },
+  "29037": {
+    "texte": "[star] Zzzax gagne +X ATQ et +X points de vie, X étant égal au nombre total de ressources [energy] sur les cartes contrôlées par le joueur engagé.\n[star] <b>Boost</b> : si vous avez au moins les ressources suivantes dans votre main : [energy] [energy], mettez Zzzax en jeu, engagé avec vous.",
+    "traits": "CRIMINEL."
+  },
+  "32108": {
+    "texte": "<i>Les Sentinelles ont été construites dans un seul but : traquer les mutants. Elles sont infatigables. Elles ne s'arrêtent pas tant qu'elles n'ont pas capturé leur cible.</i>\nAucun joueur engagé avec un sbire [[SENTINELLE]] ne peut contrer cette manigance."
+  },
+  "35001b": {
+    "texte": "<i>Tching !</i> – <b>Mise en place</b> : mettez l'amélioration Griffes de Wolverine en jeu.",
+    "traits": "MUTANT."
+  },
+  "39012b": {
+    "texte": "S'il y a au moins 3[per_hero] jetons Téléportation sur cette carte, retirez-les tous et retournez Spirale.\n[star] <b>Réponse forcée</b> : après que Spirale s'est activée, placez 1 jeton Téléportation sur elle.",
+    "traits": "ACCULÉE. MYSTIQUE."
+  },
+  "39013b": {
+    "texte": "S'il y a au moins 2[per_hero] jetons Téléportation sur cette carte, retirez-les tous et retournez Spirale.\n[star] <b>Réponse forcée</b> : après que Spirale s'est activée, placez 1 jeton Téléportation sur elle.",
+    "traits": "ACCULÉE. MYSTIQUE."
+  },
+  "39014b": {
+    "texte": "S'il y a au moins 3[per_hero] jetons Téléportation sur cette carte, retirez-les tous et retournez Spirale.\n<b>Une fois révélée</b> : Spirale attaque chaque joueur dans l'ordre des joueurs <i>(même s'il est sous forme d'alter ego)</i>.\n[star] <b>Réponse forcée</b> : après que Spirale s'est activée, placez 1 jeton Téléportation sur elle.",
+    "traits": "ACCULÉE. MYSTIQUE."
+  },
+  "40054": {
+    "texte": "Victoire 0.\n<b>Une fois déjouée</b> : chaque joueur peut défausser 1 sbire non-[[ÉLITE]] en jeu.",
+    "ambiance": "« Bonne nuit, mon pote. » – Wolverine"
+  },
+  "40166b": {
+    "texte": "<i>Hope essaye d'imiter les capacités de Stryfe, mais elle est très vite submergée par son pouvoir.</i>\n[star] <b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du Méchant, chaque joueur place X menaces sur cette manigance, X étant le nombre de cartes dans sa main du type le plus commun. Chaque joueur peut défausser 1 carte de sa main avant de calculer la valeur de X.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "40167a": {
+    "texte": "<i>Hope parvient à se libérer des griffes de Stryfe, mais elle peine à contenir son immense pouvoir psionique.</i>\n<i>« Je vais laisser Hope vous tuer jusqu'au dernier », dit Stryfe en riant. « J'ai du travail qui m'attend pour déclencher l'Apocalypse ! »</i>"
+  },
+  "40167b": {
+    "texte": "<i>Stryfe essaye de s'échapper dans le passé. Qui sait quel désastre il peut provoquer ?</i>\nStryfe gagne Robuste.\nLa taille de main de chaque identité augmente de +2. Augmentez de 1 le coût en ressources pour jouer chaque carte Joueur.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "43028": {
+    "texte": "<b><i>Donnez cette carte au joueur de Laura Kinney.</i></b>\nCherchez Honey Badger dans votre main, votre deck, votre pile de défausse ou votre zone de jeu et placez-la face cachée sous cette obligation.\nSi vous ne pouvez pas, défaussez cette obligation et attribuez-vous 1 carte Rencontre face cachée.\n<b>Réponse</b> : après avoir effectué une récupération de base, défaussez cette obligation et Honey Badger."
+  },
+  "43029": {
+    "texte": "<b>Une fois vaincu</b> : le joueur qui a vaincu ce sbire défausse la carte du dessus du deck Rencontre et subit 1 dégât indirect pour chaque icône de boost ([star]) ainsi défaussée.",
+    "traits": "ÉLITE. REAVER."
+  },
+  "43030": {
+    "texte": "<i>« Quelle charmante petite fille. Il serait dommage qu'il lui arrive quoi que ce soit de fâcheux. » – Lady Deathstrike</i>\nChaque ennemi gagne Riposte 1."
+  },
+  "43031": {
+    "texte": "Attachez cette carte à Lady Deathstrike. Si vous ne pouvez pas, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire soit défaussé. Mettez en jeu ce sbire engagé avec vous et attachez-lui cette carte.\n<b>Interruption forcée</b> : quand le sbire attaché est censé être défaussé, mélangez-le dans le deck Rencontre à la place.",
+    "traits": "TECH."
+  },
+  "43032": {
+    "texte": "Attachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand votre tour se termine, défaussez cette carte et subissez 4 dégâts.",
+    "traits": "CONDITION."
+  },
+  "43033": {
+    "texte": "<b>Une fois révélée</b> : défaussez 1 carte prise au hasard dans votre main et subissez un nombre de dégâts égal au nombre de ressources imprimées dessus.\n[star] <b>Boost</b> : défaussez 1 carte prise au hasard dans votre main et subissez un nombre de dégâts égal au nombre de ressources imprimées dessus."
+  },
+  "43039": {
+    "texte": "Victoire 0.\n<b>Une fois déjouée</b> : soignez 2 dégâts de chaque allié.",
+    "ambiance": "« Tous en avant ! La victoire est en vue ! » – Cyclope"
+  },
+  "44016": {
+    "texte": "<b>Une fois vaincu</b> : vainquez un sbire non-[[ÉLITE]].",
+    "traits": "DEADPOOL CORPS."
+  },
+  "44018": {
+    "texte": "<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. SONNEZ CET ENNEMI.\n1 max par deck.",
+    "traits": "ATTAQUE."
+  },
+  "44024": {
+    "texte": "Victoire 0.\nLa taille de main de chaque identité augmente de +2.",
+    "ambiance": "« ♪ Même pas mal, j'ai peur de rien ! Même pas de me jeter sous un tr… ♪ » – Deadpool"
+  },
+  "45016": {
+    "texte": "<b>Action de héros</b> : redressez votre acolyte → redressez votre héros et choisissez une des options suivantes :\n• Soignez 1 dégât sur chacun des deux personnages.\n• Les deux personnages gagnent +1 CTR et +1 ATQ jusqu'à la fin de la phase."
+  },
+  "49001b": {
+    "texte": "<i>Survivant</i> — <b>Réponse</b> : après être passé sous cette forme, mélangez dans votre deck les 3 cartes du dessus de votre pile de défausse.",
+    "traits": "MUTANT.",
+    "ambiance": "« Tout ce que j'ai enduré, tout ce que j'ai entrepris, je l'ai fait pour protéger la Mutanité. »"
+  },
+  "50011": {
+    "texte": "<b>Action</b> : inclinez Directrice du S.H.I.E.L.D. → placez 1 jeton générique sur un soutien [[S.H.I.E.L.D.]].",
+    "traits": "TITRE.",
+    "ambiance": "« Vous n'avez pas besoin d'être d'accord avec mes ordres. Il vous suffit d'y obéir. » — Maria Hill"
+  },
+  "50034a": {
+    "texte": "[star] <i>Rassembler des informations</i> — <b>Réponse</b> : après que Nick Fury a effectué un contre de base, placez 1 menace sur votre amélioration Forme d'Uniforme.\n<i>Quitter sa couverture</i> — <b>Interruption forcée</b> : quand vous attaquez, passez sous forme d'uniforme Assaut.",
+    "traits": "S.H.I.E.L.D. SOLDAT. ESPION."
+  },
+  "50034b": {
+    "texte": "<i>En Uniforme</i> — <b>Mise en place</b> : mettez en jeu votre amélioration Forme d'Uniforme, face Assaut visible.\n<i>Infiltration</i> — <b>Action</b> : passez sous forme d'uniforme Furtivité.",
+    "traits": "S.H.I.E.L.D. SOLDAT. ESPION."
+  },
+  "50035a": {
+    "texte": "Forme d'Uniforme. Permanent.\n<b>Interruption</b> : quand vous attaquez, retirez jusqu'à 3 menaces de cette carte → cette attaque inflige 1 dégât supplémentaire pour chaque menace ainsi retirée.",
+    "traits": "OBJET. TECH."
+  },
+  "50035b": {
+    "texte": "Forme d'Uniforme. Permanent.\n<b>Interruption forcée (héros)</b> : quand un ennemi est censé vous attaquer, il manigance à la place. Placez 1 menace de cette activation ici au lieu de la manigance principale s'il y a 5 menaces ou moins sur cette amélioration.",
+    "traits": "OBJET. TECH."
+  },
+  "50036": {
+    "texte": "[star] <b>Interruption</b> : quand Maria Hill contre, la menace retirée est placée sur votre amélioration Forme d'Uniforme.",
+    "traits": "S.H.I.E.L.D.",
+    "ambiance": "« Voilà ! C'est ce que j'appelle réussir sa sortie. »"
+  },
+  "50037": {
+    "texte": "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Cette attaque gagne À Distance. Si un ennemi est vaincu par cette attaque, choisissez :\n• Placez sur votre amélioration Forme d'Uniforme un nombre de menaces égal à la MNG imprimée de cet ennemi.\n• Passez sous forme d'uniforme Furtivité.",
+    "traits": "ATTAQUE."
+  },
+  "50038": {
+    "texte": "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si vous êtes sous forme d'uniforme Furtivité, vous pouvez placer ces menaces sur votre amélioration Forme d'Uniforme. Sinon, vous pouvez passer sous forme d'uniforme Furtivité.",
+    "traits": "CONTRE."
+  },
+  "50039": {
+    "texte": "<b>Action de héros</b> <i>(attaque)</i> : choisissez un joueur. Infligez 3 dégâts au méchant et à chaque sbire engagé avec ce joueur. Cette attaque gagne À Distance.",
+    "traits": "ATTAQUE.",
+    "ambiance": "« Vous allez manger du laser ! » — Nick Fury"
+  },
+  "50040": {
+    "texte": "<b>Action de héros</b> : inclinez la Voiture Volante de Fury et retirez 1 menace de votre amélioration Forme d'Uniforme → redressez Nick Fury. Il gagne le trait [[AÉRIEN]] jusqu'à la fin du round.",
+    "traits": "AÉRIEN. TECH. VÉHICULE.",
+    "ambiance": "« Ce job a ses avantages. » — Nick Fury"
+  },
+  "50041": {
+    "texte": "<b>Action d'alter ego</b> : inclinez le Refuge #221 → choisissez :\n• Soignez 2 dégâts de Nick Fury.\n• Placez 1 menace sur votre amélioration Forme d'Uniforme.",
+    "traits": "LIEU. S.H.I.E.L.D."
+  },
+  "50042": {
+    "texte": "<b>Interruption</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, défaussez le Bouclier Électromagnétique → prévenez tous ces dégâts.",
+    "traits": "PRÉPARATION. TECH."
+  },
+  "50043": {
+    "texte": "<b>Interruption de héros</b> : quand n'importe quelle quantité de menaces devrait être placée sur la manigance principale, défaussez la Caméra Oculaire → placez jusqu'à 3 de ces menaces sur votre amélioration Forme d'Uniforme à la place.",
+    "traits": "PRÉPARATION. TECH."
+  },
+  "50044": {
+    "texte": "<b>Ressource</b> : inclinez la Montre de Fury et retirez jusqu'à 2 menaces de votre amélioration Forme d'Uniforme → générez une ressource [mental] pour chaque menace ainsi retirée.",
+    "traits": "OBJET. TECH."
+  },
+  "50045": {
+    "texte": "<b>Interruption</b> : quand vous révélez une traîtrise, défaussez Analyse du Renseignement et retirez 1 menace de votre amélioration Forme d'Uniforme → annulez les effets de cette traîtrise et défaussez-la.",
+    "traits": "PRÉPARATION. COMPÉTENCE."
+  },
+  "50046": {
+    "texte": "<b>Réponse de héros</b> : après que vous avez résolu la capacité d'une carte [[PRÉPARATION]] que vous contrôlez, déplacez 1 menace d'une manigance vers votre amélioration Forme d'Uniforme.",
+    "traits": "TITRE.",
+    "ambiance": "« Je suis un homme qui vit dangereusement. » — Nick Fury"
+  },
+  "50050": {
+    "texte": "1 max par joueur.\n<b>Interruption</b> : quand un sbire manigance, défaussez Informateur → cette activation retire de la menace au lieu d'en placer.",
+    "traits": "PRÉPARATION.",
+    "ambiance": "« Quelle valeur cette information a-t-elle pour vous, Coulson ? » — Taskmaster"
+  },
+  "50051": {
+    "texte": "1 max par joueur.\n<b>Réponse</b> : après qu'une carte Rencontre a été attribuée à un joueur, défaussez Renseignement → regardez chaque carte Rencontre attribuée à chaque joueur ainsi que la carte du dessus du deck Rencontre. Vous pouvez échanger n'importe quel nombre de ces cartes.",
+    "traits": "PRÉPARATION."
+  },
+  "50054": {
+    "texte": "<b>Réponse forcée</b> : après que Nick Fury, Sr. est entré en jeu, choisissez une option : retirez 3 menaces d'une manigance, piochez 2 cartes ou donnez une carte d'état Tenace à un personnage [[S.H.I.E.L.D.]]. À la fin du round, si Nick Fury, Sr. est toujours en jeu, défaussez-le.",
+    "traits": "S.H.I.E.L.D. SOLDAT."
+  },
+  "50055": {
+    "texte": "Réduisez de 2 le coût pour jouer Jemma Simmons si votre identité a le trait [[S.H.I.E.L.D.]].\n<b>Ressource</b> : inclinez Jemma Simmons → générez une ressource [mental] pour une carte [[TECH]].",
+    "traits": "INDIVIDU. S.H.I.E.L.D."
+  },
+  "50056": {
+    "texte": "Réduisez de 2 le coût pour jouer Leo Fitz si votre identité a le trait [[S.H.I.E.L.D.]].\n<b>Action d'alter ego</b> : inclinez Leo Fitz → cherchez une carte [[TECH]] dans votre deck et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+    "traits": "INDIVIDU. S.H.I.E.L.D."
+  },
+  "50058": {
+    "texte": "1 max par joueur.\n<b>Réponse</b> : après que vous avez défaussé une carte [[PRÉPARATION]] que vous contrôlez, défaussez Plan à Toute Épreuve → renvoyez cette carte [[PRÉPARATION]] dans votre main depuis votre pile de défausse.",
+    "traits": "PRÉPARATION."
+  },
+  "50067b": {
+    "texte": "<i>Vous retrouvez la spécialiste disparue du S.H.I.E.L.D. dans un tunnel de métro désaffecté et découvrez la base d'opérations de ses kidnappeurs.</i>\nX est égal au numéro du stade de Black Widow.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "50085": {
+    "texte": "<i>Souvent moqués sous le sobriquet d'« apiculteurs », les membres de l'Avance Idéologique en Mécanique sont brillants, mais impitoyables et cherchent à dominer le monde grâce à leur puissance technologique.</i>\nEntrave 2[per_hero].\nChaque sbire [[A.I.M.]] gagne 1 icône d'accélération ([acceleration])."
+  },
+  "50086b": {
+    "texte": "[star] <b>Réponse forcée</b> : après que Batroc a attaqué, placez 1 menace sur Niveau d'Alerte.\n<b>Interruption forcée</b> : quand Batroc est censé être vaincu, réinitialisez ses points de vie à 12 à la place. Ensuite, retirez 6 menaces de la manigance principale.",
+    "traits": "BRIGADE DE BATROC. MERCENAIRE."
+  },
+  "50087b": {
+    "texte": "<i>Vous tentez de vous faufiler dans l'ambassade Insulaire de l'A.I.M. à la recherche de Sarah Garza, spécialiste du S.H.I.E.L.D. qui a été enlevée. Là, vous tombez nez à nez avec le mercenaire connu sous le nom de Batroc le Sauteur.</i>\n<b>Interruption forcée</b> : quand la dernière menace a été retirée de cette manigance, avancez au stade 2A (les joueurs gagnent en avançant).\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "50088b": {
+    "texte": "<b>Interruption forcée</b> : quand la dernière menace a été retirée de cette manigance, mettez en jeu 1 allié Captif Secouru mis de côté, incliné et sous le contrôle de n'importe quel joueur. Les joueurs peuvent avancer au stade 3A. S'ils n'avancent pas, placez 3[per_hero] menaces sur cette manigance.\n<i>(Les joueurs gagnent en avançant, mais ils auront besoin d'au moins 1 Captif Secouru pour survivre.)</i>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "50089b": {
+    "texte": "En mode expert, chaque sbire gagne Coup Rapide.\n<b>Interruption forcée</b> : quand un ennemi attaque, il attaque un Captif Secouru à la place.\n<b>S'il n'y a pas de menace sur cette carte, les joueurs gagnent la partie.</b>\n<b>Si ce stade est achevé ou qu'il n'y a pas d'allié Captif Secouru en jeu, les joueurs perdent la partie.</b>"
+  },
+  "50090b": {
+    "texte": "Batroc gagne +1 MNG et +1 ATQ.\n<b>S'il y a au moins 4[per_hero] menaces sur cette carte, les joueurs perdent la partie.</b>\n<b>Réponse forcée</b> : après qu'un personnage a été vaincu pour une autre raison que des dégâts consécutifs, placez 1 menace sur cette carte.\n<b>Action de héros</b> : dépensez 1 ressource de n'importe quel type → retirez 1 menace de cette carte.",
+    "traits": "ÉLEVÉ."
+  },
+  "50103b": {
+    "texte": "Riposte 2. Solide.\n<b>Interruption forcée</b> : quand M.O.D.O.K. est censé être vaincu, si une Cellule de Confinement est en jeu, retirez-en 2 jetons Verrou et réinitialisez les points de vie de M.O.D.O.K. à 14 à la place. Sinon, <b>les joueurs gagnent la partie</b>.",
+    "traits": "AÉRIEN. CYBORG. PSIONIQUE."
+  },
+  "50104b": {
+    "texte": "<b>Interruption forcée</b> : quand ce stade est censé être achevé, prenez au hasard 1 environnement [[Adaptoïde]] mis de côté à la place et mettez-le en jeu. Ensuite, s'il n'y a pas d'environnements [[Adaptoïde]] mis de côté, <b>les joueurs perdent la partie</b>. Sinon, retirez toutes les menaces sur cette manigance et mélangez dans le deck Rencontre chaque sbire Adaptoïde de la pile de défausse Rencontre."
+  },
+  "50105b": {
+    "texte": "Ne compte pas dans votre limite d'alliés.\n[star] <b>Réponse</b> : après que cet allié a contré, retirez 1 menace d'une autre manigance.\n<b>Réponse forcée</b> : après que cette carte a quitté le jeu, retournez-la et placez-la sous le deck Cellule de Confinement.",
+    "traits": "AÉRIEN. INHUMAIN. SECOURU."
+  },
+  "50106b": {
+    "texte": "Ne compte pas dans votre limite d'alliés.\n[star] <b>Réponse</b> : après que cet allié a contré, retirez 1 jeton Verrou d'une Cellule de Confinement.\n<b>Réponse forcée</b> : après que cette carte a quitté le jeu, retournez-la et placez-la sous le deck Cellule de Confinement.",
+    "traits": "INHUMAIN. PSIONIQUE. SECOURU."
+  },
+  "50107b": {
+    "texte": "Ne compte pas dans votre limite d'alliés.\n[star] Les attaques de Sarah Garza gagnent Déferlement et À Distance.\n<b>Réponse forcée</b> : après que cette carte a quitté le jeu, retournez-la et placez-la sous le deck Cellule de Confinement.",
+    "traits": "INHUMAIN. SECOURU. S.H.I.E.L.D."
+  },
+  "50108b": {
+    "texte": "Ténacité.\nNe compte pas dans votre limite d'alliés.\n<b>Réponse forcée</b> : après que cette carte a quitté le jeu, retournez-la et placez-la sous le deck Cellule de Confinement.",
+    "traits": "INHUMAIN. SECOURU."
+  },
+  "50129b": {
+    "texte": "Citizen V ne peut pas être vaincu, sauf si au moins 1[per_hero] sbire [[Thunderbolt]] est dans la pile de victoire.\n[star] <b>Interruption forcée</b> : quand Citizen V est censé s'activer contre vous lors de l'étape 2 de la phase du Méchant, si vous êtes engagé avec un sbire [[Thunderbolt]], Citizen V ne s'active pas et se soigne de 6 dégâts à la place.",
+    "traits": "THUNDERBOLT."
+  },
+  "50130b": {
+    "texte": "Chaque sbire [[Thunderbolt]] gagne Garde.\n<b>Réponse forcée</b> : après qu'un joueur a attaqué un sbire [[Thunderbolt]], ce sbire engage ce joueur.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "50131b": {
+    "texte": "<i>(Le sbire attaché à cette carte est en jeu et peut être ciblé par des attaques et des capacités.)</i>\n<b>Interruption forcée</b> : quand le round se termine, attachez à cette carte le sbire [[Thunderbolt]] ayant le plus de dégâts sur lui, en l'échangeant avec le sbire déjà attaché à cette carte, s'il y en a un. Soignez 1[per_hero] dégât du sbire attaché. En mode expert, soignez-le de 1[per_hero] dégât supplémentaire et donnez-lui une carte d'état Tenace."
+  },
+  "50153": {
+    "texte": "Attachez cette carte à votre identité.\n[star] Si l'identité attachée a le trait [[Gamma]], cet attachement accorde +1 ATQ à la place.\n<b>Réponse forcée</b> : après que vous avez récupéré, défaussez 1 carte de votre main → défaussez cet attachement.",
+    "traits": "CONDITION."
+  },
+  "50165b": {
+    "texte": "[star] <b>Interruption forcée</b> : quand le Baron Zemo s'active contre vous, soit vous placez 1 jeton Secret sur une carte [[Membre du Comité]], soit vous donnez une carte de boost supplémentaire au Baron Zemo pour cette activation.",
+    "traits": "THUNDERBOLT. DÉMASQUÉ."
+  },
+  "50166b": {
+    "texte": "Solide.\n[star] <b>Interruption forcée</b> : quand le Baron Zemo s'active contre vous, soit vous placez 2 jetons Secret sur une carte [[Membre du Comité]], soit vous donnez une carte de boost supplémentaire au Baron Zemo pour cette activation.",
+    "traits": "THUNDERBOLT. DÉMASQUÉ."
+  },
+  "50167b": {
+    "texte": "<b>Réponse</b> : après la fin de la phase des Joueurs, le premier joueur peut placer 2 jetons Secret sur un environnement [[Membre du Comité]] qui n'a pas de jetons Secret sur lui pour gagner 2 cartes de l'enveloppe S.H.I.E.L.D. (1 carte à la place en mode campagne). Les joueurs peuvent avancer au stade 2A pour procéder à l'accusation.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "50168b": {
+    "texte": "<b>Une fois révélée</b> : faites ce qui suit :\n1. Utilisez les cartes dans l'enveloppe A.I.M. pour identifier la taupe.\n2. Pour chaque déduction erronée, placez 1 jeton Secret sur chaque carte [[Membre du Comité]].\n3. Si vous avez accusé le mauvais membre du comité, placez 3 jetons Secret sur l'accusé.\n4. Avancez au stade 3A."
+  },
+  "50169b": {
+    "texte": "<b>Une fois révélée</b> : retournez la taupe, face attachement visible et attachez-la au Baron Zemo. Placez 1[per_hero] menace sur cette manigance pour chaque jeton Secret sur chaque attachement [[Membre du Comité]].\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "50181b": {
+    "texte": "Attachez cette carte au méchant. Permanent.\n<b>Réponse forcée</b> : après qu'un jeton Secret a été placé sur cette carte, soit vous soignez 2 dégâts du méchant, soit vous infligez 1 dégât au personnage ami ayant le moins de points de vie restants.\nS'il y a 3 attachements [[Membre du Comité]] en jeu, les joueurs perdent la partie.",
+    "traits": "MEMBRE DU COMITÉ."
+  },
+  "50182b": {
+    "texte": "Attachez cette carte au méchant. Permanent.\n<b>Réponse forcée</b> : après qu'un jeton Secret a été placé sur cette carte, placez 2 menaces sur la manigance principale.\nS'il y a 3 attachements [[Membre du Comité]] en jeu, les joueurs perdent la partie.",
+    "traits": "MEMBRE DU COMITÉ."
+  },
+  "50183b": {
+    "texte": "Attachez cette carte au méchant. Permanent.\n<b>Réponse forcée</b> : après qu'un jeton Secret a été placé sur cette carte, infligez 2 dégâts à un personnage ami.\nS'il y a 3 attachements [[Membre du Comité]] en jeu, les joueurs perdent la partie.",
+    "traits": "MEMBRE DU COMITÉ."
+  },
+  "50185": {
+    "texte": "Incitation 1.\n<b>Une fois révélée</b> : placez 1 jeton Secret sur chaque carte [[Membre du Comité]]. Vous pouvez dépenser X [boost] ressources pour empêcher le placement de X de ces jetons.\n[star] <b>Boost</b> : résolvez la capacité « <b>Une fois révélée</b> » de cette carte."
+  },
+  "50186": {
+    "texte": "Incitation 1.\n<b>Une fois révélée</b> : placez 1 jeton Secret sur chaque carte [[Membre du Comité]]. Vous pouvez dépenser X [boost] ressources pour empêcher le placement de X de ces jetons.\n[star] <b>Boost</b> : résolvez la capacité « <b>Une fois révélée</b> » de cette carte."
+  },
+  "50188": {
+    "texte": "<b>Mise en place</b> : chaque joueur peut ajouter 1 jeton Secret à un environnement [[Membre du Comité]] pour chercher dans sa collection un allié Justice différent et le mélanger dans son deck. Chaque joueur peut ajouter 1 menace sur la manigance principale pour chercher un allié Justice dans son deck et l'ajouter à sa main. <i>(Mélangez.)</i>"
+  },
+  "51001b": {
+    "texte": "<i>Inventrice</i> — <b>Action</b> : inclinez Shuri → cherchez dans votre deck une amélioration [[BLACK PANTHER]] ou [[TECH]] et jouez-la, en réduisant de 2 son coût en ressources. (Limite d'une fois par round.)",
+    "traits": "GÉNIE. WAKANDA."
+  },
+  "52001b": {
+    "texte": "S'il y a plus de 4 cartes intercalées sous cette carte, défaussez-en pour n'en laisser que 4.\n<b>Action</b> : défaussez une carte intercalée ici → piochez 2 cartes. (Limite d'une fois par round.)",
+    "traits": "GÉNIE.",
+    "ambiance": "« Quelque chose ne colle pas dans cette histoire. »"
+  },
+  "53001b": {
+    "texte": "<i>Vol d'Oiseau</i> — <b>Action</b> : défaussez 1 carte de votre main → cherchez une carte [[Oiseau]] dans votre deck ou votre pile de défausse et ajoutez-la à votre main. (Limite d'une fois par round.)",
+    "traits": "S.H.I.E.L.D."
+  },
+  "54001b": {
+    "texte": "<i>Cybernétiquement Modifié</i> — <b>Action</b> : dépensez 1 ressource de n'importe quel type → cherchez le Bras Cybernétique dans votre deck ou votre pile de défausse et mettez-le en jeu. <i>(Mélangez.)</i>",
+    "traits": "S.H.I.E.L.D. SOLDAT.",
+    "ambiance": "« Pas mal pour un vétéran de quatre-vingt-dix-neuf ans. »"
+  },
+  "54021": {
+    "texte": "<b>Réponse forcée</b> : après que Nick Fury, Sr. est entré en jeu, choisissez une option : retirez 3 menaces d'une manigance, piochez 2 cartes ou donnez une carte d'état Tenace à un personnage [[S.H.I.E.L.D.]]. À la fin du round, si Nick Fury, Sr. est toujours en jeu, défaussez-le.",
+    "traits": "S.H.I.E.L.D. SOLDAT."
+  },
+  "55004b": {
+    "texte": "<i>L'Enchanteresse entreprend de conquérir l'Amérique du Sud en transformant tous ses opposants en laquais envoûtés.</i>\n<b>Interruption forcée</b> : quand un jeton Charme est censé être placé sur la carte [[ENCHANTEMENT]] de votre zone de jeu, si votre identité a le trait [[ENVOÛTÉ]], placez 1 menace sur cette manigance principale à la place."
+  },
+  "55005b": {
+    "texte": "<b>Interruption forcée</b> : quand un jeton Charme est censé être placé sur la carte [[ENCHANTEMENT]] de votre zone de jeu, si votre identité a le trait [[ENVOÛTÉ]], placez 1 menace sur cette manigance principale à la place.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "55007b": {
+    "texte": "Permanent.\nVotre identité gagne le trait [[ENVOÛTÉ]].\n<b>Une fois révélée</b> : défaussez une carte que vous contrôlez. Sinon, défaussez les 8 cartes du dessus de votre deck.\n<b>Action forcée</b> : inclinez cette carte → donnez une carte de boost face cachée à L'Enchanteresse. Redressez votre identité.",
+    "traits": "ENCHANTEMENT."
+  },
+  "55008b": {
+    "texte": "Permanent.\nVotre identité gagne le trait [[ENVOÛTÉ]].\n<b>Une fois révélée</b> : vous êtes désorienté. Sinon, subissez 2 dégâts.\n<b>Action forcée</b> : inclinez cette carte → piochez 1 carte, ensuite jouez-la <i>(en payant ses coûts)</i>. Si vous ne pouvez pas, subissez 1 dégât.",
+    "traits": "ENCHANTEMENT."
+  },
+  "55009b": {
+    "texte": "Permanent.\nVotre identité gagne le trait [[ENVOÛTÉ]].\n<b>Une fois révélée</b> : inclinez votre identité. Sinon, défaussez 1 carte prise au hasard dans votre main.\n<b>Action forcée</b> : inclinez cette carte → placez 1 menace sur la manigance principale. Retirez 2 menaces d'une manigance annexe.",
+    "traits": "ENCHANTEMENT."
+  },
+  "55010b": {
+    "texte": "Permanent.\nVotre identité gagne le trait [[ENVOÛTÉ]].\n<b>Une fois révélée</b> : vous êtes sonné. Sinon, placez 2 menaces sur la manigance principale.\n<b>Action forcée</b> : inclinez cette carte → soignez 1 dégât de L'Enchanteresse. Piochez 1 carte, puis défaussez 1 carte.",
+    "traits": "ENCHANTEMENT."
+  },
+  "55011b": {
+    "texte": "Permanent.\nVotre identité gagne le trait [[ENVOÛTÉ]].\n<b>Une fois révélée</b> : cherchez une carte parmi les 5 cartes du dessus du deck Rencontre et révélez-la. <i>(Mélangez.)</i>\n<b>Action forcée</b> : inclinez cette carte → subissez 1 dégât indirect. Infligez 2 dégâts à un sbire.",
+    "traits": "ENCHANTEMENT."
+  },
+  "55027b": {
+    "texte": "<b>Une fois révélée</b> : chaque groupe en mode Standard attache sa Concentration Intense mise de côté au méchant [[AVATAR DE LOKI]] de son aire de jeu. Chaque groupe en mode Expert retourne son attachement Concentration Intense pour afficher sa face Concentration Totale.\n<b>Si Loki, Dieu des Mensonges est vaincu, tous les joueurs de tous les groupes gagnent la partie.</b>",
+    "traits": "ASGARD. MYSTIQUE."
+  },
+  "55028b": {
+    "texte": "Chaque icône [per_hero] sur Loki, Dieu des Mensonges prend en compte le nombre total de joueurs dans toutes les aires de jeu.\nChaque icône [per_group] sur cette manigance prend en compte le nombre total de groupes dans toutes les assemblées.\nLes cartes ne peuvent affecter ni cette manigance ni Loki, Dieu des Mensonges, sauf si elles font référence aux titres de ces cartes.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "55029b": {
+    "texte": "<b>Une fois révélée</b> : brisez l'illusion <i>(voir la carte Briser l'Illusion mise de côté)</i>. Choisissez un groupe dans votre assemblée, ensuite placez sur son environnement Front Uni un nombre de jetons Synergie égal au nombre de joueurs dans ce groupe.",
+    "traits": "ILLUSION."
+  },
+  "55030b": {
+    "texte": "<b>Une fois révélée</b> : brisez l'illusion <i>(voir la carte Briser l'Illusion mise de côté)</i>. Choisissez un groupe dans votre assemblée, ensuite placez sur son environnement Renfort de Cavalerie un nombre de jetons Synergie égal au nombre de joueurs dans ce groupe.",
+    "traits": "ILLUSION."
+  },
+  "55031b": {
+    "texte": "<b>Une fois révélée</b> : brisez l'illusion <i>(voir la carte Briser l'Illusion mise de côté)</i>. Choisissez un groupe dans votre assemblée, ensuite placez sur son environnement Force Dominatrice un nombre de jetons Synergie égal au nombre de joueurs dans ce groupe.",
+    "traits": "ILLUSION."
+  },
+  "55032b": {
+    "texte": "<b>Une fois révélée</b> : brisez l'illusion <i>(voir la carte Briser l'Illusion mise de côté)</i>. Choisissez un groupe dans votre assemblée, ensuite placez sur son environnement Feindre la Retraite un nombre de jetons Synergie égal au nombre de joueurs dans ce groupe.",
+    "traits": "ILLUSION."
+  },
+  "55033b": {
+    "texte": "<b>Interruption forcée</b> : quand cette manigance est censée être achevée, retirez toutes les menaces qui sont dessus et placez 1 menace sur La Guerre des Mondes à la place.\n<b>Interruption forcée</b> : quand une identité est censée être vaincue, passez cette identité sous forme d'alter ego, fixez son compteur de points de vie à 1 et placez 1 menace sur La Guerre des Mondes à la place."
+  },
+  "55034b": {
+    "texte": "Permanent.\nLe méchant [[AVATAR DE LOKI]] gagne +3[per_hero] points de vie et Solide.\n<b>Une fois révélée</b> : défaussez les 2[per_hero] cartes du dessus du deck Rencontre et les 5 cartes du dessus de chaque deck Joueur. Trouvez le Sceptre Noir et révélez-le. Si le Sceptre Noir n'est pas entré en jeu par cet effet, donnez une carte d'état Tenace au méchant [[AVATAR DE LOKI]].",
+    "traits": "CONDITION."
+  },
+  "56001b": {
+    "texte": "<i>Enquête Sous Couverture</i> — <b>Action</b> : cherchez un exemplaire de Traqué dans votre deck ou votre pile de défausse et ajoutez-le à votre main. (Limite d'une fois par round.)",
+    "traits": "POLICE.",
+    "ambiance": "« On n'a pas besoin d'être un Avenger pour protéger les autres. »"
+  },
+  "56029b": {
+    "texte": "Vous ne pouvez pas avoir plus de 1 amélioration [[MÉTAMORPHOSE]] en jeu.\n<i>Métamorphe</i> — <b>Action</b> : cherchez une amélioration [[MÉTAMORPHOSE]] dans votre deck et votre pile de défausse et ajoutez-la à votre main. (Limite d'une fois par round.)",
+    "traits": "KREE. SKRULL."
+  },
+  "56058": {
+    "texte": "<b>Une fois révélée (alter ego)</b> : défaussez les 3 cartes du dessus de votre deck. Placez 1 menace sur la manigance principale pour chaque icône de ressource différente sur les cartes défaussées.\n<b>Une fois révélée (héros)</b> : défaussez les 3 cartes du dessus de votre deck. Subissez 1 dégât pour chaque icône de ressource différente sur les cartes défaussées ([energy], [physical], [mental] ou [wild])."
+  },
+  "56063b": {
+    "texte": "S'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n<b>Interruption forcée</b> : quand un joueur révèle une traîtrise, placez 1 menace sur cette manigance principale. (Limite d'une fois par phase et par joueur.)",
+    "ambiance": "« La société ne tolèrera plus que des super-héros agissent dans le mépris de la loi. » — Miss Hulk"
+  },
+  "56064b": {
+    "texte": "[star] Réduisez de 1 le seuil de menace de cette manigance pour chaque carte face cachée placée dessous.\n<b>Réponse forcée</b> : après qu'un allié a été vaincu par une attaque ennemie, placez cet allié face cachée sous cette manigance.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "56096b": {
+    "texte": "S'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n<b>Une fois révélée</b> : l'équipe ennemie cherche 1[per_hero] sbires dans le deck Rencontre et en attribue un à chaque joueur de votre équipe en tant que carte Rencontre face cachée."
+  },
+  "56097b": {
+    "texte": "Chaque héros gagne le trait [[NON-ENREGISTRÉ]].\n<b>Réponse forcée</b> : après qu'une autre carte qui donne le trait [[NON-ENREGISTRÉ]] à au moins 1 héros est révélée, infligez 2 dégâts à chacun de ses héros.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>"
+  },
+  "56111": {
+    "texte": "« Soyez sur vos gardes, les Avengers du Captain ont été aperçus dans cette zone la dernière fois. » — Officier du S.H.I.E.L.D.\nEntrave 1[per_hero].\nChaque sbire gagne Garde."
+  },
+  "56121b": {
+    "texte": "Maintenant que des unités armées du S.H.I.E.L.D. patrouillent dans les rues, le taux de criminalité a chuté à un niveau historique.\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\nChaque sbire gagne Garde."
+  },
+  "56122b": {
+    "texte": "« Dire que Captain America a trahi son pays ! Je n'en reviens pas. » — J. Jonah Jameson\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n[star] <b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du méchant, chaque joueur défausse les 3 cartes du dessus de son deck."
+  },
+  "56123b": {
+    "texte": "« Attendez qu'ils découvrent nos plans pour protéger le midwest. » — Le Frelon\n<b>Une fois révélée</b> : l'équipe ennemie cherche 1[per_hero] manigances annexes dans le deck Rencontre ou la pile de défausse Rencontre et en attribue une à chaque joueur en tant que carte Rencontre face cachée.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "56124b": {
+    "texte": "« Il n'y aura pas d'amnistie pour le Captain et ses renégats. Ils sont allés trop loin ! » — Miss Hulk\nLes alliés entrent en jeu inclinés.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "56128b": {
+    "texte": "Donnez cette carte au premier joueur.\n<b>Action</b> : retirez cette carte de la partie → chaque joueur de votre équipe choisit 2 des cartes Joueur de votre leader mises de côté et les ajoute à sa main."
+  },
+  "56141b": {
+    "texte": "S'il y a plus d'un joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n<b>Une fois révélée</b> : l'équipe ennemie cherche 1[per_hero] sbires dans le deck Rencontre et en attribue un à chaque joueur de votre équipe en tant que carte Rencontre face cachée."
+  },
+  "56142b": {
+    "texte": "Les Avengers de Captain America continuent de combattre le crime depuis leur base secrète.\nLe leader ennemi gagne +1 ATQ tant qu'il attaque (+2 ATQ à la place si l'attaque est non défendue).\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "56172b": {
+    "texte": "« Pourquoi vous n'iriez pas à la recherche des VRAIS méchants ? » — Hulkling\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n<b>Interruption forcée</b> : quand un joueur révèle une traîtrise, placez 1 menace ici. (Limite d'une fois par phase et par joueur.)"
+  },
+  "56173b": {
+    "texte": "« Des héros hors-la-loi qui combattent le crime ? Vous ne trouvez pas ça ironique ? » — Le Chef de la Police\n<b>Une fois révélée</b> : l'équipe ennemie cherche 1[per_hero] manigances annexes dans le deck Rencontre ou la pile de défausse Rencontre et en attribue une à chaque joueur de votre équipe en tant que carte Rencontre face cachée.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "56177": {
+    "texte": "<b>Une fois révélée (alter ego)</b> : cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : Spider-Woman vous attaque. Si cette attaque a retiré les jetons Compétence suivants de Finesse :\n• Au moins 1, cette attaque gagne À Distance.\n• Au moins 2, cette attaque gagne Perçant.\n• Au moins 3, cette attaque gagne Déferlement."
+  },
+  "56199b": {
+    "texte": "Lorsque Captain America a dénoncé publiquement la Loi d'Enregistrement des Super-Héros, de nombreux alliés ont rejoint ses rangs.\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\nChaque sbire gagne Garde."
+  },
+  "56200b": {
+    "texte": "« J'avais oublié à quel point c'était épuisant d'être sous couverture ! » — Spider-Woman\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\nLe leader ennemi gagne Solide."
+  },
+  "57005b": {
+    "texte": "« Tout cela pourrait être évité, si seulement vous respectiez la loi ! » — Miss Hulk\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\nLe leader ennemi gagne Solide."
+  },
+  "57006b": {
+    "texte": "Les Avengers d'Iron Man ont tellement foi dans la réforme des super-héros qu'ils n'hésitent pas à s'opposer à leurs anciens coéquipiers.\nTant que le leader ennemi attaque, il gagne +1 ATQ (+2 ATQ à la place si l'attaque est non défendue).\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "57039b": {
+    "texte": "Donnez cette carte au premier joueur.\n<b>Action</b> : retirez cette carte de la partie → chaque joueur de votre équipe choisit 2 des cartes Joueur de votre leader mises de côté et les ajoute à sa main."
+  },
+  "57044b": {
+    "texte": "En faisant tomber le masque, les héros se mettent en danger et leurs proches avec eux.\nS'il y a plus de 1 joueur dans votre équipe, ce stade gagne Entrave 2[per_hero].\n[star] <b>Réponse forcée</b> : après avoir résolu l'étape 1 de la phase du Méchant, chaque joueur défausse les 3 cartes du dessus de son deck."
+  },
+  "57045b": {
+    "texte": "« Si nous révélons l'existence de la prison secrète du S.H.I.E.L.D. au reste du monde, ils perdront le soutien du public. » — Vision\nLes alliés entrent en jeu inclinés.\nSi ce stade est achevé, les joueurs perdent la partie."
+  },
+  "57046b": {
+    "texte": "Permanent. Forme de Masse.\n<b>Interruption forcée</b> : quand Vision est censé subir n'importe quelle quantité de dégâts, diminuez de 1 cette quantité.",
+    "traits": "SUPER-POUVOIR.",
+    "ambiance": "« L'innovation est l'arme ultime. » — Vision"
+  },
+  "57065": {
+    "texte": "Riposte 2. Ténacité.\n<b>Une fois révélée</b> : résolvez la capacité « <b>Une fois révélée</b> » de la traîtrise la plus proche du dessus de la pile de défausse Rencontre.",
+    "traits": "DEFENDER. ÉLITE.",
+    "ambiance": "« Te voilà dans un beau pétrin. »"
+  },
+  "58001b": {
+    "texte": "<i>Être d'Énergie Ionique</i> — Vous pouvez inclure dans votre deck des événements ayant une icône de ressource [energy] imprimée de n'importe quelle affinité.\n<b>Mise en place</b> : mettez en jeu Physiologie Ionique.",
+    "traits": "CIVIL."
+  },
+  "59001b": {
+    "texte": "Hercule commence la partie avec un deck TRAVAIL et un deck DON. <i>(Voir feuillet.)</i>\n<i>Nouveaux Travaux d'Hercule</i> — <b>Action</b> : s'il n'y a pas de carte TRAVAIL en jeu, révélez la carte du dessus du deck TRAVAIL.",
+    "traits": "OLYMPE."
+  },
+  "60008": {
+    "texte": "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Pour chaque amélioration attachée à cet ennemi, vous pouvez lui infliger 1 dégât supplémentaire.",
+    "traits": "ATTAQUE.",
+    "ambiance": "« Je n'ai pas d'autres questions, sale minable. » — Daredevil"
+  },
+  "60009": {
+    "texte": "<b>Action d'alter ego</b> <i>(contre)</i> : vous pouvez choisir n'importe quelle amélioration du deck SENS et la jouer, en ignorant son coût en ressources. <i>(Ne mélangez pas le deck.)</i> Retirez 2 menaces d'une manigance.",
+    "traits": "CONTRE.",
+    "ambiance": "« Dites-nous tout » — Matt Murdock"
+  },
+  "60010": {
+    "texte": "<b>Action</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Pour chaque amélioration attachée à cette manigance, vous pouvez lui retirer 1 menace supplémentaire.",
+    "traits": "CONTRE.",
+    "ambiance": "Boum-Boum Boum-Boum Boum-Boum Boum-Boum Boum-Boum Boum-Boum"
+  },
+  "60048": {
+    "texte": "[star] Augmentez de 1 le coût pour jouer cette carte pour chaque allié que vous contrôlez.\n<b>Action de héros</b> : redressez votre héros.",
+    "ambiance": "« Deux contre un, ce n'est pas un combat équitable... pour vous. » — Daredevil"
+  },
+  "90002": {
+    "texte": "<b>Réponse forcée</b> : après qu'un personnage ami a été vaincu par une attaque ennemie, placez 2 menaces sur la manigance principale.\n[star] <b>Boost</b> : mettez en jeu Juge, Juré et Bourreau."
+  }
+}

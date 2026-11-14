@@ -12,7 +12,7 @@
 // board.tsx de choisir sans rien adapter. Il ne decore rien lui-meme : les
 // bandes passent par `Unite` (Board.tsx), qui appelle `avecInteraction`, la
 // seule copie autorisee de cette logique.
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { ImagesParesseuses, type CardEffectDelta, type ScanCardProps } from '../../components/ScanCard'
 import { PileRegardee, avecInteraction } from '../Board'
 import type { BoardProps } from '../Board'
@@ -27,8 +27,18 @@ import { Encoche } from './Encoche'
 import { MainPortrait } from './MainPortrait'
 import { OngletsJoueurs } from './OngletsJoueurs'
 import { TiroirPiles } from './TiroirPiles'
+import { BandeauChoixEnAttente } from '../BandeauChoixEnAttente'
 import { repartirEnBandes } from './bandes-portrait'
 import { useHauteurDeQuestion } from './hauteur-de-question'
+import { TableRonds } from './ronds/TableRonds'
+import { MainSousLaTable } from './ronds/MainSousLaTable'
+import { RoundEnGrand } from './ronds/RoundEnGrand'
+import { EcranKO } from './ronds/EcranKO'
+import { BarreManuelle } from './ronds/BarreManuelle'
+import { VisiteGuidee } from './ronds/VisiteGuidee'
+import { usePerilJoueur } from './ronds/useDroitDeReponse'
+import { ContexteGlisse, CoucheGlisseRonds, useGlisserAuDoigt } from './ronds/glisser-ronds'
+import { useReglagesTelephone } from './reglages-telephone'
 import { useDefilerVersLaCible } from './defiler-vers-la-cible'
 import './portrait.css'
 import './telephone.css'
@@ -80,6 +90,18 @@ function trouverCarte(
 
 export function PlateauPortrait(props: BoardProps) {
   const bandes = useMemo(() => repartirEnBandes(props.plateau), [props.plateau])
+  // La forme de la table : les cartes en bandes, ou les ronds (essai du 24/10/2026, choisi au debut de la partie).
+  const { plateau: formeDeTable } = useReglagesTelephone()
+  // Le panneau de phase (hors de ce composant, colle au bas de l'ecran) se met en grandes cartes quand la table est en ronds.
+  useLayoutEffect(() => {
+    if (formeDeTable !== 'ronds') return
+    document.body.dataset.plateau = 'ronds'
+    return () => {
+      delete document.body.dataset.plateau
+    }
+  }, [formeDeTable])
+  // Le glisser au doigt (ronds seulement) : memes regles que le plateau PC (`props.glisser`), geste adapte aux ronds.
+  const glisserRonds = useGlisserAuDoigt(formeDeTable === 'ronds' ? props.glisser : undefined)
   const interactifs = props.interactifs ?? AUCUNE_INTERACTION
   const effets = props.effets ?? AUCUN_EFFET
   // Les bandes decorent leurs cartes via `Unite` ; la main, rendue a part,
@@ -89,11 +111,27 @@ export function PlateauPortrait(props: BoardProps) {
     [bandes.main, interactifs, effets]
   )
 
+  // Le moteur demande de PAYER ? Les cartes de la table qui peuvent payer rejoignent alors la rangee de la main (apres
+  // « EN JEU »), au lieu de s'allumer en bleu sur la table (decision du 24/10/2026).
+  const enPaiement = useMemo(() => [...interactifs.values()].some((e) => e.role === 'ressource'), [interactifs])
+  const enJeuPayants = useMemo(
+    () =>
+      enPaiement
+        ? (props.plateau?.emplacements ?? [])
+            // La main n'est pas « en jeu » : ses cartes sont deja dans la rangee, on ne les repete pas apres le separateur.
+            .filter((emplacement) => emplacement.cle !== 'main')
+            .flatMap((emplacement) => emplacement.groupes.flat())
+            .filter((unite) => interactifs.get(Number(unite.carte.id))?.role === 'ressource')
+            .map((unite) => ({ ...unite, cle: `en-jeu-${unite.cle}`, carte: avecInteraction(unite.carte, interactifs, effets) }))
+        : [],
+    [enPaiement, props.plateau, interactifs, effets]
+  )
+
   // La carte lue EN GRAND, au milieu de l'ecran. `props.onCardClick` ne sert
   // pas a lire une carte : il ouvre les ACTIONS du moteur. Lire est un etat
   // local, comme sur le portrait du 11/09.
   const [carteLue, setCarteLue] = useState<
-    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string; deLaMain?: boolean } | undefined
+    { carte: ScanCardProps; attachees: ScanCardProps[]; libelleAction?: string; deLaMain?: boolean} | undefined
   >()
   const ouvrirCarte = useCallback(
     (carte: ScanCardProps, attachees: ScanCardProps[] = [], libelleAction?: string, deLaMain?: boolean) =>
@@ -133,7 +171,22 @@ export function PlateauPortrait(props: BoardProps) {
     { titre: string; cartes: ScanCardProps[]; groupes?: GroupeDePile[] } | undefined
   >()
   const [tiroirOuvert, setTiroirOuvert] = useState(false)
-  const [mainOuverte, setMainOuverte] = useState(false)
+  // Un choix attend : pile (cle) -> nombre de cartes choisissables, d'apres le representant de pile que `board.tsx` a compte.
+  const choixEnAttente = props.choixEnAttente
+  const choisissables = useMemo(() => {
+    if (!choixEnAttente) return undefined
+    const comptes = new Map<string, number>()
+    for (const pile of bandes.piles) {
+      const n = choixEnAttente.piles.get(Number(pile.unite.carte.id))
+      if (n !== undefined && n > 0) comptes.set(pile.cle, n)
+    }
+    return comptes
+  }, [choixEnAttente, bandes.piles])
+  // En ronds, la main est posee SOUS les zones et ouverte d'office (24/10/2026) ; en bandes, elle reste cachee derriere son encoche.
+  const [mainOuverte, setMainOuverte] = useState(formeDeTable === 'ronds')
+  useEffect(() => {
+    setMainOuverte(formeDeTable === 'ronds')
+  }, [formeDeTable])
   // La feuille de question du bas (« x / Jouer », la question du moteur) :
   // la main ouverte se pose au-dessus d'elle, jamais dessous.
   const hauteurDeQuestion = useHauteurDeQuestion()
@@ -172,9 +225,10 @@ export function PlateauPortrait(props: BoardProps) {
       })
     } else if (ouvertePourLaQuestion.current) {
       ouvertePourLaQuestion.current = false
-      setMainOuverte(false)
+      // En ronds, la main est posee sous les zones : elle ne se range pas toute seule (seul le joueur la replie).
+      if (formeDeTable !== 'ronds') setMainOuverte(false)
     }
-  }, [laQuestion])
+  }, [laQuestion, formeDeTable])
 
   const ouvrirPile = useCallback(
     (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => setPileRegardee({ titre, cartes, groupes }),
@@ -215,6 +269,16 @@ export function PlateauPortrait(props: BoardProps) {
           precedente: rangDansLaMain > 0 ? () => ouvrirDeLaMain(main[rangDansLaMain - 1]) : undefined,
           suivante: rangDansLaMain < main.length - 1 ? () => ouvrirDeLaMain(main[rangDansLaMain + 1]) : undefined,
         }
+  // Mode manuel au doigt (Q52) : le rond choisi, sur lequel agit la barre d'outils.
+  const [choisiManuel, setChoisiManuel] = useState<ScanCardProps | undefined>()
+  const manuelRonds = formeDeTable === 'ronds' && manuelAuDoigt
+  useEffect(() => {
+    if (!manuelRonds) setChoisiManuel(undefined)
+  }, [manuelRonds])
+  const manuel = useMemo(
+    () => (manuelRonds ? { choisieId: choisiManuel ? Number(choisiManuel.id) : undefined, choisir: setChoisiManuel } : undefined),
+    [manuelRonds, choisiManuel]
+  )
   const decor = useMemo(
     () => ({
       interactifs,
@@ -223,16 +287,24 @@ export function PlateauPortrait(props: BoardProps) {
       ouvrirPile,
       ouvrirCarte,
       agir,
+      manuel,
     }),
-    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, agir]
+    [interactifs, effets, props.heroActifId, ouvrirPile, ouvrirCarte, agir, manuel]
   )
 
   // Les onglets ne trient PAS des cartes deja recues : ils rappellent
   // board.tsx (`choisirJoueurRegarde` = `setVueForcee`) pour qu'il
   // RECONSTRUISE `props.plateau` sur un autre joueur (`seulCeJoueur`).
+  // Peril (Q68) : pendant la carte, seul le joueur qui la resout peut reagir ; les onglets des autres sont verrouilles.
+  const perilJoueur = usePerilJoueur()
+  const joueurPeril = formeDeTable === 'ronds' && (props.joueursAffichables?.length ?? 0) > 1 ? perilJoueur : undefined
+  const verrouilles =
+    joueurPeril === undefined ? [] : (props.joueursAffichables ?? []).map((j) => j.id).filter((id) => id !== joueurPeril)
+  const nomDuPeril = props.joueursAffichables?.find((j) => j.id === joueurPeril)?.nom
   const onglets =
     props.joueursAffichables && props.choisirJoueurRegarde ? (
       <OngletsJoueurs
+        verrouilles={verrouilles}
         joueurs={props.joueursAffichables}
         actif={props.joueurRegarde ?? props.playerId}
         choisir={props.choisirJoueurRegarde}
@@ -241,8 +313,10 @@ export function PlateauPortrait(props: BoardProps) {
 
   return (
     <ImagesParesseuses.Provider value={true}>
+    <ContexteGlisse.Provider value={glisserRonds.valeur}>
     <main
-      className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}`}
+      {...(formeDeTable === 'ronds' ? glisserRonds.gestes : {})}
+      className={`plateau-portrait${enDefilement ? ' est-en-defilement' : ''}${formeDeTable === 'ronds' && mainOuverte ? ' avec-main-dock' : ''}`}
       style={{ '--question-h': `${hauteurDeQuestion}px` } as CSSProperties}
     >
       <BandeauPortrait
@@ -250,8 +324,13 @@ export function PlateauPortrait(props: BoardProps) {
         quiAgit={props.quiAgit}
         menu={props.actionsPartie}
         actionPrincipale={props.actionPrincipale}
+        annuler={formeDeTable === 'ronds' ? props.annulerCoup : undefined}
       />
       <div className="portrait-table" onScroll={surDefilement}>
+        {formeDeTable === 'ronds' ? (
+          <TableRonds bandes={bandes} decor={decor} onglets={onglets} />
+        ) : (
+          <>
         <Bande cle="vilain" titre={t('Méchant')} texteVide={t('Aucun méchant')} decor={decor} {...bandes.vilain} />
         <Bande
           cle="manigances"
@@ -277,24 +356,58 @@ export function PlateauPortrait(props: BoardProps) {
         {bandes.ameliorations.unites.length > 0 ? (
           <Bande cle="ameliorations" titre={t('Améliorations')} texteVide="" decor={decor} {...bandes.ameliorations} />
         ) : null}
+          </>
+        )}
       </div>
 
-      <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} />
-      <Encoche
-        cote="droite"
-        libelle={t('Main')}
-        nombre={bandes.main.length}
-        onOuvrir={() => {
-          refuseeParLeJoueur.current = false
-          setMainOuverte(true)
-        }}
-      />
+      <Encoche cote="gauche" libelle={t('Piles')} onOuvrir={() => setTiroirOuvert(true)} attend={props.choixEnAttente !== undefined} />
+      {/* En ronds, la main ouverte est posee sous les zones : la languette ne sert qu'a la rouvrir une fois repliee. */}
+      {formeDeTable === 'ronds' && mainOuverte ? null : (
+        <Encoche
+          cote="droite"
+          libelle={t('Main')}
+          nombre={bandes.main.length}
+          onOuvrir={() => {
+            refuseeParLeJoueur.current = false
+            setMainOuverte(true)
+          }}
+        />
 
-      <TiroirPiles piles={bandes.piles} ouvert={tiroirOuvert} onFermer={() => setTiroirOuvert(false)} onOuvrirPile={ouvrirPile} />
+      )}
+
+      {/* Le choix attend : un bandeau discret, tant que le tiroir est ferme (il se superposerait a la liste des piles). */}
+      {props.choixEnAttente && !tiroirOuvert ? (
+        <BandeauChoixEnAttente titre={props.choixEnAttente.titre} onRouvrir={props.choixEnAttente.rouvrir} />
+      ) : null}
+      <TiroirPiles
+        piles={bandes.piles}
+        ouvert={tiroirOuvert}
+        onFermer={() => setTiroirOuvert(false)}
+        onOuvrirPile={ouvrirPile}
+        choisissables={choisissables}
+        onChoisir={props.choixEnAttente?.rouvrir}
+      />
       {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
           long = la jouer (MainPortrait.tsx). */}
-      <MainPortrait
-        unites={main}
+      {formeDeTable === 'ronds' ? (
+        mainOuverte ? (
+          <MainSousLaTable
+            unites={main}
+            onOuvrir={ouvrirDeLaMain}
+            onJouer={(unite) => agir(unite.carte)}
+            jouable={jouable}
+            enPaiement={enPaiement}
+            enJeuPayants={enJeuPayants}
+            onReplier={() => {
+              ouvertePourLaQuestion.current = false
+              refuseeParLeJoueur.current = true
+              setMainOuverte(false)
+            }}
+          />
+        ) : null
+      ) : (
+        <MainPortrait
+          unites={main}
         ouverte={mainOuverte}
         onFermer={() => {
           ouvertePourLaQuestion.current = false
@@ -305,6 +418,7 @@ export function PlateauPortrait(props: BoardProps) {
         onJouer={(unite) => agir(unite.carte)}
         jouable={jouable}
       />
+      )}
       {carteLue && !actionPerdue ? (
         <CarteOuverte
           key={carteLue.carte.id}
@@ -314,6 +428,7 @@ export function PlateauPortrait(props: BoardProps) {
           onOuvrirAttachee={(carte) => ouvrirCarte(carte)}
           onFermer={() => setCarteLue(undefined)}
           libelleAction={carteLue.libelleAction}
+          detail={formeDeTable === 'ronds'}
         />
       ) : null}
       {pileRegardee ? (
@@ -324,8 +439,32 @@ export function PlateauPortrait(props: BoardProps) {
           fermer={() => setPileRegardee(undefined)}
         />
       ) : null}
-      <BandeauAnnuler annuler={props.annulerCoup} />
+      {/* En ronds, l'annulation est la fleche ↶ permanente du bandeau (Q45) : plus de bandeau de 5 secondes. */}
+      {formeDeTable === 'ronds' ? null : <BandeauAnnuler annuler={props.annulerCoup} />}
+      {manuelRonds ? (
+        <BarreManuelle
+          carte={choisiManuel}
+          onLire={() => choisiManuel && ouvrirCarte(choisiManuel)}
+          onFermer={() => setChoisiManuel(undefined)}
+        />
+      ) : null}
+      {/* La visite de 5 etapes (Q57) : une fois, quand le tour du joueur commence (la mise en place est finie). */}
+      {formeDeTable === 'ronds' ? <VisiteGuidee actif={/turn/i.test(props.world?.phase ?? '')} /> : null}
+      {joueurPeril !== undefined ? (
+        <div className="bandeau-peril" role="status">
+          {t('Péril : seul %1 peut réagir').replace('%1', nomDuPeril ?? `J${joueurPeril + 1}`)}
+        </div>
+      ) : null}
+      {formeDeTable === 'ronds' ? <RoundEnGrand round={props.world?.round_id} /> : null}
+      {formeDeTable === 'ronds' ? (
+        <EcranKO
+          elimine={props.world?.players?.[props.playerId]?.is_eliminated === true}
+          nom={props.world?.players?.[props.playerId]?.area_hero?.[0]?.name?.replace(/^\W*/, '')}
+        />
+      ) : null}
+      {formeDeTable === 'ronds' ? <CoucheGlisseRonds glisse={glisserRonds.glisse} refus={glisserRonds.refus} fantomeRef={glisserRonds.fantomeRef} libelleRef={glisserRonds.libelleRef} /> : null}
     </main>
+    </ContexteGlisse.Provider>
     </ImagesParesseuses.Provider>
   )
 }

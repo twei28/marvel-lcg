@@ -1,0 +1,15 @@
+{
+    "version": "0.5.8",
+    "name": "Locations - The Big Apple",
+    "encounters": [
+        "pu030",
+        "pu031",
+        "pu032",
+        "pu033",
+        "pu034",
+        "pu035",
+        "pu036",
+        "pu037",
+        "pu038"
+    ]
+}

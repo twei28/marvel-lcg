@@ -6,6 +6,12 @@ from . import *
 # Showtime!: Each player draws 1 card.
 #
 # UNE seule cible recoit les DEUX statuts : « stun and confuse an enemy ».
+#
+# Cible : `canbe_status=["Stunned", "Confused"]`, l'un OU l'autre, comme la
+# carte officielle de meme texte 04036 Pheromones. Jusqu'au 20/10/2026 le
+# filtre etait `canbe_stunned=True` : un ennemi deja etourdi (mais pas
+# desoriente) n'etait plus une cible legale, alors que la carte peut encore le
+# desorienter (backlog 12, cas « un ennemi DEJA etourdi »).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -28,6 +34,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             chut,
         ).SetPlay().SetLabel()
-        .SetTarget(Enemy, canbe_stunned=True),
+        .SetTarget(Enemy, canbe_status=["Stunned", "Confused"]),
         Showtime(showtime),
     ]
