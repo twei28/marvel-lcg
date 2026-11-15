@@ -43,6 +43,9 @@ class Ability:
 
         self.can_work_also_in_hand = False
         self.can_work_only_in_hand = False
+        # Phrase (francais) dite au joueur quand CETTE capacite n'est pas offerte faute de condition ou de cible
+        # (`SetRaisonRefus`). Vide : le plateau retombe sur un message generique.
+        self.raison_refus: str = ""
         self.any_player_can_trigger_this_when: List[Callable[['Effect'], bool]] = []
 
         self.labels: List['Ability.LABEL'] = []
@@ -394,6 +397,11 @@ class Ability:
 
     ################################################################################
     #
+    def SetRaisonRefus(self, phrase: str) -> 'Ability':
+        """La phrase montree au joueur quand l'action n'est pas offerte (aucune arme dans la defausse, etc.)."""
+        self.raison_refus = phrase
+        return self
+
     def SetLabel(self, *labels: 'Ability.LABEL') -> 'Ability':
         # self.sub_types.append(sub_type)
         # += will raise error

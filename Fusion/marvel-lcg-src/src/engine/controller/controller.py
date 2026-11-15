@@ -58,6 +58,10 @@ class Controller:
         except Exception:
             pass
         try:
+            refus += self._RefusDesActionsEnJeu(by_effect)
+        except Exception:
+            pass
+        try:
             derniers = list(getattr(self.world.render, "derniers_refus", None) or [])
             # Les options refusees du CHOIX en cours (bug 129) : leur tampon a elles, `derniers_refus` etant deja
             # ecrase par `_RefusDesCartesAJouer` juste au-dessus.
@@ -121,6 +125,73 @@ class Controller:
             demande, _, disponible = reste.partition(", but only have ")
             return f"cout_insuffisant|{demande.strip()}|{disponible.strip()}"
         return motif
+
+    def _RefusDesActionsEnJeu(self, by_effect: 'Effect|None') -> List[Any]:
+        """Pourquoi une ACTION d'une carte EN JEU n'est pas offerte (Action, Hero Action, Alter-Ego Action).
+
+        AJOUT (15/11/2026, rapport « Casey's Bag / Mutant Fight Club ne rangent qu'une carte » : l'action n'etait
+        offerte que s'il y avait une arme / un evenement dans la defausse, et RIEN ne le disait). Meme famille que
+        `_RefusDesCartesAJouer` (les cartes de la main) : on rejoue le filtre au moment de construire la question,
+        on ne peut pas ecouter `derniers_refus`.
+
+        On ne parle que des actions qui seraient offertes dans cette FORME : une Hero Action en alter-ego, ou
+        l'inverse, n'est pas « refusee », elle est hors sujet (sinon chaque carte afficherait un refus permanent).
+        Meme garde-fou que le reste : jamais d'exception vers l'appelant (`RendreLesRefus`).
+        """
+        from game.event.manager import EventManager
+        from game.message import Message
+
+        refus: List[Any] = []
+        joueur = None
+        for candidat in self.world.players:
+            if candidat.player_id == self.player_id:
+                joueur = candidat
+                break
+        if joueur is None or joueur.GetIdentity() is None:
+            return refus
+
+        faces: List[Any] = []
+        for face in list(joueur.GetControlCards()):
+            faces.append(face)
+            faces.extend(face.GetInventoryDeck().Get())
+        vus: set = set()
+        for face in faces:
+            if face is None or id(face) in vus:
+                continue
+            vus.add(id(face))
+            effets = [e for e in face.effect.Find(when=Message.WhenPlayerInTurn)
+                      if e.ability.flags.is_action and not e.ability.is_play]
+            if not effets:
+                continue
+            message = Message.WhenPlayerInTurn(joueur, self.world.round_id)
+            disponibles = EventManager.FilterAvailableEffects(message, effets, joueur, self.world, None)
+            for effet in effets:
+                if effet in disponibles:
+                    continue
+                try:
+                    descriptor = effet.Render(None, self.player_id)
+                except Exception:
+                    continue
+                if not descriptor.failure_reason:
+                    continue
+                motif = Controller.NormaliserLeMotif(descriptor.failure_reason)
+                # Hors sujet pour une action en jeu : l'autre forme, la carte deja inclinee, la carte hors jeu.
+                if motif in self._MOTIFS_HORS_SUJET_ACTION:
+                    continue
+                # Une condition ecrite dans le module d'une carte (`une_arme_dans_la_defausse`) n'a pas de phrase au
+                # plateau : sans `SetRaisonRefus`, on dit le minimum honnete plutot que de se taire.
+                from game.effect.effect_failure import EffectFailure
+                if not (motif.startswith("raison|") or motif.startswith("cout_insuffisant|")
+                        or motif in {m.value for m in EffectFailure} or motif.startswith("check_")):
+                    motif = "action_indisponible"
+                descriptor.failure_reason = motif
+                refus.append(descriptor)
+        return refus
+
+    _MOTIFS_HORS_SUJET_ACTION = frozenset({
+        "player_is_hero", "check_hero_form_only", "player_is_alter_ego", "no cost target", "out of play",
+        "is removed", "treat as blank", "already processed in this message", "NoProcess", "no process",
+    })
 
     def _RefusDesCartesAJouer(self, by_effect: 'Effect|None') -> List[Any]:
         """Pourquoi les cartes de la MAIN ne sont pas jouables, une par une.

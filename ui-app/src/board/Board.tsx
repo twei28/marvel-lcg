@@ -59,6 +59,9 @@ import { estSpectateur } from './moteur'
 import { publierVu, publierVuLimite, useVuDuJoueur } from './vu-partage'
 import './board.css'
 import './bande-manigances.css'
+import './fenetre-refus.css'
+import { ContexteRefus, FenetreRefus, useContexteRefus } from './FenetreRefus'
+import type { OuvertureRefus, PileConsultable } from './FenetreRefus'
 
 /**
  * Taille de la table, en pixels de scene. Doit coller a la grille de board.css :
@@ -326,6 +329,14 @@ export function Unite({
 }) {
   const coteParDefaut = useCoteAmeliorations()
   const pasAmeliorations = PAS_PAR_CHEVAUCHEMENT[useChevauchement()]
+  const refus = useContexteRefus()
+  // Une carte dont le moteur n'offre RIEN et qui a une raison : le clic ouvre la fenetre qui l'explique (`FenetreRefus.tsx`).
+  const avecRefus = (props: ScanCardProps): ScanCardProps => {
+    const base = avecInteraction(props, interactifs, effets)
+    if (base.onSelect || !refus) return base
+    const raisons = refus.raisons.get(Number(props.id))
+    return raisons && raisons.length > 0 ? { ...base, onSelect: () => refus.ouvrir({ carte: props.name, raisons }) } : base
+  }
   const pileAccueille = unite.pile !== undefined && (pilesAccueillantes?.has(unite.pile) ?? false)
   if (unite.pileVide) {
     return (
@@ -364,7 +375,7 @@ export function Unite({
       ? { ...carte, masquerType: true }
       : carte
   const carteNommee = taire(unite.carte)
-  const porteurBrut = avecInteraction(carteNommee, interactifs, effets)
+  const porteurBrut = avecRefus(carteNommee)
   // Badge « Active » sur l'identite du joueur dont c'est le tour (hot-seat).
   const porteur =
     heroActifId !== undefined && Number(unite.carte.id) === heroActifId
@@ -446,7 +457,7 @@ export function Unite({
             key={attachee.id}
             style={{ '--i': i } as CSSProperties}
           >
-            <ScanCard {...avecInteraction(attachee, interactifs, effets)} />
+            <ScanCard {...avecRefus(attachee)} />
           </span>
         )
       })}
@@ -461,7 +472,7 @@ export function Unite({
         >
           {grouperStatuts(statuts, interactifs, effets).map(({ carte, nombre }) => (
             <span className="est-statut" key={carte.id}>
-              <ScanCard {...avecInteraction(carte, interactifs, effets)} />
+              <ScanCard {...avecRefus(carte)} />
               {nombre > 1 ? (
                 <span className="statut-nombre" aria-label={`${carte.name} ×${nombre}`}>
                   ×{nombre}
@@ -1598,6 +1609,7 @@ export function Board({
 
   // Pile publique ouverte pour etre regardee (defausse, victoire, retirees...).
   const [pileOuverte, setPileRegardee] = useState<PileRegardee | null>(null)
+  const [fenetreRefus, setFenetreRefus] = useState<OuvertureRefus | null>(null)
   const ouvrirPile = useCallback(
     (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[], origine?: OriginePile) =>
       setPileRegardee({ titre, cartes, groupes, origine }),
@@ -1645,7 +1657,25 @@ export function Board({
     />
   )
 
+  // La defausse de chaque joueur, pour la fenetre « rien a faire » (`FenetreRefus`) : on peut aller verifier soi-meme.
+  const defaussesConsultables: PileConsultable[] = plateau.emplacements.flatMap((emplacement) =>
+    emplacement.groupes.flatMap((groupe) =>
+      groupe
+        .filter((unite) => unite.carte.discard && unite.pileContenu && unite.pileContenu.length > 0)
+        .map((unite) => ({
+          titre: unite.pileTitre ?? unite.carte.name,
+          ouvrir: () =>
+            ouvrirPile(unite.pileTitre ?? unite.carte.name, unite.pileContenu!, unite.pileGroupes, { u: unite.carte.id, s: 'pile' }),
+        }))
+    )
+  )
+  const valeurContexteRefus = useMemo(
+    () => (raisonsRefus ? { raisons: raisonsRefus, ouvrir: (o: OuvertureRefus) => setFenetreRefus(o) } : null),
+    [raisonsRefus]
+  )
+
   return (
+    <ContexteRefus.Provider value={valeurContexteRefus}>
     <main
       className={`plateau${mainVisibleForcee ? ' main-visible-forcee' : ''}${delave ? ' est-delave' : ''}`}
     >
@@ -1837,8 +1867,13 @@ export function Board({
         />
       ) : null}
 
+      {fenetreRefus ? (
+        <FenetreRefus ouverture={fenetreRefus} piles={defaussesConsultables} fermer={() => setFenetreRefus(null)} />
+      ) : null}
+
       {bas}
     </main>
+    </ContexteRefus.Provider>
   )
 }
 

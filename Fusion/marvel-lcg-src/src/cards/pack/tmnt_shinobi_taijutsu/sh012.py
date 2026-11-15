@@ -43,5 +43,6 @@ def GetAbilities() -> Sequence['Ability']:
         ).SetCostFunc(CostFunc.Exhaust("This"))
         .SetCostFunc(CostFunc.TakeDamage(1, "YourIdentity"))
         .SetTarget(CardFinder(card_type=Event, traits=["ATTACK", "DEFENSE"]),  # type: ignore
-                   from_where=["YourDiscardPile"]),
+                   from_where=["YourDiscardPile"])
+        .SetRaisonRefus("Aucun événement Attaque ou Défense dans ta défausse"),
     ]

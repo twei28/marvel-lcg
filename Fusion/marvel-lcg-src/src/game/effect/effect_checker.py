@@ -175,6 +175,11 @@ class EffectChecker:
 
         return has_target
 
+    def _MotifPourLeJoueur(self, motif: str) -> str:
+        """Le motif d'un refus, ou « raison|<phrase> » quand la capacite sait dire elle-meme pourquoi (`SetRaisonRefus`)."""
+        phrase = getattr(self.ability, "raison_refus", "")
+        return f"raison|{phrase}" if phrase else motif
+
     def UpdatePayResources(self, player: 'Player') -> bool:
         from game.message import Message
         from game.effect.effect_target_cost import TargetCost
@@ -386,7 +391,7 @@ class EffectChecker:
                 return False
             try:
                 if not condition(self.effect, message):
-                    self.failures.SetText(asked_player, GetFuncName(condition))
+                    self.failures.SetText(asked_player, self._MotifPourLeJoueur(GetFuncName(condition)))
                     return False
             except Exception as exc:
                 info = Log.OnCrash(CATEGORY_NAME, exc, self.effect.GetDisplayName(), condition)
@@ -399,7 +404,7 @@ class EffectChecker:
             by_effect = self.effect
 
         if not self.UpdateLegalTargets(by_effect):
-            self.failures.Set(asked_player, EffectFailure.UpdateLegalTargets)
+            self.failures.SetText(asked_player, self._MotifPourLeJoueur(EffectFailure.UpdateLegalTargets))
             return False
 
         if not self.HasCostTargets():
