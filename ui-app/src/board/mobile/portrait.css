@@ -650,8 +650,8 @@
     font-size: 1.5rem;
     line-height: 1;
     color: #e8e9ee;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(10, 12, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 99px;
     cursor: pointer;
   }

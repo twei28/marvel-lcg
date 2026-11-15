@@ -923,64 +923,13 @@
   text-align: left;
 }
 
-/* Plusieurs faces (24/10/2026, « les mettre l'une sous l'autre, sans defiler, en laissant la place des boutons »).
-   --h-faces : la hauteur que prennent les faces = l'ecran moins 190 px (le libelle, les boutons, ce qui se lit dessous).
-   2 faces : l'une sous l'autre ; 3 faces : deux puis une ; 4 et plus : une grande, les autres en miniatures a toucher. */
-.carte-ouverte-scan.a-deux-faces {
-  --h-faces: calc(100dvh - 190px);
-  --l-ecran: calc(100vw - 32px);
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+/* Plusieurs faces (15/11/2026) : UNE carte a la fois, des fleches dessous. La hauteur laisse la place du libelle, des
+   fleches et des boutons : sur un petit telephone la carte ne depasse plus. */
+.carte-ouverte-scan.en-carrousel .scan-card {
+  --card-w: min(calc(100vw - 16px), calc((100dvh - 200px) * 127 / 176));
 }
-.carte-ouverte-scan.a-faces-2 {
-  flex-direction: column;
-  align-items: center;
-}
-.carte-ouverte-scan.a-faces-2 .scan-card {
-  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
-}
-.carte-ouverte-scan.a-faces-2 .scan-card.is-landscape {
-  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 8px) / 2 * 176 / 127));
-}
-.carte-ouverte-scan.a-faces-3 {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  justify-content: center;
-  justify-items: center;
-}
-.carte-ouverte-scan.a-faces-3 .scan-card {
-  --card-w: min(calc((var(--l-ecran) - 8px) / 2), calc((var(--h-faces) - 8px) / 2 * 127 / 176));
-}
-.carte-ouverte-scan.a-faces-3 .scan-card:nth-child(3) {
-  grid-column: 1 / -1;
-}
-.carte-ouverte-scan.a-faces-plus .scan-card {
-  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 127 / 176));
-}
-.carte-ouverte-scan.a-faces-plus .scan-card.is-landscape {
-  --card-w: min(var(--l-ecran), calc((var(--h-faces) - 100px) * 176 / 127));
-}
-.carte-ouverte-miniatures {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-}
-.carte-ouverte-miniature {
-  padding: 2px;
-  background: transparent;
-  border: 2px solid #3f86e0;
-  border-radius: 8px;
-  min-width: 44px;
-  min-height: 44px;
-  cursor: pointer;
-}
-.carte-ouverte-miniature .scan-card {
-  --card-w: 72px;
-}
-.carte-ouverte-miniature .scan-card.is-landscape {
-  --card-w: 104px;
+.carte-ouverte-scan.en-carrousel .scan-card.is-landscape {
+  --card-w: min(calc(100vw - 16px), calc((100dvh - 200px) * 176 / 127));
 }
 
 /* ---- PAYSAGE (Q48) : les memes zones en largeur, la main dans un panneau a droite ---- */
@@ -1266,4 +1215,35 @@ html[data-epure] body.a-marque-heros .ronds-zone-heros::after {
   font-size: 0.5rem;
   padding: 0 4px;
   border-width: 1px;
+}
+
+/* Fleches du carrousel de faces : posees aux deux bouts du bandeau du titre (les stats, l'illustration et le texte restent
+   lisibles), le compteur en bas entre le texte de la carte et le portrait. */
+.carte-ouverte-scan.en-carrousel {
+  position: relative;
+}
+.carte-ouverte-fleche {
+  position: absolute;
+  top: 7.5%;
+  z-index: 50;
+  min-width: 34px;
+  min-height: 34px;
+  font-size: 1.25rem;
+}
+.carte-ouverte-fleche.est-gauche {
+  left: 4px;
+}
+.carte-ouverte-fleche.est-droite {
+  right: 4px;
+}
+.carte-ouverte-position-coin {
+  position: absolute;
+  bottom: 12px;
+  right: 56px;
+  z-index: 50;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  color: #e8e9ee;
+  background: rgba(10, 12, 20, 0.9);
+  border-radius: 4px;
 }

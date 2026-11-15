@@ -1,6 +1,6 @@
 // Retour d'un joueur : « On ne voit pas les errata sur le téléphone. » L'aperçu agrandi du plateau mobile (CarteOuverte)
 // affichait le scan nu : ni voile ni pastille « Errata ». Il porte désormais les mêmes que l'ordinateur.
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { CarteOuverte } from './CarteOuverte'
 import { CODES_ERRATA } from '../errata-rrg'
@@ -21,6 +21,8 @@ describe('CarteOuverte : errata officiel', () => {
   it('l\'autre face porte l\'errata de SA carte, pas celui de la face en jeu', () => {
     const code = CODES_ERRATA[0]
     render(<CarteOuverte carte={carte('99999', { autresFaces: [{ url: 'y.jpg', code }] })} detail onFermer={() => {}} />)
+    expect(document.querySelectorAll('.pastille-errata')).toHaveLength(0)
+    fireEvent.click(screen.getByRole('button', { name: 'Carte suivante' }))
     expect(document.querySelectorAll('.pastille-errata')).toHaveLength(1)
   })
 })
