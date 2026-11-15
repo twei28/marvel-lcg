@@ -7,7 +7,7 @@ import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/pre
 import { nomExtension, numeroDExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { construirePageDifficulte } from "/public/js/prepare/page-difficulte.js";
 import { validate } from "/public/js/prepare/validation.js";
-import { launch } from "/public/js/prepare/launcher.js?v=b0ca940a";
+import { launch } from "/public/js/prepare/launcher.js?v=1b951cdb";
 import { prefs } from "/public/js/prepare/prefs.js";
 import { STANDARD, cleHeros, codeAlterEgoAffiche } from "/public/js/prepare/arts-heros-choix.js";
 // Arts alternatifs des cartes de deck (TMNT) : la fenêtre « arts alternatifs ? » à la sélection d'un deck.
