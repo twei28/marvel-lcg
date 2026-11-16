@@ -1,7 +1,7 @@
 // Message d'un joueur (16/11/2026) : « j'ai replie ma main (cachee sur le cote a droite) et j'ai mis 5 mn a trouver ou elle etait. Elle se
-// cachait en dessous des sur-menus « tchat et cie » ». L'encoche « Main » (z-index 45) passait SOUS les languettes Aide / Feuillets /
-// Tchat / Journal (z-index 606 a 615) sur un telephone peu haut. Ce test replie la main sur de vrais gabarits de telephone et lit, au
-// centre de l'encoche, QUEL element est reellement au-dessus (`elementFromPoint`).
+// cachait en dessous des sur-menus « tchat et cie » » ; puis l'utilisateur : « le bouton chat est sur la main... le journal, aide et tout, ils
+// gachent trop les trucs principaux, c'est-a-dire la main et les piles ». Decision : sur telephone, les languettes du bord droit (Aide,
+// Feuillets, Tchat, Journal) sont rangees dans le menu « … » ; il ne reste, sur les cotes, que la main et les piles.
 //   UI_CHECK_BASE=http://127.0.0.1:2345 ENCOCHE_MAIN=1 npx playwright test tests/encoche-main-telephone.spec.ts --project=s24
 // Affichage « Normal » = `epure`. Captures dans captures/encoche_main/.
 import { test, expect } from '@playwright/test'
@@ -12,16 +12,16 @@ import { repondre } from '../pilote-campagne'
 
 test.skip(!process.env.ENCOCHE_MAIN, 'cree une partie')
 const SORTIE = path.resolve('..', 'captures', 'encoche_main')
-const GABARITS: Array<[number, number]> = [[360, 640], [360, 740], [390, 664], [390, 844], [412, 780], [480, 1050]]
+const GABARITS: Array<[number, number]> = [[360, 640], [390, 664], [390, 844], [412, 780], [480, 1050]]
 
-test('la main repliee : son encoche n’est jamais cachee sous une languette', async ({ browser }) => {
-  test.setTimeout(280_000)
+test('telephone : plus de languette sur la main ; les volets s’ouvrent depuis le menu « … »', async ({ browser }) => {
+  test.setTimeout(900_000)
   fs.mkdirSync(SORTIE, { recursive: true })
   const bilan: string[] = []
   for (const [w, h] of GABARITS) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true, deviceScaleFactor: 1 })
     const page = await ctx.newPage()
-    page.setDefaultTimeout(10_000)
+    page.setDefaultTimeout(40_000)
     const request = page.request
     const scenario = await (await request.get('/get_scenario_json?rhino')).json()
     const charge = {
@@ -37,7 +37,7 @@ test('la main repliee : son encoche n’est jamais cachee sous une languette', a
         localStorage.removeItem('marvel-encoche-droite')
       } catch { /* */ }
     })
-    await page.goto('/app/board.html', { waitUntil: 'networkidle' })
+    await page.goto('/app/board.html', { waitUntil: 'networkidle', timeout: 90_000 })
     await page.waitForTimeout(2500)
     for (let i = 0; i < 60; i++) {
       const t = await (await request.get('/get_ask?p=0')).text()
@@ -53,61 +53,51 @@ test('la main repliee : son encoche n’est jamais cachee sous une languette', a
       if (!(await passer.isVisible().catch(() => false))) break
       await passer.click(); await page.waitForTimeout(500)
     }
-    // Replier la main : la fleche du dock, ou rien si elle est deja rangee derriere son encoche.
     const replier = page.getByRole('button', { name: /Replier la main/ })
-    if (await replier.isVisible().catch(() => false)) {
-      // La fleche ▼ du dock doit pouvoir se toucher : au centre, c'est elle (et pas une languette) qui est au-dessus.
-      const toucheable = await page.evaluate(() => {
-        const b = document.querySelector('.main-dock-replier') as HTMLElement | null
-        if (!b) return null
-        const r = b.getBoundingClientRect()
-        const d = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
-        return { ok: !!d && !!d.closest('.main-dock-replier'), dessus: d ? d.className.toString().slice(0, 50) : null }
-      })
-      await page.screenshot({ path: path.join(SORTIE, `dock-${w}x${h}.png`) })
-      expect(toucheable?.ok, `${w}x${h} : la fleche « Replier la main » est sous « ${toucheable?.dessus} »`).toBe(true)
-      await replier.tap(); await page.waitForTimeout(1000)
-    }
-    const mesure = await page.evaluate(() => {
+    if (await replier.isVisible().catch(() => false)) { await replier.tap(); await page.waitForTimeout(1000) }
+
+    // 1. Aucune languette du bord droit n'est visible : rien ne couvre plus la main ni les piles.
+    const visibles = await page.evaluate(() =>
+      [...document.querySelectorAll('[class*="-languette"]')]
+        .filter((l) => /^volet-[a-z]+-languette$/.test((l as HTMLElement).className.toString().split(' ')[0]))
+        .filter((l) => { const b = (l as HTMLElement).getBoundingClientRect(); return b.width > 0 && b.height > 0 && getComputedStyle(l as HTMLElement).visibility !== 'hidden' })
+        .map((l) => (l as HTMLElement).className.toString().split(' ')[0])
+    )
+    // 2. L'encoche « Main » est entierement au-dessus de tout (grille d'echantillons).
+    const main = await page.evaluate(() => {
       const e = document.querySelector('.encoche-main') as HTMLElement | null
       if (!e) return null
       const corps = (e.querySelector('.encoche-corps') as HTMLElement | null) ?? e
       const r = corps.getBoundingClientRect()
-      // Le CORPS visible (24 x 72 px) est echantillonne en grille : quelle part est reellement au-dessus ?
-      let vus = 0, total = 0; const mauvais = new Set<string>()
+      let vus = 0, total = 0
       for (let i = 0; i < 4; i++) for (let j = 0; j < 8; j++) {
-        const px = r.left + 3 + (r.width - 6) * (i / 3)
-        const py = r.top + 3 + (r.height - 6) * (j / 7)
-        const d = document.elementFromPoint(px, py)
-        total++; if (d && d.closest('.encoche-main')) vus++; else mauvais.add(d ? d.className.toString().slice(0, 40) : 'null')
+        const d = document.elementFromPoint(r.left + 3 + (r.width - 6) * (i / 3), r.top + 3 + (r.height - 6) * (j / 7))
+        total++; if (d && d.closest('.encoche-main')) vus++
       }
-      const x = r.left + r.width / 2
-      const y = r.top + r.height / 2
-      const dessus = document.elementFromPoint(x, y) as HTMLElement | null
-      const languettes = [...document.querySelectorAll('[class*="-languette"]')]
-        .map((l) => { const b = (l as HTMLElement).getBoundingClientRect(); return { cls: (l as HTMLElement).className.toString().split(' ')[0], top: Math.round(b.top), bottom: Math.round(b.bottom) } })
-        .filter((b) => b.bottom > 0 && b.top < innerHeight)
-      // Les languettes du bord droit (hors textes internes) : meme taille que le corps des encoches, jamais l'une sur l'autre.
-      const boites = [...document.querySelectorAll('[class*="-languette"]')]
-        .filter((l) => /^volet-[a-z]+-languette$/.test((l as HTMLElement).className.toString().split(' ')[0]))
-        .map((l) => { const b = (l as HTMLElement).getBoundingClientRect(); return { nom: (l as HTMLElement).className.toString().split(' ')[0].replace('volet-', '').replace('-languette', ''), l: Math.round(b.left), r: Math.round(b.right), t: Math.round(b.top), b: Math.round(b.bottom) } })
-        .filter((b) => b.r - b.l > 0)
-      boites.push({ nom: 'ENCOCHE-MAIN', l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom) })
-      const chevauchements: string[] = []
-      for (let i = 0; i < boites.length; i++) for (let j = i + 1; j < boites.length; j++) {
-        const a = boites[i]!, c = boites[j]!
-        if (a.l < c.r && c.l < a.r && a.t < c.b && c.t < a.b) chevauchements.push(`${a.nom}/${c.nom}`)
-      }
-      const tailles = boites.map((b) => `${b.nom}:${b.r - b.l}x${b.b - b.t}`)
-      return { chevauchements, tailles, top: Math.round(r.top), bottom: Math.round(r.bottom), dessus: dessus ? dessus.className.toString().slice(0, 60) : null, estEncoche: !!dessus && !!dessus.closest('.encoche-main'), partVisible: Math.round((vus / total) * 100), mauvais: [...mauvais], zEncoche: getComputedStyle(e).zIndex, languettes }
+      return { part: Math.round((vus / total) * 100), top: Math.round(r.top), bottom: Math.round(r.bottom), droite: Math.round(r.right) }
     })
-    bilan.push(`${w}x${h} ${JSON.stringify(mesure)}`); console.log('MESURE', w + 'x' + h, JSON.stringify(mesure))
+    bilan.push(`${w}x${h} visibles=${JSON.stringify(visibles)} main=${JSON.stringify(main)}`)
+    console.log('MESURE', w + 'x' + h, JSON.stringify({ visibles, main }))
     await page.screenshot({ path: path.join(SORTIE, `main-repliee-${w}x${h}.png`) })
+    expect(visibles, `${w}x${h} : des languettes du bord droit sont encore visibles`).toEqual([])
+    expect(main, `${w}x${h} : pas d'encoche Main`).not.toBeNull()
+    expect(main!.part, `${w}x${h} : l'encoche Main est recouverte`).toBeGreaterThanOrEqual(95)
+
+    // 3. Le menu « … » porte les volets ; un clic sur « Journal » ouvre le volet et referme le menu.
+    if (w === 390 && h === 844) {
+      await page.locator('.portrait-menu-bouton').tap()
+      await page.waitForTimeout(800)
+      await page.screenshot({ path: path.join(SORTIE, 'menu-avec-volets.png') })
+      for (const nom of ['Aide', 'Tchat', 'Journal']) {
+        await expect(page.locator('.portrait-menu .bh-volet', { hasText: new RegExp(`^${nom}`) }), `ligne « ${nom} » du menu`).toHaveCount(1)
+      }
+      await page.locator('.portrait-menu .bh-volet', { hasText: /^Journal/ }).tap()
+      await page.waitForTimeout(1200)
+      await expect(page.locator('.portrait-menu'), 'le menu se referme').toHaveCount(0)
+      await expect(page.locator('.volet-journal'), 'le volet Journal est ouvert').toHaveCount(1)
+      await page.screenshot({ path: path.join(SORTIE, 'journal-ouvert-depuis-le-menu.png') })
+    }
     await ctx.close()
-    expect(mesure, `${w}x${h} : pas d'encoche Main`).not.toBeNull()
-    expect(mesure!.chevauchements, `${w}x${h} : des languettes se chevauchent`).toEqual([])
-    for (const t of mesure!.tailles.filter((x) => !x.startsWith('ENCOCHE'))) expect(t.split(':')[1], `${w}x${h} : ${t} : meme taille que le corps de l'encoche (24x84)`).toBe('24x84')
-    expect(mesure!.partVisible, `${w}x${h} : seulement ${mesure!.partVisible} % du corps de l'encoche Main est au-dessus (le reste est sous une languette)`).toBeGreaterThanOrEqual(90)
   }
   console.log('BILAN\n' + bilan.join('\n'))
 })

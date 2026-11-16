@@ -119,6 +119,7 @@ import { TEXTES_FR } from './board/textes-fr'
 import { TEXTES_FR_FANMADE } from './board/textes-fr-fanmade'
 import { animationsDuPlateau, estResynchronisation } from './board/animations-en-scene'
 import { autresFacesDe, kindOf, pvMaximum, scanUrl, toScanCard, type ContexteCarte } from './board/card-model'
+import { EntreesVolets } from './board/mobile/EntreesVolets'
 import { cartesDuLotParOption, carteDeCampagneParOption, carteDuSchemaCampagneParOption, carteNommeeParOption, indexerCartesMondeParNom } from './board/option-carte'
 import {
   DemandeCentrale,
@@ -5677,6 +5678,8 @@ export function PagePartie({
             {/* Signaler un bug : le journal de toute la partie part avec la
                 description et la capture. Ne s'affiche que si un site ecoute. */}
             <PanneauBug outils={rapport} />
+            {/* Telephone : Aide, Feuillets, Tchat, Journal rangés dans ce menu (leurs languettes du bord droit sont masquées). */}
+            <EntreesVolets />
 
             {/* ⚠ LA VUE RESTE DANS LA BARRE, ET C'EST UNE DECISION ECRITE.
                 La fiche des onglets du 14/09/2026 le dit mot pour mot : « la

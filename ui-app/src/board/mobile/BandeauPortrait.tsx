@@ -83,7 +83,15 @@ export function BandeauPortrait({
               du méchant (540). Rendu ici, le menu et ses feuilles (Options...) s'ouvraient SOUS ce panneau
               (29/10/2026, signalé par l'utilisateur sur téléphone). */}
           {createPortal(
-            <nav className="portrait-menu" aria-label={t('Menu')}>
+            <nav
+              className="portrait-menu"
+              aria-label={t('Menu')}
+              onClick={(evenement) => {
+                // Une ligne marquee `data-ferme-menu` (les volets Aide, Tchat, Journal... : EntreesVolets) ouvre quelque chose
+                // SOUS cette feuille (z-index 639) : elle se referme d'abord.
+                if ((evenement.target as HTMLElement).closest('[data-ferme-menu]')) setMenuOuvert(false)
+              }}
+            >
             <span className="portrait-menu-poignee" aria-hidden="true" />
             {menu}
             {/* Discret, au fond du menu, et seulement quand le navigateur
