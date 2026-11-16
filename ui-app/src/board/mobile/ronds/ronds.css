@@ -509,6 +509,9 @@
 }
 .main-dock-entete {
   padding-left: 30px; /* la languette « Piles » (a gauche) passe devant */
+  /* Les quatre languettes du bord droit (Aide, Feuillets, Tchat, Journal : 24 px de large sur telephone, z-index 606 a 615) passent DEVANT la fleche ▼
+     « Replier la main », qui se trouvait dessous, intouchable, sur un telephone de ~1050 px de haut (16/11/2026). */
+  padding-right: 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;

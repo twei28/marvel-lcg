@@ -313,7 +313,7 @@
     display: flex;
     align-items: center;
     width: 44px;
-    min-height: 72px;
+    min-height: 84px;
     padding: 0;
     font: inherit;
     color: #fff;
@@ -329,8 +329,11 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
+    box-sizing: border-box;
+    /* 24 x 84 px : LA taille commune des encoches Main / Piles et des languettes du bord droit (voir la fin de ce fichier). */
     width: 24px;
-    min-height: 72px;
+    height: 84px;
+    min-height: 84px;
     padding: 6px 0;
     background: var(--cadre);
     border: 1px solid rgba(255, 255, 255, 0.28);
@@ -360,7 +363,11 @@
     box-shadow: 0 6px 22px rgba(0, 0, 0, 0.65);
   }
   .encoche-main {
-    right: 0;
+    /* A COTE de la colonne des languettes du bord droit (Aide, Feuillets, Tchat, Journal : 24 px de large, z-index jusqu'a 620 car
+       leurs volets sont leur parent), et non plus dessous : avec `right: 0` la main repliee se cachait derriere « Tchat » sur un
+       telephone peu haut, et un joueur a mis 5 minutes a la retrouver (message du 16/11/2026). Aucune hauteur d'ecran ne la
+       recouvre plus. */
+    right: 26px;
     justify-content: flex-end;
   }
   .encoche-main .encoche-corps {
@@ -847,6 +854,39 @@
     pointer-events: none;
   }
 }
+
+/* LES LANGUETTES DU BORD DROIT SUR TELEPHONE (16/11/2026, message d'un joueur : « on peut les garder, mais il faut qu'elles fassent la
+   meme taille que les boutons Main et Piles, et qu'elles ne se chevauchent pas »).
+   Aide, Feuillets, Tchat, Journal (et Ville / Assemblee en campagne) faisaient 32 x 100 px, a des hauteurs fixees chacune dans son
+   fichier (120, 228, 336, 444, 590 px et « bas de l'ecran » pour le Journal) : sur un telephone peu haut elles se recouvraient, et elles
+   cachaient la main repliee. Ici elles prennent la taille de l'encoche (corps de 24 x 84 px, meme coin arrondi, meme petite ecriture) et
+   s'empilent en colonne au pas de 88 px, sans jamais se toucher. L'encoche « Main » se range A COTE de la colonne (right: 26px).
+   Non couche (les feuilles des volets le sont) ; la tablette garde ses grandes languettes (`data-tablette`). Les volets OUVERTS gardent
+   leur propre place (`:not(.est-ouvert)`). */
+html:not([data-tablette]) body.mode-plateau-portrait :is(.volet-aide-languette, .volet-feuillets-languette, .volet-tchat-languette, .volet-journal-languette, .volet-ville-languette, .volet-assemblee-languette):not(.est-ouvert) {
+  right: 0;
+  bottom: auto;
+  box-sizing: border-box;
+  width: 24px;
+  height: 84px;
+  min-height: 0;
+  padding: 0;
+  gap: 2px;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  border-radius: 10px 0 0 10px;
+}
+html:not([data-tablette]) body.mode-plateau-portrait :is(.volet-aide-languette, .volet-feuillets-languette, .volet-tchat-languette, .volet-journal-languette, .volet-ville-languette, .volet-assemblee-languette) :is(.volet-tchat-languette-texte, .volet-journal-languette-texte, .volet-ville-languette-texte, .volet-assemblee-languette-texte) {
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+}
+html:not([data-tablette]) body.mode-plateau-portrait .volet-aide-languette:not(.est-ouvert) { top: 112px; }
+html:not([data-tablette]) body.mode-plateau-portrait .volet-feuillets-languette:not(.est-ouvert) { top: 200px; }
+html:not([data-tablette]) body.mode-plateau-portrait .volet-tchat-languette:not(.est-ouvert) { top: 288px; }
+html:not([data-tablette]) body.mode-plateau-portrait .volet-journal-languette:not(.est-ouvert) { top: 376px; }
+html:not([data-tablette]) body.mode-plateau-portrait .volet-ville-languette:not(.est-ouvert) { top: 464px; }
+html:not([data-tablette]) body.mode-plateau-portrait .volet-assemblee-languette:not(.est-ouvert) { top: 552px; }
+
 
 /* Le recap de fin de phase (« Menace », « Heros et allies », « Nouveautes sur la table ») sur un
    telephone (26/10/2026, signale en partie : « les lettres l'une sous l'autre, c'est illisible »).
