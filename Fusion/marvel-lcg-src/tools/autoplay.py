@@ -1323,6 +1323,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                            "resources": payer(meilleure, cibles, ctx)})
 
     DeviceManager.DoGetInput = pilote
+    # AJOUT 16/11/2026 : la SONDE D'ANNULATION (tools/sonde_annuler.py) s'intercale devant le pilote quand
+    # `AUTOPLAY_SONDE_ANNULER` est posee ; sans elle, aucun changement.
+    if os.environ.get("AUTOPLAY_SONDE_ANNULER"):
+        sys.path.insert(0, os.path.join(game_dir, "tools"))
+        import sonde_annuler
+        DeviceManager.DoGetInput = sonde_annuler.envelopper(pilote, monde, etiquette)
     DeviceManager.DoWaitConnect = lambda self, player_id, check: None
     DeviceManager.DoWaitSync = lambda self, player_id, check: None
 
