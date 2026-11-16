@@ -726,6 +726,8 @@ export const DICO_EN_BASE = {
     "Le Seigneur des Anneaux": "The Lord of the Rings",
     "Horreur à Arkham": "Arkham Horror",
     "Notre autre site": "Our other site",
+    "Bêta": "Beta",
+    "Ce site est en version bêta": "This site is in beta",
     "Tirage au hasard": "Random draws",
     "Je tire moi-même les cartes « au hasard »": "I draw “at random” cards myself",
     "Les cartes cachées se mélangent face cachée et tu en désignes une, comme à la table": "Hidden cards are shuffled face down and you pick one, as at the table",

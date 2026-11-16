@@ -3015,6 +3015,21 @@ html.tel .acc-merci{margin-top:20px;font-size:13px}
   .acc-arkham b{white-space:normal;font-size:1.15rem;line-height:1.2}
   .acc-arkham-sceau{width:80px;height:80px;right:-12px}
 }
+/* Le badge « Bêta » des deux bandeaux (16/11/2026) : petit, en bas a droite (les silhouettes et le nom sont a gauche), aux
+   couleurs du bandeau, coins de 3 px comme les boutons du site (pas de pilule). */
+.acc-lotr,.acc-arkham{position:relative}
+.acc-beta{position:absolute;right:8px;bottom:6px;z-index:2;padding:2px 6px;border:1px solid currentColor;border-radius:3px;
+  font:700 .62rem/1.1 system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;pointer-events:none}
+.acc-lotr .acc-beta{color:#e3c98a;background:rgba(201,168,92,.14)}
+.acc-arkham .acc-beta{color:#8fd0bd;background:rgba(94,170,150,.16)}
+@media (max-width:768px){
+  /* Telephone : bandeaux de ~175 px, le nom du Seigneur des Anneaux monte jusqu'au coin : badge plus petit, colle au coin. */
+  .acc-beta{bottom:auto;top:4px;right:4px;padding:1px 4px;font-size:.52rem;letter-spacing:.06em}
+}
+@media (max-width:380px){
+  /* Tres petits telephones (360 px) : le nom du Seigneur des Anneaux rentrait sous le badge. */
+  .acc-lotr-texte b{font-size:.8rem}
+}
 /* Fenetre basse (PC, <= 1000 px de haut : un navigateur sur un ecran 1080p) : les deux bandeaux perdent de la hauteur et le narval se
    resserre, pour que tout l'accueil, remerciements compris, tienne sans defiler jusqu'a ~940 px (16/11/2026). `.accueil` devant
    chaque selecteur : les regles de base des bandeaux sont definies plus haut dans ce fichier, l'ordre ne suffirait pas. */

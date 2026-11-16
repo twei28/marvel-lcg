@@ -2534,12 +2534,18 @@ function confirmerLegacy(question, detail, libelleOk = t("Débloquer")) {
 /** Le site du Seigneur des Anneaux LCG, lie depuis l'accueil (14/11/2026, demande de l'utilisateur).
  *  Un bandeau sous les tuiles : la Communaute de l'Anneau en silhouettes (image prise dans le dossier LOTR LCG,
  *  ui/public/brand/silhouettes.png), un clic ouvre l'autre site dans un NOUVEL onglet (le joueur garde sa preparation). */
+/** Le petit badge « Bêta » des deux sites freres (16/11/2026, demande de l'utilisateur) : ils ne sont pas termines. */
+function badgeBeta() {
+    return el("span", { class: "acc-beta", title: t("Ce site est en version bêta") }, t("Bêta"));
+}
+
 const URL_LOTR = "https://narwhalchampions.com/lotrlcg/";
 function bandeauLotr() {
     return el("a", { class: "acc-lotr", href: URL_LOTR, target: "_blank", rel: "noopener", title: t("Notre autre site") },
         el("span", { class: "acc-lotr-texte" },
             el("b", {}, t("Le Seigneur des Anneaux"))),
-        el("span", { class: "acc-lotr-communaute", "aria-hidden": "true" }));
+        el("span", { class: "acc-lotr-communaute", "aria-hidden": "true" }),
+        badgeBeta());
 }
 
 /** Arkham Horror LCG (14/11/2026, demande de l'utilisateur : modele B, sans phrase) : meme principe que le bandeau LOTR,
@@ -2549,7 +2555,8 @@ function bandeauArkham() {
     if (!URL_ARKHAM) return null;
     return el("a", { class: "acc-arkham", href: URL_ARKHAM, target: "_blank", rel: "noopener" },
         el("b", {}, t("Horreur à Arkham")),
-        el("span", { class: "acc-arkham-sceau", "aria-hidden": "true" }));
+        el("span", { class: "acc-arkham-sceau", "aria-hidden": "true" }),
+        badgeBeta());
 }
 
 /** Les liens vers nos autres sites, cote a cote sous les tuiles. */
