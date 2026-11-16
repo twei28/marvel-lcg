@@ -878,6 +878,9 @@ function surveillerGrilles() {
 }
 
 /**
+ * ⚠ 16/11/2026 : `.acc-merci` n'est PLUS `position:fixed` (il est le dernier element de la colonne `.accueil`, voir prepare.css) ;
+ * la variable `--acc-merci-h` posee ici n'est plus lue par le CSS. Gardee, inoffensive.
+ *
  * Hauteur REELLE du bloc de remerciements de l'accueil (06/11/2026, bug
  * remonte par un joueur) : au-dela de 830px de hauteur de fenetre, `.acc-merci`
  * passe en `position:fixed` (prepare.css) et `.accueil-stage` reserve sa place
