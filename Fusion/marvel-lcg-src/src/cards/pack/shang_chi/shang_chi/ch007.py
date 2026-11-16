@@ -45,7 +45,7 @@ def GetAbilities() -> Sequence['Ability']:
             )
 
         if AccepterFlow(effect, joueur, "B"):
-            if cible is not None and not cible.IsInPlay():
+            if cible is not None and (cible.IsDefeated() or not cible.IsInPlay()):
                 Worlds.UpdateNextCardPlayCost(
                     joueur, 0, effect,
                     update_to=True,
