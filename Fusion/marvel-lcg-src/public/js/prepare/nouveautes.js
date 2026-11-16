@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-16",
         genre: "correction",
+        fr: "« Annuler » est devenu propre : plus d'animations ni de messages rejoués après un retour en arrière, un bandeau « Annulation… » s'affiche tout de suite, et le journal barre ce qui a été annulé.",
+        en: "“Undo” is now clean: no more animations or messages replayed after stepping back, an “Undoing…” banner shows right away, and the log strikes through what was undone.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
         fr: "Sur téléphone, Aide, Tchat, Journal et Feuillets passent dans le menu « … » : plus rien ne cache la main ni les piles sur les côtés. Les messages de tchat non lus sont signalés par un point sur « … ».",
         en: "On a phone, Help, Chat, Log and Sheets now live in the “…” menu: nothing hides your hand or piles at the sides any more. Unread chat messages show as a dot on “…”.",
     },

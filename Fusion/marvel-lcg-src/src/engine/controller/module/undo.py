@@ -35,6 +35,13 @@ class UndoModule:
         self.pile_instantanes = None
         # « Annuler » demande par le fil web, a consommer par le fil du jeu (voir `Cheat.do_undo`).
         self.restauration_demandee = False
+        # AJOUT 16/11/2026 (« il faut que l'animation de l'annulation soit hyper propre ») : COMBIEN de fois un instantane a ete restaure, et
+        # le `render_id` de la question vers laquelle on est revenu. Publies dans le descripteur du monde : le `render_id` ne recule PAS
+        # apres une annulation par instantane (le rendu est exclu de l'instantane), le plateau ne pouvait donc pas savoir qu'un retour en
+        # arriere avait eu lieu et rejouait les changements comme des evenements (toasts « perd 3 jetons », badges, vols de cartes).
+        # Ici, hors du graphe memorise : ces deux compteurs ne se restaurent pas, ils ne font qu'avancer.
+        self.restaurations = 0
+        self.restaure_depuis_render_id = 0
         self.manager: Final = manager
 
         # message_id, [card_ids]

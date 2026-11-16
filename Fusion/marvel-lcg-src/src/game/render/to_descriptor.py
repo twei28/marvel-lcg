@@ -219,6 +219,10 @@ class ToDescriptor:
         # la pose, personne ne la lisait). Projetee telle quelle, sans mode a
         # verifier : le champ est vide hors refus, peu importe le mode.
         world_descriptor.manuel_refus = world.controller_manager.device_manager.sandbox_last_error
+        # Annulation par instantane : voir `UndoModule.restaurations`. Lu avec `getattr` : un module d'annulation de vieille sauvegarde ne les porte pas.
+        _undo = world.controller_manager.undo
+        world_descriptor.restaurations = int(getattr(_undo, 'restaurations', 0))
+        world_descriptor.restaure_depuis_render_id = int(getattr(_undo, 'restaure_depuis_render_id', 0))
         # Tache 2 : la marque « corrigee a la main » est lue sur la SCENE
         # (`world.scene.corrigee_a_la_main`), pas sur le monde -- c'est elle,
         # et non `world`, qui survit a la sauvegarde.

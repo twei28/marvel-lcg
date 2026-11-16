@@ -165,7 +165,7 @@ export function JournalHeros({
               </li>
             ) : (
               <li
-                className={`journal-heros-entree type-${ligne.entree.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}`}
+                className={`journal-heros-entree type-${ligne.entree.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}${ligne.entree.annule ? ' est-annule' : ''}${ligne.entree.annulation ? ' est-annulation' : ''}`}
                 key={ligne.entree.cle}
               >
                 <span className="jh-round">R{ligne.entree.round}</span>

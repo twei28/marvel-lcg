@@ -38,7 +38,7 @@ async function attendreQuestionDuTour(request: APIRequestContext): Promise<void>
 async function empreinte(request: APIRequestContext): Promise<string> {
   const m = (await monde(request)) as Record<string, unknown>
   return JSON.stringify(m, (cle, valeur) =>
-    ['render_id', 'frame', 'pause_epoch', 'timestamp', 'time', 'step_id', 'current_step_id', 'ask_id', 'is_new'].includes(cle) ? undefined : valeur
+    ['render_id', 'restaurations', 'restaure_depuis_render_id', 'frame', 'pause_epoch', 'timestamp', 'time', 'step_id', 'current_step_id', 'ask_id', 'is_new'].includes(cle) ? undefined : valeur
   )
 }
 

@@ -2337,4 +2337,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Le menu': 'The menu',
   'Le bouton « … » ouvre les outils, les réglages et l’aide.': 'The “…” button opens the tools, settings and help.',
   'Visite guidée': 'Guided tour',
+  // Retour d'une annulation (16/11/2026)
+  'Annulation…': 'Undoing…',
+  'Coup annulé': 'Move undone',
 }

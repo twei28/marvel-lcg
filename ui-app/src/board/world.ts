@@ -727,6 +727,15 @@ export type World = {
    */
   manuel_refus?: string
   /**
+   * L'ANNULATION PAR INSTANTANÉ (16/11/2026) : combien de fois la partie a été remise en place (`WorldDescriptor.restaurations`, engine
+   * `UndoModule.restaurations`). Le `render_id` ne recule PAS dans ce cas (le rendu est exclu de l'instantané) : sans ce compteur, le plateau
+   * ne distingue pas un retour en arrière d'un coup normal et rejoue le changement en toasts, badges, vols de cartes et lignes de journal.
+   * Ne fait qu'avancer. Absent d'un moteur plus ancien.
+   */
+  restaurations?: number
+  /** Le `render_id` de la question retrouvée par la dernière annulation : tout ce que le journal a écrit après lui est défait. */
+  restaure_depuis_render_id?: number
+  /**
    * La TRACE : quelqu'un est intervenu à la main au moins une fois dans
    * cette partie. Posée par `Scene.corrigee_a_la_main` côté moteur, dès la
    * première pause manuelle (`world.py`), et JAMAIS éteinte ensuite — y

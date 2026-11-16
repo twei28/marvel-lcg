@@ -66,6 +66,10 @@ class WorldDescriptor:
     # remet pas a vide tout seul entre deux). Voir le rapport de la tache
     # 4 ter pour ce que ca implique cote plateau.
     manuel_refus: str = field(default='')
+    # L'ANNULATION PAR INSTANTANE (16/11/2026) : combien de fois la partie a ete remise en place, et le `render_id` de la question retrouvee.
+    # Le `render_id` ne recule pas dans ce cas : sans ces deux champs, le plateau ne peut pas distinguer un retour en arriere d'un coup normal.
+    restaurations: int = field(default=0)
+    restaure_depuis_render_id: int = field(default=0)
     # LA MARQUE « corrigee a la main » (tache 2, pose Scene.corrigee_a_la_main
     # ci-dessous). Contrairement a `manuel_actif`, elle ne redevient jamais
     # fausse une fois publiee a vrai -- c'est une TRACE de la partie, pas un

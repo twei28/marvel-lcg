@@ -132,6 +132,8 @@ import { peutSuivre } from './board/suivi-vue'
 import { deltasStatuts } from './board/effets-statuts'
 import { phraseDeLEffet } from './board/phrases-effets'
 import { ToastsEffetsCartes, type ToastEffet } from './board/ToastEffetCarte'
+import { useBandeauAnnulation, useRestauration } from './board/annulation'
+import { BandeauAnnulation } from './board/BandeauAnnulation'
 import { traduireMoteur } from './board/vocabulaire-moteur'
 import {
   afficherFinDePartie,
@@ -431,13 +433,18 @@ function changementDeJeton(avant: WorldCard, apres: WorldCard): { cle: string; v
 }
 
 /** Capture les variations de compteurs entre deux rendus du moteur. */
-function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta> {
+function useEffetsCartes(monde: World | undefined, restauree = false): Map<number, CardEffectDelta> {
   const [effets, setEffets] = useState<Map<number, CardEffectDelta>>(() => new Map())
   const precedent = useRef<World | undefined>(undefined)
   const minuteurs = useRef(new Map<number, number>())
 
   useEffect(() => {
     if (!monde) return
+    // Une ANNULATION remet les jetons, la vie et la menace d'avant : ce n'est pas un coup (« Lance-toile perd 3 jetons » n'est pas arrive).
+    if (restauree) {
+      precedent.current = monde
+      return
+    }
     const avant = precedent.current
     if (avant) {
       const precedentes = indexerCartesMonde(avant)
@@ -497,7 +504,7 @@ function useEffetsCartes(monde: World | undefined): Map<number, CardEffectDelta>
       }
     }
     precedent.current = monde
-  }, [monde, monde?.render_id])
+  }, [monde, monde?.render_id, restauree])
 
   useEffect(
     () => () => {
@@ -2081,7 +2088,11 @@ export function PagePartie({
         .map(({ id, nom }) => ({ id, nom })),
     [etat.monde]
   )
-  const effets = useEffetsCartes(etat.monde)
+  // ANNULATION (16/11/2026) : le moteur publie un compteur de restaurations ; un rendu qui le fait monter est un retour en arriere, que les
+  // couches qui rejouent des changements (toasts, badges, vols de cartes, journal) ne doivent PAS raconter comme un evenement.
+  const annulation = useRestauration(etat.monde, etat.saut === true)
+  const bandeauAnnulation = useBandeauAnnulation(annulation.restauree)
+  const effets = useEffetsCartes(etat.monde, annulation.restauree)
   // Declare AVANT le useMemo de `plateau` : il en est une dependance, pour
   // que decocher l'option en pleine partie rafraichisse l'affichage sans
   // attendre le prochain evenement du moteur.
@@ -2657,7 +2668,7 @@ export function PagePartie({
       return nouveau
     })
   }, [])
-  const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId)
+  const historique = useHistoriquePartie(etat.monde, etat.demande, etat.partieId, annulation)
 
   // Les etapes du deroule detaille : `etapesDeroule` parcourt tous les faits
   // et toutes les entrees du journal, donc on ne la relance pas a chaque
@@ -4085,13 +4096,13 @@ export function PagePartie({
     const precedent = dernierRenderId.current
     dernierRenderId.current = actuel
     // Un saut dans la relecture se pose sans rejouer ses entrees, comme une resynchronisation.
-    if (!estResynchronisation(actuel, precedent) && etat.saut !== true) return
+    if (!estResynchronisation(actuel, precedent) && etat.saut !== true && !annulation.restauree) return
     setResynchronisation(true)
     // 1000ms : couvre la plus longue animation d'entree gardee par
     // `plateau-sans-animations` (statut-arrive, 900ms) avec une marge.
     const t = window.setTimeout(() => setResynchronisation(false), 1000)
     return () => window.clearTimeout(t)
-  }, [etat.monde?.render_id, etat.saut])
+  }, [etat.monde?.render_id, etat.saut, annulation.restauree])
 
   // Les effets CSS transitoires (secousse d'impact, halo de statut) sont
   // debrayes par une classe sur <body> : ils vivent dans des feuilles de style,
@@ -4334,12 +4345,13 @@ export function PagePartie({
     }
     if (annulationEnCours.current) return
     annulationEnCours.current = true
+    bandeauAnnulation.demander()
     // « /undo auto » remonte au dernier point de decision, comme le bouton Undo
     // du client d'origine. L'espace est encode par fetch, le '/' est conserve.
     fetch('/debug?/undo auto')
       .catch(() => undefined)
       .finally(() => { annulationEnCours.current = false })
-  }, [manuel, annulerGesteManuel])
+  }, [manuel, annulerGesteManuel, bandeauAnnulation])
   // LE BOUTON DE LA BARRE ET LA TOUCHE U expliquent d'abord (ModaleAnnuler), tant que le joueur n'a pas coche « ne plus
   // me montrer ça ». Le bandeau du telephone et le menu « … » gardent l'annulation directe : le bandeau est lui-meme
   // la question, cinq secondes apres l'action. En manuel, c'est le Ctrl+Z des gestes, que la fenetre ne decrit pas.
@@ -4360,10 +4372,11 @@ export function PagePartie({
   const annulerAction = useCallback(() => {
     if (annulationEnCours.current) return
     annulationEnCours.current = true
+    bandeauAnnulation.demander()
     fetch('/debug?/undo action')
       .catch(() => undefined)
       .finally(() => { annulationEnCours.current = false })
-  }, [])
+  }, [bandeauAnnulation])
   echapClavier.current = () => {
     if (manuel || spectateur || telephone) return
     // Une action encore en composition (cible, paiement) n'a rien envoye au
@@ -5056,6 +5069,7 @@ export function PagePartie({
       ) : null}
 
       {/* Un changement sur une carte (statut, jeton, menace, PV) : une phrase posee SUR cette carte (T15). */}
+      <BandeauAnnulation etat={bandeauAnnulation.etat} />
       {afficherEvenementCentrale ? <ToastsEffetsCartes toasts={toastsEffets} /> : null}
 
       {afficherEvenementCentrale && (toastsEffets.length === 0 || (!unCartouche && etat.validationRequise)) ? (
@@ -6102,12 +6116,14 @@ export function PagePartie({
           mouvement, derriere elle. Deux recits en meme temps. */}
       <CoucheAnimations
         renderId={etat.monde.render_id}
-        actif={animationsDuPlateau({
-          reglage: animationsActives,
-          sceneCentrale,
-          phaseMechantEnCours,
-          enMiseEnPlace,
-        })}
+        actif={
+          animationsDuPlateau({
+            reglage: animationsActives,
+            sceneCentrale,
+            phaseMechantEnCours,
+            enMiseEnPlace,
+          }) && !annulation.restauree
+        }
       />
       <CoucheRefusEffets refus={etat.monde.refus_effets} />
       <CoucheChoixUniques choix={etat.monde.choix_uniques} />

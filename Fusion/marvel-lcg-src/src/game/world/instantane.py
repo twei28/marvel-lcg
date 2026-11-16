@@ -223,6 +223,8 @@ class EtatExterieur:
         self.undo = (undo.last_step, undo.next_step, undo.debut_action, undo.joueur_action)
         self.hasard_compteur = Random.counter
         self.hasard_etats = len(Random.states)
+        # Le `render_id` AU MOMENT de la photo : le plateau s'en sert pour dire quelles lignes du journal l'annulation a defaites.
+        self.render_id = 0
         self.hasard_numpy = None
         try:
             import numpy.random
@@ -243,6 +245,9 @@ class EtatExterieur:
         if self.hasard_numpy is not None:
             import numpy.random
             numpy.random.set_state(self.hasard_numpy)
+        # Hors de ce qu'on remet en place : ces deux compteurs ne reculent jamais (voir `UndoModule.restaurations`).
+        undo.restaurations += 1
+        undo.restaure_depuis_render_id = self.render_id
 
 
 class SignalRestaurer(BaseException):
@@ -275,7 +280,9 @@ class PileInstantanes:
 
     def prendre(self, racines: Sequence[Any], exclus: Sequence[Any],
                 controller_manager: Any, locales: tuple) -> None:
-        self.pile.append((Instantane(racines, exclus), EtatExterieur(controller_manager), locales))
+        exterieur = EtatExterieur(controller_manager)
+        exterieur.render_id = getattr(getattr(racines[0], 'render', None), 'last_render_id', 0) or 0
+        self.pile.append((Instantane(racines, exclus), exterieur, locales))
         del self.pile[:-self.PROFONDEUR_MAX]
 
     def peut_annuler(self, en_action: bool) -> bool:
