@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-16",
+        genre: "correction",
+        fr: "Sur téléphone, Aide, Tchat, Journal et Feuillets passent dans le menu « … » : plus rien ne cache la main ni les piles sur les côtés. Les messages de tchat non lus sont signalés par un point sur « … ».",
+        en: "On a phone, Help, Chat, Log and Sheets now live in the “…” menu: nothing hides your hand or piles at the sides any more. Unread chat messages show as a dot on “…”.",
+    },
+    {
+        date: "2026-11-16",
         genre: "jeu",
         fr: "Un bug à signaler sans avoir de compte ? Un formulaire est maintenant ouvert à tout le monde, sous les pages de connexion et d'inscription.",
         en: "A bug to report without an account? A form is now open to everyone, under the login and sign-up pages.",
