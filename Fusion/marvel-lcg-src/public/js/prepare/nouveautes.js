@@ -47,6 +47,42 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-16",
+        genre: "jeu",
+        fr: "Un bug à signaler sans avoir de compte ? Un formulaire est maintenant ouvert à tout le monde, sous les pages de connexion et d'inscription.",
+        en: "A bug to report without an account? A form is now open to everyone, under the login and sign-up pages.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
+        fr: "Les cartes « si cet ennemi est vaincu » (Excessive Force, Precision Strike, Special Delivery…) fonctionnent aussi contre un méchant à plusieurs stades comme Rhino : le stade achevé compte bien comme vaincu.",
+        en: "Cards that say “if that enemy is defeated” (Excessive Force, Precision Strike, Special Delivery…) now also work against a multi-stage villain like Rhino: the finished stage counts as defeated.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
+        fr: "Dazzler : le jeton Son posé par la Répétition s'affiche sur la chanson de la Liste des Morceaux, et ses cartes ont leur nom français partout, y compris dans le journal. Blade aussi.",
+        en: "Dazzler: the Sound token placed by Rehearsal now shows on the song in the Setlist, and her cards have their French name everywhere, including in the log. Blade too.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
+        fr: "Sur téléphone, un appui sur la carte d'une fenêtre de choix l'ouvre en grand pour la lire, sans la jouer. Le doublon « Alter ego » en choisissant sa forme a disparu.",
+        en: "On a phone, tapping the card in a choice window now opens it full size so you can read it, without playing it. The duplicate “Alter Ego” label when choosing your form is gone.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
+        fr: "Le journal de partie est en français pour tous les héros : mise en place, piles, statuts et noms de jetons ne restent plus en anglais.",
+        en: "The game log is now in French for every hero: setup steps, piles, statuses and token names no longer stay in English.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
+        fr: "Capturé par Hydra : la carte captive est posée face cachée et on peut la désigner soi-même, comme en vrai. Stand Alone n'est plus proposée quand le héros n'est pas épuisé.",
+        en: "Captured by Hydra: the captive card is placed face down and you can pick it yourself, like in real life. Stand Alone is no longer offered when the hero is not exhausted.",
+    },
+    {
         date: "2026-11-14",
         genre: "correction",
         fr: "Campagne Hydra : une amélioration « Scanner tactique » utilisée dans un scénario est bien retirée du registre de campagne, elle ne revient plus au méchant suivant.",
