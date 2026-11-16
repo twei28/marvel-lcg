@@ -19,7 +19,7 @@
 // Noms relevés directement sur les scans déposés le 04/11/2026 (Blade,
 // préfixe bl, auteur Rainy) ; bl001a/bl001b/bl009 omis car identiques à
 // l'anglais (« Blade », « Eric Brooks », « Daywalker ») ; bl010 et suivants
-// n'ont pas de scan FR déposé, donc pas d'entrée ici.
+// ont été déposés depuis (16/11/2026 : bl010 à bl017, relevés sur les scans).
 export const NOMS_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   bl002: 'Préparer la Chasse',
   bl003: 'En Plein Cœur',
@@ -28,4 +28,33 @@ export const NOMS_FR_FANMADE: Readonly<Record<string, string | undefined>> = {
   bl006: 'Réflexes Vampiriques',
   bl007: 'Pieux en Bandoulière',
   bl008: 'Épée de Blade',
+  // bl010 à bl017 : scans FR déposés après coup, noms relevés le 16/11/2026 (Blade : « pareil sur Blade », signalement n°134).
+  // bl013 « Dracula » et bl014 « Vampire » sont identiques à l'anglais.
+  bl010: 'Instincts de Prédateur',
+  bl011: 'La Soif',
+  bl012: 'Chasse au Sang',
+  bl015: 'Pieux en Bandoulière',
+  bl016: 'Étreinte',
+  bl017: 'Transformé',
+  // Pack Dazzler (dz, 24 scans FR deposes) : noms releves sur les scans le 16/11/2026, apres le signalement n°134
+  // (nicodede62 : « encore quelques infos en anglais »). dz001a/dz001b/dz002/dz014/dz020 sont identiques a l'anglais.
+  dz003: '"Le Rêve d\'une Petite Fille"',
+  dz004: '"Belle Rêveuse"',
+  dz005: '"La Belle et la Bête"',
+  dz006: '"Poupée"',
+  dz007: '"Chut, Mon Bébé"',
+  dz008: '"Dans la Lumière la Plus Sombre"',
+  dz009: '"Fière et Assumée"',
+  dz010: '"Ange Fortuné"',
+  dz011: '"Le Serpent Arrive"',
+  dz012: '"Trop Beau pour Être Vrai"',
+  dz013: '"Ciel Velouté"',
+  dz015: 'Patins à Roulettes de Dazzler',
+  dz016: 'Combinaison à Collecteur de Sons',
+  dz017a: 'Concert en Direct',
+  dz017b: 'En Scène !',
+  dz019: 'Angoisse de Performance',
+  dz021: 'Corps de Son Solidifié',
+  dz022: 'Vol de Son',
+  dz023: 'Lumière Provocatrice',
 }

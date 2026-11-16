@@ -242,6 +242,8 @@ const COMPTEURS_FR: Readonly<Record<string, string>> = {
   skill: 'compétence',
   soul: 'âme',
   sound: 'son',
+  threat: 'menace',
+  first_player_token: 'premier joueur',
   speed: 'vitesse',
   spot: 'repère',
   staff: 'bâton',

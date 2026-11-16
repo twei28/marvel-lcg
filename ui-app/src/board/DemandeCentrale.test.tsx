@@ -589,3 +589,46 @@ describe('DemandeCentrale — la demande a un autre joueur ne prend pas le nom d
     expect(screen.queryByText(/I Can Do This All Day/)).toBeNull()
   })
 })
+
+// Signalement n°136 (16/11/2026, telephone) : « en pleine defense, je peux choisir une carte mais impossible de la lire ou de
+// zoomer ». Sans survol, la vignette choisissait l'option d'un toucher. Au telephone, elle ouvre la carte en grand ; le choix
+// ne part qu'avec le bouton d'action du zoom.
+describe('DemandeCentrale — la vignette au telephone (bug 136)', () => {
+  afterEach(() => document.body.classList.remove('mode-plateau-portrait'))
+
+  const monter = (choisirOption = vi.fn()) => {
+    rendre({ choisirOption, carteAuSurvol: () => scan, reaction: true } as never)
+    return choisirOption
+  }
+
+  it('un toucher sur la vignette ouvre la carte en grand SANS choisir', () => {
+    document.body.classList.add('mode-plateau-portrait')
+    const choisir = monter()
+    const vignette = document.querySelector('.dc-vignette button, .dc-vignette [role="button"], .dc-vignette article') as HTMLElement
+    expect(vignette).not.toBeNull()
+    expect(document.querySelector('.dc-vignette')?.className).toMatch(/est-agrandissable/)
+    fireEvent.click(vignette)
+    expect(choisir).not.toHaveBeenCalled()
+    expect(document.querySelector('.carte-ouverte')).not.toBeNull()
+  })
+
+  it('le bouton d’action du zoom choisit l’option, « Fermer » ne choisit rien', () => {
+    document.body.classList.add('mode-plateau-portrait')
+    const choisir = monter()
+    fireEvent.click(document.querySelector('.dc-vignette button, .dc-vignette [role="button"], .dc-vignette article') as HTMLElement)
+    fireEvent.click(document.querySelector('.carte-ouverte-fermer') as HTMLElement)
+    expect(choisir).not.toHaveBeenCalled()
+    expect(document.querySelector('.carte-ouverte')).toBeNull()
+    fireEvent.click(document.querySelector('.dc-vignette button, .dc-vignette [role="button"], .dc-vignette article') as HTMLElement)
+    fireEvent.click(document.querySelector('.carte-ouverte-agir') as HTMLElement)
+    expect(choisir).toHaveBeenCalledTimes(1)
+  })
+
+  it('sur ordinateur, rien ne change : la vignette choisit directement, sans repere', () => {
+    const choisir = monter()
+    expect(document.querySelector('.dc-vignette')?.className).not.toMatch(/est-agrandissable/)
+    fireEvent.click(document.querySelector('.dc-vignette button, .dc-vignette [role="button"], .dc-vignette article') as HTMLElement)
+    expect(choisir).toHaveBeenCalledTimes(1)
+    expect(document.querySelector('.carte-ouverte')).toBeNull()
+  })
+})

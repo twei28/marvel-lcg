@@ -71,7 +71,8 @@ describe('carteNommeeParOption', () => {
   it('retrouve la carte du deck que l’option nomme', () => {
     const trouvee = carteNommeeParOption(option('"Beautiful Dreamer"'), parNom, 0, catalogueVide)
     expect(trouvee?.codeCarte).toBe('dz004')
-    expect(trouvee?.name).toBe('"Beautiful Dreamer"')
+    // Nom FRANCAIS depuis le 16/11/2026 (NOMS_FR_FANMADE, pack Dazzler) : le scan dit « Belle Rêveuse ».
+    expect(trouvee?.name).toBe('"Belle Rêveuse"')
   })
 
   it('la montre de FACE : la question la revele deja, en texte', () => {

@@ -34,7 +34,7 @@ import { TRAITS_FR } from './traits-fr'
  * Les clés sont écrites AVEC leurs espaces : `nomLisible` a déjà défait les
  * soulignés quand la recherche a lieu.
  */
-const MOTEUR_FR: Record<string, string> = {
+export const MOTEUR_FR: Record<string, string> = {
   // — Avis du moteur (`choix_uniques.texte`) —
   'No minion in the encounter deck: no card is drawn.': 'Aucun sbire dans le deck de rencontre : aucune carte n’est piochée.',
   'No event in your deck: no card is placed on top of your deck.': 'Aucun événement dans votre deck : aucune carte n’est placée sur le dessus de votre deck.',
@@ -255,6 +255,9 @@ const MOTEUR_FR: Record<string, string> = {
   'Card Reset_Text': 'Carte réinitialisée',
   'Card Resolve Ability': 'Capacité de la carte résolue',
   'Card Revealed': 'Carte révélée',
+  // Les ETATS de phase du moteur (phase.py), tels que le journal les cite : « Scenario Setup » restait en anglais.
+  'Scenario Setup': 'Mise en place du scénario',
+  'Init Finished': 'Mise en place terminée',
   'Card Revealed End': 'Fin de la révélation',
   'Card Set As': 'Carte considérée comme',
   'Card Setup': 'Mise en place de la carte',

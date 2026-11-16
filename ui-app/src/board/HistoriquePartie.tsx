@@ -15,6 +15,7 @@ import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import { nomDeCompteur } from './compteurs-fr'
 import { libellePhase } from './etat-partie'
 import { estModeManuel, leMoteurSeTait } from './manuel/mode'
 
@@ -134,8 +135,20 @@ function nombreInfo(carte: WorldCard, cle: string): number | undefined {
   return typeof valeur === 'number' ? valeur : undefined
 }
 
+/**
+ * Le nom d'un compteur dans une ligne FRANCAISE du moteur : « reçoit 1 compteur(s) « sound » » devient « « son » »
+ * (rapport n°134 : le jeton de Dazzler s'appelait « sound » dans le journal). Seules les lignes deja francaises passent
+ * ici (le motif est « compteur(s) / jeton(s) / pion(s) ») ; la liste des noms est celle du plateau (compteurs-fr.ts).
+ */
+function compteursEnFrancais(texte: string): string {
+  return texte.replace(
+    /\b(compteur|jeton|pion)\(s\) « ([A-Za-z_ ]+) »/g,
+    (_, mot: string, cle: string) => `${mot}(s) « ${nomDeCompteur(cle.trim())} »`
+  )
+}
+
 function nettoyerTexte(texte: string | undefined): string {
-  return remplacerSymboles(sansIdentifiantsEnFrancais(texte ?? ''))
+  return remplacerSymboles(compteursEnFrancais(sansIdentifiantsEnFrancais(texte ?? '')))
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/^---\s*/, '')

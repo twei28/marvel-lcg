@@ -6,6 +6,7 @@ import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
 import { createPortal } from 'react-dom'
 import { CarteApercu } from './Board'
+import { CarteOuverte } from './mobile/CarteOuverte'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
 import { DEMANDER_A_UN_AUTRE, estDemandeAUnAutre, libelleDemandeAUnAutre } from './demande-a-un-autre'
@@ -16,6 +17,8 @@ import { traduireMoteur, traduireQuestionImage, traduireTitreRepetition } from '
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { NOMS_FR } from './noms-fr'
+import { NOMS_FR_FANMADE } from './noms-fr-fanmade'
+import { narrationEnFrancais } from './narration-fr'
 import { scansFrActifs } from './scans-fr'
 import './boutons-bd.css'
 
@@ -92,7 +95,10 @@ type DemandeCentraleProps = {
  */
 export function sansIdentifiantsEnFrancais(texte: string): string {
   if (!scansFrActifs()) return sansIdentifiants(texte)
-  return texte.replace(/\[+\(\s*\d+\s*,\s*([0-9a-z_]+)\s*\)\s*([^[\]]+?)\]+/g, (_, code: string, nom: string) => NOMS_FR[code] ?? nom)
+  // Les noms de cartes en francais, puis les restes anglais de la narration (etapes, piles, statuts : narration-fr.ts).
+  return narrationEnFrancais(
+    texte.replace(/\[+\(\s*\d+\s*,\s*([0-9a-z_]+)\s*\)\s*([^[\]]+?)\]+/g, (_, code: string, nom: string) => NOMS_FR[code] ?? NOMS_FR_FANMADE[code] ?? nom)
+  )
 }
 
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
@@ -489,6 +495,9 @@ export function DemandeCentrale({
   // la vignette du bouton ne fait que la reconnaitre.
   const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
   const [lotRegarde, setLotRegarde] = useState<ScanCardProps[] | undefined>(undefined)
+  // TELEPHONE (bug 136, 16/11/2026) : pas de survol, donc la vignette ne se lisait jamais. Un appui dessus ouvre la carte
+  // en grand (la meme carte ouverte que sur le plateau) ; le choix ne part qu'avec son bouton d'action.
+  const [carteZoomee, setCarteZoomee] = useState<{ carte: ScanCardProps; option: Option; libelle: string } | undefined>(undefined)
   const signature = useMemo(
     () => `${demande.event_name}|${demande.ability_type}|${options.map((option) => option.id).join(',')}`,
     [demande.ability_type, demande.event_name, options]
@@ -814,12 +823,12 @@ export function DemandeCentrale({
                   geste naturel, et c'est celui de toutes les autres cartes de
                   l'ecran. Le survol, lui, ouvre le grand apercu. */}
               {carte ? (
-                <span className="dc-vignette">
+                <span className={`dc-vignette${auTelephone ? ' est-agrandissable' : ''}`}>
                   <ScanCard
                     {...carte}
                     state={indisponible ? 'disabled' : 'targetable'}
                     highlight={false}
-                    onSelect={() => choisirOuInformer(option)}
+                    onSelect={() => (auTelephone ? setCarteZoomee({ carte, option, libelle: nom }) : choisirOuInformer(option))}
                   />
                 </span>
               ) : null}
@@ -869,6 +878,13 @@ export function DemandeCentrale({
           texte francais. Il se monte dans <body> (portail) et passe devant ce
           panneau, comme il passe devant la table. */}
       {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      {carteZoomee ? (
+        <CarteOuverte
+          carte={{ ...carteZoomee.carte, onSelect: () => choisirOuInformer(carteZoomee.option) }}
+          libelleAction={carteZoomee.libelle}
+          onFermer={() => setCarteZoomee(undefined)}
+        />
+      ) : null}
       {lotRegarde ? <ApercuLot cartes={lotRegarde} /> : null}
     </section>
   )
