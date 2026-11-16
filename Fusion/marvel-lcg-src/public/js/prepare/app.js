@@ -2559,9 +2559,20 @@ function bandeauArkham() {
         badgeBeta());
 }
 
+/** Hogwarts Battle (16/11/2026, demande de l'utilisateur) : meme principe, ouvert a tous (avant : lien reserve a l'administrateur).
+ *  Habillage tire de la boite du jeu : titre « Harry Potter », etiquette de papier, blason en couleurs, fond bordeaux. */
+const URL_HOGWARTS = "https://hogwarts.narwhalchampions.com";
+function bandeauHogwarts() {
+    return el("a", { class: "acc-hogwarts", href: URL_HOGWARTS, target: "_blank", rel: "noopener" },
+        el("span", { class: "acc-hogwarts-titre" }, "Harry Potter"),
+        el("span", { class: "acc-hogwarts-etiquette" }, "Hogwarts Battle"),
+        el("span", { class: "acc-hogwarts-blason", "aria-hidden": "true" }),
+        badgeBeta());
+}
+
 /** Les liens vers nos autres sites, cote a cote sous les tuiles. */
 function autresSites() {
-    return el("div", { class: "acc-autres" }, bandeauLotr(), bandeauArkham());
+    return el("div", { class: "acc-autres" }, bandeauLotr(), bandeauArkham(), bandeauHogwarts());
 }
 
 function accueilTel(tuiles, partir) {

@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-16",
+        genre: "jeu",
+        fr: "Hogwarts Battle rejoint l'accueil : un nouveau bandeau, en bêta, mène à notre version du jeu de deck-building Harry Potter.",
+        en: "Hogwarts Battle joins the home page: a new banner, in beta, leads to our version of the Harry Potter deck-building game.",
+    },
+    {
+        date: "2026-11-16",
         genre: "correction",
         fr: "Dans l'éditeur de deck, la grande carte n'occupe plus la colonne de droite : la liste remonte, et la carte s'affiche en très grand par-dessus quand tu survoles une carte.",
         en: "In the deck editor, the big card no longer takes up the right-hand column: the list moves up, and the card appears extra large on top when you hover a card.",
