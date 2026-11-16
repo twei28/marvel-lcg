@@ -75,3 +75,29 @@ describe('Dazzler : la chanson glissée sous Lightbringr', () => {
     expect(rang(GLISSEE)).toBe(rang(LIGHTBRINGR) + 1)
   })
 })
+
+// Signalement de bug n°134 (16/11/2026) : « Too Good to be True » dans la Setlist
+// ne montrait aucun jeton après Rehearsal. Le moteur n'émettait rien pour une carte
+// de la zone « à côté » (hors jeu) ; il émet désormais ses compteurs non nuls
+// (`c_sound`), et le plateau les dessine comme n'importe quel compteur.
+describe('Dazzler : le jeton « son » posé par Rehearsal sur une chanson de la Setlist', () => {
+  const avecJeton = () =>
+    tableAvec(
+      siege({
+        area_hero: [
+          carteSurTable(IDENTITE, 'dz001a', 'Hero', 'Dazzler'),
+          carteSurTable(CONCERT, 'dz017a', 'Upgrade', 'Live Concert'),
+          carteSurTable(CHANSON_1, 'dz012', 'Event', '"Too Good to be True"', {
+            bind_object_id: CONCERT,
+            info: { c_sound: 1 },
+          }),
+          carteSurTable(CHANSON_2, 'dz011', 'Event', '"The Serpent is Coming"', { bind_object_id: CONCERT }),
+        ],
+      })
+    )
+
+  it('dessine le jeton sur la chanson répétée, et seulement sur elle', () => {
+    expect(dessinee(avecJeton(), CHANSON_1)?.compteurs).toEqual({ sound: 1 })
+    expect(dessinee(avecJeton(), CHANSON_2)?.compteurs).toEqual({})
+  })
+})

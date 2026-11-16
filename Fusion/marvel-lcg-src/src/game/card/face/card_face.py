@@ -840,6 +840,14 @@ class CardFace(ModelName, ModelTrait, ModelAction, ModelOnEvent, ModelGain, Mode
             return {}
         elif self.IsInPlay() or self.card.area.flags.is_boost_area:
             return info
+        elif self.card.area.flags.is_place_card_area:
+            # Signalement de bug n°134 (16/11/2026, « Too Good to be True » de
+            # Dazzler) : une carte rangee dans une zone « a cote » (la Setlist)
+            # est hors jeu pour le moteur, mais ses COMPTEURS sont de l'etat de
+            # partie que le joueur doit lire (le jeton `sound` de Rehearsal).
+            # On n'emet que les compteurs non nuls, rien d'autre : le reste de
+            # `info` (limites, forme...) n'a pas de sens hors jeu.
+            return {k: v for k, v in info.items() if k.startswith('c_') and v}
         else:
             return {}
 

@@ -1415,6 +1415,31 @@
     cursor: pointer;
   }
 
+  /* TELEPHONE (bug 136) : la vignette s'agrandit au toucher ; le repere le dit, un geste sans indice ne se decouvre pas. */
+  .dc-vignette.est-agrandissable {
+    position: relative;
+  }
+
+  .dc-vignette.est-agrandissable::after {
+    content: '\2922';
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    z-index: 6;
+    min-width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    background: rgba(14, 17, 22, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
   /* La vignette et le bouton sont une seule et meme cible : survoler l'un
      eclaire l'autre. */
   .af-action-wrap.a-vignette:hover .af-action {
@@ -2597,6 +2622,18 @@
 
   .plateau-scene .est-attachee .scan-card.is-landscape {
     --card-w: 176px;
+  }
+
+  /* Les JETONS d'une carte attachee : a droite, pas a gauche (bug 134, 16/11/2026).
+     Les attachees s'etalent vers la droite, chacune glissee DERRIERE la precedente :
+     de chaque carte, seule la moitie DROITE reste visible. Le coin bas gauche, ou
+     ScanCard pose les compteurs, est sous la carte d'avant : le jeton « son » de
+     « Too Good to be True » dans la Setlist de Dazzler etait dessine mais invisible.
+     Pour une attachee posee A GAUCHE du porteur, c'est l'inverse : on ne change rien. */
+  .plateau-scene .est-attachee:not(.est-a-gauche) .scan-card .jetons-compteurs {
+    left: auto;
+    right: 3%;
+    justify-content: flex-end;
   }
 
   /* Pas d'etiquette de type sur les cartes EN JEU (decision du 07/10/2026) :

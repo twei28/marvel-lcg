@@ -155,6 +155,9 @@ def dz_rendu(monde, aides):
     cas = aides["cas"]
     attendu = dict(cas.get("attendu") or {})
     voulu = attendu.pop("rendu_sous", [])
+    # `rendu_info` = [[carte_id, cle, valeur]] : la cle de `info` EMISE pour cette carte (bug 134 : le jeton `sound`
+    # d'une chanson de la Setlist n'etait jamais envoye au plateau, la zone etant hors jeu).
+    infos = attendu.pop("rendu_info", [])
     joueur = monde.const_players[0]
     desc = ToDescriptor.Player(joueur)
     zones = {}
@@ -178,6 +181,14 @@ def dz_rendu(monde, aides):
         if bool(enfants[0].is_face_up) != bool(visible):
             soucis.append(f"{carte_id} sous {hote_id} : is_face_up={enfants[0].is_face_up} (attendu {visible})")
         vus.append(f"{carte_id} sous {hote_id} dans {zone_hote} (bind {hote.id}, face_up {enfants[0].is_face_up})")
+    for carte_id, cle, valeur in infos:
+        emises = [c for cartes in zones.values() for c in cartes if c.card_id == carte_id]
+        if not emises:
+            soucis.append(f"{carte_id} n'est emise dans aucune zone (rendu_info)")
+        elif (emises[0].info or {}).get(cle) != valeur:
+            soucis.append(f"{carte_id} : info[{cle!r}] = {(emises[0].info or {}).get(cle)!r} (attendu {valeur!r})")
+        else:
+            vus.append(f"{carte_id} emet {cle}={valeur}")
     sauvegarde = cas["attendu"]
     cas["attendu"] = attendu
     try:
@@ -946,6 +957,12 @@ CAS = [
        [*en_jeu("dz014")], ["Puzzle.Action('dz014', 'AlterEgoAction')"],
        {"rendu_sous": [["dz014", "dz004", False]]},
        main_exclusive=["dz004", "01088"], verifier="dz_rendu"),
+    _c("dz001a Rehearsal : le jeton `sound` pose sur la chanson de la Setlist est EMIS au plateau (bug 134)",
+       "signalement 134 (16/11/2026) : « Too Good to be True » ne montrait aucun jeton apres Rehearsal ; la Setlist est hors jeu "
+       "et `GetRenderInfo` n'emettait rien, compteurs compris",
+       [HEROINE, *dans_setlist("dz012")], [REPETER],
+       {"rendu_info": [["dz012", "c_sound", 1]]},
+       main_exclusive=["01088"], verifier="dz_rendu"),
     # ============================================================ reponses du 20/10/2026 (Q1 a Q5)
     _c("dz012 Too Good to be True : Showtime!, le JOUEUR choisit les 3 cartes de la defausse (Q1)",
        "decision utilisateur Q1 (20/10/2026) : le joueur choisit. Defausse de 4 (dessus = Energy 01088) ; le joueur "

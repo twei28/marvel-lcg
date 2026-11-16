@@ -198,7 +198,7 @@ class Card(Object):
             crc = -3
         elif self.IsInDeck() and self.area.GetAll()[0] == self.face:
             crc = -4
-        elif self.IsOnField() or self.area.flags.is_status_area:
+        elif self.IsOnField() or self.area.flags.is_status_area or self.area.flags.is_place_card_area:
             if recalculate:
                 self.face.GetRenderInfo() # Calc crc here
             crc = self.face.crc_value
