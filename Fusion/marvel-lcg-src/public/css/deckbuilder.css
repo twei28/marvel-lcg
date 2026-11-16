@@ -201,7 +201,14 @@ body.db-filtres-replies .db-rail { display: flex; }
 #db-status:empty { display: none; }
 #db-status.est-erreur { color: #ffb4a8; }
 .db-apercu-zone { display: flex; gap: 10px; align-items: flex-start; }
-#db-apercu { margin: 0; height: 31vh; aspect-ratio: 5 / 7; flex: none; position: relative; }
+/* PC / tablette (16/11/2026) : la grande carte flotte par-dessus la colonne du deck, seulement pendant le survol ; la liste remonte. */
+@media (min-width: 768px) {
+  .db-apercu-zone { position: fixed; z-index: 60; display: none; pointer-events: none; }
+  body.db-apercu-on .db-apercu-zone { display: flex; }
+  /* La carte laisse passer la souris (la ligne survolée dessous garde son survol) ; seules les vignettes d'ART et le bouton « Épinglée » se cliquent. */
+  .db-apercu-zone .db-arts, .db-apercu-zone .db-epingle { pointer-events: auto; }
+}
+#db-apercu { margin: 0; height: 66vh; aspect-ratio: 5 / 7; flex: none; position: relative; }
 #db-apercu .db-apercu-cadre { position: relative; height: 100%; width: fit-content; max-width: 100%; border-radius: 9px; overflow: hidden; box-shadow: 0 8px 20px rgba(0, 0, 0, .6); }
 #db-apercu .db-apercu-cadre img { display: block; height: 100%; width: auto; max-width: 100%; object-fit: contain; }
 #db-apercu .db-epingle {
@@ -308,7 +315,7 @@ body.db-panneau-filtres .db-page, body.db-panneau-deck .db-page { z-index: 50; }
   body.db-panneau-filtres .db-replier { display: none; }
   body.db-panneau-filtres .db-filtres-col .db-fermer-panneau { display: grid; }
   .db-fermer-panneau { width: 30px; height: 30px; place-items: center; color: var(--txt); background: var(--steel2); border: 1px solid var(--line); }
-  #db-apercu { height: 27vh; }
+  #db-apercu { height: 58vh; }
 }
 
 /* --- Mobile : grille plein écran, barre du bas ----------------------------

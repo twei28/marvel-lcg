@@ -817,6 +817,7 @@ function installerGrille() {
         // la montre en grand ; ses boutons − / + changent le deck.
         if (estTablette()) {
             etat.apercu = id;
+            montrerApercu(true);
             rendreApercu();
             if (etat.onglet === "pioche") rendreDeck();
             return;
@@ -858,7 +859,7 @@ function rendreApercu() {
     const cadre = el("div", { class: "db-apercu-cadre" }, el("img", { src: url, alt: carte ? nomCarte(carte) : id }));
     remplacer(zone, cadre,
         etat.epingle ? el("button", { type: "button", class: "db-epingle", title: t("Libérer l’aperçu"),
-            onclick: () => { etat.epingle = null; rendreApercu(); rendreDeck(); } }, `${t("Épinglée")} ✕`) : null);
+            onclick: () => { etat.epingle = null; montrerApercu(false); rendreApercu(); rendreDeck(); } }, `${t("Épinglée")} ✕`) : null);
     void poserTraduction(cadre, url, id, carte ? carte.traits : []);
     rendreArts(id);
 }
@@ -907,16 +908,45 @@ function rendreArts(id) {
         }));
 }
 
+/** L'aperçu est une grande carte posée PAR-DESSUS la colonne du deck (demande du 16/11/2026) : visible seulement pendant un survol
+ *  (ou épinglée, ou après un toucher sur tablette), jamais dans le flux de la colonne. Sur téléphone, le panneau plein écran garde l'ancien aperçu. */
+function montrerApercu(visible) {
+    document.body.classList.toggle("db-apercu-on", visible);
+    if (!visible) return;
+    const col = $("#db-deck-col");
+    const zone = document.querySelector(".db-apercu-zone");
+    if (!col || !zone) return;
+    // Une colonne qui défile coupe ce qui déborde, même en position fixe : la grande carte vit donc sous <body> (PC / tablette)
+    // et revient dans la colonne sur téléphone, où le panneau du deck est plein écran.
+    if (window.innerWidth >= 768 && zone.parentElement !== document.body) document.body.appendChild(zone);
+    else if (window.innerWidth < 768 && zone.parentElement === document.body) col.insertBefore(zone, $("#db-resume"));
+    const r = col.getBoundingClientRect();
+    zone.style.top = `${Math.max(56, r.top) + 8}px`;
+    zone.style.right = `${Math.max(0, window.innerWidth - r.right) + 8}px`;
+}
+
+let minuteurApercu = 0;
+
 function installerApercu() {
     document.addEventListener("mouseover", (e) => {
+        if (e.target.closest?.(".db-arts")) clearTimeout(minuteurApercu);
         if (etat.epingle) return;
         const cible = e.target.closest?.("[data-carte]");
         if (!cible) return;
         const id = cible.getAttribute("data-carte");
-        if (!id || id === etat.apercu) return;
+        if (!id) return;
+        clearTimeout(minuteurApercu);
+        montrerApercu(true);
+        if (id === etat.apercu) return;
         etat.apercu = id;
         rendreApercu();
         if (etat.onglet === "pioche") rendreDeck();
+    });
+    document.addEventListener("mouseout", (e) => {
+        if (etat.epingle || estTablette()) return;
+        const vers = e.relatedTarget && e.relatedTarget.closest ? e.relatedTarget.closest("[data-carte], .db-arts") : null;
+        // Un court délai : pour atteindre les vignettes d'art, la souris traverse un instant du vide.
+        if (!vers) { clearTimeout(minuteurApercu); minuteurApercu = setTimeout(() => montrerApercu(false), 350); }
     });
 }
 
@@ -998,7 +1028,7 @@ function rendreListe(v) {
                 },
                     el("span", { class: "db-ligne-cout" }, carte.cost ?? "–"),
                     el("button", { type: "button", class: "db-ligne-nom", title: t("Épingler l’aperçu"),
-                        onclick: () => { etat.epingle = etat.epingle === id ? null : id; etat.apercu = id; rendreApercu(); rendreDeck(); } }, nomCarte(carte)),
+                        onclick: () => { etat.epingle = etat.epingle === id ? null : id; etat.apercu = id; montrerApercu(!!etat.epingle); rendreApercu(); rendreDeck(); } }, nomCarte(carte)),
                     carte.custom ? el("span", { class: "db-badge-custom", title: `${t("Carte fan-made")} : ${carte.custom}` }, t("CUSTOM")) : null,
                     el("button", { type: "button", class: "db-pm", "aria-label": t("Retirer un exemplaire"), onclick: () => retirer(id) }, "−"),
                     el("span", { class: "db-ligne-n" }, `×${n}`),

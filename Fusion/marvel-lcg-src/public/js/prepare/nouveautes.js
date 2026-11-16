@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-16",
         genre: "correction",
+        fr: "Dans l'éditeur de deck, la grande carte n'occupe plus la colonne de droite : la liste remonte, et la carte s'affiche en très grand par-dessus quand tu survoles une carte.",
+        en: "In the deck editor, the big card no longer takes up the right-hand column: the list moves up, and the card appears extra large on top when you hover a card.",
+    },
+    {
+        date: "2026-11-16",
+        genre: "correction",
         fr: "« Annuler » est devenu propre : plus d'animations ni de messages rejoués après un retour en arrière, un bandeau « Annulation… » s'affiche tout de suite, et le journal barre ce qui a été annulé.",
         en: "“Undo” is now clean: no more animations or messages replayed after stepping back, an “Undoing…” banner shows right away, and the log strikes through what was undone.",
     },
