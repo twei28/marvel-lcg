@@ -3170,6 +3170,59 @@ def debit_rapport_ok(hote: str) -> bool:
 
 
 # --------------------------------------------------------------------------
+# Le formulaire PUBLIC de rapport de bug (16/11/2026)
+# --------------------------------------------------------------------------
+# Demande de l'utilisateur : « ouvrir les bugs a tout le monde, pas que ceux qui
+# ont un compte ». Les rapports du plateau et des ecrans de preparation partent
+# deja avec le jeton d'une TABLE (un invite d'un lien de siege peut donc ecrire) ;
+# restait le visiteur du site, sans compte ni table, qui n'avait aucun moyen de le
+# dire. Meme patron que le formulaire des createurs : sans compte, pot de miel,
+# plafond PAR ADRESSE et par heure, champs tronques par `enregistrer_rapport`.
+BUGS_PUBLICS_PAR_HEURE = int(os.environ.get("BUGS_PUBLICS_PAR_HEURE", "6"))
+_ENVOIS_BUGS_PUBLICS: dict[str, list[float]] = {}
+_VERROU_BUGS_PUBLICS = threading.Lock()
+
+
+def debit_bug_public_ok(adresse: str) -> bool:
+    """Vrai si `adresse` peut encore envoyer un rapport dans l'heure, et le compte.
+
+    ⚠ ON COMPTE CHAQUE ENVOI, VALIDE OU NON (meme regle que `debit_createur_ok`) :
+    un robot qui enverrait des formulaires vides en boucle bute sur le plafond.
+    """
+    maintenant = time.time()
+    with _VERROU_BUGS_PUBLICS:
+        recents = [t for t in _ENVOIS_BUGS_PUBLICS.get(adresse, []) if maintenant - t < 3600]
+        if len(recents) >= BUGS_PUBLICS_PAR_HEURE:
+            _ENVOIS_BUGS_PUBLICS[adresse] = recents
+            return False
+        recents.append(maintenant)
+        _ENVOIS_BUGS_PUBLICS[adresse] = recents
+        return True
+
+
+def enregistrer_bug_public(champs: dict) -> int:
+    """Range le rapport d'un visiteur SANS COMPTE ni table. LEVE ValueError si la description manque.
+
+    ⚠ `hote` reste NULL : aucune table ne l'a emis, donc `rapports_de_ses_tables` ne
+    le montre a personne, et `compte_verifie` reste vide : ce n'est PAS un ticket
+    (personne a qui repondre dans l'appli). Le moyen de recontact, s'il est donne,
+    entre dans la description : c'est la seule chose que l'admin puisse en faire.
+    """
+    description = str(champs.get("description") or "").strip()
+    if not description:
+        raise ValueError(lang.t("Décris ce qui ne va pas."))
+    contact = " ".join(str(champs.get("contact") or "").split())[:160]
+    if contact:
+        description = "[Contact : %s]\n%s" % (contact, description)
+    return enregistrer_rapport(None, {  # type: ignore[arg-type]
+        "nom": champs.get("nom", ""),
+        "description": description,
+        "ecran": "site (sans compte)",
+        "capture": champs.get("capture", ""),
+    }, compte_verifie="")
+
+
+# --------------------------------------------------------------------------
 # Les demandes des createurs (12/10/2026)
 # --------------------------------------------------------------------------
 # Formulaire PUBLIC, sans compte (lien « ce formulaire » sous les remerciements
@@ -6134,6 +6187,34 @@ PAGE_CONTACT_CREATEURS, _n_form = re.subn(
 if _n_form != 1:
     raise RuntimeError("PAGE_FORMULAIRE n'a plus de <form> : la page des createurs ne peut pas s'en servir")
 
+# La capture du formulaire public de bug : choisie en fichier OU collee (Ctrl+V),
+# reduite a 1600 px en JPEG, rangee dans le champ cache `capture`. Sans ce script
+# le formulaire marche quand meme (texte seul).
+_SCRIPT_CAPTURE_BUG = """
+(function () {
+  var fichier = document.getElementById('bug-fichier');
+  var cache = document.getElementById('bug-capture');
+  var apercu = document.getElementById('bug-apercu');
+  if (!fichier || !cache || !window.createImageBitmap) return;
+  function prendre(blob) {
+    if (!blob || !/^image\\//.test(blob.type)) return;
+    createImageBitmap(blob).then(function (image) {
+      var f = Math.min(1, 1600 / Math.max(image.width, image.height));
+      var c = document.createElement('canvas');
+      c.width = Math.round(image.width * f); c.height = Math.round(image.height * f);
+      c.getContext('2d').drawImage(image, 0, 0, c.width, c.height);
+      cache.value = c.toDataURL('image/jpeg', 0.82);
+      apercu.src = cache.value; apercu.style.display = 'block';
+    });
+  }
+  fichier.addEventListener('change', function () { prendre(fichier.files[0]); });
+  document.addEventListener('paste', function (e) {
+    var items = (e.clipboardData || {}).items || [];
+    for (var i = 0; i < items.length; i++) if (items[i].kind === 'file') { prendre(items[i].getAsFile()); break; }
+  });
+})();
+"""
+
 
 def _icone_appli(nom: str) -> bytes | None:
     # ⚠ DEUX FAMILLES D'IMAGES, ET ELLES NE SUIVENT PAS LA MEME REGLE.
@@ -6670,9 +6751,11 @@ class Handler(BaseHTTPRequestHandler):
             pied=_lignes_pied(*((lang.t("Tu es invité : ton compte sera actif tout de suite.")
                    if invitation_valide(jeton) else
                    lang.t("Ton compte devra être validé à la main avant de servir."),
-                  lang.t('Déjà un compte ? <a href="/connexion">Se connecter</a>.'))
+                  lang.t('Déjà un compte ? <a href="/connexion">Se connecter</a>.'),
+                  lang.t('Un bug ? <a href="/signaler-un-bug">Le signaler</a>, sans compte.'))
                   if inscription else
                   (lang.t('Pas encore de compte ? <a href="/inscription">En demander un</a>.'),
+                  lang.t('Un bug ? <a href="/signaler-un-bug">Le signaler</a>, sans compte.'),
                   lang.t("Mot de passe oublié ? Demande un lien de réinitialisation à l'administrateur."),
                   # ⚠ LA REGLE EST ANNONCEE, PAS SUBIE. Le site ne sait pas
                   # envoyer de courriel : personne ne peut etre prevenu de son
@@ -6724,6 +6807,53 @@ class Handler(BaseHTTPRequestHandler):
             formulaire=formulaire,
             pied=lang.t("Si j'ai oublié de te créditer, ou si tu veux que tes créations soient"
                         " retirées du site, dis-le-moi ici. Je lis chaque demande."),
+            mention=_mention_complete(), bouton_appli=_bouton_appli(),
+        ).encode("utf-8")
+
+    def _page_signaler_bug(self, erreur: str = "", valeurs: dict | None = None,
+                           envoye: bool = False) -> bytes:
+        """Le formulaire public de rapport de bug, ou sa confirmation (`envoye`).
+
+        TOUT ce que le visiteur a tape et qu'on lui remontre (en cas d'erreur)
+        passe par html.escape. La capture se reduit DANS LE NAVIGATEUR (JPEG, 1600
+        px) avant l'envoi : brute, elle butait sur le plafond de corps."""
+        v = {k: html.escape(str((valeurs or {}).get(k, ""))) for k in ("nom", "contact", "description")}
+        if envoye:
+            formulaire = ('<p style="margin:0;color:var(--text)">%s</p>'
+                          % lang.t("Merci, ton rapport est bien arrivé. Je le lis dès que possible."))
+        else:
+            formulaire = (
+                '<style>textarea{{width:100%;box-sizing:border-box;font:inherit;margin-top:.35rem;'
+                'background:var(--panel-2);color:inherit;border:1px solid var(--border);'
+                'border-radius:.5rem;padding:.65rem .9rem;min-height:9rem;resize:vertical}}'
+                '.pot{{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}}'
+                '#bug-apercu{{max-width:100%;max-height:12rem;margin-top:.5rem;display:none;'
+                'border:1px solid var(--border);border-radius:.4rem}}</style>'
+                .replace("{{", "{").replace("}}", "}")
+                + '<form method="post" action="/signaler-un-bug">'
+                '<div class="pot" aria-hidden="true"><label>Site web<input name="site_web" '
+                'tabindex="-1" autocomplete="off"></label></div>'
+                '<label>%s<input name="nom" maxlength="80" value="%s"></label>'
+                '<label>%s<input name="contact" maxlength="160" value="%s"></label>'
+                '<label>%s<textarea name="description" maxlength="%d" required>%s</textarea></label>'
+                '<label>%s<input id="bug-fichier" type="file" accept="image/*"></label>'
+                '<img id="bug-apercu" alt="">'
+                '<input type="hidden" name="capture" id="bug-capture">'
+                '<button type="submit">%s</button></form>'
+                '<script>%s</script>'
+                % (lang.t("Ton nom ou pseudo"), v["nom"],
+                   lang.t("Pour pouvoir te répondre (e-mail ou Discord, facultatif)"), v["contact"],
+                   lang.t("Qu'est-ce qui s'est passé ?"), MAX_DESCRIPTION_CARACTERES, v["description"],
+                   lang.t("Capture d'écran (facultatif)"),
+                   lang.t("Envoyer"),
+                   _SCRIPT_CAPTURE_BUG))
+        return PAGE_CONTACT_CREATEURS.format(
+            langue=_bouton_langue(),
+            titre=lang.t("Signaler un bug"),
+            erreur='<div class="erreur">%s</div>' % html.escape(erreur) if erreur else "",
+            formulaire=formulaire,
+            pied=lang.t("Pas besoin de compte. Dis ce que tu faisais, ce que tu attendais, ce qui"
+                        " est arrivé à la place : je lis chaque rapport."),
             mention=_mention_complete(), bouton_appli=_bouton_appli(),
         ).encode("utf-8")
 
@@ -7466,6 +7596,9 @@ class Handler(BaseHTTPRequestHandler):
             for _t in tickets_de(pseudo):
                 marquer_ticket_lu(_t["id"], "joueur")
             self._repondre(200, page_signalements(pseudo))
+        elif self.chemin == "/signaler-un-bug":
+            # Public et sans compte (16/11/2026) : le visiteur du site n'a ni table ni jeton.
+            self._repondre(200, self._page_signaler_bug())
         elif self.chemin == "/contact-createurs":
             # Public et sans compte : le lien vient de l'accueil du jeu.
             self._repondre(200, self._page_contact_createurs())
@@ -8087,6 +8220,27 @@ class Handler(BaseHTTPRequestHandler):
             valides = definir_langues_du_compte(pseudo, champs.get("langues", ""))
             self._repondre(200, json.dumps({"langues": valides}).encode("utf-8"),
                            "application/json; charset=utf-8")
+            return
+
+        if self.chemin == "/signaler-un-bug":
+            # Sans compte, comme /contact-createurs : le corps est deja plafonne par
+            # MAX_CORPS_OCTETS, et le frein (PAR ADRESSE) passe AVANT la lecture des champs.
+            if not debit_bug_public_ok(self._adresse_client()):
+                self._raccrocher()
+                self._repondre(429, self._page_signaler_bug(
+                    lang.t("Trop de rapports depuis ta connexion. Réessaie dans une heure.")))
+                return
+            champs = self._champs()
+            # Pot de miel : meme confirmation, rien d'enregistre.
+            if str(champs.get("site_web", "")).strip():
+                self._repondre(200, self._page_signaler_bug(envoye=True))
+                return
+            try:
+                enregistrer_bug_public(champs)
+            except ValueError as erreur:
+                self._repondre(400, self._page_signaler_bug(str(erreur), champs))
+                return
+            self._repondre(200, self._page_signaler_bug(envoye=True))
             return
 
         if self.chemin == "/contact-createurs":

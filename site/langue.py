@@ -276,6 +276,24 @@ DICO_EN: dict[str, str] = {
     "Actualiser": "Refresh",
     "Suivi des parties": "Game tracking",
 
+    # --- Formulaire public de rapport de bug (16/11/2026) --------------------
+    "Signaler un bug": "Report a bug",
+    'Un bug ? <a href="/signaler-un-bug">Le signaler</a>, sans compte.':
+        'A bug? <a href="/signaler-un-bug">Report it</a>, no account needed.',
+    "Décris ce qui ne va pas.": "Describe what went wrong.",
+    "Merci, ton rapport est bien arrivé. Je le lis dès que possible.":
+        "Thanks, your report has arrived. I will read it as soon as I can.",
+    "Pour pouvoir te répondre (e-mail ou Discord, facultatif)":
+        "So I can get back to you (e-mail or Discord, optional)",
+    "Qu'est-ce qui s'est passé ?": "What happened?",
+    "Capture d'écran (facultatif)": "Screenshot (optional)",
+    "Pas besoin de compte. Dis ce que tu faisais, ce que tu attendais, ce qui"
+    " est arrivé à la place : je lis chaque rapport.":
+        "No account needed. Say what you were doing, what you expected, what happened"
+        " instead: I read every report.",
+    "Trop de rapports depuis ta connexion. Réessaie dans une heure.":
+        "Too many reports from your connection. Try again in an hour.",
+
     # --- Demandes des créateurs (12/10/2026) ---------------------------------
     "Crédits et retrait": "Credits and removal",
     "Si j'ai oublié de te créditer, ou si tu veux que tes créations soient"
