@@ -24,6 +24,7 @@ Aucune dependance : bibliotheque standard uniquement.
 from __future__ import annotations
 
 import base64
+import hmac
 import hashlib
 import html
 import re
@@ -232,6 +233,20 @@ LIBELLES_ETAT_RAPPORT = {
 # tables donnent une borne de l'ordre du gigaoctet par heure, et la sauvegarde
 # de nuit multipliait le total par trente en gardant trente archives.
 JOURS_RAPPORTS_TRAITES = int(os.environ.get("JOURS_RAPPORTS_TRAITES", "30"))
+
+# --- Les rapports des AUTRES jeux du site (16/11/2026) ------------------------------------------------
+# Horreur a Arkham et le Seigneur des Anneaux ont chacun leur formulaire « Signaler un bug » ; leurs rapports arrivent
+# ICI, dans la MEME table `rapports`, avec une colonne `jeu` : l'administration voit tout au meme endroit, chaque rapport
+# etiquete Marvel / Arkham / Seigneur des Anneaux, et les range comme les autres (prendre, classer, refuser, supprimer).
+#
+# La route `/api/bug-externe` n'est PAS publique : elle exige le secret partage `CLE_RAPPORTS_EXTERNES` (en-tete
+# `X-Cle-Rapports`, comparaison a temps constant) ET l'absence de `X-Forwarded-For` — un appel de Caddy en porte toujours
+# un, un appel direct d'un autre service de la machine (127.0.0.1) n'en porte pas. Secret vide = route fermee.
+JEUX_RAPPORTS = {"marvel": "Marvel", "arkham": "Arkham", "lotr": "Seigneur des Anneaux"}
+CLE_RAPPORTS_EXTERNES = os.environ.get("CLE_RAPPORTS_EXTERNES", "")
+MAX_CORPS_EXTERNE_OCTETS = int(os.environ.get("MAX_CORPS_EXTERNE_OCTETS", str(24 * 1024 * 1024)))
+MAX_ETAT_OCTETS = int(os.environ.get("MAX_ETAT_OCTETS", str(16 * 1024 * 1024)))
+MAX_CAPTURES_EXTERNES = 4
 
 # Plafond du CORPS d'une requete POST, avant toute lecture.
 # ⚠ `Content-Length` EST UNE DECLARATION DU CLIENT, PAS UN FAIT. Sans plafond,
@@ -1347,7 +1362,15 @@ CREATE TABLE IF NOT EXISTS rapports (
     -- vient tout juste de traiter partirait le lendemain, capture comprise,
     -- avant meme qu'on ait pu s'en reservir.
     traite_le   TEXT,
-    compte_verifie TEXT
+    compte_verifie TEXT,
+    -- Les rapports d'AUTRES jeux (16/11/2026) : de quel jeu il vient, le titre ecrit par la personne, toutes ses
+    -- captures (liste JSON de noms de fichiers ; `capture` garde la premiere), l'etat complet de la partie (fichier
+    -- .json.gz) et le numero que le rapport portait chez son jeu (pour ne jamais le ranger deux fois).
+    jeu         TEXT NOT NULL DEFAULT 'marvel',
+    titre       TEXT,
+    captures    TEXT,
+    etat_fichier TEXT,
+    source_id   TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rapports_etat ON rapports(etat);
 -- Le FIL d'un ticket (16/09/2026). Un rapport de bug envoye par le TITULAIRE
@@ -1437,6 +1460,19 @@ CREATE TABLE IF NOT EXISTS abandons (
 );
 -- Parties lancees sur play (moteur dans le navigateur, sans compte). Anonyme :
 -- ni IP, ni navigateur, ni identifiant. Seulement de quoi compter.
+-- Parties des AUTRES jeux du site (Arkham, Seigneur des Anneaux), comptees ici pour que l'administration montre le nombre
+-- de parties de chaque jeu au meme endroit (16/11/2026). Anonyme : un identifiant d'origine (pour ne jamais compter deux fois
+-- la meme partie), le jeu, le jour, le nombre de joueurs et le scenario. Rien d'autre.
+CREATE TABLE IF NOT EXISTS parties_jeux (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    jeu         TEXT NOT NULL,
+    source_id   TEXT NOT NULL,
+    jour        TEXT NOT NULL,
+    joueurs     INTEGER NOT NULL DEFAULT 1,
+    scenario    TEXT,
+    UNIQUE (jeu, source_id)
+);
+CREATE INDEX IF NOT EXISTS parties_jeux_jour ON parties_jeux(jeu, jour);
 CREATE TABLE IF NOT EXISTS parties_play (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     jour        TEXT NOT NULL,
@@ -1548,6 +1584,21 @@ def initialiser_base() -> None:
             cx.execute("ALTER TABLE rapports ADD COLUMN compte_verifie TEXT")
             cx.execute("UPDATE rapports SET compte_verifie = hote"
                        " WHERE siege = 0 AND hote IS NOT NULL AND hote != ''")
+        # Les rapports d'autres jeux (16/11/2026) : colonnes ajoutees aux bases existantes. Un rapport deja la est un
+        # rapport Marvel (valeur par defaut), sans rien d'autre a rattraper.
+        # ⚠ Chaque ALTER est ecrit en toutes lettres : le projet interdit de composer du SQL a l'execution.
+        if "jeu" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN jeu TEXT NOT NULL DEFAULT 'marvel'")
+        if "titre" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN titre TEXT")
+        if "captures" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN captures TEXT")
+        if "etat_fichier" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN etat_fichier TEXT")
+        if "source_id" not in colonnes_rap:
+            cx.execute("ALTER TABLE rapports ADD COLUMN source_id TEXT")
+        cx.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_rapports_source ON rapports(jeu, source_id)"
+                   " WHERE source_id IS NOT NULL")
         # Drapeaux de langues (06/11/2026) : meme precaution pour les bases
         # creees avant ce chantier.
         if "langues" not in colonnes:
@@ -2468,6 +2519,72 @@ def bloc_phase_play() -> str:
             + "<table><tr><th>Mode</th><th>Parties</th><th>Part</th></tr>%s</table>" % corps)
 
 
+MAX_PARTIES_EXTERNES_PAR_ENVOI = 5000
+
+
+def enregistrer_parties_externes(jeu: str, parties) -> int:
+    """Compte des parties d'un AUTRE jeu. `parties` : liste de {source_id, jour (AAAA-MM-JJ), joueurs, scenario}. Idempotent
+    (un meme `source_id` n'est compte qu'une fois). Rend le nombre de parties NOUVELLES."""
+    if jeu not in JEUX_RAPPORTS or jeu == "marvel":
+        raise ValueError("jeu inconnu")
+    if not isinstance(parties, list):
+        raise ValueError("liste attendue")
+    nouvelles = 0
+    with _cx() as cx:
+        for p in parties[:MAX_PARTIES_EXTERNES_PAR_ENVOI]:
+            if not isinstance(p, dict):
+                continue
+            source_id = str(p.get("source_id") or "").strip()[:80]
+            jour = str(p.get("jour") or "")[:10]
+            if not source_id or not re.match(r"^\d{4}-\d{2}-\d{2}$", jour):
+                continue
+            try:
+                joueurs = max(1, min(8, int(p.get("joueurs") or 1)))
+            except (TypeError, ValueError):
+                joueurs = 1
+            cur = cx.execute("INSERT OR IGNORE INTO parties_jeux (jeu, source_id, jour, joueurs, scenario) VALUES (?, ?, ?, ?, ?)",
+                             (jeu, source_id, jour, joueurs, str(p.get("scenario") or "")[:80] or None))
+            nouvelles += cur.rowcount
+    return nouvelles
+
+
+def stats_parties_par_jeu() -> list:
+    """Une ligne par jeu : total, 30 derniers jours, 7 derniers jours, aujourd'hui (UTC) et le detail Marvel (site / play)."""
+    auj = time.strftime("%Y-%m-%d", time.gmtime())
+    j7 = time.strftime("%Y-%m-%d", time.gmtime(time.time() - 6 * 86400))
+    j30 = time.strftime("%Y-%m-%d", time.gmtime(time.time() - 29 * 86400))
+
+    # ⚠ Chaque requete est ecrite en toutes lettres (aucun SQL compose a l'execution).
+    with _cx() as cx:
+        site = {"total": cx.execute("SELECT COUNT(*) FROM parties").fetchone()[0],
+                "j30": cx.execute("SELECT COUNT(*) FROM parties WHERE substr(ouverte_le, 1, 10) >= ?", (j30,)).fetchone()[0],
+                "j7": cx.execute("SELECT COUNT(*) FROM parties WHERE substr(ouverte_le, 1, 10) >= ?", (j7,)).fetchone()[0],
+                "auj": cx.execute("SELECT COUNT(*) FROM parties WHERE substr(ouverte_le, 1, 10) = ?", (auj,)).fetchone()[0]}
+        play = {"total": cx.execute("SELECT COUNT(*) FROM parties_play").fetchone()[0],
+                "j30": cx.execute("SELECT COUNT(*) FROM parties_play WHERE jour >= ?", (j30,)).fetchone()[0],
+                "j7": cx.execute("SELECT COUNT(*) FROM parties_play WHERE jour >= ?", (j7,)).fetchone()[0],
+                "auj": cx.execute("SELECT COUNT(*) FROM parties_play WHERE jour = ?", (auj,)).fetchone()[0]}
+        lignes = [{"jeu": "marvel", **{k: site[k] + play[k] for k in site}, "detail": "dont %d sur le site et %d sur play" % (site["total"], play["total"])}]
+        for jeu in ("arkham", "lotr"):
+            ext = {"total": cx.execute("SELECT COUNT(*) FROM parties_jeux WHERE jeu = ?", (jeu,)).fetchone()[0],
+                   "j30": cx.execute("SELECT COUNT(*) FROM parties_jeux WHERE jeu = ? AND jour >= ?", (jeu, j30)).fetchone()[0],
+                   "j7": cx.execute("SELECT COUNT(*) FROM parties_jeux WHERE jeu = ? AND jour >= ?", (jeu, j7)).fetchone()[0],
+                   "auj": cx.execute("SELECT COUNT(*) FROM parties_jeux WHERE jeu = ? AND jour = ?", (jeu, auj)).fetchone()[0]}
+            lignes.append({"jeu": jeu, **ext, "detail": ""})
+    return lignes
+
+
+def bloc_parties_par_jeu() -> str:
+    corps = "".join(
+        '<tr><td data-label="Jeu"><span class="jeu jeu-%s">%s</span></td><td data-label="Total">%d</td>'
+        '<td data-label="30 jours">%d</td><td data-label="7 jours">%d</td><td data-label="Aujourd’hui">%d</td>'
+        '<td data-label="Détail">%s</td></tr>'
+        % (l["jeu"], html.escape(JEUX_RAPPORTS[l["jeu"]]), l["total"], l["j30"], l["j7"], l["auj"], html.escape(l["detail"]))
+        for l in stats_parties_par_jeu())
+    return ('<p class="sous">Les parties lancées sur chaque jeu du site (jours en UTC). Compteur anonyme.</p>'
+            '<table><tr><th>Jeu</th><th>Total</th><th>30 jours</th><th>7 jours</th><th>Aujourd’hui</th><th>Détail</th></tr>%s</table>' % corps)
+
+
 def stats_play(jours: int = 30, top: int = 10) -> dict:
     """Parties de play par jour (les `jours` derniers), et les plus joues."""
     depuis = time.strftime("%Y-%m-%d", time.gmtime(time.time() - (jours - 1) * 86400))
@@ -3360,6 +3477,112 @@ def _ecrire_capture(donnee: str) -> str | None:
     return nom
 
 
+def _ecrire_fichier_rapport(octets: bytes, prefixe: str, extension: str) -> str:
+    """Ecrit un fichier du dossier des rapports sous un nom ALEATOIRE (jamais un nom venu de l'exterieur) et rend ce nom."""
+    os.makedirs(DOSSIER_RAPPORTS, exist_ok=True)
+    nom = "%s%s.%s" % (prefixe, secrets.token_hex(16), extension)
+    with open(os.path.join(DOSSIER_RAPPORTS, nom), "wb") as f:
+        f.write(octets)
+    return nom
+
+
+def _supprimer_fichiers_rapport(noms) -> None:
+    """Efface des fichiers du dossier des rapports. Un fichier deja parti n'est pas une erreur ; une autre erreur est dite."""
+    for nom in noms:
+        if not nom:
+            continue
+        chemin = os.path.join(DOSSIER_RAPPORTS, os.path.basename(nom))
+        try:
+            os.remove(chemin)
+        except FileNotFoundError:
+            pass
+        except OSError as erreur:
+            # ⚠ NE PAS AVALER CELLE-CI. Un fichier reste seul sur le disque n'apparait sur aucune page. (Meme phrase qu'avant :
+            # `test_parcours.py` la guette.)
+            print("purge : capture non effacee %s (%s)" % (chemin, erreur), file=sys.stderr)
+
+
+def _fichiers_d_un_rapport(r) -> list:
+    """TOUS les fichiers que porte un rapport : sa capture, ses captures, l'etat complet de la partie."""
+    noms = [r["capture"]]
+    try:
+        noms += json.loads(r["captures"] or "[]")
+    except (ValueError, TypeError):
+        pass
+    noms.append(r["etat_fichier"])
+    return [n for n in dict.fromkeys(noms) if n]
+
+
+def enregistrer_rapport_externe(jeu: str, champs: dict) -> tuple[int, bool]:
+    """Range le rapport d'un AUTRE jeu du site (Arkham, Seigneur des Anneaux) et rend `(numero, nouveau)`.
+
+    Les champs : `titre`, `texte`, `contact`, `route` (l'ecran), `client` (navigateur), `partie` (nom, scenario…),
+    `journal` (le texte des logs de la partie), `etat` (l'etat complet de la partie, base64 d'un .json.gz),
+    `captures` (jusqu'a 4 « data URL »), `source_id` (le numero chez le jeu d'origine : idempotent, un meme rapport envoye
+    deux fois n'est range qu'une), `quand` (date d'origine, AAAA-MM-JJ HH:MM, a l'import) et `etat_rapport`.
+
+    Comme `enregistrer_rapport`, on TRONQUE plutot que de refuser : un rapport ampute vaut mieux qu'un rapport perdu.
+    """
+    if jeu not in JEUX_RAPPORTS or jeu == "marvel":
+        raise ValueError("jeu inconnu")
+    titre = " ".join(str(champs.get("titre") or "").split())[:150]
+    texte = str(champs.get("texte") or "").strip()[:MAX_DESCRIPTION_CARACTERES]
+    # La description garde la forme historique (un seul texte) : le titre en tete, puis le detail.
+    description = (titre + "\n\n" + texte).strip() if titre and texte else (titre or texte)
+    if not description:
+        raise ValueError("rapport vide")
+    nom = " ".join(str(champs.get("contact") or "").split())[:80] or "anonyme"
+    ecran = " ".join(str(champs.get("route") or "").split())[:120]
+    source_id = str(champs.get("source_id") or "").strip()[:80] or None
+    journal = str(champs.get("journal") or "")[:MAX_JOURNAL_CARACTERES]
+    etat_rapport = champs.get("etat_rapport") if champs.get("etat_rapport") in ETATS_RAPPORT else "nouveau"
+
+    with _cx() as cx:
+        if source_id:
+            deja = cx.execute("SELECT id FROM rapports WHERE jeu = ? AND source_id = ?", (jeu, source_id)).fetchone()
+            if deja:
+                return int(deja["id"]), False
+
+    captures = []
+    for brut in (champs.get("captures") or [])[:MAX_CAPTURES_EXTERNES]:
+        nom_fichier = _ecrire_capture(brut) if isinstance(brut, str) else None
+        if nom_fichier:
+            captures.append(nom_fichier)
+    etat_fichier = None
+    brut_etat = champs.get("etat")
+    if isinstance(brut_etat, str) and brut_etat:
+        try:
+            octets = base64.b64decode(brut_etat, validate=True)
+        except Exception:
+            octets = b""
+        # Seul un .json.gz bien forme est garde (octets magiques gzip) et pas plus gros que le plafond.
+        if octets[:2] == b"\x1f\x8b" and len(octets) <= MAX_ETAT_OCTETS:
+            etat_fichier = _ecrire_fichier_rapport(octets, "etat-", "json.gz")
+    # Le contexte (navigateur, partie) est GARDE EN TETE DU JOURNAL : c'est ce que l'administrateur lit d'abord.
+    contexte = []
+    client = champs.get("client") if isinstance(champs.get("client"), dict) else {}
+    partie = champs.get("partie") if isinstance(champs.get("partie"), dict) else {}
+    if partie:
+        contexte.append("Partie : %s" % " · ".join(str(v) for v in (partie.get("nom"), partie.get("scenario"), partie.get("etape")) if v not in (None, "")))
+        if partie.get("erreur"):
+            contexte.append("Partie non jointe : %s" % partie["erreur"])
+    if client:
+        contexte.append("Navigateur : %s · fenetre %s%s" % (client.get("navigateur", "?"), client.get("fenetre", "?"), " · telephone" if client.get("telephone") else ""))
+    if contexte:
+        journal = ("\n".join(contexte) + ("\n\n" + journal if journal else ""))[:MAX_JOURNAL_CARACTERES]
+
+    quand = str(champs.get("quand") or "")[:16] or _maintenant()
+    with _cx() as cx:
+        cur = cx.execute(
+            "INSERT INTO rapports (quand, hote, nom, siege, ecran, description, journal, capture, etat, traite_le,"
+            " compte_verifie, jeu, titre, captures, etat_fichier, source_id)"
+            " VALUES (?, NULL, ?, 0, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?)",
+            (quand, nom, ecran, description, journal, captures[0] if captures else None, etat_rapport,
+             _maintenant() if etat_rapport == "traite" else None, jeu, titre or None,
+             json.dumps(captures) if captures else None, etat_fichier, source_id))
+        return int(cur.lastrowid or 0), True
+
+
 # ---------------------------------------------------------------------------
 # LE SUIVI DES SIGNALEMENTS (16/09/2026)
 #
@@ -3569,7 +3792,21 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
         # ⚠ `capture IS NOT NULL` : ON N'ALLEGE QUE CE QUI PESE ENCORE. Depuis
         # que la ligne reste, un rapport deja allege serait repris a chaque
         # passage de la purge, qui annoncerait indefiniment le meme travail.
-        if "traite_le" in colonnes:
+        # Les rapports des autres jeux (16/11/2026) portent AUSSI d'autres captures et l'etat complet de la partie : tout ce
+        # qui pese part, le texte et le fil restent. (Base pas encore migree : seule `capture` existe.)
+        # ⚠ LES QUATRE REQUETES SONT ECRITES EN TOUTES LETTRES (aucun SQL compose a l'execution).
+        nouvelle_base = "etat_fichier" in colonnes
+        if nouvelle_base and "traite_le" in colonnes:
+            lignes = cx.execute(
+                "SELECT id, capture, captures, etat_fichier FROM rapports WHERE etat = 'traite'"
+                " AND (capture IS NOT NULL OR captures IS NOT NULL OR etat_fichier IS NOT NULL)"
+                " AND COALESCE(traite_le, quand) < ?", (limite,)).fetchall()
+        elif nouvelle_base:
+            lignes = cx.execute(
+                "SELECT id, capture, captures, etat_fichier FROM rapports WHERE etat = 'traite'"
+                " AND (capture IS NOT NULL OR captures IS NOT NULL OR etat_fichier IS NOT NULL)"
+                " AND quand < ?", (limite,)).fetchall()
+        elif "traite_le" in colonnes:
             lignes = cx.execute(
                 "SELECT id, capture FROM rapports WHERE etat = 'traite'"
                 " AND capture IS NOT NULL"
@@ -3579,25 +3816,16 @@ def purger_rapports_traites(jours: int = JOURS_RAPPORTS_TRAITES) -> int:
                 "SELECT id, capture FROM rapports WHERE etat = 'traite'"
                 " AND capture IS NOT NULL AND quand < ?", (limite,)).fetchall()
         for r in lignes:
-            cx.execute("UPDATE rapports SET capture = NULL WHERE id = ?", (r["id"],))
+            if nouvelle_base:
+                cx.execute("UPDATE rapports SET capture = NULL, captures = NULL, etat_fichier = NULL WHERE id = ?", (r["id"],))
+            else:
+                cx.execute("UPDATE rapports SET capture = NULL WHERE id = ?", (r["id"],))
 
-    # La transaction est validee : la base ne renvoie plus vers ces images, on
+    # La transaction est validee : la base ne renvoie plus vers ces fichiers, on
     # peut donc les effacer sans risquer de laisser un rapport pointer dans le
     # vide si quelque chose echoue ici.
     for r in lignes:
-        if not r["capture"]:
-            continue
-        chemin = os.path.join(DOSSIER_RAPPORTS, os.path.basename(r["capture"]))
-        try:
-            os.remove(chemin)
-        except FileNotFoundError:
-            pass                      # deja parti : c'est le resultat voulu
-        except OSError as erreur:
-            # ⚠ NE PAS AVALER CELLE-CI. Une capture restee seule sur le disque
-            # n'apparait sur aucune page : sans cette ligne, personne ne
-            # l'apprend jamais, et le dossier grossit en silence.
-            print("purge : capture non effacee %s (%s)" % (chemin, erreur),
-                  file=sys.stderr)
+        _supprimer_fichiers_rapport(_fichiers_d_un_rapport(r) if "etat_fichier" in r.keys() else [r["capture"]])
     return len(lignes)
 
 
@@ -3631,12 +3859,10 @@ def supprimer_rapport(numero: int) -> None:
     """Efface le rapport ET sa capture : laisser l'image seule sur le disque
     ferait grossir le dossier sans que rien n'y renvoie plus."""
     with _cx() as cx:
-        r = cx.execute("SELECT capture FROM rapports WHERE id = ?", (numero,)).fetchone()
-        if r and r["capture"]:
-            try:
-                os.remove(os.path.join(DOSSIER_RAPPORTS, r["capture"]))
-            except OSError:
-                pass
+        r = cx.execute("SELECT capture, captures, etat_fichier FROM rapports WHERE id = ?", (numero,)).fetchone()
+        if r:
+            # La capture, les autres captures et l'etat complet de la partie (rapports des autres jeux, 16/11/2026).
+            _supprimer_fichiers_rapport(_fichiers_d_un_rapport(r))
         cx.execute("DELETE FROM rapports WHERE id = ?", (numero,))
 
 
@@ -5032,6 +5258,16 @@ PAGE_ADMIN = """<!doctype html>
   .etat.encours {{ color:var(--accent); border-color:var(--accent); }}
   .etat.traite {{ color:var(--ok); border-color:var(--ok); }}
   .etat.refuse {{ color:var(--muted); border-color:var(--muted); }}
+  /* De quel JEU vient le rapport (16/11/2026) : toujours une pastille, pour Marvel comme pour les autres. */
+  .jeu {{ font-size:.72rem; font-weight:700; border-radius:.3rem; padding:.1rem .45rem; border:1px solid; white-space:nowrap; }}
+  .jeu-marvel {{ color:#e8736a; border-color:#e8736a; }}
+  .jeu-arkham {{ color:#c79f2b; border-color:#c79f2b; }}
+  .jeu-lotr {{ color:#6fb0e0; border-color:#6fb0e0; }}
+  .filtres-jeu {{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.4rem 0 .8rem; }}
+  .filtres-jeu button {{ cursor:pointer; background:transparent; color:var(--text); border:1px solid var(--border);
+                        border-radius:1rem; padding:.2rem .8rem; font:inherit; font-size:.82rem; }}
+  .filtres-jeu button[aria-pressed="true"] {{ background:var(--accent); color:var(--bg); border-color:var(--accent); }}
+  details.rapport[hidden], details.groupe[hidden] {{ display:none; }}
   /* Le FIL d'un ticket (16/09/2026) : ce que j'ai repondu, ce que le joueur a
      repondu. Les deux camps se distinguent par leur bord, pas par un alignement
      a droite : une conversation a deux voix, pas une messagerie. */
@@ -5199,6 +5435,12 @@ PAGE_ADMIN = """<!doctype html>
     <p class="sous">Les 60 derniers, le plus récent en haut, rangés par état
     (code couleur, comme sur chaque rapport). Déplie pour voir la capture et
     le journal de la partie.</p>
+    <div class="filtres-jeu" role="group" aria-label="Filtrer par jeu" id="filtres-jeu">
+      <button type="button" data-jeu="tous" aria-pressed="true">Tous les jeux</button>
+      <button type="button" data-jeu="marvel" aria-pressed="false">Marvel</button>
+      <button type="button" data-jeu="arkham" aria-pressed="false">Arkham</button>
+      <button type="button" data-jeu="lotr" aria-pressed="false">Seigneur des Anneaux</button>
+    </div>
     {rapports}
   </section>
 
@@ -5216,7 +5458,11 @@ PAGE_ADMIN = """<!doctype html>
         <button type="button" class="sous-onglet" data-sous="parties-historique" role="tab">Historique</button>
         <button type="button" class="sous-onglet" data-sous="parties-revoir" role="tab">À revoir</button>
         <button type="button" class="sous-onglet" data-sous="parties-play" role="tab">Play</button>
+        <button type="button" class="sous-onglet" data-sous="parties-jeux" role="tab">Par jeu</button>
       </nav>
+      <div class="sous-panneau" data-sous-panneau="parties-jeux" hidden>
+        {parties_par_jeu}
+      </div>
       <div class="sous-panneau" data-sous-panneau="parties-play" hidden>
         <p class="sous">Les parties lancées sur play (le jeu dans le navigateur, sans compte).
         Compteur anonyme : ni adresse, ni identifiant.</p>
@@ -5687,6 +5933,33 @@ SUIVI_SCRIPT = """<script>
 # formatee par `.format()` : passee telle quelle a PAGE_ADMIN via
 # `{script_onglets}`, exactement comme SUIVI_STYLE_BLOC/SUIVI_SCRIPT plus haut
 # -- aucune accolade a doubler ici.
+ADMIN_FILTRE_JEUX_SCRIPT = """<script>
+(function () {
+  var barre = document.getElementById("filtres-jeu");
+  if (!barre) return;
+  function appliquer(jeu) {
+    Array.prototype.forEach.call(barre.querySelectorAll("button"), function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-jeu") === jeu ? "true" : "false");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("details.rapport"), function (d) {
+      d.hidden = !(jeu === "tous" || d.getAttribute("data-jeu") === jeu);
+    });
+    // Un groupe d'etat sans aucun rapport visible se replie hors de vue.
+    Array.prototype.forEach.call(document.querySelectorAll("details.groupe"), function (g) {
+      g.hidden = !g.querySelector("details.rapport:not([hidden])");
+    });
+    try { sessionStorage.setItem("admin-filtre-jeu", jeu); } catch (e) {}
+  }
+  barre.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-jeu]");
+    if (b) appliquer(b.getAttribute("data-jeu"));
+  });
+  var garde = "tous";
+  try { garde = sessionStorage.getItem("admin-filtre-jeu") || "tous"; } catch (e) {}
+  appliquer(garde);
+})();
+</script>"""
+
 ADMIN_ONGLETS_SCRIPT = """<script>
 (function () {
   var CLE = "admin-onglet";
@@ -6602,9 +6875,58 @@ class Handler(BaseHTTPRequestHandler):
             taille = int(self.headers.get("Content-Length") or 0)
         except ValueError:
             return -1
-        if taille < 0 or taille > MAX_CORPS_OCTETS:
+        # La route interne des rapports des AUTRES jeux a un plafond plus large (captures + etat de partie) ; elle ne lit
+        # son corps qu'APRES avoir verifie le secret (voir `_api_bug_externe`).
+        plafond = MAX_CORPS_EXTERNE_OCTETS if self.chemin in ("/api/bug-externe", "/api/parties-externes") else MAX_CORPS_OCTETS
+        if taille < 0 or taille > plafond:
             return -1
         return taille
+
+    def _secret_externe_ok(self) -> bool:
+        """Le secret partage des routes internes (rapports, compteurs de parties). Sinon : 403 et on raccroche, SANS lire le corps."""
+        fourni = (self.headers.get("X-Cle-Rapports") or "").encode()
+        if (not CLE_RAPPORTS_EXTERNES or self.headers.get("X-Forwarded-For")
+                or not hmac.compare_digest(fourni, CLE_RAPPORTS_EXTERNES.encode())):
+            self._raccrocher()
+            self._repondre(403, b'{"error":"refuse"}', "application/json; charset=utf-8")
+            return False
+        return True
+
+    def _api_parties_externes(self) -> None:
+        """`POST /api/parties-externes` : {jeu, parties:[{source_id, jour, joueurs, scenario}]} -> {ok, nouvelles}."""
+        if not self._secret_externe_ok():
+            return
+        taille = self._taille_corps()
+        try:
+            champs = json.loads(self.rfile.read(max(0, taille)).decode("utf-8", "replace")) if taille > 0 else {}
+            if not isinstance(champs, dict):
+                raise ValueError("corps")
+            nouvelles = enregistrer_parties_externes(str(champs.get("jeu") or ""), champs.get("parties"))
+        except ValueError as erreur:
+            self._repondre(400, json.dumps({"error": str(erreur)}).encode("utf-8"), "application/json; charset=utf-8")
+            return
+        self._repondre(200, json.dumps({"ok": True, "nouvelles": nouvelles}).encode("utf-8"), "application/json; charset=utf-8")
+
+    def _api_bug_externe(self) -> None:
+        """`POST /api/bug-externe` : le rapport d'un AUTRE jeu du site (Arkham, Seigneur des Anneaux), en JSON.
+
+        ⚠ ROUTE INTERNE. Elle exige le secret partage (`CLE_RAPPORTS_EXTERNES`, en-tete `X-Cle-Rapports`) ET l'absence de
+        `X-Forwarded-For` : tout appel venu d'Internet passe par Caddy, qui en pose un. Et le secret est verifie AVANT toute
+        lecture du corps (on raccroche sinon) : un inconnu ne fait rien allouer, meme avec un `Content-Length` enorme.
+        """
+        if not self._secret_externe_ok():
+            return
+        taille = self._taille_corps()
+        try:
+            champs = json.loads(self.rfile.read(max(0, taille)).decode("utf-8", "replace")) if taille > 0 else {}
+            if not isinstance(champs, dict):
+                raise ValueError("corps")
+            numero, nouveau = enregistrer_rapport_externe(str(champs.get("jeu") or ""), champs)
+        except ValueError as erreur:
+            self._repondre(400, json.dumps({"error": str(erreur)}).encode("utf-8"), "application/json; charset=utf-8")
+            return
+        self._repondre(200, json.dumps({"ok": True, "numero": numero, "nouveau": nouveau}).encode("utf-8"),
+                       "application/json; charset=utf-8")
 
     def _corps_refuse(self) -> None:
         """Repond 413 et RACCROCHE. Les octets annonces n'ont pas ete lus : ils
@@ -6871,6 +7193,30 @@ class Handler(BaseHTTPRequestHandler):
                               lang.t('<a href="/connexion">Se connecter</a>.')),
         ).encode("utf-8")
 
+    def _servir_etat_de_partie(self) -> None:
+        """Le .json.gz de l'etat de la partie d'un rapport (`?id=<numero>`), a telecharger."""
+        requete = urllib.parse.urlparse(self.path).query
+        try:
+            numero = int(urllib.parse.parse_qs(requete).get("id", ["0"])[0])
+        except ValueError:
+            numero = 0
+        nom = None
+        if numero:
+            with _cx() as cx:
+                r = cx.execute("SELECT etat_fichier, jeu FROM rapports WHERE id = ?", (numero,)).fetchone()
+            nom = r["etat_fichier"] if r else None
+        if not nom:
+            self._repondre(404, b"Aucun etat de partie.", "text/plain; charset=utf-8")
+            return
+        try:
+            with open(os.path.join(DOSSIER_RAPPORTS, os.path.basename(nom)), "rb") as f:
+                donnees = f.read()
+        except OSError:
+            self._repondre(404, b"Etat introuvable.", "text/plain; charset=utf-8")
+            return
+        self._repondre(200, donnees, "application/gzip",
+                       [("Content-Disposition", 'attachment; filename="partie-%s-rapport-%d.json.gz"' % (r["jeu"], numero))])
+
     def _servir_capture(self) -> None:
         """L'image d'un rapport, designee par le NUMERO du rapport.
 
@@ -6885,9 +7231,21 @@ class Handler(BaseHTTPRequestHandler):
         nom = None
         if numero:
             with _cx() as cx:
-                r = cx.execute("SELECT capture FROM rapports WHERE id = ?",
+                r = cx.execute("SELECT capture, captures FROM rapports WHERE id = ?",
                                (numero,)).fetchone()
             nom = r["capture"] if r else None
+            # `n` : la capture n° N (1…) d'un rapport qui en porte plusieurs (autres jeux). Le NOM vient toujours de la
+            # base, jamais de l'adresse.
+            try:
+                rang = int(urllib.parse.parse_qs(requete).get("n", ["0"])[0])
+            except ValueError:
+                rang = 0
+            if r and rang >= 1:
+                try:
+                    toutes = json.loads(r["captures"] or "[]")
+                except (ValueError, TypeError):
+                    toutes = []
+                nom = toutes[rang - 1] if rang <= len(toutes) else None
         if not nom:
             self._repondre(404, b"Aucune capture.", "text/plain; charset=utf-8")
             return
@@ -7295,13 +7653,14 @@ class Handler(BaseHTTPRequestHandler):
                                  parties=parties,
                                  parties_a_revoir=self._parties_a_revoir(),
                                  stats_play=bloc_stats_play(),
+                                 parties_par_jeu=bloc_parties_par_jeu(),
                                  suivi_max=SUIVI_TERMINEES_MAX,
                                  styles_suivi=SUIVI_STYLE_BLOC,
                                  script_suivi=SUIVI_SCRIPT,
                                  titre_decks=html.escape(lang.t("Decks des joueurs")),
                                  panneau_decks=_panneau_decks_joueurs(),
                                  script_decks=_script_decks_joueurs(),
-                                 script_onglets=ADMIN_ONGLETS_SCRIPT).encode("utf-8")
+                                 script_onglets=ADMIN_ONGLETS_SCRIPT + ADMIN_FILTRE_JEUX_SCRIPT).encode("utf-8")
 
     @staticmethod
     def _bloc_demandes_createurs() -> str:
@@ -7358,17 +7717,34 @@ class Handler(BaseHTTPRequestHandler):
                     '<input type="hidden" name="action" value="rapport_supprimer">'
                     '<input type="hidden" name="id" value="%d">'
                     '<button class="non" type="submit">Supprimer</button></form>' % r["id"])
-        image = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
-                 '<img src="/admin/capture?id=%d" alt="capture"></a></p>'
-                 % (r["id"], r["id"])) if r["capture"] else "<p class=\"sous\">Aucune capture.</p>"
+        # Les captures : celles du rapport (plusieurs pour les autres jeux), ou son unique capture Marvel.
+        try:
+            captures = json.loads(r.get("captures") or "[]")
+        except (ValueError, TypeError):
+            captures = []
+        if captures:
+            image = "<p>" + "".join(
+                '<a href="/admin/capture?id=%d&amp;n=%d" target="_blank" rel="noopener">'
+                '<img src="/admin/capture?id=%d&amp;n=%d" alt="capture %d" style="max-width:15rem;margin:0 .4rem .4rem 0"></a>'
+                % (r["id"], k, r["id"], k, k) for k in range(1, len(captures) + 1)) + "</p>"
+        else:
+            image = ('<p><a href="/admin/capture?id=%d" target="_blank" rel="noopener">'
+                     '<img src="/admin/capture?id=%d" alt="capture"></a></p>'
+                     % (r["id"], r["id"])) if r["capture"] else "<p class=\"sous\">Aucune capture.</p>"
         if r["journal"]:
             journal = ('<details><summary class="sous">Journal de la partie</summary>'
                        '<pre>%s</pre></details>' % html.escape(r["journal"]))
         else:
             journal = '<p class="sous">Aucun journal (rapport envoyé hors partie).</p>'
+        # Le lien vers l'etat COMPLET de la partie (rapports des autres jeux) : de quoi rejouer ce que le joueur a vu.
+        if r.get("etat_fichier"):
+            journal += ('<p><a href="/admin/etat?id=%d">Télécharger l’état complet de la partie (.json.gz)</a></p>' % r["id"])
         ou = r["ecran"] or "?"
         if r["siege"]:
             ou += " · siège %d" % r["siege"]
+        # De QUEL JEU vient ce rapport : toujours dit, pour Marvel comme pour les autres (filtre `data-jeu`).
+        jeu = r.get("jeu") or "marvel"
+        etiquette_jeu = ('<span class="jeu jeu-%s">%s</span>' % (html.escape(jeu), html.escape(JEUX_RAPPORTS.get(jeu, jeu))))
 
         # ⚠ LE FIL N'EXISTE QUE POUR UN TICKET. Un rapport d'invite n'a pas de
         # proprietaire connu (voir `_est_un_ticket`) : lui offrir un champ de
@@ -7395,12 +7771,12 @@ class Handler(BaseHTTPRequestHandler):
             fil = ('<p class="sous">Rapport envoyé depuis un siège invité : on ne '
                    'sait pas à quel compte il appartient, il n\'y a donc pas de fil.</p>')
 
-        return ('<details class="rapport">'
-                '<summary><span class="etat %s">%s</span>'
+        return ('<details class="rapport" data-jeu="%s">'
+                '<summary>%s<span class="etat %s">%s</span>'
                 '<span class="quoi">%s</span>'
                 '<span class="meta">%s &middot; %s &middot; %s</span></summary>'
                 '<div class="corps"><p>%s</p>%s%s<div class="fil">%s</div><p>%s</p></div></details>'
-                % (classe, html.escape(etat),
+                % (html.escape(jeu), etiquette_jeu, classe, html.escape(etat),
                    html.escape((r["description"] or "")[:110]),
                    html.escape(r["nom"] or "?"), html.escape(ou),
                    _horodate(r["quand"] or ""),
@@ -7791,6 +8167,13 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_sauvegarde()
+        elif self.chemin == "/admin/etat":
+            # L'etat COMPLET de la partie jointe a un rapport d'un autre jeu (fichier .json.gz range par la base : on ne sert
+            # jamais un nom venu de l'adresse). Reserve a l'administrateur, comme la capture.
+            if pseudo != ADMIN:
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
+                return
+            self._servir_etat_de_partie()
         elif self.chemin.startswith("/admin/capture"):
             # La capture d'un rapport, reservee a l'administrateur comme la
             # page qui l'affiche. On ne sert JAMAIS le nom de fichier venu de
@@ -8144,6 +8527,13 @@ class Handler(BaseHTTPRequestHandler):
             self._corps_refuse()
             return
         if self._refuser_createur(self._session(), "POST"):
+            return
+
+        if self.chemin == "/api/bug-externe":
+            self._api_bug_externe()
+            return
+        if self.chemin == "/api/parties-externes":
+            self._api_parties_externes()
             return
 
         if self.chemin == "/compteur_play":
