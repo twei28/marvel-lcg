@@ -386,6 +386,7 @@ export function PlateauPortrait(props: BoardProps) {
         onOuvrirPile={ouvrirPile}
         choisissables={choisissables}
         onChoisir={props.choixEnAttente?.rouvrir}
+        onPiocher={props.piocherPile}
       />
       {/* Toucher une carte jouable = la choisir, puis « Jouer » ; toucher
           long = la jouer (MainPortrait.tsx). */}

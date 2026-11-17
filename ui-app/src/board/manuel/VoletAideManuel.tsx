@@ -56,6 +56,7 @@ const SUR_UNE_PILE: Raccourci[] = [
   { touches: 'Ctrl + D', effet: 'Piocher une carte' },
   { touches: 'Ctrl + Maj + D', effet: 'Piocher plusieurs cartes (le nombre est demandé)' },
   { touches: 'Clic droit', effet: 'Ouvrir la pile : choisir une carte, mélanger, remélanger la défausse dans le deck, ou « Regarder le dessus » (les X premières cartes d’un deck, sans rien déplacer)' },
+  { touches: 'Appui long', effet: 'Au doigt (téléphone, tablette) : ouvre la pile, avec les boutons Piocher, Piocher plusieurs et Mélanger' },
   { touches: '1 à 9', effet: 'Piocher ce nombre de cartes (en plus d’OCTGN)' },
   { touches: 'R', effet: 'Mélanger la pile (en plus d’OCTGN)' },
   { touches: 'Ctrl + F', effet: 'Retourner la carte du dessus' },

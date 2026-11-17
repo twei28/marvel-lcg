@@ -521,6 +521,24 @@ export function DemandeCentrale({
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
   const styleDeplace: typeof style = enScene ? style : styleAvecDecalage(style, decalage)
 
+  // TELEPHONE (17/11/2026, rapport n°142 : « je vois les 3 cartes en partie à cause du héros qui s'affiche, je peux juste annuler ») :
+  // la question et la fenêtre « Cartes regardées » sont deux feuilles posées au MÊME endroit, la question recouvrait le bas de la liste
+  // des cartes à choisir. La hauteur de la question est publiée (`--feuille-demande-h`) : les grandes feuilles (cartes regardées,
+  // sélecteur) s'arrêtent au-dessus d'elle (menus-mobile.css).
+  useEffect(() => {
+    const element = panneau.current
+    if (enScene || !element || !document.body.classList.contains('mode-plateau-portrait')) return
+    const racine = document.documentElement
+    const publier = () => racine.style.setProperty('--feuille-demande-h', `${Math.round(element.getBoundingClientRect().height)}px`)
+    publier()
+    const observateur = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(publier)
+    observateur?.observe(element)
+    return () => {
+      observateur?.disconnect()
+      racine.style.removeProperty('--feuille-demande-h')
+    }
+  }, [enScene, signature])
+
   // EPURE (16/10/2026) : devant le cartouche « Pendant ton tour » / de la phase du
   // mechant, la question n'a plus de bandeau a elle ; ses boutons SUIVENT le
   // cartouche (on deplace la fenetre par son bandeau jaune, les boutons partent
@@ -622,7 +640,7 @@ export function DemandeCentrale({
     const choix: ChoixSurTable[] = affichees.map((option) => {
       const nomBrut = estDemandeAUnAutre(option)
         ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
-        : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+        : reaction || estNomDeCapacite(option.name) ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
       const source = nomSource(option, cartesParId, nomPorteur)
       const defense = option.name === 'Defense' && source !== undefined
       const nom = defense ? `${t('Défendre avec')} ${source}` : nomBrut
@@ -790,7 +808,7 @@ export function DemandeCentrale({
         {affichees.map((option) => {
           const nomBrut = estDemandeAUnAutre(option)
             ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
-            : reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+            : reaction || estNomDeCapacite(option.name) ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
           // « Défendre avec Domino » plutôt que « DÉFENDRE / Domino » : le bouton
           // dit d'un trait QUI défend (demande de l'utilisateur, 03/10/2026).

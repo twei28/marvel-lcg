@@ -3035,6 +3035,8 @@ html.tel .acc-merci{margin-top:20px;font-size:13px}
 .acc-hogwarts-blason{position:absolute;right:12px;top:6px;width:66px;height:66px;background:url(/public/img/hogwarts-blason.webp) center/contain no-repeat}
 .acc-hogwarts .acc-beta{color:#e9dfc4;background:rgba(30,18,10,.55)}
 @media (max-width:768px){
+  /* Le jeu Harry Potter n'est pas adapte au telephone (17/11/2026) : pas de bandeau ici. Retirer cette ligne pour le remettre. */
+  .acc-hogwarts{display:none}
   .acc-hogwarts{width:calc(50% - 5px);min-height:96px;padding:10px 10px}
   .acc-hogwarts-titre{font-size:1.6rem}
   .acc-hogwarts-etiquette{font-size:1rem}

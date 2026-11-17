@@ -24,6 +24,12 @@ const LIBELLES: Record<string, string> = {
   'soutien-defausse': 'Défausse spéciale',
 }
 
+/** Les piles ORDONNÉES où l'on peut piocher : clé du tiroir -> zone du moteur (mode manuel). */
+const ZONE_PIOCHABLE: Record<string, 'PlayerDeck' | 'EncounterDeck' | undefined> = {
+  'joueur-deck': 'PlayerDeck',
+  'rencontre-encounter-deck': 'EncounterDeck',
+}
+
 export function libelleDePile(pile: PileAffichee): string {
   const connu = LIBELLES[pile.cle]
   return connu ? t(connu) : pile.titre
@@ -36,6 +42,7 @@ export function TiroirPiles({
   onOuvrirPile,
   choisissables,
   onChoisir,
+  onPiocher,
 }: {
   piles: PileAffichee[]
   ouvert: boolean
@@ -46,6 +53,8 @@ export function TiroirPiles({
   choisissables?: ReadonlyMap<string, number>
   /** Un tap sur une pile choisissable rouvre le choix au lieu d'etaler la pile. */
   onChoisir?: () => void
+  /** Mode manuel : piocher au doigt (le deck du joueur, le deck rencontre). `nombre` absent = le nombre est demandé. */
+  onPiocher?: (zone: 'PlayerDeck' | 'EncounterDeck', nombre?: number) => void
 }): ReactElement | null {
   if (!ouvert) return null
   return (
@@ -91,6 +100,28 @@ export function TiroirPiles({
                   ) : null}
                   {pile.compte !== undefined ? <span className="tiroir-pile-compte">{pile.compte}</span> : null}
                 </button>
+                {onPiocher && ZONE_PIOCHABLE[pile.cle] && (pile.compte ?? 1) > 0 ? (
+                  <div className="tiroir-pile-pioche">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onPiocher(ZONE_PIOCHABLE[pile.cle]!, 1)
+                        onFermer()
+                      }}
+                    >
+                      {pile.cle === 'joueur-deck' ? t('Piocher') : t('Sortir en résolution')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onPiocher(ZONE_PIOCHABLE[pile.cle]!)
+                        onFermer()
+                      }}
+                    >
+                      {pile.cle === 'joueur-deck' ? t('Piocher plusieurs…') : t('Sortir plusieurs…')}
+                    </button>
+                  </div>
+                ) : null}
               </li>
             )
           })}

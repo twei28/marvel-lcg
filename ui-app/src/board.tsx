@@ -721,16 +721,16 @@ function cartesRegardees(
     catalogue,
   }
   const groupes: Array<GroupeCartesRegardees | undefined> = [
-    cartesRegardeesDansPile('rencontre', 'Encounter deck', world.encounter_deck, contexte),
-    cartesRegardeesDansPile('vilain', 'Villain deck', world.villain_deck, contexte),
-    cartesRegardeesDansPile('complot', 'Main scheme deck', world.main_schemes_deck, contexte),
+    cartesRegardeesDansPile('rencontre', t('Deck rencontre'), world.encounter_deck, contexte),
+    cartesRegardeesDansPile('vilain', t('Deck méchant'), world.villain_deck, contexte),
+    cartesRegardeesDansPile('complot', t('Deck manigance principale'), world.main_schemes_deck, contexte),
   ]
 
   for (const [index, joueur] of (world.players ?? []).entries()) {
     groupes.push(
       cartesRegardeesDansPile(
         `joueur-${index}`,
-        index === playerId ? 'Your deck' : `Player ${index + 1} deck`,
+        index === playerId ? t('Ton deck') : `${t('Deck du joueur')} ${index + 1}`,
         joueur.player_deck,
         contexte
       )
@@ -848,7 +848,7 @@ function ModaleCartesRegardees({
           >
             <span className="plateau-eyebrow">{t('Cartes regardées')}</span>
             <strong>
-              {total} card{total > 1 ? 's' : ''}
+              {total} {total > 1 ? t('cartes') : t('carte')}
             </strong>
           </div>
           <button type="button" onClick={() => onFermee(idsRegardes(groupes))}>
@@ -2273,7 +2273,9 @@ export function PagePartie({
   const fenetreDeReactionOuverte = etat.demande !== undefined && estFenetreDeReaction(etat.demande)
   // Le cartouche de la phase du Mechant lit aussi ce dictionnaire : la carte
   // revelee dont le moteur ne publie aucun resume se lit par son texte imprime.
-  const francaisCompletUtile = fenetreDeReactionOuverte || PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
+  // ET toute QUESTION ouverte (17/11/2026, rapport n°142) : l'action d'un héros (« Futuriste » de Tony Stark) affichait le texte de la capacité en
+  // ANGLAIS dans une partie en français, faute du dictionnaire complet (il ne se chargeait que pour une réaction ou la phase du méchant).
+  const francaisCompletUtile = fenetreDeReactionOuverte || etat.demande !== undefined || PHASES_DU_MECHANT.has(etat.monde?.phase ?? '')
   useEffect(() => {
     if (!francaisCompletUtile || textesFrComplets || !scansFrActifs()) return
     let vivant = true
@@ -5603,6 +5605,13 @@ export function PagePartie({
         joueursAffichables={joueursAffichables}
         joueurRegarde={joueurActif}
         choisirJoueurRegarde={setVueForcee}
+        // Piocher au doigt (tiroir des piles du telephone) : les memes gestes que Ctrl+D / Ctrl+Maj+D, en mode manuel seulement.
+        piocherPile={
+          triche.manuel
+            ? (zone, nombre) =>
+                void triche.couche.executerGeste(nombre === undefined ? { geste: 'piocherPlusieurs', zone } : { geste: 'piocher', zone, nombre })
+            : undefined
+        }
         // Fenetre de choix fermee sans annuler : l'onglet « Piles » clignote (PlateauPortrait).
         choixEnAttente={
           choixAttend_

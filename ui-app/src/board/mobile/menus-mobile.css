@@ -131,6 +131,15 @@
     grid-template-rows: auto auto minmax(0, 1fr) auto;
   }
 
+  /* Une QUESTION ouverte en meme temps (« Futurist : choisis 1 des 3 cartes ») occupe le bas de l'ecran : la liste des cartes s'arrete
+     au-dessus d'elle au lieu de passer dessous (rapport n°142). `--feuille-demande-h` est publiee par DemandeCentrale. */
+  body.mode-plateau-portrait .plateau-selecteur,
+  body.mode-plateau-portrait .plateau-regardees {
+    bottom: calc(var(--feuille-bas, 96px) + var(--feuille-demande-h, 0px));
+    height: calc(100dvh - var(--feuille-bas, 96px) - var(--feuille-demande-h, 0px) - 44px);
+    max-height: calc(100dvh - var(--feuille-bas, 96px) - var(--feuille-demande-h, 0px) - 44px);
+  }
+
   /* Le journal : l'aside est la feuille (poignee, bouton Fermer, journal) ;
      le journal lui-meme prend la place qui reste et defile. */
   body.mode-plateau-portrait .panneau-journal {

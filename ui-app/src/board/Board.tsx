@@ -1201,6 +1201,12 @@ export type BoardProps = {
    * dessus rouvre le choix.
    */
   choixEnAttente?: { titre: string; piles: ReadonlyMap<number, number>; rouvrir: () => void }
+  /**
+   * PIOCHER AU DOIGT (17/11/2026, retour d'un joueur : « impossible de piocher dans une pile sur téléphone, l'aide dit CTRL-D »).
+   * Présent seulement quand le plateau est en mode manuel : le tiroir des piles montre alors « Piocher » sur le deck du joueur
+   * et « Sortir en résolution » sur le deck rencontre. `nombre` absent = le nombre est demandé.
+   */
+  piocherPile?: (zone: 'PlayerDeck' | 'EncounterDeck', nombre?: number) => void
 }
 
 export type ReglagesGlisser = {

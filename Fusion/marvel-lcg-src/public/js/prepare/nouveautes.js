@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-17",
+        genre: "correction",
+        fr: "En partie manuelle sur téléphone, on peut piocher : le tiroir des piles propose « Piocher » et « Piocher plusieurs » sur ton deck, et « Sortir en résolution » sur le deck rencontre. Sur téléphone encore, la question d'une capacité (Futuriste de Tony Stark) ne cache plus les cartes regardées, et son texte est en français. Le bandeau Hogwarts Battle est caché sur téléphone, le jeu n'y étant pas adapté.",
+        en: "In manual games on a phone you can now draw: the piles drawer offers “Draw” and “Draw several” on your deck, and “Move to resolution” on the encounter deck. Also on phones, an ability's question (Tony Stark's Futurist) no longer hides the cards you are looking at, and its text is in French. The Hogwarts Battle banner is hidden on phones, as the game isn't adapted to them.",
+    },
+    {
         date: "2026-11-16",
         genre: "jeu",
         fr: "Hogwarts Battle rejoint l'accueil : un nouveau bandeau, en bêta, mène à notre version du jeu de deck-building Harry Potter.",

@@ -1725,6 +1725,32 @@ export function CoucheTriche({ actif, manuel: manuelLocal, couche, catalogue = c
                   {t('Regarder le dessus')}
                 </button>
               ) : null}
+              {/* PIOCHER AU DOIGT (17/11/2026, retour d'un joueur : « impossible de piocher dans une pile sur téléphone, l'aide dit CTRL-D »).
+                  Ctrl+D / un chiffre n'existent pas sans clavier : les mêmes gestes, en boutons, sur les decks ORDONNÉS. */}
+              {regard === undefined && (pile.zone === 'PlayerDeck' || pile.zone === 'EncounterDeck') && pile.cartes.length > 0 ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const zone = pile.zone
+                      setPile(undefined)
+                      void executerGeste({ geste: 'piocher', zone, nombre: 1 })
+                    }}
+                  >
+                    {pile.duJoueur ? t('Piocher') : t('Sortir en résolution')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const zone = pile.zone
+                      setPile(undefined)
+                      void executerGeste({ geste: 'piocherPlusieurs', zone })
+                    }}
+                  >
+                    {pile.duJoueur ? t('Piocher plusieurs…') : t('Sortir plusieurs…')}
+                  </button>
+                </>
+              ) : null}
               <button type="button" onClick={() => void melangerPile()}>{t('Mélanger')}</button>
               {estUneDefausse ? (
                 <button type="button" onClick={() => void remelangerLaDefausse()}>
