@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-18",
         genre: "correction",
+        fr: "« Continuer la partie » reprend maintenant ta partie exactement là où tu l'as quittée : elle est rangée dès le début de la partie, au retour au menu et à la fermeture de la page, et plus seulement au changement de phase.",
+        en: "“Continue the game” now resumes your game exactly where you left it: it is saved as soon as the game starts, when you go back to the menu and when you close the page, not only when a new phase begins.",
+    },
+    {
+        date: "2026-11-18",
+        genre: "correction",
         fr: "Campagne à deux héros sur un même écran (Web of Deceit) : on peut maintenant choisir les cartes de chaque héros à la fin d'un scénario, au lieu de rester bloqué sur le second.",
         en: "Two-hero campaigns on a single screen (Web of Deceit): you can now pick each hero's cards at the end of a scenario, instead of getting stuck on the second hero.",
     },

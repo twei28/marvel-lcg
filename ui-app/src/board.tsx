@@ -91,6 +91,7 @@ import { useHaloStatut } from './board/halo-statut'
 import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalogue'
 import { extraireBoost, extraireCapacite, extraireEffetRevele } from './board/texte-capacite'
 import type { InfoRevelee } from './board/vue-cartouche'
+import { sauverEnCours, sauverEnPartant } from './board/en-cours'
 import { fusionnerDistribution, retenirCartesDistribuees, type DistribueesRetenues } from './board/frise-phase'
 import { avecTableauDistribution } from './board/etapes-essai'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
@@ -3669,20 +3670,30 @@ export function PagePartie({
   const dernierePhaseSauvee = useRef<string | undefined>(undefined)
   useEffect(() => {
     const phase = etat.monde?.phase
-    if (!phase || !sauvegardeAuto) return
-    if (dernierePhaseSauvee.current === undefined) {
-      dernierePhaseSauvee.current = phase
-      return
-    }
+    if (!phase) return
+    const premiere = dernierePhaseSauvee.current === undefined
     if (dernierePhaseSauvee.current === phase) return
     dernierePhaseSauvee.current = phase
-    void dossierSauvegardes()
-      .then((dossier) => fetch(`/debug?/save ${dossier}save_auto.json`))
-      .catch(() => undefined)
-    // « Continuer la partie » (18/11/2026) : en plus du fichier unique ci-dessus, la partie est rangee dans SON fichier
-    // (une entree par partie, 5 gardees, supprimee a la fin de la partie) : c'est ce que liste le bandeau de l'accueil.
-    void fetch('/en_cours_sauver', { cache: 'no-store' }).catch(() => undefined)
-  }, [etat.monde?.phase, sauvegardeAuto])
+    // Le fichier unique `save_auto.json` : seulement sur un VRAI changement de phase, et seulement si la sauvegarde auto est
+    // active (comme avant).
+    if (sauvegardeAuto && !premiere) {
+      void dossierSauvegardes()
+        .then((dossier) => fetch(`/debug?/save ${dossier}save_auto.json`))
+        .catch(() => undefined)
+    }
+    // « Continuer la partie » (18/11/2026) : la partie est rangee dans SON fichier (une entree par partie, 5 gardees, supprimee a
+    // la fin de la partie) : c'est ce que liste le bandeau de l'accueil. INDEPENDANT de la sauvegarde auto, et valable des la
+    // PREMIERE phase vue (avant, la premiere phase d'une partie n'etait jamais rangee). Le moteur refuse la mise en place.
+    if (!spectateur) void sauverEnCours()
+  }, [etat.monde?.phase, sauvegardeAuto, spectateur])
+
+  // Fermer la page ou la quitter : on range la partie (retour de testeur du 18/11/2026). Les sorties par le bouton « Menu »
+  // rangent AVANT de partir (voir `retourMenu` / `retourMenuPrincipal`) ; ceci couvre la fermeture de l'onglet.
+  useEffect(() => {
+    if (spectateur) return
+    window.addEventListener('pagehide', sauverEnPartant)
+    return () => window.removeEventListener('pagehide', sauverEnPartant)
+  }, [spectateur])
 
   const nomsHerosParJoueur = useMemo(
     () =>
@@ -4407,8 +4418,9 @@ export function PagePartie({
   const adresseRetour = adresseApresPartie(navigateurTable)
   const retourMenu = useCallback(() => {
     quitterPleinEcran()
-    atterrir(adresseRetour)
-  }, [adresseRetour])
+    // La partie est rangee AVANT de partir (au plus 1,5 s) : « Continuer » la reprend telle qu'on l'a quittee.
+    void (spectateur ? Promise.resolve() : sauverEnCours()).then(() => atterrir(adresseRetour))
+  }, [adresseRetour, spectateur])
   // Resté sur l'écran de fin, l'invité rejoint son salon dès que l'hôte prépare la suivante.
   useRetourAuSalon(Boolean(finPartieAffichee) && inviteDeTable, playerId)
 
@@ -4449,6 +4461,8 @@ export function PagePartie({
       ton: 'danger',
     })
     if (!accepte) return
+    // Rangee AVANT tout le reste : « fermer la table » eteint le moteur, apres quoi plus rien ne peut etre sauve.
+    if (!spectateur) await sauverEnCours()
     if (nature === 'simple') {
       quitterPleinEcran()
       atterrir('/prepare.html')
