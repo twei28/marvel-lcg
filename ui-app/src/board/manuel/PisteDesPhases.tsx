@@ -47,8 +47,11 @@ function relire(round: number | undefined): PisteEtat {
 export function PisteDesPhases({
   round,
   lecture,
+  dansBarre,
 }: {
   round?: number
+  /** Posée DANS le header (à la place du texte du round) au lieu de flotter dessous. */
+  dansBarre?: boolean
   lecture?: { round: number; index: number | null }
 }) {
   const [etat, setEtat] = useState<PisteEtat>(() => relire(round))
@@ -92,7 +95,7 @@ export function PisteDesPhases({
   const finMechant = ETAPES_MANUEL.length - 2
 
   return (
-    <div className="piste-phases" role="group" aria-label={t('Phases du round')}>
+    <div className={`piste-phases${dansBarre ? ' piste-phases-barre' : ''}`} role="group" aria-label={t('Phases du round')}>
       <span className="piste-phases-round">{`${t('Round')} ${courant.round}`}</span>
       {bouton(0)}
       <span

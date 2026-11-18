@@ -2940,6 +2940,9 @@ export function PagePartie({
   // mulligan PENDANT la mise en place — la partie resterait bloquee pour
   // toujours, sans rien a cliquer sur la premiere main.
   const manuel = leMoteurSeTait(etat.monde)
+  // La piste des phases vit dans le header (manuel ; Plateau animé et Accéléré, en lecture). Pas sur téléphone.
+  const pisteDansBarre =
+    modePlateau !== 'mobile' && (manuel || (modePhaseChoisi !== 'detaille' && Boolean(etat.monde?.round_id)))
 
   // Fin de tour automatique (24/09/2026, inspiré de MTG Arena) : quand le
   // bouton « Fin du tour » est déjà suggéré (plus rien de jouable), on
@@ -5656,7 +5659,16 @@ export function PagePartie({
             {/* Design essai : le bandeau vit aussi avant le premier round
                 (mulligan), ou il dit « Mise en place · Mulligans · A toi de
                 jouer » ; sans le drapeau, rien ne change. */}
-            {libelleRound(etat.monde) || (designEssai && quiAgit) ? (
+            {/* La piste des phases (manuel, Plateau animé, Accéléré) prend la place du
+                texte « Round / Tour de... » : elle porte déjà le round, et posée à part
+                elle doublonnait le header. Téléphone : pas de piste, le texte reste. */}
+            {pisteDansBarre ? (
+              <PisteDesPhases
+                dansBarre
+                round={etat.monde?.round_id}
+                lecture={manuel ? undefined : { round: etat.monde!.round_id, index: indexDepuisMoteur(etat.monde!.phase) }}
+              />
+            ) : libelleRound(etat.monde) || (designEssai && quiAgit) ? (
               <div className="bh-etat" role="status">
                 <strong>{libelleRound(etat.monde) || t('Mise en place')}</strong>
                 <span>{libellePhase(etat.monde)}</span>
@@ -6016,7 +6028,6 @@ export function PagePartie({
       />
       {manuel ? (
         <>
-          <PisteDesPhases round={etat.monde?.round_id} />
           <VoletAideManuel ouvert={aideManuelOuverte} ouvrir={ouvrirAideManuel} fermer={fermerAideManuel} />
           <CoucheMarques marques={marquesManuel} />
           <CoucheSelection />
@@ -6025,12 +6036,6 @@ export function PagePartie({
         <>
           {/* Plateau animé et Accéléré n'ont pas le cartouche du bas : la piste des phases, en lecture
               seule, dit où en est la partie (round + étape), comme en manuel. Guidé a déjà son cartouche. */}
-          {modePhaseChoisi !== 'detaille' && etat.monde?.round_id ? (
-            <PisteDesPhases
-              round={etat.monde.round_id}
-              lecture={{ round: etat.monde.round_id, index: indexDepuisMoteur(etat.monde.phase) }}
-            />
-          ) : null}
           <VoletAideAuto
             ouvert={aideAutoOuverte}
             ouvrir={ouvrirAideAuto}

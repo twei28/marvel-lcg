@@ -14,6 +14,13 @@ describe('piste des phases en lecture (Plateau animé, Accéléré)', () => {
     expect(screen.queryByRole('button', { name: '1. Menace' })).toBeNull()
   })
 
+  it('posée dans le header (dansBarre), elle porte la classe qui la sort de sa place flottante', () => {
+    const { container } = render(<PisteDesPhases dansBarre round={1} lecture={{ round: 1, index: 0 }} />)
+    expect(container.querySelector('.piste-phases.piste-phases-barre')).not.toBeNull()
+    render(<PisteDesPhases round={1} lecture={{ round: 1, index: 0 }} />)
+    expect(document.querySelectorAll('.piste-phases-barre')).toHaveLength(1)
+  })
+
   it('aucune étape marquée quand la phase n’en a pas', () => {
     render(<PisteDesPhases round={1} lecture={{ round: 1, index: null }} />)
     expect(courante()).toBeUndefined()
