@@ -47,6 +47,24 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-18",
+        genre: "jeu",
+        fr: "Un bandeau « Continuer la partie » apparaît sur l'accueil et sur l'écran de préparation : un clic ouvre la liste de tes 5 dernières parties non terminées, et choisir l'une d'elles la reprend là où tu l'avais laissée.",
+        en: "A “Continue the game” banner now shows on the home page and on the setup screen: one click opens the list of your last 5 unfinished games, and picking one resumes it right where you left off.",
+    },
+    {
+        date: "2026-11-18",
+        genre: "jeu",
+        fr: "L'écran de connexion est refait, aux couleurs du jeu : « J'ai un compte » ou « Jouer sans compte », et en bas, des anecdotes de comics sur les héros et des astuces de jeu.",
+        en: "The login screen has been redesigned in the game's colours: “I have an account” or “Play without an account”, and at the bottom, comics trivia about the heroes and gameplay tips.",
+    },
+    {
+        date: "2026-11-18",
+        genre: "correction",
+        fr: "Mises à jour de cartes fan-made : Paibok, Ms. America, les Tortues Ninja et Smasher.",
+        en: "Fan-made card updates: Paibok, Ms. America, the Ninja Turtles and Smasher.",
+    },
+    {
         date: "2026-11-17",
         genre: "correction",
         fr: "En partie manuelle sur téléphone, on peut piocher : le tiroir des piles propose « Piocher » et « Piocher plusieurs » sur ton deck, et « Sortir en résolution » sur le deck rencontre. Sur téléphone encore, la question d'une capacité (Futuriste de Tony Stark) ne cache plus les cartes regardées, et son texte est en français. Le bandeau Hogwarts Battle est caché sur téléphone, le jeu n'y étant pas adapté.",
