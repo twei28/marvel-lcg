@@ -83082,7 +83082,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Ms. America",
-   "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+   "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → apply all basic power modifiers to the chosen power for your next basic thwart or attack this turn.",
    "custom": "jakxin"
   },
   {
@@ -83100,7 +83100,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Ms. America",
-   "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → double all modifiers applied to the chosen power on its next use this turn.",
+   "text": "<b>Hero Action</b>: Choose THW or ATK and ready your identity → apply all basic power modifiers to the chosen power for your next basic thwart or attack this turn.",
    "custom": "jakxin"
   },
   {
@@ -107335,7 +107335,7 @@
    },
    "traits": [],
    "set_name": "Paibok",
-   "text": "<b>When Revealed (Alter-Ego)</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set.\n<b>When Revealed (Hero)</b>: Paibok attacks you. Give him 1 additional boost card if you are stunned or confused.",
+   "text": "<b>When Revealed (Alter-Ego)</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set. If no \"<b>Boost</b>\" ability was resolved this way, this card gains surge.\n<b>When Revealed (Hero)</b>: Paibok attacks you. Give him 1 additional boost card if you are stunned or confused.",
    "custom": "Kajislav"
   },
   {
@@ -107348,7 +107348,7 @@
    },
    "traits": [],
    "set_name": "Paibok",
-   "text": "<b>When Revealed</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set.",
+   "text": "<b>When Revealed</b>: Resolve the \"<b>Boost</b>\" ability on each attachment in play that belongs to the Paibok encounter set. If no \"<b>Boost</b>\" ability was resolved this way, this card gains surge.",
    "custom": "Kajislav"
   },
   {
@@ -112112,7 +112112,7 @@
     "NINJA",
     "VIGILANTE"
    ],
-   "text": "[star] <b>Response</b>: After Nobody attacks an enemy with Prey attached, daze that enemy.\n[star] <b>Response</b>: After Nobody thwarts a scheme with Prey attached, cloak her.",
+   "text": "[star] <b>Response</b>: After Nobody takes consequential damage ([consequential]), if she:\n• Attacked an enemy with Prey attached, daze that enemy.\n• Thwarted a scheme with Prey attached, cloak her.",
    "set_name": "Alopex",
    "custom": "Inkwire"
   },
@@ -118379,7 +118379,7 @@
     "TURTLE"
    ],
    "set_name": "TMNT Shinobi Taijutsu",
-   "text": "[star] <b>Response</b>: After Odyn uses a basic power, discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behind me this time.\"</i>",
+   "text": "[star] <b>Response</b>: After Odyn takes consequential damage ([consequential]), discard a [[DEFENSE]] card from your hand → give Odyn a tough status card.\n<i>\"I suggest you stand behind me this time.\"</i>",
    "custom": "Inkwire"
   },
   {
@@ -118561,7 +118561,7 @@
     "PSIONIC",
     "THWART"
    ],
-   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. If this removes the last threat on that scheme, choose:\n• Cloak a friendly character.\n• Return an event from your discard pile to your hand.",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Choose:\n• Cloak a friendly character.\n• Return an event from your discard pile to your hand.\n<i>\"Take flight.\" —Leonardo</i>",
    "set_name": "TMNT Shinobi Dual",
    "custom": "Inkwire"
   },
@@ -118818,7 +118818,7 @@
     "TAIJUTSU"
    ],
    "set_name": "TMNT Shinobi Paths",
-   "text": "Permanent.\nYou get -1 hand size.\n<i>Gardener</i> — <b>Hero Response</b>: After you play an [[ATTACK]] or [[DEFENSE]] event, take 1 damage → daze an enemy.",
+   "text": "Permanent.\nYou get -1 hand size.\n<i>Gardener</i> — <b>Hero Response</b>: After you play a Shinobi event, deal 1 damage to your identity → daze an enemy.",
    "custom": "Inkwire"
   },
   {
@@ -133009,7 +133009,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "<b>Hero Action</b>: Resolve the \"<b>Hero Response</b>\" ability on an [[EXOSPEX]] upgrade you control. Then discard that [[EXOSPEX]] upgrade.\n<i>\"Guardsman, do you wish to upgrade?\"</i> —Exospex",
+   "text": "<b>Hero Action</b>: Resolve the \"<b>Special</b>\" ability on an [[EXOSPEX]] upgrade you control. Then discard that [[EXOSPEX]] upgrade.\n<i>\"Guardsman, do you wish to upgrade?\"</i> —Exospex",
    "custom": "Phenexian"
   },
   {
@@ -133027,7 +133027,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "Smasher gets +1 ATK and +1 THW.\nSmasher's attacks gain ranged.\n<b>Hero Response</b> <i>(attack)</i>: After you play Penta-Vision, deal 3 damage to an enemy.\n<i>\"Spectra form super-heated.\"</i> —Exospex",
+   "text": "Smasher gets +1 ATK and +1 THW.\nSmasher's attacks gain ranged.\n<b>Special</b> <i>(attack)</i>: Deal 3 damage to an enemy.\n<i>\"Spectra form super-heated.\"</i> —Exospex",
    "custom": "Phenexian"
   },
   {
@@ -133045,7 +133045,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "Smasher gets +2 ATK.\nSmasher's attacks gain overkill.\n<b>Hero Response</b>: After you play Hyper-Strength, stun an enemy.\n<i>\"Upgrading gauntlet grading.\"</i> —Exospex",
+   "text": "Smasher gets +2 ATK.\nSmasher's attacks gain overkill.\n<b>Special</b>: Stun an enemy.\n<i>\"Upgrading gauntlet grading.\"</i> —Exospex",
    "custom": "Phenexian"
   },
   {
@@ -133063,7 +133063,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "Smasher gets +1 ATK, +1 THW and +1 DEF.\n<b>Hero Response</b>: After you play Hyper-Speed, ready Smasher.\n<i>\"I came as quickly as I could.\"</i> —Smasher",
+   "text": "Smasher gets +1 ATK, +1 THW and +1 DEF.\n<b>Special</b>: Ready Smasher.\n<i>\"I came as quickly as I could.\"</i> —Smasher",
    "custom": "Phenexian"
   },
   {
@@ -133081,7 +133081,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "Smasher gets +2 DEF and gains Stalwart.\n<b>Hero Response</b>: After you play Super-Resistance, give Smasher a tough status card.\n<i>\"Congratulations guardian. You have held the line.\"</i> —Gladiator",
+   "text": "Smasher gets +2 DEF and gains Stalwart.\n<b>Special</b>: Give Smasher a tough status card.\n<i>\"Congratulations guardian. You have held the line.\"</i> —Gladiator",
    "custom": "Phenexian"
   },
   {
@@ -133100,7 +133100,7 @@
     "SUPERPOWER"
    ],
    "set_name": "Smasher",
-   "text": "Smasher gets +1 THW, +1 DEF and gains the [[AERIAL]] trait.\n<b>Hero Response</b> <i>(thwart)</i>: After you play Exo-Flight, remove 3 threat from a scheme.\n<i>\"Wwhooaaaaaa!\"</i> —Smasher",
+   "text": "Smasher gets +1 THW, +1 DEF and gains the [[AERIAL]] trait.\n<b>Special</b> <i>(thwart)</i>: Remove 3 threat from a scheme.\n<i>\"Wwhooaaaaaa!\"</i> —Smasher",
    "custom": "Phenexian"
   },
   {

@@ -117,15 +117,22 @@ def AttachementsDeLEnsemble(effect: 'Effect') -> List['CardFace']:
             if Attachment.IsType(f) and f.IsInPlay() and f.paper.set_name == ENSEMBLE]
 
 
-def ResoudreLesBoosts(effect: 'Effect', joueur: 'Player') -> None:
+def ResoudreLesBoosts(effect: 'Effect', joueur: 'Player') -> int:
     """« Resolve the "Boost" ability on each attachment in play that belongs to the Paibok encounter
-    set. » Ordre au choix du joueur qui resout (plusieurs effets resolus d'affilee)."""
+    set. » Ordre au choix du joueur qui resout (plusieurs effets resolus d'affilee).
+
+    Rend le NOMBRE de capacites Boost reellement resolues (17/11/2026, version du 03/11/2026 de
+    Kajislav) : Getting Ruthless (alter ego) et Power Demonstration ajoutent « If no "Boost" ability
+    was resolved this way, this card gains surge. ». Zero = aucun attachement du set en jeu, OU aucun
+    ne porte de Boost (`ResolveAbility` rend False quand il n'y a rien a resoudre)."""
     faces = AttachementsDeLEnsemble(effect)
     if not faces:
-        return
+        return 0
+    resolus = 0
     for face in joueur.ChooseOrder(faces):
-        if face.IsInPlay():
-            face.ResolveAbility(joueur, AbilityType.Boost, effect)
+        if face.IsInPlay() and face.ResolveAbility(joueur, AbilityType.Boost, effect):
+            resolus += 1
+    return resolus
 
 
 def AttacherAPaibok() -> 'Ability':

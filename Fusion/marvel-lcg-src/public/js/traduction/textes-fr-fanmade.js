@@ -1376,8 +1376,8 @@ export const TEXTES_FR_FANMADE = {
     // ms_america — Energy Infusion (Resource)
     'ma008': "<b>Réponse de héros</b> : après avoir dépensé cette carte pour payer une carte [[SUPERPOWER]], résolvez « Star-Gaze » une fois de plus, sur la même ressource imprimée que la carte jouée.",
     // ms_america — America's Anger (Event, x2)
-    'ma009': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → doublez tous les modificateurs appliqués au pouvoir choisi lors de sa prochaine utilisation ce tour-ci.",
-    'ma010': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → doublez tous les modificateurs appliqués au pouvoir choisi lors de sa prochaine utilisation ce tour-ci.",
+    'ma009': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → appliquez tous les modificateurs de pouvoir de base au pouvoir choisi pour votre prochain contre ou votre prochaine attaque de base ce tour-ci.",
+    'ma010': "<b>Action de héros</b> : choisissez CTR ou ATQ et redressez votre identité → appliquez tous les modificateurs de pouvoir de base au pouvoir choisi pour votre prochain contre ou votre prochaine attaque de base ce tour-ci.",
     // ms_america — Bulletproof Chica (Event, x2)
     'ma011': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, prévenez tous ces dégâts. Donnez une carte d'état Tenace à votre identité.",
     'ma012': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts, quel qu'en soit le nombre, prévenez tous ces dégâts. Donnez une carte d'état Tenace à votre identité.",
@@ -3627,9 +3627,9 @@ export const TEXTES_FR_FANMADE = {
     // skrull_menace — Council Manipulation (Treachery)
     'sk158': "<b>Une fois révélée</b> : Paibok manigance. Si vous êtes sonné ou désorienté, cette carte gagne Renfort.",
     // skrull_menace — Getting Ruthless (Treachery)
-    'sk159': "<b>Une fois révélée (alter ego)</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok.\n<b>Une fois révélée (héros)</b> : Paibok vous attaque. Donnez-lui 1 carte de boost supplémentaire si vous êtes sonné ou désorienté.",
+    'sk159': "<b>Une fois révélée (alter ego)</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok. Si aucune capacité \"<b>Boost</b>\" n'a été résolue de cette façon, cette carte gagne Déchaînement.\n<b>Une fois révélée (héros)</b> : Paibok vous attaque. Donnez-lui 1 carte de boost supplémentaire si vous êtes sonné ou désorienté.",
     // skrull_menace — Power Demonstration (Treachery)
-    'sk160': "<b>Une fois révélée</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok.",
+    'sk160': "<b>Une fois révélée</b> : résolvez la capacité \"<b>Boost</b>\" de chaque attachement en jeu qui appartient au set de rencontre Paibok. Si aucune capacité \"<b>Boost</b>\" n'a été résolue de cette façon, cette carte gagne Déchaînement.",
     // skrull_menace — O.M.N.I.T.R.O.N.I.C.U.S. (Environment)
     'sk161': "Chaque sbire [[REVENGER]] gagne Vilenie.\n<b>Action de héros</b> : s'il n'y a aucun ennemi [[REVENGER]] en jeu, dépensez les ressources suivantes : [energy][energy] → défaussez cette carte.",
     // skrull_menace — Angar the Screamer (Minion)
@@ -4201,7 +4201,7 @@ export const TEXTES_FR_FANMADE = {
     // alopex — * Alopex (AlterEgo)
     'ta001b': "<b>Mise en place</b> : mettez votre amélioration Prey de côté.\n<b>Action</b> : défaussez 1 carte de votre main → cherchez dans votre deck et votre défausse jusqu'à 2 améliorations [[KAMA]] et mettez-les en jeu, inclinées. <i>(Mélangez.)</i>",
     // alopex — * Nobody (Ally)
-    'ta002': "[star] <b>Réponse</b> : après que Nobody a attaqué un ennemi portant Prey, hébétez cet ennemi.\n[star] <b>Réponse</b> : après que Nobody a contré une manigance portant Prey, camouflez-la.",
+    'ta002': "[star] <b>Réponse</b> : après que Nobody subit des dégâts consécutifs, si elle :\n• A attaqué un ennemi portant Prey, hébétez cet ennemi.\n• A contré une manigance portant Prey, camouflez-la.",
     // alopex — Bold Strategy (Event)
     'ta003': "<b>Action de héros</b> : camouflez Alopex. Vous pouvez dépenser jusqu'à 3 ressources [mental] pour hébéter un ennemi pour chaque ressource [mental] dépensée de cette façon.",
     // alopex — Pounce (Event)
@@ -4803,7 +4803,7 @@ export const TEXTES_FR_FANMADE = {
     // sh016 * Jō
     'sh016': "Restreint. Utilisations (3 jetons Bâton).\n<b>Réponse</b> : après que vous avez joué un événement Taijutsu, placez 1 jeton Bâton ici.\n<b>Réponse de héros</b> : après que vous avez blessé un ennemi, retirez 2 jetons Bâton de cette carte → hébétez cet ennemi.",
     // sh017 * Odyn
-    'sh017': "[star] <b>Réponse</b> : après qu'Odyn a utilisé un pouvoir de base, défaussez une carte [[DEFENSE]] de votre main → donnez à Odyn une carte d'état Tenace.\n<i>« Je vous conseille de rester derrière moi cette fois. »</i>",
+    'sh017': "[star] <b>Réponse</b> : après qu'Odyn subit des dégâts consécutifs, défaussez une carte [[DEFENSE]] de votre main → donnez à Odyn une carte d'état Tenace.\n<i>« Je vous conseille de rester derrière moi cette fois. »</i>",
     // sh018 Countercross
     'sh018': "<b>Interruption de héros</b> <i>(attaque/défense/contre)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez 1 de ces dégâts. Infligez 1 dégât à un ennemi. Retirez 1 menace d'une manigance. Piochez 1 carte.",
     // sh019 Sideswipe
@@ -4824,7 +4824,7 @@ export const TEXTES_FR_FANMADE = {
     // sc006 Migatte (Événement, Bushido/Taijutsu)
     'sc006': "<b>Interruption de héros</b> <i>(défense)</i> : quand votre héros se défend contre une attaque, il gagne +2 DEF pour cette attaque. Si vous avez payé cette carte avec une carte Shinobi, redressez votre héros.\n<i>« Il est temps de s'écarter de la tradition. » —Nightwatcher</i>",
     // sc007 Mizuki (Événement, Kuji-Kiri/Ninjutsu)
-    'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, choisissez :\n• Camouflez un personnage ami.\n• Remettez dans votre main un événement de votre pile de défausse.",
+    'sc007': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Choisissez :\n• Camouflez un personnage ami.\n• Remettez dans votre main un événement de votre pile de défausse.\n<i>« Prenez votre envol. » — Leonardo</i>",
     // sc008 Naito Dansā (Événement, Kuji-Kiri/Ninjutsu)
     'sc008': "<b>Action de héros</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à ce que vous défaussiez un attachement ou une manigance annexe. Révélez cette carte → camouflez jusqu'à 2 personnages amis. Hébétez jusqu'à 2 ennemis.\n<i>« Regardez mes mouvements. » —Michelangelo</i>",
     // sc009 Yomi (Événement, Kuji-Kiri/Taijutsu)
@@ -4855,7 +4855,7 @@ export const TEXTES_FR_FANMADE = {
     // se009 Ashigaru (Path hybride, Bushido + Taijutsu)
     'se009': "Permanent.\nVous avez -1 à votre taille de main.\nVous gagnez le trait [[SOLDIER]].\n<i>Pied Léger</i> — <b>Ressource de héros</b> : inclinez cette carte → générez une ressource [wild]. Si vous avez payé une carte Shinobi avec cette ressource, piochez 1 carte.",
     // se010 Onmitsu (Path hybride, Ninjutsu + Taijutsu)
-    'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Jardinier</i> — <b>Réponse de héros</b> : après que vous avez joué un événement [[ATTACK]] ou [[DEFENSE]], subissez 1 dégât → hébétez un ennemi.",
+    'se010': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Jardinier</i> — <b>Réponse de héros</b> : après que vous avez joué un événement Shinobi, infligez 1 dégât à votre identité → hébétez un ennemi.",
     // se011 Yōjimbō (Path hybride, Bushido + Ninjutsu)
     'se011': "Permanent.\nVous avez -1 à votre taille de main.\n<i>Garde du Corps</i> — <b>Interruption de héros</b> : quand un ennemi attaque, inclinez cette carte → déclarez votre héros en tant que défenseur sans l'incliner.\n<i>« Je suis à tes côtés. »</i>",
     // iron_fist — pack OFFICIEL MC64EN (novembre 2026) : traduction PROVISOIRE, faite le 20/10/2026 avant
@@ -6250,12 +6250,12 @@ export const TEXTES_FR_FANMADE = {
     'sz001b': "Vous ne pouvez pas avoir plus d'1 amélioration [[EXOSPEX]] en jeu.\n<i>Prêt au combat</i> — <b>Action</b> : cherchez dans votre deck et votre défausse une amélioration [[EXOSPEX]] et ajoutez-la à votre main. <i>(Limite d'une fois par tour.)</i>\n<i>« Dis à la baby-sitter qu'on aura du retard. »</i>",
     'sz002': "Cannonball a Ténacité si votre identité a le trait [[AERIAL]].\n<b>Réponse</b> : après que vous avez joué une carte [[AERIAL]], donnez une carte d'état Tenace à Cannonball.\n<i>« Rien dans l'univers ne nous séparera. »</i>",
     'sz003': "<b>Action d'alter ego</b> : inclinez Home on Chandilar → piochez 2 cartes.\n<i>« Nous n'oublierons pas la Terre. Mais ceci est aussi notre planète natale. »</i> —Izzy Kane",
-    'sz004': "<b>Action de héros</b> : résolvez la capacité « <b>Réponse de héros</b> » d'une amélioration [[EXOSPEX]] que vous contrôlez. Puis, défaussez cette amélioration [[EXOSPEX]].\n<i>« Garde, souhaitez-vous une mise à niveau ? »</i> —Exospex",
-    'sz005': "Smasher gagne +1 ATQ et +1 CTR.\nLes attaques de Smasher gagnent à distance.\n<b>Réponse de héros</b> <i>(attaque)</i> : après que vous avez joué Penta-Vision, infligez 3 dégâts à un ennemi.\n<i>« Forme spectrale en surchauffe. »</i> —Exospex",
-    'sz006': "Smasher gagne +2 ATQ.\nLes attaques de Smasher gagnent Déferlement.\n<b>Réponse de héros</b> : après que vous avez joué Hyper-Strength, sonnez un ennemi.\n<i>« Mise à niveau du gantelet. »</i> —Exospex",
-    'sz007': "Smasher gagne +1 ATQ, +1 CTR et +1 DÉF.\n<b>Réponse de héros</b> : après que vous avez joué Hyper-Speed, redressez Smasher.\n<i>« Je suis venue aussi vite que j'ai pu. »</i> —Smasher",
-    'sz008': "Smasher gagne +2 DÉF et gagne Robuste.\n<b>Réponse de héros</b> : après que vous avez joué Super-Resistance, donnez une carte d'état Tenace à Smasher.\n<i>« Félicitations, gardienne. Vous avez tenu la ligne. »</i> —Gladiator",
-    'sz009': "Smasher gagne +1 CTR, +1 DÉF et le trait [[AERIAL]].\n<b>Réponse de héros</b> <i>(contre)</i> : après que vous avez joué Exo-Flight, retirez 3 menaces d'une manigance.\n<i>« Wwhooaaaaaa ! »</i> —Smasher",
+    'sz004': "<b>Action de héros</b> : résolvez la capacité « <b>Spécial</b> » d'une amélioration [[EXOSPEX]] que vous contrôlez. Puis, défaussez cette amélioration [[EXOSPEX]].\n<i>« Garde, souhaitez-vous une mise à niveau ? »</i> —Exospex",
+    'sz005': "Smasher gagne +1 ATQ et +1 CTR.\nLes attaques de Smasher gagnent à distance.\n<b>Spécial</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi.\n<i>« Forme spectrale en surchauffe. »</i> —Exospex",
+    'sz006': "Smasher gagne +2 ATQ.\nLes attaques de Smasher gagnent Déferlement.\n<b>Spécial</b> : sonnez un ennemi.\n<i>« Mise à niveau du gantelet. »</i> —Exospex",
+    'sz007': "Smasher gagne +1 ATQ, +1 CTR et +1 DÉF.\n<b>Spécial</b> : redressez Smasher.\n<i>« Je suis venue aussi vite que j'ai pu. »</i> —Smasher",
+    'sz008': "Smasher gagne +2 DÉF et gagne Robuste.\n<b>Spécial</b> : donnez une carte d'état Tenace à Smasher.\n<i>« Félicitations, gardienne. Vous avez tenu la ligne. »</i> —Gladiator",
+    'sz009': "Smasher gagne +1 CTR, +1 DÉF et le trait [[AERIAL]].\n<b>Spécial</b> <i>(contre)</i> : retirez 3 menaces d'une manigance.\n<i>« Wwhooaaaaaa ! »</i> —Smasher",
     'sz010': "<b><i>Donnez cette carte au joueur d'Izzy Kane.</i></b>\nVotre taille de main est réduite de 3.\n<b>Action d'alter ego</b> : inclinez Izzy Kane ou Cannonball → défaussez Family Matters.\n<i>« Ce voyage peut être fou, et pourtant... ce sont les petites choses qui en valent la peine. »</i> —Izzy Kane",
     'sz011': "Vilenie.\n[star] Les attaques de Scientist Supreme gagnent perçant et à distance.\n<b>Une fois révélé</b> : vous êtes sonné et désorienté.\n<i>(Sbire némésis de Smasher.)</i>",
     'sz012': "<i>« Le résultat est inévitable. Changer, devenir autre chose. »</i> —Scientist Supreme\n<b>Réponse forcée</b> : après qu'une carte d'état est défaussée d'un personnage allié, si cet état était :\n<i>Sonné</i> - Infligez 2 dégâts à un personnage allié.\n<i>Désorienté</i> - Placez 2 menaces sur la manigance principale.",

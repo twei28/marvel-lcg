@@ -10704,13 +10704,35 @@ CAS = [
         "attendu": {"degats": [["01094", 2]]},
     },
     {
-        "nom": "ma009 America's Anger — les modificateurs d'ATQ sont DOUBLES a la prochaine utilisation",
-        "pourquoi": ("01057 Combat Training donne +1 ATQ : Ms. America passe de 2 a 3. La "
-                     "carte double le MODIFICATEUR, pas la base -> 2 + (1 x 2) = 4 a "
-                     "l'attaque suivante, jamais 6. Avec le degat de Star-Gaze [physical], "
-                     "Rhino encaisse 5. `preferer_option` force la branche ATQ (le pilote "
-                     "prend toujours la premiere, ici CTR) et `declencher_apres` fait "
-                     "attaquer APRES le jeu de la carte"),
+        "nom": "ma009 America's Anger — SOMME DES DEUX : le modificateur de CTR s'ajoute a la prochaine ATTAQUE (Star Flight +1 CTR, choix ATQ)",
+        "pourquoi": ("texte change le 17/11/2026 (« apply all basic power modifiers to the chosen "
+                     "power »), lecture « somme des deux » choisie par l'utilisateur. ma006 Star "
+                     "Flight donne +1 CTR et AUCUN modificateur d'ATQ : l'ATQ de Ms. America passe "
+                     "de 2 a 3 a l'attaque suivante (2 + 0 + 1), puis Star-Gaze [physical] ajoute "
+                     "1 degat -> Rhino encaisse 4. L'ancienne lecture (doubler le modificateur du "
+                     "pouvoir CHOISI) aurait donne 2 + 0 = 2, soit 3 degats : ce cas est rouge sans "
+                     "le changement. `preferer_option` force la branche ATQ et `declencher_apres` "
+                     "fait attaquer APRES le jeu de la carte"),
+        "scenario": "rhino",
+        "heros": "ms_america",
+        "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
+                          "Puzzle.PutIntoPlay('ma006', under_control=True)",
+                          "Puzzle.Exhaust('ma001a')"],
+        "declencher": [],
+        "main_exclusive": ["ma009", "01088"],
+        "preferer_option": "your ATK",
+        "cibles": ["01094"],
+        "jouer": ["ma009"],
+        "declencher_apres": ["Puzzle.Attack('ma001a')"],
+        "verifier": "etat_attendu",
+        "attendu": {"degats": [["01094", 4]]},
+    },
+    {
+        "nom": "ma009 America's Anger — contre-epreuve : Combat Training (+1 ATQ) seul, choix ATQ -> RIEN de plus (l'autre pouvoir n'a aucun modificateur)",
+        "pourquoi": ("01057 Combat Training donne +1 ATQ : Ms. America passe de 2 a 3. Le modificateur "
+                     "de l'AUTRE pouvoir (CTR) est nul, donc la carte n'ajoute rien : 3 + 1 de Star-Gaze "
+                     "= 4. Avant le 17/11/2026 la carte DOUBLAIT ce modificateur (5 degats) : ce cas "
+                     "empeche le retour de l'ancienne lecture"),
         "scenario": "rhino",
         "heros": "ms_america",
         "mise_en_place": ["Puzzle.ChangeToFace('America Chavez', 'ma001a')",
@@ -10723,7 +10745,7 @@ CAS = [
         "jouer": ["ma009"],
         "declencher_apres": ["Puzzle.Attack('ma001a')"],
         "verifier": "etat_attendu",
-        "attendu": {"degats": [["01094", 5]]},
+        "attendu": {"degats": [["01094", 4]]},
     },
     {
         "nom": "ma009 America's Anger — contre-epreuve : identite DEJA PRETE, la carte est INJOUABLE",

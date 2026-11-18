@@ -40,9 +40,9 @@ def IdentiteAerienneUI(effect: 'Effect', ui: List['CardFace']) -> int:
 
 
 # ------------------------------------------------------------------------------------------------------------------
-# Les cinq « Hero Response » des ameliorations EXOSPEX. Chaque amelioration les joue par SA capacite (« After you play X »,
-# cible choisie par le moteur) ; Accessing les REJOUE depuis le jeu (« Resolve the "Hero Response" ability on an EXOSPEX upgrade
-# you control »), ce que le moteur ne sait pas faire pour une Response : on appelle donc les memes fonctions.
+# Les cinq capacites « Special » des ameliorations EXOSPEX (avant le 17/11/2026 : « Hero Response: After you play X », jouee par chaque
+# amelioration). Elles ne sont plus declenchees que par Accessing (« Resolve the "Special" ability on an EXOSPEX upgrade you control »),
+# qui choisit la cible pour le joueur : on appelle donc ces fonctions depuis `ResoudreLaReponseDe`.
 # ------------------------------------------------------------------------------------------------------------------
 def ReponsePentaVision(effect: 'Effect', cibles: Sequence['CardFace']) -> None:
     """« deal 3 damage to an enemy » : Hero Response ETIQUETEE (attack) = une attaque de l'identite (RR « Labeled Ability »).
