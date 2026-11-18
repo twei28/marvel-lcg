@@ -48,6 +48,18 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-18",
+        genre: "correction",
+        fr: "Campagne à deux héros sur un même écran (Web of Deceit) : on peut maintenant choisir les cartes de chaque héros à la fin d'un scénario, au lieu de rester bloqué sur le second.",
+        en: "Two-hero campaigns on a single screen (Web of Deceit): you can now pick each hero's cards at the end of a scenario, instead of getting stuck on the second hero.",
+    },
+    {
+        date: "2026-11-18",
+        genre: "jeu",
+        fr: "Les phases du round (phase des héros, les cinq temps de la phase du méchant) passent dans la barre du haut, à la place du texte « Round / Tour de… », au lieu de flotter sous elle.",
+        en: "The round's phases (hero phase, the five steps of the villain phase) now sit in the top bar, replacing the “Round / Turn of…” text, instead of floating below it.",
+    },
+    {
+        date: "2026-11-18",
         genre: "jeu",
         fr: "Un bandeau « Continuer la partie » apparaît sur l'accueil et sur l'écran de préparation : un clic ouvre la liste de tes 5 dernières parties non terminées, et choisir l'une d'elles la reprend là où tu l'avais laissée.",
         en: "A “Continue the game” banner now shows on the home page and on the setup screen: one click opens the list of your last 5 unfinished games, and picking one resumes it right where you left off.",
