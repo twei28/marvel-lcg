@@ -71,7 +71,15 @@ beforeEach(() => {
     JSON.stringify({ id: 'trors-1', scenario: 'crossbones' })
   )
 })
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => {
+  vi.unstubAllGlobals()
+  window.history.replaceState(null, '', '/')
+})
+
+/** Le salon pose `multi=1` sur le lien de chaque siège ; sans lui, c'est une table unique. */
+function enLigne() {
+  window.history.replaceState(null, '', '/?multi=1')
+}
 
 describe('le panneau à plusieurs', () => {
   it("ne montre pas le bouton qui lance la suite à un siège qui n'est pas l'hôte", async () => {
@@ -94,7 +102,19 @@ describe('le panneau à plusieurs', () => {
     expect(screen.getByText(/En attente de l'hôte pour commencer/)).toBeInTheDocument()
   })
 
+  it('table unique : un seul écran peut remplir la case de chaque héros', async () => {
+    // Régression (retour d'un joueur, campagne Web of Deceit) : à deux héros sur
+    // un même appareil, la case du héros 2 restait « à remplir par » lui-même.
+    render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={0} onTermine={() => {}} />)
+    await auBilan()
+    const cartes = screen.getAllByRole('button', { name: '01001' }) as HTMLButtonElement[]
+    expect(cartes).toHaveLength(2)
+    expect(cartes[0]?.disabled).toBe(false)
+    expect(cartes[1]?.disabled).toBe(false)
+  })
+
   it('rend inertes les cases des autres sièges', async () => {
+    enLigne()
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
     await auBilan()
 
@@ -112,6 +132,7 @@ describe('le panneau à plusieurs', () => {
   })
 
   it("agrandit la carte au survol, même quand sa case est inerte, et la ferme en sortant", async () => {
+    enLigne()
     render(<PanneauRecompenses monde={mondeDeTest()} gagne siege={1} onTermine={() => {}} />)
     await auBilan()
     const cartes = screen.getAllByRole('button', { name: '01001' }) as HTMLButtonElement[]

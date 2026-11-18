@@ -17,6 +17,7 @@ import {
   optionsProposees,
   type ChampVictoire,
 } from './detecteurs'
+import { estMultijoueur } from '../moteur'
 import { droitSurChamp, peutValider, type DroitCarnet } from './droits-carnet'
 
 export function ChampRecompense({
@@ -54,7 +55,7 @@ export function ChampRecompense({
         // À plusieurs, une case n'appartient qu'à un siège. Les autres la
         // voient, pour suivre le carnet se remplir, mais ne peuvent pas
         // l'écrire : sinon le dernier à cliquer gagne, en silence.
-        const droit = droitSurChamp(champ, joueurId, siege, peutValider(siege))
+        const droit = droitSurChamp(champ, joueurId, siege, peutValider(siege), !estMultijoueur())
         return (
           <div className={`camp-champ-ligne${droit === 'lecture' ? ' est-lecture' : ''}`} key={cle}>
             {champ.parJoueur ? (

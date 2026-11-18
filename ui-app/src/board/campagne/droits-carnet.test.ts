@@ -34,6 +34,16 @@ describe('les droits sur le carnet', () => {
   })
 })
 
+describe('une seule table, un seul écran', () => {
+  it('tous les héros sont saisissables depuis le siège 0', () => {
+    expect(droitSurChamp(personnel, 1, 0, true, true)).toBe('saisie')
+    expect(droitSurChamp(personnel, 0, 0, true, true)).toBe('saisie')
+  })
+  it('un siège inconnu ne peut toujours rien écrire', () => {
+    expect(droitSurChamp(personnel, 1, -1, false, true)).toBe('lecture')
+  })
+})
+
 describe('qui valide pour la table', () => {
   it("seul l'hôte valide", () => {
     expect(peutValider(0)).toBe(true)

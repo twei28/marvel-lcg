@@ -43,6 +43,7 @@ import { assainirCarnet, preRemplir } from './preremplissage'
 import { sansRetraits } from './retraits-carnet'
 import { verdictDeCampagne, type Verdict } from './defaite-campagne'
 import { repriseDeCampagne, type Reprise } from './reprise-campagne'
+import { estMultijoueur } from '../moteur'
 import { estModeManuel } from '../manuel/mode'
 import { ParcoursFinScenario, type ResumeFinScenario, type SuiteDemandee } from './ParcoursFinScenario'
 
@@ -226,7 +227,8 @@ export function PanneauRecompenses({
   // qu'il vient d'effacer réapparaîtrait toutes les trois secondes.
   const idCampagne = etat.phase === 'pret' ? etat.campagne.id : undefined
   useEffect(() => {
-    if (!peutValider(siege) || !idCampagne) return
+    // Table unique : personne d'autre n'écrit, et recharger écraserait la saisie.
+    if (!peutValider(siege) || !idCampagne || !estMultijoueur()) return
     const minuteur = window.setInterval(() => {
       void chargerCampagne(idCampagne)
         .then((fraiche) => {
@@ -360,7 +362,7 @@ export function PanneauRecompenses({
       for (const champ of visibles) {
         const joueurs = champ.parJoueur ? [...Array(total).keys()] : [0]
         for (const joueurId of joueurs) {
-          if (droitSurChamp(champ, joueurId, siege, peutValider(siege)) !== 'saisie') continue
+          if (droitSurChamp(champ, joueurId, siege, peutValider(siege), !estMultijoueur()) !== 'saisie') continue
           const cle = cleCarnet(champ, joueurId)
           const valeur = valeurs[cle]
           if (valeur !== undefined) miens[cle] = valeur
