@@ -73,6 +73,31 @@ def detecter(entete_cookie: str = "", accept_language: str = "") -> str:
 # a chaque ajout, exactement comme c'est arrive au jeu le 15/09/2026.
 # ---------------------------------------------------------------------------
 DICO_EN: dict[str, str] = {
+    # --- Ecran de connexion refait (18/11/2026), voir page_connexion.py ---
+    "Pages publiques": "Public pages",
+    "Prêt pour la <em>prochaine partie</em> ?": "Ready for the <em>next game</em>?",
+    "Marvel Champions dans ton navigateur : tes héros, tes decks, tes parties en solo ou à plusieurs.":
+        "Marvel Champions in your browser: your heroes, your decks, your games solo or with friends.",
+    "J'ai un compte": "I have an account",
+    "Retrouve tes decks, tes campagnes et tes parties en cours.": "Find your decks, your campaigns and your games in progress.",
+    "Je n'ai pas de compte": "I don't have an account",
+    "Lance une partie tout de suite, sans rien créer.": "Start a game right away, without creating anything.",
+    "Une table en ligne prête en quelques secondes": "An online table ready in a few seconds",
+    "Invite tes amis par un simple lien": "Invite your friends with a simple link",
+    "Tout est jouable, il suffit de posséder le jeu": "Everything is playable, you just need to own the game",
+    "Jouer sans compte": "Play without an account",
+    'Tu veux garder tes decks et tes parties ? <a href="/inscription">Demande un compte</a>.':
+        'Want to keep your decks and your games? <a href="/inscription">Request an account</a>.',
+    "Le saviez-vous et astuces": "Did you know, and tips",
+    "Précédent": "Previous",
+    "Suivant": "Next",
+    "Contacter les créateurs": "Contact the creators",
+    "Réessaie dans quelques minutes : une table se libère dès qu'une partie se termine.":
+        "Try again in a few minutes: a table frees up as soon as a game ends.",
+    "Toutes les tables en ligne sont prises": "All the online tables are taken",
+    "Trop de tables créées": "Too many tables created",
+    "Tu as déjà ouvert plusieurs parties en ligne cette heure-ci. Réessaie plus tard.":
+        "You have already opened several online games this hour. Try again later.",
     # --- Le squelette de toutes les pages -----------------------------------
     "Ton espace de jeu est à toi : tes decks, tes campagnes en cours et tes "
     "hauts faits t'y attendent d'une fois sur l'autre. Éteindre le jeu "

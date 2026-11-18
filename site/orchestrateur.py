@@ -272,6 +272,7 @@ sys.path.insert(0, os.path.join(RACINE_JEU, "tools"))
 import config_serveur
 import langue as lang
 import createur_cartes
+import page_connexion
 import narval as narval_du_moment  # noqa: E402  (dependant de sys.path ci-dessus)
 
 
@@ -7042,6 +7043,12 @@ class Handler(BaseHTTPRequestHandler):
         self, quoi: str, erreur: str = "", jeton: str = "", instance_discord: str = ""
     ) -> bytes:
         inscription = quoi == "inscription"
+        if not inscription:
+            # L'ecran de connexion (refonte du 18/11/2026) vit dans `page_connexion.py` : en-tete, deux cartes, bande d'infos.
+            return page_connexion.page_connexion(
+                erreur, instance_discord, langue_html=_bouton_langue(), bouton_appli=_bouton_appli(),
+                mention=_mention_complete(), tete_appli=TETE_APPLI,
+                jours_expiration=EXPIRATION_JOURS).encode("utf-8")
         champs = ('<input type="hidden" name="i" value="%s">'
                   '<label>%s<input name="pseudo" autocomplete="username" required></label>'
                   '<label>%s<input name="email" type="email" '
