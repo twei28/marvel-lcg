@@ -410,7 +410,11 @@ remplacer_code() {
   etape "6. Remplacement du code sur le serveur"
   distant_script "archive de retour arriere $ROLLBACK" <<REMOTE
 set -e
-tar -czf $ROLLBACK -C $DIST --exclude='site/comptes.json' --exclude='*.db*' --exclude='site/rapports' Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data site
+# Code 1 de tar = « fichier modifie pendant la lecture » (des joueurs connectes ecrivent dans site/) : un avertissement, pas
+# un echec (18/11/2026 : il arretait le deploiement apres 15 min d'annonce). Le code 2 et plus reste fatal.
+code_tar=0
+tar -czf $ROLLBACK -C $DIST --exclude='site/comptes.json' --exclude='*.db*' --exclude='site/rapports' Fusion/marvel-lcg-src/src Fusion/marvel-lcg-src/public Fusion/marvel-lcg-src/data site || code_tar=\$?
+[ "\$code_tar" -le 1 ] || exit "\$code_tar"
 test -s $ROLLBACK
 ls -lh $ROLLBACK
 # On ne garde que les 5 plus recentes (03/11/2026) : 49 archives de 120 Mo s'etaient accumulees dans /root (4,7 Go,
