@@ -1319,6 +1319,21 @@ function ouvrirFeuilleImport(i) {
     );
 }
 
+/** Le bandeau « Continuer la partie » (reprise.js) : rien si le script n'est pas la ou s'il n'y a aucune partie en cours. */
+function bandeauReprise() {
+    return typeof window.bandeauReprise === "function" ? window.bandeauReprise() : document.createDocumentFragment();
+}
+
+/** L'accueil, avec le bandeau « Continuer la partie » AU-DESSUS DES BOUTONS (le stage est une rangee flex : un frere du bandeau se
+ *  retrouvait a cote du titre au lieu de dessus). */
+function accueilAvecBandeau() {
+    const vue = accueilView();
+    // Entre le titre et la grille des boutons (PC), ou juste au-dessus du gros bouton Jouer (telephone) : jamais au-dessus du logo.
+    const cible = vue.querySelector(".acc-modes") || vue.querySelector(".acc-tel-jouer");
+    if (cible) cible.before(bandeauReprise()); else vue.prepend(bandeauReprise());
+    return vue;
+}
+
 function render() {
     if (state.accueil && estTel()) {
         // Téléphone (zone 2 de la refonte du 09/10/2026) : l'en-tête fin, sans
@@ -1327,7 +1342,7 @@ function render() {
         root.replaceChildren(
             enteteTel({ etapes: false }),
             el("div", { class: "layout accueil-layout" },
-                el("main", { class: "stage accueil-stage" }, accueilView()),
+                el("main", { class: "stage accueil-stage" }, accueilAvecBandeau()),
             ),
         );
     } else if (state.accueil) {
@@ -1358,7 +1373,7 @@ function render() {
         }
         root.replaceChildren(
             el("div", { class: "layout accueil-layout" },
-                el("main", { class: "stage accueil-stage" }, accueilView()),
+                el("main", { class: "stage accueil-stage" }, accueilAvecBandeau()),
             ),
         );
     } else {
@@ -1368,6 +1383,7 @@ function render() {
         // bas disent déjà où l'on en est.
         root.replaceChildren(
             progressBar(),
+            bandeauReprise(),
             el("div", { class: "layout accueil-layout" },
                 el("main", { class: "stage stage-affiche" }, stepView()),
             ),

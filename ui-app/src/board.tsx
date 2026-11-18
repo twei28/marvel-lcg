@@ -3676,6 +3676,9 @@ export function PagePartie({
     void dossierSauvegardes()
       .then((dossier) => fetch(`/debug?/save ${dossier}save_auto.json`))
       .catch(() => undefined)
+    // « Continuer la partie » (18/11/2026) : en plus du fichier unique ci-dessus, la partie est rangee dans SON fichier
+    // (une entree par partie, 5 gardees, supprimee a la fin de la partie) : c'est ce que liste le bandeau de l'accueil.
+    void fetch('/en_cours_sauver', { cache: 'no-store' }).catch(() => undefined)
   }, [etat.monde?.phase, sauvegardeAuto])
 
   const nomsHerosParJoueur = useMemo(

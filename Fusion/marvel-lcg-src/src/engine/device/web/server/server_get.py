@@ -2342,6 +2342,51 @@ class GameServerGet(GameServerBase):
             return web.json_response({'issue': 'fermee', 'url': url})
         return web.json_response({'issue': 'inconnue', 'url': SITE_URL.value or ''})
 
+    # ---- Le bandeau « Continuer la partie » (18/11/2026) : voir src/engine/en_cours.py ----
+    async def en_cours_sauver(self, request: web.Request) -> web.Response:
+        """Le plateau l'appelle a chaque debut de phase : range la partie dans SON fichier (5 gardes)."""
+        from engine import en_cours
+        try:
+            return web.json_response(en_cours.sauver(self.controller_manager.game))
+        except Exception as souci:
+            return web.json_response({'sauve': False, 'raison': str(souci)})
+
+    async def en_cours_liste(self, request: web.Request) -> web.Response:
+        """Les parties non terminees de cette table, la plus recente d'abord (5 au plus), pour le bandeau et sa liste."""
+        import os
+        import json as _json
+        from engine import en_cours
+        sortie = []
+        for fichier in en_cours.fichiers():
+            try:
+                meta = _json.loads(self.ReadReplayFile(fichier).text)
+                sortie.append({
+                    'fichier': fichier,
+                    'villain': meta.get('villain', ''),
+                    'heros': meta.get('players', []),
+                    'quand': os.path.getmtime(fichier),
+                    **en_cours.manche_et_phase(meta.get('comment', '')),
+                })
+            except Exception:
+                continue
+        return web.json_response(sortie)
+
+    async def en_cours_reprendre(self, request: web.Request) -> web.Response:
+        """Le joueur reprend ce fichier : on retient lequel, pour que sa prochaine sauvegarde le remplace (pas de doublon)."""
+        from engine import en_cours
+        fichier = request.rel_url.query.get('fichier', '')
+        return web.json_response({'ok': en_cours.noter_reprise(fichier)})
+
+    async def en_cours_supprimer(self, request: web.Request) -> web.Response:
+        """Retire une partie de la liste. Le nom doit etre EXACTEMENT un fichier que la liste vient de rendre."""
+        import os
+        from engine import en_cours
+        fichier = request.rel_url.query.get('fichier', '')
+        if fichier not in en_cours.fichiers():
+            return web.json_response({'error': 'introuvable'}, status=404)
+        os.remove(fichier)
+        return web.json_response({'ok': True})
+
     async def get_dossier_sauvegardes(self, request: web.Request) -> web.Response:
         """Le dossier ou CETTE table range ses trois emplacements de sauvegarde.
 
@@ -3037,6 +3082,10 @@ class GameServerGet(GameServerBase):
         self.AddAwaitGetSecurity('/get_rapport_actif', self.get_rapport_actif)
         self.AddAwaitGetSecurity('/get_annonce', self.get_annonce)
         self.AddAwaitGetSecurity('/get_dossier_sauvegardes', self.get_dossier_sauvegardes)
+        self.AddAwaitGetSecurity('/en_cours_sauver', self.en_cours_sauver)
+        self.AddAwaitGetSecurity('/en_cours_liste', self.en_cours_liste)
+        self.AddAwaitGetSecurity('/en_cours_reprendre', self.en_cours_reprendre)
+        self.AddAwaitGetSecurity('/en_cours_supprimer', self.en_cours_supprimer)
         self.AddAwaitGetSecurity('/get_messages_prives', self.get_messages_prives)
         self.AddPostSecurity('/post_messages_lus', self.post_messages_lus)
         self.AddPostSecurity('/quitter_la_table', self.post_quitter_la_table)
