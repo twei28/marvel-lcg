@@ -26,6 +26,13 @@ describe('choisir parmi des cartes déjà regardées', () => {
     expect(optionParmiRegardees([option(1, 'Interrupt', [])], REGARDEES)).toBeUndefined()
   })
 
+  it('jamais une décision de jeu, même si ses cibles ont été regardées', () => {
+    for (const name of ['Defense', 'Attack', 'Thwart', 'Hero_Interrupt', 'Play']) {
+      const o = { ...option(1, name, [38, 45, 15]), is_text_choice: false, is_search: false } as Option
+      expect(optionParmiRegardees([o], REGARDEES)).toBeUndefined()
+    }
+  })
+
   it('une option refusée par le moteur ne compte pas', () => {
     const futuriste = option(1, 'Futurist', [38, 45, 15])
     expect(optionParmiRegardees([futuriste, option(2, 'Play', [38], 'check_cost')], REGARDEES)).toBe(futuriste)

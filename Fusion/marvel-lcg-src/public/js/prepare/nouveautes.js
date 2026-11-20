@@ -61,8 +61,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-20",
         genre: "jeu",
-        fr: "Fin de tour, étapes vides du méchant, mise en place et bilan : la partie n'ouvre plus de fenêtre quand il n'y a rien à décider (défausse facultative de fin de tour retirée, une seule action se joue dès le premier clic).",
-        en: "End of turn, empty villain steps, setup and recap: the game no longer opens a window when there is nothing to decide (optional end-of-turn discard removed, a single action plays on the first click).",
+        fr: "Fin de tour, étapes vides du méchant, mise en place et bilan : la partie n'ouvre plus de fenêtre quand il n'y a rien à décider (une carte de la main se joue dès le premier clic). La question de défausse de fin de tour revient : le jeu ne répond plus « aucune carte » à ta place.",
+        en: "End of turn, empty villain steps, setup and recap: the game no longer opens a window when there is nothing to decide (a card in your hand plays on the first click). The end-of-turn discard question is back: the game no longer answers “no card” for you.",
     },
     {
         date: "2026-11-18",

@@ -16,6 +16,10 @@ export function optionParmiRegardees(options: readonly Option[], regardees: Read
   const option = jouables[0]!
   const cibles = option.all_legal_targets
   if (cibles.length === 0 || option.target_num_range[1] === 0) return undefined
+  // Même liste blanche que `optionACiblesSeule` (audit du 20/11/2026, rapports #160/#161) : jamais une carte à jouer ni une décision
+  // de jeu (défendre, attaquer, contrer...), seulement un choix par nom, une recherche ou un paiement de coût.
+  if (option.name === 'Play' || Object.keys(option.target_payment ?? {}).length > 0) return undefined
+  if (!option.is_search && !option.is_text_choice && !/^Pay_cost_/.test(option.name)) return undefined
   return cibles.every((id) => regardees.has(id)) ? option : undefined
 }
 

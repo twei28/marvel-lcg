@@ -30,7 +30,9 @@ describe('défausse de fin de tour', () => {
   it('une autre question n’est jamais répondue', () => {
     expect(reponseDefausseFacultative(demande({ ...finDePhase(0), name: 'Resolve Mulligans' }), false)).toBeUndefined()
   })
-  it('réglage éteint par défaut, puis mémorisé', () => {
+  it('la question est proposée par défaut ; l’automatisme n’existe que si le joueur l’éteint lui-même', () => {
+    expect(lireProposerDefausseFinTour()).toBe(true)
+    ecrireProposerDefausseFinTour(false)
     expect(lireProposerDefausseFinTour()).toBe(false)
     ecrireProposerDefausseFinTour(true)
     expect(lireProposerDefausseFinTour()).toBe(true)

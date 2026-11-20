@@ -10,12 +10,15 @@ import type { Demande, Option, Reponse } from './ask'
 
 const CLE = 'marvel-board-defausse-fin-tour'
 
-/** Le joueur veut-il qu'on lui propose de défausser en fin de tour ? Défaut : non. */
+/**
+ * Le joueur veut-il qu'on lui propose de défausser en fin de tour ? Défaut : OUI (20/11/2026 : le jeu ne répond plus à la place du
+ * joueur, même par « aucune carte » ; l'automatisme n'existe que si le joueur l'a choisi lui-même, réglage éteint).
+ */
 export function lireProposerDefausseFinTour(): boolean {
   try {
-    return window.localStorage.getItem(CLE) === 'on'
+    return window.localStorage.getItem(CLE) !== 'off'
   } catch {
-    return false
+    return true
   }
 }
 
