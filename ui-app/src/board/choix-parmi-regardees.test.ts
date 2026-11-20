@@ -61,6 +61,11 @@ describe('une seule option qui ne sert qu’à désigner des cartes : le sélect
     expect(optionACiblesSeule([avec({ target_num_range: [0, 3] })])).toBeUndefined()
     expect(optionACiblesSeule([avec({ all_legal_targets: [], target_num_range: [0, 0] })])).toBeUndefined()
     expect(optionACiblesSeule([avec({ name: 'Play' })])).toBeUndefined()
+    // #160 : « In the Wings » (interruption héros, seule cible : elle-même) ne se lance pas seule non plus.
+    expect(optionACiblesSeule([avec({ name: 'Hero_Interrupt', is_search: false, all_legal_targets: [42] })])).toBeUndefined()
+    // #161 : une décision (défendre, attaquer) n'est jamais lancée d'office, même seule : le joueur doit pouvoir refuser.
+    expect(optionACiblesSeule([avec({ name: 'Defense', is_search: false, all_legal_targets: [49] })])).toBeUndefined()
+    expect(optionACiblesSeule([avec({ name: 'Attack', is_search: false, all_legal_targets: [49] })])).toBeUndefined()
     expect(optionACiblesSeule([avec({ target_payment: { 0: { cost: '1' } } as unknown as Option['target_payment'] })])).toBeUndefined()
   })
 })

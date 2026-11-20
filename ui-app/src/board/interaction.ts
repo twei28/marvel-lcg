@@ -977,10 +977,13 @@ export function useInteraction(
           : []
         const disponibles = [...disponiblesGenerales, ...disponiblesSource]
         const ouvreHub = estHubIdentite && (optionsGenerales.length > 0 || demande.show_cancel)
-        // Une carte qui ne sait faire qu'UNE chose la fait au premier clic, dans les DEUX aides. L'aide « Courte » ouvrait un menu
-        // avec un seul bouton « JOUER » (inventaire des fenêtres du 19/11/2026, demande nicodede62 « trop de pop-ups »).
+        // Une carte qui ne sait faire qu'UNE chose la fait au premier clic. Dans l'aide « Détaillée », toujours (comportement
+        // d'origine). Dans l'aide « Courte », SEULEMENT pour JOUER une carte de la main : ce clic ne fait qu'ouvrir le paiement, que
+        // le joueur valide ensuite (inventaire des fenêtres du 19/11/2026, « trop de pop-ups »). Une capacité en jeu (Web-Shooters,
+        // une attaque...) s'exécute sans rien valider : un clic pour REGARDER la carte la déclenchait (revérification du 20/11/2026,
+        // après les rapports #160 et #161 : « ça a un gros impact sur le jeu »). Elle ouvre donc son petit menu, comme avant.
         const actionUnique =
-          !ouvreHub && disponibles.length === 1
+          !ouvreHub && disponibles.length === 1 && (modeActions === 'detailed' || disponibles[0]!.name === 'Play')
             ? disponibles[0]
             : undefined
         const focalisee = carteFocus === bindId

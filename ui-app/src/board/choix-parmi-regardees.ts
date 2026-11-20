@@ -31,13 +31,17 @@ export function ciblesDejaRegardees(cibles: readonly number[], regardees: Readon
  *  - rapport #153 (Magneto, « Factory Online ») : le bouton portait le nom de la manigance, et le joueur n'a pas compris qu'il
  *    fallait le cliquer pour choisir la M-Type Sentinel.
  * Le sélecteur s'ouvre directement ; le joueur valide toujours lui-même, et « Annuler » rend le bouton (une fois par question).
- * Jamais pour une carte à JOUER (paiement), ni quand on peut ne rien désigner (minimum 0 : le bouton seul est une réponse).
+ * Jamais pour une carte à JOUER (paiement), ni pour une décision (défendre, attaquer...), ni quand on peut ne rien désigner (minimum 0 : le bouton seul est une réponse).
  */
 export function optionACiblesSeule(options: readonly Option[]): Option | undefined {
   const jouables = options.filter((option) => option.failure_reason === '')
   if (jouables.length !== 1) return undefined
   const option = jouables[0]!
   if (option.name === 'Play' || Object.keys(option.target_payment ?? {}).length > 0) return undefined
+  // LISTE BLANCHE (rapport #161, 20/11/2026) : seulement une RECHERCHE de cartes ou un PAIEMENT de coût. Toute autre décision garde
+  // son bouton : « Défendre » lancé seul faisait défendre Spider-Man quand Elektra était inclinée, sans que le joueur l'ait voulu
+  // (et sans le choix « Ne pas défendre »).
+  if (!option.is_search && !/^Pay_cost_/.test(option.name)) return undefined
   if (option.all_legal_targets.length === 0 || option.target_num_range[0] < 1) return undefined
   return option
 }

@@ -1235,6 +1235,18 @@ describe('useInteraction, action unique au premier clic', () => {
     expect(result.current.option?.id).toBe(40)
     expect(result.current.carteFocus).toBeUndefined()
   })
+  it('aide Courte : une capacité en jeu (pas « Play ») n’est PAS lancée par un simple clic (#160/#161, 20/11)', () => {
+    const capacite: Option = { ...jouerLaCarteEnMain(), id: 42, name: 'Hero_Action' }
+    const demande: Demande = { options: [capacite], refus: [], prompt_text: '', event_name: 'test', show_cancel: false, ability_type: '' }
+    const courte = renderHook(() => useInteraction(MONDE, demande, vi.fn(), new Set([HEROS, RESSOURCE, ...CIBLES]), 0, CATALOGUE, 'simple'))
+    act(() => courte.result.current.cartes.get(RESSOURCE)?.agir?.())
+    expect(courte.result.current.option).toBeUndefined()
+    expect(courte.result.current.carteFocus).toBe(RESSOURCE)
+    // L'aide Détaillée garde son comportement d'origine.
+    const detaillee = renderHook(() => useInteraction(MONDE, demande, vi.fn(), new Set([HEROS, RESSOURCE, ...CIBLES]), 0, CATALOGUE, 'detailed'))
+    act(() => detaillee.result.current.cartes.get(RESSOURCE)?.agir?.())
+    expect(detaillee.result.current.option?.id).toBe(42)
+  })
   it('deux actions : le menu s’ouvre', () => {
     const demande: Demande = {
       options: [jouerLaCarteEnMain(), { ...jouerLaCarteEnMain(), id: 41, name: 'Action' }],
