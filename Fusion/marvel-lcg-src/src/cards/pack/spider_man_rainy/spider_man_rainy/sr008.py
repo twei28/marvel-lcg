@@ -3,6 +3,12 @@ from . import *
 # Great Responsibility — custom « Rainy » (ressource signature)
 # Hero Response (thwart): After you spend this card, remove 2 threat from a
 #   scheme. Montage identique a Great Power (sr007).
+#
+# DECLENCHEUR : `AfterPlayerPlayedCard` (la carte payee a ete JOUEE), pas
+# `AfterCardResolveAbility`. Rapport de bug n°115 (08/11/2026, vu sur sr007) :
+# le moteur n'envoie `AfterEffectResolved` que pour une capacite d'evenement ;
+# une amelioration ou un allie payes avec cette carte n'en ont aucune, et la
+# reponse ne partait jamais.
 
 def GetAbilities() -> Sequence['Ability']:
 
@@ -10,7 +16,7 @@ def GetAbilities() -> Sequence['Ability']:
         initiator = effect.GetInitiator()
         identity = initiator.GetIdentity()
 
-        def apres_resolution(effect2: 'Effect', message2: 'Message.AfterEffectResolved') -> None:
+        def apres_resolution(effect2: 'Effect', message2: 'Message.AfterPlayerPlayedCard') -> None:
             joueur = effect2.GetInitiator()
 
             def retirer(targets: Sequence['CardFace']) -> None:
@@ -25,15 +31,18 @@ def GetAbilities() -> Sequence['Ability']:
             )
 
         identity.effect.RegisterTemp(
-            AbilityFactory.AfterCardResolveAbility(
+            AbilityFactory.AfterPlayerPlayedCard(
                 AbilityType.Response,
-                None,
+                "You",
                 CardFace,
                 apres_resolution,
-                which_effect=message.for_effect,
+                conditions=[
+                    lambda effect2, message2: message2.play_effect == message.for_effect,
+                ],
             ),
+            # Pas de `until_resolve_effect` : il retirerait la reponse avant l'envoi de
+            # `AfterPlayerPlayedCard` ; la condition sur `play_effect` la garde.
             unregister_after_exec=True,
-            until_resolve_effect=message.for_effect,
         )
 
     return [

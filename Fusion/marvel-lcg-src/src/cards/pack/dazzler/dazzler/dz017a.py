@@ -33,6 +33,14 @@ def GetAbilities() -> Sequence['Ability']:
         # pouvoir lire les « Showtime! » pour les resoudre. C'est Lightbringr
         # (dz014) qui range face cachee, pas Live Concert.
         this.PlaceCardHere([chanson], True, effect)
+        # Tribute (dz031) entre dans la Setlist EN TANT QUE COPIE (decision Q4
+        # du backlog 12, 20/10/2026) : elle est redevenue Tribute en passant par
+        # la defausse (`CheckIfCanDiscard`), on lui rend sa face de copie.
+        paper = getattr(chanson.card, "tribute_copie", None)
+        if paper is not None:
+            chanson.card.tribute_copie = None
+            DevenirCopie(chanson.card.face, paper, effect)
+            chanson.card.tribute_copie = None
 
     def lever_le_rideau(effect: 'Effect',
                         message: 'Message.WhenPlayerInTurn') -> None:
@@ -70,6 +78,13 @@ def GetAbilities() -> Sequence['Ability']:
                 # « You cannot [...] use the 'Hero Action' on Live Concert »
                 # tant que Performance Anxiety (dz019) est posee chez toi.
                 lambda effect, message: not AngoisseEnJeu(effect),
+                # Setlist vide : retourner, ne rien resoudre, ne rien defausser,
+                # retourner de nouveau ne change RIEN a la partie. Comme
+                # Rehearsal (dz001a) et Karaoke Night (dz035), l'action n'est
+                # alors pas offerte (piege wd165). Constate a l'autoplay du
+                # 20/10/2026 (backlog 12) : 6 parties sur 8 bloquees, le pilote
+                # reprenant sans fin cette Hero Action sans effet.
+                lambda effect, message: len(Setlist(effect)) > 0,
             ],
         ).SetTarget("This"),
     ]

@@ -550,17 +550,16 @@ CAS += [
 # ========================================================================= sh017 Odyn
 ODYN = ["Puzzle.PutIntoPlay('sh017', under_control=True)"]
 CAS += [
-    _c("sh017 Odyn : attaque de base (ATQ 3**) : 3 degats a Rhino ; la Reponse (defausse Backflip, DEFENSE) donne Tough AVANT les 2 degats consecutifs, qui l'epuisent",
-       "« After Odyn uses a basic power, discard a DEFENSE card from your hand -> give Odyn a tough status card » : le moteur resout la Reponse "
-       "AVANT les degats consecutifs (journal : « gagne Tough » puis « Tough remplace les degats ») : Odyn n'a AUCUN degat et la carte Tough est "
-       "consommee ; le temoin sans carte DEFENSE (cas suivant) subit les 2 degats",
+    _c("sh017 Odyn : attaque de base (ATQ 3**) : 3 degats a Rhino, 2 degats consecutifs a Odyn, PUIS la Reponse (defausse Backflip, DEFENSE) lui donne Tough",
+       "« After Odyn TAKES CONSEQUENTIAL DAMAGE, discard a DEFENSE card from your hand -> give Odyn a tough status card » (texte du 17/11/2026, avant : « uses a basic power ») : "
+       "la Reponse part APRES les degats : Odyn a deja ses 2 degats et la carte Tough reste sur lui (avant le 17/11 elle absorbait les degats)",
        [HEROS] + ODYN, ["Puzzle.Attack('sh017')"],
-       {"degats": [["01094", 3], ["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "defausse": ["01003"], "taille_main": 0},
+       {"degats": [["01094", 3], ["sh017", 2]], "statuts": [["sh017", "Tough"]], "defausse": ["01003"], "taille_main": 0},
        main_exclusive=["01003"], cibles=["01094"]),
-    _c("sh017 Odyn : contre de base (CTR 1*) : 1 menace retiree, Reponse identique (Tough avant le degat consecutif, qui l'epuise)",
-       "« a basic power » : l'attaque OU le contre ; menace 5 -> 4 ; Odyn n'a aucun degat (sans la Reponse : 1)",
+    _c("sh017 Odyn : contre de base (CTR 1*) : 1 menace retiree, 1 degat consecutif, puis la meme Reponse (Tough reste sur lui)",
+       "les degats consecutifs viennent de l'attaque OU du contre ; menace 5 -> 4 ; Odyn a 1 degat et Tough",
        [HEROS] + ODYN, [f"Puzzle.SetThreat('{COMPLOT}', 5)", "Puzzle.Thwart('sh017')"],
-       {"menace": [[COMPLOT, 4]], "degats": [["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "defausse": ["01003"]},
+       {"menace": [[COMPLOT, 4]], "degats": [["sh017", 1]], "statuts": [["sh017", "Tough"]], "defausse": ["01003"]},
        main_exclusive=["01003"], cibles=[COMPLOT]),
     _c("sh017 Odyn : TEMOIN, sans carte DEFENSE en main (Haymaker seulement) le cout est impayable : pas de Tough",
        "« discard a DEFENSE card from your hand » est un COUT : la Reponse n'est pas proposee, Haymaker reste en main",
@@ -568,7 +567,7 @@ CAS += [
        {"degats": [["01094", 3], ["sh017", 2]], "statuts_absents": [["sh017", "Tough"]], "en_main": ["01087"]},
        main_exclusive=["01087"], cibles=["01094"]),
     _c("sh017 Odyn : TEMOIN, c'est le HEROS qui attaque (pas Odyn) : aucune Reponse, Backflip reste en main",
-       "« After ODYN uses a basic power » : lui seul",
+       "« After ODYN takes consequential damage » : lui seul (le heros n'en subit pas de la sorte)",
        [HEROS] + ODYN, ["Puzzle.Attack('01001a')"],
        {"degats": [["01094", 2], ["sh017", 0]], "statuts_absents": [["sh017", "Tough"]], "en_main": ["01003"]},
        main_exclusive=["01003"], cibles=["01094"]),

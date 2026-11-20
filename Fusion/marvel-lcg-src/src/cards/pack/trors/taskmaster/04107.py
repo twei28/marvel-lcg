@@ -10,10 +10,13 @@ def GetAbilities() -> Sequence['Ability']:
 
         faces = Worlds.GetSetAsideAreaCards(effect)
         faces = CardFinder2("CAPTIVE", Ally).Checks(faces)
-        face = Rand.RandomChoice(faces, effect)
+        face = Rand.RandomCards(faces, 1, effect)[0] if faces else None
 
         if face:
             this.PlaceCardHere(face, False, effect)
+            # `PlaceCardHere(.., False, ..)` garde « connu » de qui le voyait avant : l'allie, tire au hasard dans la
+            # zone de cote, restait visible du joueur (rapport 131). Face cachee = personne ne sait qui c'est.
+            face.card.visible.Set(False)
 
             def gain_card_and_remove(defeated_effect: 'Effect', defeated_message: 'Message.WhenSchemeBeDefeated'):
                 player = defeated_message.defeating_player

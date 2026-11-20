@@ -1353,7 +1353,7 @@ html[data-affichage='sobre'] .deroule-phase.est-essai .essai-tampon-riposte {
   vertical-align: middle;
   border: 1px solid rgba(0, 0, 0, 0.6);
   border-radius: 2px;
-  background: linear-gradient(135deg, #6a4c93, #3a2860);
+  object-fit: cover;
 }
 
 .deroule-phase.est-essai .essai-etoile-issue {
@@ -1539,8 +1539,7 @@ html.essai-peril-autre .main-feuille {
   width: calc(var(--essai-carte-h, 170px) * 127 / 176);
   height: var(--essai-carte-h, 170px);
   border-radius: 8px;
-  border: 3px solid #e0794a;
-  background: repeating-linear-gradient(45deg, #b8432f 0 10px, #9a3424 10px 20px);
+  object-fit: cover;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 

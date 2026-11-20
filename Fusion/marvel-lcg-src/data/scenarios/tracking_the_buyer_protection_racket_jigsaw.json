@@ -1,0 +1,31 @@
+{
+    "version": "0.5.8",
+    "name": "Tracking the Buyer: Protection Racket (Jigsaw)",
+    "villain": [
+        "pu056a",
+        "pu057a"
+    ],
+    "expert": false,
+    "schemes": [
+        "60134a,60134b"
+    ],
+    "set_aside": [
+        "60135a,60135b",
+        "60136a,60136b",
+        "60137a,60137b",
+        "60138a,60138b"
+    ],
+    "encounters": [
+        "pu142"
+    ],
+    "encounter_sets": [
+        "jigsaw",
+        "protection_racket",
+        "standard"
+    ],
+    "modular_sets": [
+        "punishers_hit_list",
+        "the_syndicate",
+        "capo_of_the_past"
+    ]
+}

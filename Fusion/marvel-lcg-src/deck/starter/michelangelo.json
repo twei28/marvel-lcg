@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Michelangelo",
     "metadata": {
+        "author": "Inkwire",
         "url": "",
         "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS etape 3) : le zip « TMNT Heroes / Michelangelo v3 » (Inkwire) ne contient AUCUNE decklist d'aspect. Ce fichier ne contient que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis. Le fichier reste indispensable : `catalog.heroes()` construit la liste des heros A PARTIR de deck/starter/*.json.",
         "manigance_note": "⚠ tm009 « I'm Here to Help » (manigance-joueur) fait partie des 15 cartes du deck (12/15) ET est mise en jeu a la mise en place par tm001b (Setup, fouille du deck). Voir .planning/tmnt/michelangelo-phase-a.md, question 1 : lecture « Put ... into play » = fouille du deck plutot que mise de cote."

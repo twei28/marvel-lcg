@@ -136,7 +136,7 @@ export function PanneauManigance({
               <TraductionSurCarte
                 codeCarte={carte.card_id}
                 imageUrl={scanUrl(carte.pic_id)}
-                traits={Object.keys(carte.traits ?? {})}
+                traits={Object.keys(carte.traits ?? {}).map((cle) => (cle.startsWith('t_') ? cle.slice(2).replace(/_/g, ' ') : cle))}
                 type={typeDeBoite(carte.card_type)}
                 paysage
               />
@@ -153,7 +153,7 @@ export function PanneauManigance({
               <TraductionSurCarte
                 codeCarte={carte.card_id}
                 imageUrl={scanUrl(carte.pic_id)}
-                traits={Object.keys(carte.traits ?? {})}
+                traits={Object.keys(carte.traits ?? {}).map((cle) => (cle.startsWith('t_') ? cle.slice(2).replace(/_/g, ' ') : cle))}
                 type={typeDeBoite(carte.card_type)}
                 paysage
               />

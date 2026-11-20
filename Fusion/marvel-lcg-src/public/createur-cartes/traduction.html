@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MC Creator — Traduction</title>
+<link rel="stylesheet" href="/createur-cartes/style.css">
+<style>
+  /* Mise en page propre a cette page : outil autonome (voir le commentaire d'en-tete de traduction.js). */
+  body { display: flex; flex-direction: column; height: 100vh; margin: 0; }
+  main.page-traduction { flex: 1; display: flex; gap: 14px; padding: 14px 16px; overflow: hidden; }
+
+  aside.colonne-liste { width: 260px; flex: none; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .zone-depot { border: 2px dashed var(--border); border-radius: 10px; padding: 10px; text-align: center; display: flex; flex-direction: column; gap: 6px; }
+  .zone-depot.survole { border-color: var(--bleu-clair); background: rgba(79,149,238,.08); }
+  #liste { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 6px; }
+  .vignette { display: flex; align-items: center; gap: 8px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; background: #1a2338; }
+  .vignette.choisie { border-color: var(--bleu-clair); background: #203057; }
+  .vignette img { width: 40px; height: 56px; object-fit: cover; border-radius: 4px; flex: none; background: #000; }
+  .infos-vignette { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .nom-vignette { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .etat-vignette { font-size: 11px; color: var(--muted); }
+
+  section#atelier { flex: 1; display: flex; gap: 14px; overflow: auto; min-width: 0; }
+  section#atelier[hidden] { display: none; }
+  /* `flex: none` dimensionne cette colonne a son CONTENU — sans max-width, un bouton au texte un peu long (ex. « Effacer
+     le texte anglais (regles + titre + type + badges) », `white-space: nowrap` sur .btn) devient le contenu le plus
+     large et agrandit toute la colonne bien au-dela de l'ecran, repoussant la colonne de texte hors champ (bug
+     constate : panneau de saisie a 1700px+ de la carte, scroll horizontal necessaire). Une largeur maximale alignee
+     sur celle du canevas (`#toile`) borne la colonne ; les boutons, eux, peuvent s'envelopper sur deux lignes. */
+  .colonne-travail { flex: none; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; max-width: min(46vw, 560px); min-width: 0; }
+  .colonne-travail .rang { max-width: 100%; }
+  .colonne-travail .btn { white-space: normal; text-align: center; }
+  .colonne-texte { flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* Les trois rectangles sont positionnes en PIXELS par traduction.js (positionnerUnRectangle), jamais en % : voir le
+     commentaire de ce fichier la-bas pour le bug que ca evite (poignees qui s'etiraient sur toute la carte). */
+  #zone-cadre-conteneur { position: relative; display: inline-block; line-height: 0; }
+  #toile { max-width: min(46vw, 560px); max-height: calc(100vh - 220px); background: #000; border: 1px solid var(--border); display: block; }
+  .rect-ajustable { position: absolute; border: 2px dashed; cursor: move; }
+  .rect-ajustable[hidden] { display: none; }
+  #rect-zone   { border-color: #ffd84a; background: rgba(255, 216, 74, .14); }
+  #rect-titre  { border-color: #5cff8e; background: rgba(92, 255, 142, .14); }
+  #rect-type   { border-color: #ff5cd0; background: rgba(255, 92, 208, .14); }
+  #rect-thw    { border-color: #4ad8ff; background: rgba(74, 216, 255, .16); }
+  #rect-atk    { border-color: #ff5c5c; background: rgba(255, 92, 92, .16); }
+  #rect-def    { border-color: #8aff4a; background: rgba(138, 255, 74, .16); }
+  #rect-rec    { border-color: #c79bff; background: rgba(199, 155, 255, .16); }
+  #rect-main   { border-color: #ffffff; background: rgba(255, 255, 255, .14); }
+  .tr-poignee { position: absolute; width: 10px; height: 10px; border: 1px solid rgba(0,0,0,.5); border-radius: 2px; background: inherit; }
+  #rect-zone .tr-poignee  { background: #ffd84a; }
+  #rect-titre .tr-poignee { background: #5cff8e; }
+  #rect-type .tr-poignee  { background: #ff5cd0; }
+  #rect-thw .tr-poignee   { background: #4ad8ff; }
+  #rect-atk .tr-poignee   { background: #ff5c5c; }
+  #rect-def .tr-poignee   { background: #8aff4a; }
+  #rect-rec .tr-poignee   { background: #c79bff; }
+  #rect-main .tr-poignee  { background: #ffffff; }
+  .tr-poignee-n  { top: -6px; left: 50%; margin-left: -6px; cursor: n-resize; }
+  .tr-poignee-s  { bottom: -6px; left: 50%; margin-left: -6px; cursor: s-resize; }
+  .tr-poignee-e  { right: -6px; top: 50%; margin-top: -6px; cursor: e-resize; }
+  .tr-poignee-w  { left: -6px; top: 50%; margin-top: -6px; cursor: w-resize; }
+  .tr-poignee-ne { top: -6px; right: -6px; cursor: ne-resize; }
+  .tr-poignee-nw { top: -6px; left: -6px; cursor: nw-resize; }
+  .tr-poignee-se { bottom: -6px; right: -6px; cursor: se-resize; }
+  .tr-poignee-sw { bottom: -6px; left: -6px; cursor: sw-resize; }
+
+  .legende-zones { display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px; color: var(--muted); }
+  .legende-zones span { display: inline-flex; align-items: center; gap: 5px; }
+  .puce { width: 11px; height: 11px; border-radius: 2px; display: inline-block; }
+  .puce-regles { background: #ffd84a; }
+  .puce-titre { background: #5cff8e; }
+  .puce-type { background: #ff5cd0; }
+  .puce-thw { background: #4ad8ff; }
+  .puce-atk { background: #ff5c5c; }
+  .puce-def { background: #8aff4a; }
+  .puce-rec { background: #c79bff; }
+  .puce-main { background: #ffffff; }
+
+  .barre-icones { display: flex; flex-wrap: wrap; gap: 4px; }
+  #texte-fr { flex: 1; min-height: 140px; font: 15px monospace; }
+  #info-zone { font-size: 13px; color: var(--muted); min-height: 18px; display: block; }
+  #stats-champs { display: flex; flex-wrap: wrap; gap: 10px; }
+  #stats-champs label { flex: 1; min-width: 100px; }
+  /* `label { display: flex }` (regle globale de style.css) l'emporte sur le `display: none` natif de l'attribut
+     `hidden` (une regle d'auteur bat toujours celle du navigateur, meme moins specifique) : sans cette ligne, le
+     champ restait visible malgre `hidden` pour tout type sans bande « taille de main ». */
+  #champ-main[hidden] { display: none; }
+</style>
+</head>
+<body>
+<header class="bandeau">
+  <h1>MC Creator — Traduction</h1>
+  <a class="btn petit" href="./">← Retour à MC Creator</a>
+  <span style="margin-left:auto"></span>
+  <button class="btn petit" id="b-tout-telecharger" disabled title="Télécharge un .zip avec le PNG de chaque carte déjà traitée">Tout télécharger (.zip)</button>
+</header>
+
+<main class="page-traduction">
+  <aside class="colonne-liste">
+    <div class="zone-depot" id="zone-depot">
+      <div class="aide">Dépose des scans ici, ou :</div>
+      <button class="btn petit" id="b-ajouter" type="button">Ajouter des scans…</button>
+      <input type="file" id="entree-fichiers" accept="image/*" multiple hidden>
+    </div>
+    <div id="compte-liste" class="aide">Aucun scan chargé.</div>
+    <div id="liste"></div>
+  </aside>
+
+  <div id="aide-vide" class="aide" style="margin:auto">Ajoute un ou plusieurs scans anglais pour commencer.</div>
+
+  <section id="atelier" hidden>
+    <div class="colonne-travail">
+      <div class="rang" style="width:100%">
+        <label>Type de carte
+          <select id="type-carte"></select>
+        </label>
+        <label class="ligne fixe">
+          <input type="checkbox" id="ch-sombre">
+          Règles sur fond sombre (texte clair)
+        </label>
+      </div>
+      <div class="rang" style="width:100%">
+        <button class="btn petit" id="b-detecter" type="button">Détecter la zone de règles automatiquement</button>
+        <button class="btn petit" id="b-effacer" type="button">Effacer le texte anglais (règles + titre + type + badges)</button>
+      </div>
+      <span id="info-zone"></span>
+      <div class="legende-zones">
+        <span><span class="puce puce-regles"></span> Règles</span>
+        <span><span class="puce puce-titre"></span> Titre</span>
+        <span><span class="puce puce-type"></span> Type imprimé</span>
+        <span><span class="puce puce-thw"></span> THW</span>
+        <span><span class="puce puce-atk"></span> ATK</span>
+        <span><span class="puce puce-def"></span> DEF</span>
+        <span><span class="puce puce-rec"></span> REC</span>
+        <span><span class="puce puce-main"></span> Taille de main / PV</span>
+      </div>
+      <div id="zone-cadre-conteneur">
+        <canvas id="toile"></canvas>
+        <div id="rect-zone" class="rect-ajustable" data-cible="zone" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-titre" class="rect-ajustable" data-cible="zoneTitre" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-type" class="rect-ajustable" data-cible="zoneType" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-thw" class="rect-ajustable" data-cible="zoneThw" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-atk" class="rect-ajustable" data-cible="zoneAtk" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-def" class="rect-ajustable" data-cible="zoneDef" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-rec" class="rect-ajustable" data-cible="zoneRec" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+        <div id="rect-main" class="rect-ajustable" data-cible="zoneMain" hidden>
+          <span class="tr-poignee tr-poignee-n" data-poignee="n"></span>
+          <span class="tr-poignee tr-poignee-s" data-poignee="s"></span>
+          <span class="tr-poignee tr-poignee-e" data-poignee="e"></span>
+          <span class="tr-poignee tr-poignee-w" data-poignee="w"></span>
+          <span class="tr-poignee tr-poignee-ne" data-poignee="ne"></span>
+          <span class="tr-poignee tr-poignee-nw" data-poignee="nw"></span>
+          <span class="tr-poignee tr-poignee-se" data-poignee="se"></span>
+          <span class="tr-poignee tr-poignee-sw" data-poignee="sw"></span>
+        </div>
+      </div>
+      <div class="aide">Glisse un rectangle ou ses poignées si sa position de départ ne tombe pas juste, puis clique « Effacer ». Le titre, le type et les badges de stats se repositionnent à chaque changement de type de carte (seuls les badges que ce type imprime vraiment apparaissent).</div>
+    </div>
+
+    <div class="colonne-texte">
+      <label>Titre de la carte (zone verte)
+        <input type="text" id="titre-fr" placeholder="Nom traduit de la carte…">
+      </label>
+      <label>Libellé du type imprimé (zone magenta, ex. « UPGRADE »)
+        <input type="text" id="type-fr" placeholder="Libellé traduit du type…">
+      </label>
+      <div id="stats-champs"></div>
+      <label id="champ-main" hidden>Taille de main / Points de vie (zone blanche, bande du bas — identité et alter-ego seulement)
+        <input type="text" id="main-fr" placeholder="Taille de main 5 / Points de vie 10…">
+      </label>
+      <label>Texte traduit (zone jaune, n'importe quelle langue)
+        <textarea id="texte-fr" placeholder="Tape le texte traduit ici : &lt;b&gt;gras&lt;/b&gt;, &lt;i&gt;italique&lt;/i&gt;, [energy] pour une icône…"></textarea>
+      </label>
+      <div class="rang">
+        <button class="btn petit fixe" id="b-gras" type="button" title="Gras"><b>B</b></button>
+        <button class="btn petit fixe" id="b-italique" type="button" title="Italique"><i>I</i></button>
+        <button class="btn petit fixe" id="b-trait" type="button" title="Police des traits (em)">TRAIT</button>
+        <button class="btn petit fixe" id="b-souligne" type="button" title="Souligné"><u>U</u></button>
+        <button class="btn petit fixe" id="b-filet" type="button" title="Filet horizontal">―</button>
+        <button class="btn petit fixe" id="b-saut" type="button" title="Saut de paragraphe">¶</button>
+      </div>
+      <div class="barre-icones" id="barre-icones"></div>
+      <div class="rang">
+        <button class="btn principal petit" id="b-export-png" type="button">Télécharger ce PNG</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="./traduction.js"></script>
+</body>
+</html>

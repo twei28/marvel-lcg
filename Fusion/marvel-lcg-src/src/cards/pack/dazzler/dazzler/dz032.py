@@ -64,6 +64,10 @@ def GetAbilities() -> Sequence['Ability']:
                 conditions=[pas_elle_meme],
             ),
             unregister_after_exec=True,
+            # « this TURN » : la promesse tombe a la fin du tour (20/10/2026,
+            # backlog 12 ; avant, elle attendait la prochaine carte jouee,
+            # meme des rounds plus tard).
+            until_turn_end=True,
         )
 
     return [

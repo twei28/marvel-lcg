@@ -35,3 +35,13 @@ Chaque lot : tests, vérification au navigateur, aide du manuel mise à jour, co
 - NON FAIT : « Choisir un set et le mélanger dans le deck Rencontre » : le monde ne donne pas le set de chaque carte (`WorldCard` n'a ni set ni pack). Il faudrait l'exposer côté moteur.
 
 - « Choisir un set et le mélanger dans le deck Rencontre » : FAIT le 07/10 (set lu dans le catalogue, `set_name` de cards.json, pas de changement moteur), une entrée par set dans le menu de la table, confirmation, une seule commande. Tests unitaires seulement : aucune carte mise de côté dans la partie d'essai pour le voir en vrai.
+
+## Reste à vérifier (backlog item 4, relu le 21/10/2026 au soir)
+
+Table éclatée et carte à deux faces (Rhino) : **OK**, `ui-check/tests/mode-manuel.spec.ts` rejoué en vrai contre un serveur local, cas vert. Le chemin « Victoire » : **OK**, même fichier, cas vert.
+
+**Un vrai défaut trouvé en rejouant la suite** (pas lié à une modification de cette session) : le cas « mise en pause PENDANT une question ouverte (le mulligan), geste manuel, et la reprise repose cette même question » échoue de façon reproductible (2/2) — un dégât appliqué via le menu triche PENDANT la pause (mulligan en cours) n'est jamais publié à l'écran : la pastille de vie reste à sa valeur de départ (`10 / 10` au lieu de `7 / 10` attendu), timeout de 30 s sur l'attente du changement. Aucun commit récent sur `sandbox_command` ou le mécanisme de pause ne l'explique ; cause non recherchée plus loin faute de temps en fin de session.
+
+**ABANDONNÉ le 21/10/2026 au soir** : jugé par l'utilisateur trop précis/pointu pour mériter d'être suivi. Retiré du backlog (item 4, `docs/rapports/etat-du-backlog-2026-10-21.md`). Cause jamais recherchée.
+
+**PARÉ (pas corrigé) le 21/10/2026, juste après** : plutôt que de corriger l'affichage, la cause déclenchante est bloquée en amont. `InterrupteurFacon` (`ui-app/src/board/manuel/InterrupteurFacon.tsx`) reçoit une nouvelle prop `questionOuverte` (branchée sur `moteurAttendLeJoueur` dans `board.tsx`, déjà calculé via `moteurAttendUneReponse`) : le bouton « Manuel » est grisé tant que le moteur attend une réponse à une question ouverte (mulligan, etc.), avec une bulle d'aide dédiée. Impossible désormais de reproduire la séquence qui causait le défaut. Vérifié en vrai (serveur local) : bouton grisé pendant le mulligan, clic sans effet, redevient actif après « Garder ma main ». 3 tests ajoutés (`InterrupteurFacon.test.tsx`), suite `manuel/` toujours verte (294/294).

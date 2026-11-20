@@ -1,0 +1,45 @@
+{
+    "version": "0.5.8",
+    "name": "Mystique",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Mystique » (Merlin, Release FR 1.1.1 / beta EN 4.2, zip envoye par l'utilisateur ; le FR prime quand ils different). Deck de heros = les 16 numeros « n/19 » (my002 Shapeshifter Permanent+Setup, my006 Destiny, my007 Infiltration, my008 Shapeshifter Focus, my009 Deception x3, my010 Quick and Dirty x3, my011 Unconditional Love, my012 Really? x2, my013 Unnoticed x2, my014 Happy Family). Les 3 formes (my003 Civilian, my004 Enemy, my005 Friend) sont mises de cote et posees face cachee par le Setup de Raven Darkhölme. Obligation My Love (my015), set nemesis Mystique Nemesis (my016 Mister Sinister, my017 Destiny's Warning, my018 So, What's the Plan? x3). my019 Mother and Son! (Basic, Team-Up Nightcrawler/Mystique) n'est pas dans le deck de depart. Aucun dossier Extras : player_deck vide."
+    },
+    "hero": [
+        "my001a,my001b"
+    ],
+    "hero_deck": [
+        "my002",
+        "my006",
+        "my007",
+        "my008",
+        "my009",
+        "my009",
+        "my009",
+        "my010",
+        "my010",
+        "my010",
+        "my011",
+        "my012",
+        "my012",
+        "my013",
+        "my013",
+        "my014"
+    ],
+    "set_aside": [
+        "my003a,my003b",
+        "my004a,my004b",
+        "my005a,my005b"
+    ],
+    "obligations": [
+        "my015"
+    ],
+    "nemesis_set": [
+        "my016",
+        "my017",
+        "my018",
+        "my018",
+        "my018"
+    ],
+    "player_deck": []
+}

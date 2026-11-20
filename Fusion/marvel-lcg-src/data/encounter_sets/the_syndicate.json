@@ -1,0 +1,13 @@
+{
+    "version": "0.5.8",
+    "name": "The Syndicate",
+    "encounters": [
+        "pu125",
+        "pu126",
+        "pu127",
+        "pu128",
+        "pu129",
+        "pu130",
+        "pu131"
+    ]
+}

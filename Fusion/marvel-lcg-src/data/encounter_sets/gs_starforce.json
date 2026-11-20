@@ -1,0 +1,15 @@
+{
+  "version": "0.5.8",
+  "name": "Starforce",
+  "encounters": [
+    "gs209",
+    "gs210",
+    "gs211",
+    "gs212",
+    "gs213",
+    "gs214",
+    "gs215",
+    "gs216",
+    "gs217"
+  ]
+}

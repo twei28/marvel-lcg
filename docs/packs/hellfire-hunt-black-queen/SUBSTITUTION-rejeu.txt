@@ -1,0 +1,5 @@
+hf402    rouges 1/2   restent VERTS : 1
+hf403    rouges 1/2   restent VERTS : 1
+hf405a   rouges 1/1
+hf421    rouges 2/4   restent VERTS : 2
+empreinte avant/apres : 16e47ffee3dc3594ff818e71bc67c7ec 16e47ffee3dc3594ff818e71bc67c7ec IDENTIQUES

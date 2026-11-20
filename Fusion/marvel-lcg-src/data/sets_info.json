@@ -913,6 +913,24 @@
   "encounters": [],
   "max_id": "62037"
  },
+ "63. Elektra Natchios": {
+  "name": "elektra",
+  "scenarios": [],
+  "heroes": [
+   "elektra"
+  ],
+  "encounters": [],
+  "max_id": "63014"
+ },
+ "64. Iron Fist": {
+  "name": "iron_fist",
+  "scenarios": [],
+  "heroes": [
+   "iron_fist"
+  ],
+  "encounters": [],
+  "max_id": "64012"
+ },
  "99. Custom (Rainy)": {
   "name": "rainy",
   "scenarios": [],
@@ -1582,9 +1600,7 @@
   "encounters": [
    "muse"
   ],
-  "max_id": "mu006",
-  "indisponible": true,
-  "indisponible_note": "Set modulaire mis de cote le 13/09/2026, a la demande de l'utilisateur : il ne doit pas partir en production. Les fichiers restent en place (cartes, scripts, cas de test) pour que le harnais continue de tourner ; seul l'ecran de preparation cesse de le proposer. Pour le remettre : supprimer la cle `indisponible`."
+  "max_id": "mu006"
  },
  "175. Custom (Wave)": {
   "name": "wave",
@@ -1873,5 +1889,589 @@
   "encounters": [],
   "max_id": "se011"
  },
- "checksum": "3be616ffc00565664543aaac385546d370588e923e68f96272457d3215b86e21"
+ "144. Custom (Galactic Storm)": {
+  "name": "galactic_storm",
+  "scenarios": [
+   "gs_majestrix_verdict",
+   "gs_supreme_intelligence",
+   "gs_kree_sentry",
+   "gs_hala_ultimatum",
+   "gs_earth_under_siege"
+  ],
+  "heroes": [
+   "binary",
+   "quasar"
+  ],
+  "encounters": [
+   "gs_majestrix_verdict",
+   "gs_starforce",
+   "gs_seeds_of_corruption",
+   "gs_nega_bomb",
+   "gs_kree_sentry",
+   "gs_imperial_guard",
+   "gs_hala_ultimatum",
+   "gs_accuser_corps"
+  ],
+  "max_id": "gs349"
+ },
+ "208. Custom (La ville ne dort jamais)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "the_big_apple",
+   "the_big_apple_uptown",
+   "one_last_kill_jigsaw",
+   "one_last_kill_hobgoblin",
+   "kingsfall",
+   "punishment_hobgoblin",
+   "punishment_jigsaw",
+   "tracking_the_buyer_art_museum_heist_hobgoblin",
+   "tracking_the_buyer_art_museum_heist_jigsaw",
+   "tracking_the_buyer_protection_racket_hobgoblin",
+   "tracking_the_buyer_protection_racket_jigsaw",
+   "tracking_the_buyer_stop_the_presses_hobgoblin",
+   "tracking_the_buyer_stop_the_presses_jigsaw",
+   "tracking_the_buyer_the_getaway_hobgoblin",
+   "tracking_the_buyer_the_getaway_jigsaw",
+   "tracking_the_buyer_the_raft_breakout_hobgoblin",
+   "tracking_the_buyer_the_raft_breakout_jigsaw"
+  ],
+  "heroes": [
+   "hawkeye_mcdc_2026"
+  ],
+  "encounters": [
+   "jigsaw",
+   "hobgoblin",
+   "punishers_armory",
+   "the_syndicate",
+   "capo_of_the_past",
+   "punishers_hit_list",
+   "swat_team",
+   "punishment",
+   "the_big_apple",
+   "locations_the_big_apple",
+   "capos",
+   "leads_the_big_apple",
+   "uptown_expansion"
+  ],
+  "max_id": "pu283b",
+  "manigances": [
+   "one_last_kill"
+  ],
+  "underlings": [
+   "jigsaw",
+   "hobgoblin"
+  ],
+  "scenarios_campagne": [
+   "punishment_hobgoblin",
+   "punishment_jigsaw",
+   "tracking_the_buyer_art_museum_heist_hobgoblin",
+   "tracking_the_buyer_art_museum_heist_jigsaw",
+   "tracking_the_buyer_protection_racket_hobgoblin",
+   "tracking_the_buyer_protection_racket_jigsaw",
+   "tracking_the_buyer_stop_the_presses_hobgoblin",
+   "tracking_the_buyer_stop_the_presses_jigsaw",
+   "tracking_the_buyer_the_getaway_hobgoblin",
+   "tracking_the_buyer_the_getaway_jigsaw",
+   "tracking_the_buyer_the_raft_breakout_hobgoblin",
+   "tracking_the_buyer_the_raft_breakout_jigsaw"
+  ],
+  "tuile_manigance": true,
+  "tuile_manigance_scenarios": [
+   "the_big_apple",
+   "the_big_apple_uptown"
+  ],
+  "tuile_sbire_scenarios": {
+   "one_last_kill_jigsaw": "pu056a",
+   "one_last_kill_hobgoblin": "pu071a"
+  }
+ },
+ "235. Custom (Super Bouffon / Jigsaw)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "art_museum_heist_jigsaw",
+   "art_museum_heist_hobgoblin",
+   "the_getaway_jigsaw",
+   "the_getaway_hobgoblin",
+   "protection_racket_jigsaw",
+   "protection_racket_hobgoblin",
+   "the_raft_breakout_jigsaw",
+   "the_raft_breakout_hobgoblin",
+   "stop_the_presses_jigsaw",
+   "stop_the_presses_hobgoblin"
+  ],
+  "heroes": [],
+  "encounters": [
+   "jigsaw",
+   "hobgoblin"
+  ],
+  "manigances": [
+   "art_museum_heist",
+   "the_getaway",
+   "protection_racket",
+   "the_raft_breakout",
+   "stop_the_presses"
+  ],
+  "underlings": [
+   "jigsaw",
+   "hobgoblin"
+  ]
+ },
+ "210. Custom (Challenges)": {
+  "name": "punisher_mcdc_2026",
+  "scenarios": [
+   "rise_of_the_machines",
+   "secret_agent",
+   "its_a_trap",
+   "angry_birds"
+  ],
+  "heroes": [],
+  "encounters": [
+   "super_strength_attachments"
+  ],
+  "max_id": "pu283b"
+ },
+ "209. Shadowland": {
+  "name": "shadowland",
+  "scenarios": [
+   "shadows_in_the_night",
+   "shadow_labyrinth",
+   "heart_of_shadow"
+  ],
+  "heroes": [],
+  "encounters": [
+   "ninja_swarm",
+   "black_flower"
+  ],
+  "max_id": "sl078"
+ },
+ "211. Custom (Silver Surfer)": {
+  "name": "silver_surfer",
+  "scenarios": [],
+  "heroes": [
+   "silver_surfer"
+  ],
+  "encounters": [],
+  "max_id": "sv001b"
+ },
+ "212. Custom (Shang-Chi)": {
+  "name": "shang_chi",
+  "scenarios": [],
+  "heroes": [
+   "shang_chi"
+  ],
+  "encounters": [],
+  "max_id": "ch001b"
+ },
+ "213. Custom (Lady Deathstrike)": {
+  "name": "lady_deathstrike",
+  "scenarios": [
+   "lady_deathstrike"
+  ],
+  "heroes": [],
+  "encounters": [
+   "lady_deathstrike",
+   "reaver_resources"
+  ],
+  "max_id": "ld004b"
+ },
+ "214. Custom (Predator)": {
+  "name": "predator",
+  "scenarios": [],
+  "heroes": [
+   "predator",
+   "predator_dutch"
+  ],
+  "encounters": [],
+  "max_id": "pd001b"
+ },
+ "215. Custom (The Vault)": {
+  "name": "the_vault",
+  "scenarios": [
+   "the_vault"
+  ],
+  "heroes": [],
+  "encounters": [
+   "the_vault"
+  ],
+  "max_id": "vt017b"
+ },
+ "216. Custom (Alien vs. Predator)": {
+  "name": "alien_vs_predator",
+  "scenarios": [
+   "alien_vs_predator"
+  ],
+  "heroes": [],
+  "encounters": [
+   "alien_vs_predator",
+   "standard_apex",
+   "clan_yautja"
+  ],
+  "max_id": "ap008b"
+ },
+ "217. Custom (She-Hulk Why Not)": {
+  "name": "she_hulk_why_not",
+  "scenarios": [],
+  "heroes": [
+   "she_hulk_why_not"
+  ],
+  "encounters": [],
+  "max_id": "wn011"
+ },
+ "218. Custom (U.S. Agent)": {
+  "name": "us_agent",
+  "scenarios": [],
+  "heroes": [
+   "us_agent"
+  ],
+  "encounters": [],
+  "max_id": "us016"
+ },
+ "219. Custom (New Ultimate Winter Soldier)": {
+  "name": "new_ultimate_winter_soldier",
+  "scenarios": [],
+  "heroes": [
+   "new_ultimate_winter_soldier"
+  ],
+  "encounters": [],
+  "max_id": "uw018"
+ },
+ "220. Custom (Roz)": {
+  "name": "roz",
+  "scenarios": [],
+  "heroes": [
+   "roz"
+  ],
+  "encounters": [],
+  "max_id": "rz020"
+ },
+ "221. Custom (Spider-Punisher)": {
+  "name": "spider_punisher",
+  "scenarios": [],
+  "heroes": [
+   "spider_punisher"
+  ],
+  "encounters": [],
+  "max_id": "sq017"
+ },
+ "222. Custom (Wasp Hank Pym)": {
+  "name": "wasp_hank_pym",
+  "scenarios": [],
+  "heroes": [
+   "wasp_hank_pym"
+  ],
+  "encounters": [],
+  "max_id": "hp018"
+ },
+ "223. Custom (Batgirl)": {
+  "name": "batgirl",
+  "scenarios": [],
+  "heroes": [
+   "batgirl"
+  ],
+  "encounters": [],
+  "max_id": "bg022"
+ },
+ "224. Custom (Starjammers - Corsair)": {
+  "name": "corsair",
+  "scenarios": [],
+  "heroes": [
+   "corsair",
+   "corsair_making_amends"
+  ],
+  "encounters": [],
+  "max_id": "cr019"
+ },
+ "225. Custom (Starjammers - Hepzibah)": {
+  "name": "hepzibah",
+  "scenarios": [],
+  "heroes": [
+   "hepzibah"
+  ],
+  "encounters": [],
+  "max_id": "hz018"
+ },
+ "226. Custom (Starjammers - Raza)": {
+  "name": "raza",
+  "scenarios": [],
+  "heroes": [
+   "raza"
+  ],
+  "encounters": [],
+  "max_id": "rl020"
+ },
+ "227. Custom (Starjammers - Ch'od)": {
+  "name": "chod",
+  "scenarios": [],
+  "heroes": [
+   "chod"
+  ],
+  "encounters": [],
+  "max_id": "co019"
+ },
+ "228. Custom (Starjammers - Smasher)": {
+  "name": "smasher",
+  "scenarios": [],
+  "heroes": [
+   "smasher"
+  ],
+  "encounters": [],
+  "max_id": "sz018"
+ },
+ "229. Custom (Batman)": {
+  "name": "batman",
+  "scenarios": [],
+  "heroes": [
+   "batman"
+  ],
+  "encounters": [],
+  "max_id": "bm025"
+ },
+ "230. Custom (The Warriors Three)": {
+  "name": "warriors_three",
+  "scenarios": [],
+  "heroes": [
+   "warriors_three",
+   "warriors_three_aggression"
+  ],
+  "encounters": [],
+  "max_id": "wt025"
+ },
+ "231. Custom (Hellfire Hunt - Sunspot)": {
+  "name": "sunspot_hellfire",
+  "scenarios": [],
+  "heroes": [
+   "sunspot_hellfire"
+  ],
+  "encounters": [],
+  "max_id": "so016"
+ },
+ "232. Custom (Hellfire Hunt - Rachel Summers)": {
+  "name": "rachel_summers",
+  "scenarios": [],
+  "heroes": [
+   "rachel_summers"
+  ],
+  "encounters": [],
+  "max_id": "rm016"
+ },
+ "233. Custom (Starjammers - Aspects)": {
+  "name": "starjammers_aspects",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "sy050"
+ },
+ "234. Custom (The Hunger Core)": {
+  "name": "the_hunger_core",
+  "scenarios": [
+   "the_hunger_core"
+  ],
+  "heroes": [],
+  "encounters": [
+   "the_hunger_core_hungry_horde",
+   "the_hunger_core_fallen_heroes"
+  ],
+  "max_id": "hg076"
+ },
+ "236. Custom (Major Victory)": {
+  "name": "major_victory",
+  "scenarios": [],
+  "heroes": [
+   "major_victory"
+  ],
+  "encounters": [],
+  "max_id": "mv016"
+ },
+ "237. Custom (Buffy)": {
+  "name": "buffy",
+  "scenarios": [],
+  "heroes": [
+   "buffy"
+  ],
+  "encounters": [],
+  "max_id": "bf032"
+ },
+ "238. Custom (RoboCop)": {
+  "name": "robocop",
+  "scenarios": [],
+  "heroes": [
+   "robocop"
+  ],
+  "encounters": [],
+  "max_id": "rc017"
+ },
+ "239. Custom (Mantis)": {
+  "name": "mantis",
+  "scenarios": [],
+  "heroes": [
+   "mantis"
+  ],
+  "encounters": [],
+  "max_id": "mt016"
+ },
+ "240. Custom (Hellfire Hunt - White Queen)": {
+  "name": "hellfire_hunt_white_queen",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_white_queen",
+   "hf_perfection",
+   "hf_hellfire_conclave",
+   "hf_psionic_delusion"
+  ],
+  "max_id": "hf325"
+ },
+ "241. Custom (Hellfire Hunt)": {
+  "name": "hellfire_hunt",
+  "scenarios": [
+   "hellfire_white_queen",
+   "hellfire_black_king",
+   "hellfire_black_queen",
+   "hellfire_torn",
+   "hellfire_cassandra_nova"
+  ],
+  "heroes": [],
+  "encounters": [],
+  "max_id": "hf048"
+ },
+ "243. Custom (Hellfire Hunt - Black Queen)": {
+  "name": "hellfire_hunt_black_queen",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_black_queen",
+   "hf_darkhold"
+  ],
+  "max_id": "hf422"
+ },
+ "242. Custom (Hellfire Hunt - Black King)": {
+  "name": "hellfire_hunt_black_king",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_black_king",
+   "hf_sebastian_shaw"
+  ],
+  "max_id": "hf338"
+ },
+ "244. Custom (Hellfire Hunt - Torn)": {
+  "name": "hellfire_hunt_torn",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_torn",
+   "hf_negasonic_teenage_warhead",
+   "hf_immensity"
+  ],
+  "max_id": "hf510"
+ },
+ "245. Custom (Hellfire Hunt - Cassandra Nova)": {
+  "name": "hellfire_hunt_cassandra_nova",
+  "scenarios": [],
+  "heroes": [],
+  "encounters": [
+   "hf_cassandra_nova",
+   "hf_mind_control",
+   "hf_mutant_extinction_agenda"
+  ],
+  "max_id": "hf621"
+ },
+ "246. Custom (Destiny)": {
+  "name": "destiny",
+  "scenarios": [],
+  "heroes": [
+   "destiny"
+  ],
+  "encounters": [],
+  "max_id": "dy016"
+ },
+ "247. Custom (Beast Proust)": {
+  "name": "beast_proust",
+  "scenarios": [],
+  "heroes": [
+   "beast_proust"
+  ],
+  "encounters": [],
+  "max_id": "bs017"
+ },
+ "248. Custom (Mystique)": {
+  "name": "mystique",
+  "scenarios": [],
+  "heroes": [
+   "mystique"
+  ],
+  "encounters": [],
+  "max_id": "my019"
+ },
+ "249. Custom (Carnage)": {
+  "name": "carnage_eddie_brock",
+  "scenarios": [],
+  "heroes": [
+   "carnage_eddie_brock",
+   "carnage_eddie_brock_protection"
+  ],
+  "encounters": [
+   "twisted_killers"
+  ],
+  "max_id": "ca034"
+ },
+ "250. Custom (Sentry)": {
+  "name": "sentry",
+  "scenarios": [],
+  "heroes": [
+   "sentry",
+   "sentry_justice",
+   "sentry_leadership",
+   "sentry_protection"
+  ],
+  "encounters": [
+   "merged_sentry"
+  ],
+  "max_id": "rr092"
+ },
+ "251. Custom (Multiple Man)": {
+  "name": "multiple_man",
+  "scenarios": [],
+  "heroes": [
+   "multiple_man"
+  ],
+  "encounters": [],
+  "max_id": "mm027"
+ },
+ "252. Custom (3-D Man)": {
+  "name": "three_d_man",
+  "scenarios": [],
+  "heroes": [
+   "three_d_man"
+  ],
+  "encounters": [],
+  "max_id": "dm024"
+ },
+ "253. Custom (Silver Surfer - Power Cosmic)": {
+  "name": "silver_surfer_power_cosmic",
+  "scenarios": [],
+  "heroes": [
+   "silver_surfer_power_cosmic"
+  ],
+  "encounters": [],
+  "max_id": "pc003"
+ },
+ "254. Custom (Mephisto)": {
+  "name": "mephisto",
+  "scenarios": [
+   "mephisto"
+  ],
+  "heroes": [],
+  "encounters": [
+   "mp_mephisto",
+   "mp_blackheart",
+   "mp_corruptive_offers",
+   "mp_damned",
+   "mp_mother_of_demons",
+   "mp_standard",
+   "mp_expert"
+  ],
+  "max_id": "mp163"
+ },
+ "checksum": "14336ddef2cf5cf534c64554e51a98747266c45025dd151ad848186813400757"
 }

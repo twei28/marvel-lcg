@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « PAS ENCORE CODÉE » »). Preuve : `d5bbc7ef` (« refait en trois colonnes »), `5f711553`, `2a54389b`, `f0363f69` ; entrée « Nouveautés » du 09/10 dans `public/js/prepare/nouveautes.js` (ligne 285) (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°4).
+
 # Éditeur de deck : refonte (décidée le 09/10/2026, PAS ENCORE CODÉE)
 
 Constat (capture 1920x1080, `deck-builder.html?hero=spider_man`) : quatre lignes de decks « Partir de » (~30 pastilles) puis

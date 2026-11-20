@@ -67,9 +67,9 @@ class Event(HasTeamUp, HasAlliance, ClassCard, CanPlaceCounter, FinalType):
         return identity.OnDealDamage(units, damage, by_effect, property=property, attack_in_event=attack_in_event)
 
     @override
-    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect') -> int|None:
+    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect', *, thwart_in_event: bool=False) -> int|None:
         assert by_effect != None, f"{self=}"
         assert self == by_effect.this, f"{self=} {by_effect.this=}"
         identity = by_effect.GetInitiator().GetIdentity()
-        return identity.OnRemoveSchemeThreat(schemes, value, by_effect)
+        return identity.OnRemoveSchemeThreat(schemes, value, by_effect, thwart_in_event=thwart_in_event)
 

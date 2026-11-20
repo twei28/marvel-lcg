@@ -2,6 +2,14 @@ from . import *
 
 # Suit Up
 #
+# ERRATA RRG 1.7 / 1.8 (Annexe V, AoA #17) : « Alter-Ego Action: Search your deck and discard pile for an ally and an
+#   upgrade that can be attached to AN ally. Add them to your hand. (Shuffle.) » (changé « to THAT ally » en « to AN ally »).
+#   ANCIEN comportement du script : l'amélioration devait pouvoir s'attacher à l'ALLIÉ CHOISI (Sidekick n'était donc
+#   proposé que si l'on prenait l'allié signature). NOUVEAU (décision de l'utilisateur du 03/11/2026) : les deux recherches
+#   sont INDÉPENDANTES ; l'amélioration doit pouvoir s'attacher à UN allié quelconque (deck, défausse, main ou en jeu,
+#   voir `allies_possibles`), pas forcément celui qu'on vient de prendre. Le « (Shuffle.) » reste unique.
+#
+# Texte d'avant l'errata, conservé pour mémoire :
 # « Alter-Ego Action: Search your deck and discard pile for an ally and an
 #   upgrade that can be attached to that ally. Add them to your hand.
 #   (Shuffle.) »
@@ -33,9 +41,9 @@ from . import *
 # allie particulier (`45015` Sidekick, « attach to an identity-specific ally »)
 # est donc ecartee, sans que le joueur ait a le deviner.
 #
-# ⚠ LES ALLIES SANS AUCUNE AMELIORATION ATTACHABLE SONT ECARTES AUSSI : sinon
+# (OBSOLETE depuis l'errata, voir en tete) ⚠ LES ALLIES SANS AUCUNE AMELIORATION ATTACHABLE SONT ECARTES AUSSI : sinon
 # le joueur choisit un allie, la seconde recherche ne propose rien, et la carte
-# est perdue pour rien. « for an ally AND an upgrade » : les deux ou aucun.
+# est perdue pour rien. (RRG 1.8, Search : chaque recherche est independante, l'une peut echouer sans annuler l'autre ; correction du 04/11.)
 #
 # ⚠ « Search your deck AND discard pile » : les deux zones. Le remelange est
 # fait par la SECONDE recherche (`not_move=True` sur la premiere, sinon le deck
@@ -53,8 +61,17 @@ def GetAbilities() -> Sequence['Ability']:
         zones = list(initiator.player_deck.Get()) + list(initiator.discard_pile.Get())
         ameliorations = Filter.ByType(zones, Upgrade)
 
-        def allie_equipable(eff: 'Effect', face: 'CardFace') -> bool:
-            return any(u.CanAttachTo(face) for u in ameliorations)
+        # « an ally » : tout allie auquel une amelioration pourrait se poser, quel qu'il soit. On regarde les zones
+        # fouillees (deck, defausse) ET la main et les allies en jeu : une amelioration qui exige l'allie signature
+        # (Sidekick) reste proposee si celui-ci est ailleurs que dans la zone fouillee.
+        allies_possibles = (
+            list(Filter.ByType(zones, Ally))
+            + list(Filter.ByType(list(initiator.hand_cards.Get()), Ally))
+            + list(initiator.allies.Get())
+        )
+
+        def amelioration_attachable(eff: 'Effect', face: 'CardFace') -> bool:
+            return any(face.CanAttachTo(a) for a in allies_possibles)
 
         allie = Search.PlayerCard(
             effect,
@@ -62,22 +79,21 @@ def GetAbilities() -> Sequence['Ability']:
             include_player_deck=True,
             include_discard_pile=True,
             not_move=True,
-            finder=CardFinder(card_type=Ally, check_effect_fn=allie_equipable),
+            finder=CardFinder(card_type=Ally),
         )
-        if not allie:
-            return
+        # RRG 1.8, « Search » : chaque recherche est INDEPENDANTE (« si le joueur trouve une carte qui repond aux criteres, il
+        # l'ajoute »). Si l'une des deux ne trouve rien, on prend quand meme l'autre : aucun `return` ici.
 
         amelioration = Search.PlayerCard(
             effect,
             initiator,
             include_player_deck=True,
             include_discard_pile=True,
-            finder=CardFinder(card_type=Upgrade, canbe_attach_to=allie),
+            finder=CardFinder(card_type=Upgrade, check_effect_fn=amelioration_attachable),
         )
-        if not amelioration:
-            return
-
-        initiator.GainCard([allie, amelioration], effect)
+        trouvees = [carte for carte in (allie, amelioration) if carte]
+        if trouvees:
+            initiator.GainCard(trouvees, effect)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(

@@ -1,0 +1,94 @@
+[
+ [
+  "ally",
+  "Hero - Ally"
+ ],
+ [
+  "alter-ego",
+  "Hero - Alter-ego"
+ ],
+ [
+  "event",
+  "Hero - Event"
+ ],
+ [
+  "identity",
+  "Hero - Hero Identity"
+ ],
+ [
+  "obligation",
+  "Hero - Obligation"
+ ],
+ [
+  "playersidescheme",
+  "Hero - Player Side Scheme"
+ ],
+ [
+  "resource",
+  "Hero - Resource"
+ ],
+ [
+  "starter-deck",
+  "Hero - Starter Deck"
+ ],
+ [
+  "support",
+  "Hero - Support"
+ ],
+ [
+  "upgrade",
+  "Hero - Upgrade"
+ ],
+ [
+  "generic-promo",
+  "Hero Promo - All card types"
+ ],
+ [
+  "alter-ego-promo",
+  "Hero Promo - Alter-ego"
+ ],
+ [
+  "identity-promo",
+  "Hero Promo - Hero Identity"
+ ],
+ [
+  "generic-promo-vert",
+  "Hero Promo - Vertical Title"
+ ],
+ [
+  "attachment",
+  "Villain - Attachment"
+ ],
+ [
+  "environment",
+  "Villain - Environment"
+ ],
+ [
+  "main_scheme_a",
+  "Villain - Main Scheme A"
+ ],
+ [
+  "main_scheme_b",
+  "Villain - Main Scheme B"
+ ],
+ [
+  "minion",
+  "Villain - Minion"
+ ],
+ [
+  "obligation-villain",
+  "Villain - Obligation"
+ ],
+ [
+  "sidescheme",
+  "Villain - Side Scheme"
+ ],
+ [
+  "treachery",
+  "Villain - Treachery"
+ ],
+ [
+  "villain",
+  "Villain - Villain"
+ ]
+]

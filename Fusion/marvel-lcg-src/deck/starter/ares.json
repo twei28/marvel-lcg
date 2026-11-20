@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Ares",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE. Consigne utilisateur du 06/09/2026 : on n'invente plus de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit — et le zip d'Ares (Rainy) n'a aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les 15 cartes signature, l'obligation et le set nemesis. Le joueur choisit un deck d'aspect existant ou en construit un au lancement. ⚠ Le fichier reste indispensable malgre tout : `catalog.heroes()` (public/js/prepare/catalog.js:231-237) construit la liste des heros A PARTIR de deck/starter/*.json.",
         "deckbuilding": {

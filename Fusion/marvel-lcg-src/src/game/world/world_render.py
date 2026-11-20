@@ -37,6 +37,10 @@ class WorldRender:
         # dans `Controller.ChoiceOne` qui suit immediatement. Rien ne doit en
         # dependre, et rien ne doit s'y accumuler.
         self.derniers_refus: List['Effect'] = []
+        # LES OPTIONS REFUSEES D'UN CHOIX (`ChooseAbilities`, bug 129 du 12/11/2026) : (la question, ses options ecartees).
+        # Tampon A PART : `derniers_refus` est ecrase par les passes de filtre qui suivent (cartes de la main, cout)
+        # avant que la question ne parte. Pose par `PlayerAction.ChooseEffects`, lu par `Controller.RendreLesRefus`.
+        self.choix_refuses: Tuple[Any, List['Effect']] = (None, [])
 
     def PresentForceNoWait(self, is_update: bool=True) -> None:
         skip = self.world.controller_manager.skip.is_skipping
@@ -113,11 +117,13 @@ class WorldRender:
         from game.test import Test
         if not Test.IsInTesting():
             from engine.enregistrement import Enregistrement, entete_de, ressources_des_mains
-            from dataclasses import asdict
+            # `asdict_rapide` et non `dataclasses.asdict` (backlog 22, 20/10/2026) :
+            # resultat identique, trois fois moins cher (voir engine/lib/en_dict.py).
+            from engine.lib.en_dict import asdict_rapide
             session = game.session
             Enregistrement.Rendu(
                 f"{getattr(session, 'game_uid', '')}-{getattr(session, 'game_id', '')}",
-                asdict(self.descriptor),
+                asdict_rapide(self.descriptor),
                 lambda: entete_de(game),
                 ressources_des_mains(world),
             )

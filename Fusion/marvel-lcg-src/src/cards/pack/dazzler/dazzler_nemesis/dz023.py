@@ -23,17 +23,23 @@ def GetAbilities() -> Sequence['Ability']:
 
         vilain = Worlds.FindCardOnField(effect, card_type=Villain)
         identite = joueur.GetIdentity()
-        attaque_faite = False
 
-        if vilain is not None and identite is not None \
-                and identite.IsName(NOM_HEROS):
-            vilain.DoAttackYou(joueur, effect)
-            attaque_faite = True
-
-        if not attaque_faite:
+        def aucune_attaque() -> None:
             if vilain is not None:
                 vilain.GiveFacedownBoostCardsInternal(1, effect, None)
             Faces.ShuffleAllTo([this], "EncounterDeck", effect)
+
+        # « If no attack was made THIS WAY » : un vilain etourdi defausse son
+        # Stunned AU LIEU d'attaquer, et cela compte comme « pas d'attaque ».
+        # Le moteur le dit par `if_no_attack_was_made` (modele 27029, 22031).
+        # Jusqu'au 20/10/2026 le module tenait l'attaque pour faite des qu'il
+        # l'avait lancee (backlog 12, cas « vilain etourdi »).
+        if vilain is not None and identite is not None \
+                and identite.IsName(NOM_HEROS):
+            vilain.DoAttackYou(joueur, effect,
+                               if_no_attack_was_made=aucune_attaque)
+        else:
+            aucune_attaque()
 
     return [
         AbilityFactory.WhenThisRevealed(None, lumiere_narquoise),

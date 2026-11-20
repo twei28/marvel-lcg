@@ -4,9 +4,9 @@
 // scripts/actions.py du dépôt twistedsistem/OCTGN-Marvel-Champions) : mêmes
 // touches, mêmes effets, y compris la façon dont une même touche change de
 // sens selon le TYPE de la carte survolée (flèches haut et bas : points de
-// vie sur un héros ou un méchant, dégâts sur un sbire ou un allié, menace sur
-// une manigance, marqueur ailleurs). Aucun écart depuis le 07/10/2026 : sur un
-// sbire ou un allié, haut AJOUTE un dégât, comme OCTGN (voir `arrowup`).
+// vie sur un héros, un méchant, un sbire ou un allié, menace sur une manigance,
+// marqueur ailleurs). Seul écart voulu avec OCTGN (09/11/2026, retour testeur) :
+// sur un sbire ou un allié, haut = +1 PV comme sur un héros (voir `arrowup`).
 //
 // `interpreterTouche` est une fonction PURE : elle ne touche ni au DOM ni au
 // réseau, elle dit seulement quel geste la touche demande. Le branchement
@@ -93,13 +93,13 @@ export const estSansEtat = (type: string) => SANS_ETAT.has(type)
 
 /**
  * Ce que mesure naturellement une carte (`addMarker` d'OCTGN) : les points de
- * vie d'un héros ou d'un méchant, les dégâts d'un sbire ou d'un allié, la
+ * vie d'un héros, d'un méchant, d'un sbire ou d'un allié (retour testeur du
+ * 09/11/2026 : tout ce qui affiche des PV se règle dans le même sens), la
  * menace d'une manigance, un marqueur générique partout ailleurs.
  */
 export function natureDe(type: string): 'pv' | 'degats' | 'menace' | 'marqueur' {
   if (MANIGANCES.has(type)) return 'menace'
-  if (IDENTITES.has(type) || VILAINS.has(type)) return 'pv'
-  if (ATTAQUABLES.has(type)) return 'degats'
+  if (IDENTITES.has(type) || VILAINS.has(type) || ATTAQUABLES.has(type)) return 'pv'
   return 'marqueur'
 }
 
@@ -229,9 +229,9 @@ export function interpreterTouche(touche: Touche, cible: CibleClavier): GesteCla
       const nombre = cle === 'arrowup' ? 1 : -1
       const nature = natureDe(type)
       if (nature === 'marqueur') return { geste: 'compteur', id: cible.id, nombre }
-      // COMME OCTGN (07/10/2026, « 100 % identique ») : sur un sbire ou un
-      // allié, la flèche compte les jetons de DÉGÂTS (haut = +1 dégât), sur un
-      // héros ou un méchant elle compte les PV (haut = +1 PV).
+      // Héros, méchant, sbire, allié : la flèche compte les PV (haut = +1 PV, soigne ;
+      // bas = -1 PV, blesse). Ce n'est plus le comptage de dégâts d'OCTGN pour les sbires
+      // et les alliés (décision du 09/11/2026 après retour testeur : sens inversé).
       return { geste: 'jetons', id: cible.id, nature, nombre }
     }
     case 'arrowright':

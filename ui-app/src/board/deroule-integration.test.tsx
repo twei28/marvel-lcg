@@ -403,13 +403,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
-    // Pas d'activation du mechant dans cette phase (que des sbires) : son
-    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(etapeLue()).toBe('Le méchant ne s’active pas')
-    await act(async () => {
-      fireEvent.click(suivant())
-    })
-    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : depuis le 19/11/2026 (inventaire des fenetres), son
+    // temps vide n'a plus d'etape ni de clic, on passe directement au sbire.
     expect(serveur.rang).toBe(2)
     expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
 
@@ -446,7 +441,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
   // La table et le telephone gardent leur clic (cas precedent, liste brute).
   it('la distribution ne coute aucun clic en scene PC', async () => {
     await ouvrir(true)
-    for (const attendue of ['Le méchant ne s’active pas', 'Drone manigance sur Assault on NORAD']) {
+    // Depuis le 19/11/2026, le temps vide du mechant n'a plus d'etape : un seul clic mene au sbire.
+    for (const attendue of ['Drone manigance sur Assault on NORAD']) {
       await act(async () => {
         fireEvent.click(suivant())
       })
@@ -509,13 +505,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    // Pas d'activation du mechant dans cette phase (que des sbires) : son
-    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(etapeLue()).toBe('Le méchant ne s’active pas')
-    await act(async () => {
-      fireEvent.click(suivant())
-    })
-    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : depuis le 19/11/2026 (inventaire des fenetres), son
+    // temps vide n'a plus d'etape ni de clic, on passe directement au sbire.
     expect(etapeLue()).toBe('Drone va manigancer sur Assault on NORAD')
     // L'intention a ete acquittee toute seule (decision 7), et c'est bien.
     expect(serveur.accuses).toEqual([101, 102])
@@ -602,13 +593,8 @@ describe('le cartouche branche sur un vrai moteur', () => {
       serveur.libererLaSuite()
     })
     await laisserTourner()
-    // Pas d'activation du mechant dans cette phase (que des sbires) : son
-    // temps est DIT par une etape courte, qui coute un clic (03/10/2026).
-    expect(etapeLue()).toBe('Le méchant ne s’active pas')
-    await act(async () => {
-      fireEvent.click(suivant())
-    })
-    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : depuis le 19/11/2026 (inventaire des fenetres), son
+    // temps vide n'a plus d'etape ni de clic, on passe directement au sbire.
     expect(etapeLue()).toBe('Drone va manigancer sur Assault on NORAD')
     expect(serveur.accuses).toEqual([101, 102])
 
@@ -864,12 +850,8 @@ describe('deux clients, un en Instantane et un en Detaille', () => {
       fireEvent.click(suivant())
     })
     await laisserTourner()
-    // Le mechant ne s'active pas dans cette phase : son etape courte d'abord.
-    expect(etapeLue()).toBe('Le méchant ne s’active pas')
-    await act(async () => {
-      fireEvent.click(suivant())
-    })
-    await laisserTourner()
+    // Pas d'activation du mechant dans cette phase (que des sbires) : depuis le 19/11/2026 (inventaire des fenetres), son
+    // temps vide n'a plus d'etape ni de clic, on passe directement au sbire.
     expect(serveurMulti.rang).toBe(2)
     expect(etapeLue()).toBe('Drone manigance sur Assault on NORAD')
 

@@ -1,0 +1,9 @@
+{
+    "version": "0.5.8",
+    "name": "Signature — Zombie Captain America",
+    "encounters": [
+        "hg016",
+        "hg017",
+        "hg018"
+    ]
+}

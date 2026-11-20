@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Raphael",
     "metadata": {
+        "author": "Inkwire",
         "url": "",
         "deck_note": "⚠ `player_deck` EST VOLONTAIREMENT VIDE (consigne utilisateur du 06/09/2026, PROCESSUS-HEROS étape 3) : le zip de Raphael v3 ne livre aucune decklist d'aspect. Le fichier ne contient que de l'IMPRIME : identité, 15 cartes signature, obligation, set némésis. Il reste indispensable : `catalog.heroes()` construit la liste des héros à partir de deck/starter/*.json.",
         "insert_note": "Le zip livre aussi un ENCART DE REGLES (Raphael Insert.png, « Sai Weapon Rules »), qui n'est pas une carte : (1) l'Action d'alter-ego met les Sai en jeu epuisees ; (2) on peut utiliser UNE Sai ou LES DEUX pour piocher quand on vainc un ennemi ; (3) on peut utiliser UNE Sai pour infliger 1 degat a soi-meme et 1 a un ennemi ; (4) cet usage est une action d'ATTAQUE et il faut y poser 1 compteur de rage sur Raphael (max 3). Voir src/cards/pack/raphael/raphael/__init__.py.",

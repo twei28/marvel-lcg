@@ -16,9 +16,10 @@ import { kindLabel, type ScanCardProps } from '../components/ScanCard'
 import type { Catalogue } from './catalogue'
 import { representantNemesis, scanUrl, toPileCard, toScanCard, type ContexteCarte } from './card-model'
 import { t } from './langue'
-import { trouverPaire, type CotePanorama } from './panorama-jumelles'
+import { CARTES_A_COTE, trouverPaire, type CotePanorama } from './panorama-jumelles'
 import type { CleBrique } from './table-briques'
 import { collectionPourJoueur, lireArtsRessources } from './variantes'
+import { environnementVisible, vilainDUnAutreTerritoire } from './ville-etat'
 import { estUneCarte, isVisibleFor, type World, type WorldCard, type WorldPlayer } from './world'
 
 /** Une carte posee, avec ce qui lui est attache (ameliorations, statuts). */
@@ -90,6 +91,12 @@ export type UniteAffichee = {
   pileContenu?: ScanCardProps[]
   /** Titre de la pile regardable (« Discard pile »...). */
   pileTitre?: string
+  /**
+   * Étiquette lisible POSÉE SUR LA TABLE, au pied de la carte (le titre de `pileTitre` n'apparaît qu'au clic). Une ligne
+   * par `\n`. Posée pour la Damnation (pack Mephisto) : une pile face cachée par joueur, sans quoi on ne la distingue
+   * pas d'un deck.
+   */
+  etiquette?: string
   /**
    * Une pile faite de PLUSIEURS piles (« autres piles ») : à l'ouverture, les
    * cartes se lisent groupées par origine, un titre par groupe.
@@ -337,9 +344,36 @@ function enUnites(
     return (attacheesPar.get(id) ?? []).flatMap((fille) => [fille, ...descendants(fille.id, vu)])
   }
 
-  const racines = liste.filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
-  return racines.flatMap((carte): UniteAffichee[] => {
-    const pendantes = sousArbre(carte.id)
+  const toutesRacines = liste.filter((carte) => carte.bind_object_id === 0 || !ids.has(carte.bind_object_id))
+  // Paire jumelle posee SUR LA TABLE (deux environnements, The City + Never Sleeps) : ni l'une ni l'autre ne porte l'autre, ce sont deux
+  // racines. Elles se posent collees, la 1re a gauche, a l'endroit ou arrive la premiere des deux ; le reste de la liste suit.
+  const paireRacines = options.dansLaMain ? undefined : trouverPaire(toutesRacines)
+  const racines = paireRacines
+    ? toutesRacines.filter((carte) => carte.id !== paireRacines.gauche.id && carte.id !== paireRacines.droite.id)
+    : toutesRacines
+  const unitesDeLaPaire: UniteAffichee[] = paireRacines
+    ? ([[paireRacines.gauche, 'gauche'], [paireRacines.droite, 'droite']] as const).map(([jumelle, panorama]) => ({
+        cle: `carte-${jumelle.id}`,
+        carte: toScanCard(jumelle, ctxCarte),
+        attachees: sousArbre(jumelle.id).map((fille) => toScanCard(fille, ctxCarte)),
+        panorama,
+      }))
+    : []
+  return unitesDeLaPaire.concat(racines.flatMap((carte): UniteAffichee[] => {
+    const toutes = sousArbre(carte.id)
+    // Cartes qui se posent A COTE du porteur (CARTES_A_COTE) : elles sortent de la cascade, entieres ; ce qui pendait sous elles les suit.
+    const aCote = options.dansLaMain ? [] : toutes.filter((a) => CARTES_A_COTE.includes(a.card_id) && a.bind_object_id === carte.id)
+    const sortantesACote = new Set<number>()
+    for (const a of aCote) {
+      sortantesACote.add(a.id)
+      for (const fille of descendants(a.id)) sortantesACote.add(fille.id)
+    }
+    const pendantes = toutes.filter((a) => !sortantesACote.has(a.id))
+    const unitesACote: UniteAffichee[] = aCote.map((a) => ({
+      cle: `carte-${a.id}`,
+      carte: toScanCard(a, ctxCarte),
+      attachees: descendants(a.id).map((fille) => toScanCard(fille, ctxCarte)),
+    }))
     const paire = options.dansLaMain ? undefined : trouverPaire(pendantes)
     if (!paire) {
       return [
@@ -348,6 +382,7 @@ function enUnites(
           carte: toScanCard(carte, ctxCarte),
           attachees: pendantes.map((attachee) => toScanCard(attachee, ctxCarte)),
         },
+        ...unitesACote,
       ]
     }
     // Paire jumelle : les deux cartes sortent de la cascade et se posent A COTE
@@ -374,8 +409,9 @@ function enUnites(
       },
       unite(paire.gauche, 'gauche'),
       unite(paire.droite, 'droite'),
+      ...unitesACote,
     ]
-  })
+  }))
 }
 
 /** Un groupe de cartes posees. Vide = pas de groupe. */
@@ -572,6 +608,26 @@ function pileFondue(
  * effet, et rien sur la table ne le disait. Le joueur a rejoue le meme coup
  * trois fois.
  */
+/**
+ * Index id -> {nom, pic_id} de toutes les cartes PLAYER ENVIRONMENT en jeu
+ * (pack maison Silver Surfer « Power Cosmic »), pour resoudre
+ * `info.ui_marker_object_id` (voir `environnementMarqueDe` dans
+ * `card-model.ts`) sans repeter ce balayage a chaque carte rendue.
+ *
+ * Une carte PLANET vit dans `world.area_environment` (partagee) ou dans
+ * `joueur.environment_area` (personnelle, le cas de ce pack) : les deux sont
+ * balayes, aucune hypothese sur laquelle des deux heberge une carte donnee.
+ */
+function planetesParId(world: World): ReadonlyMap<number, { nom: string; picId: string }> {
+  const index = new Map<number, { nom: string; picId: string }>()
+  const ajouter = (cartes: readonly WorldCard[] | undefined) => {
+    for (const carte of cartes ?? []) index.set(carte.id, { nom: carte.name, picId: carte.pic_id })
+  }
+  ajouter(world.area_environment)
+  for (const joueur of world.players ?? []) ajouter(joueur.environment_area)
+  return index
+}
+
 function avecCrise(unites: UniteAffichee[], world: World): UniteAffichee[] {
   const annexes = Array.isArray(world.area_schemes_side) ? world.area_schemes_side : []
   const crise = annexes.find((carte) => Number(carte?.info?.crisis ?? 0) > 0)
@@ -639,6 +695,22 @@ function nomDeckSpecial(liste: readonly unknown[] | undefined): string | undefin
   return mot.charAt(0) + mot.slice(1).toLowerCase()
 }
 
+/** Un deck (ou une defausse) supplementaire dont TOUTES les cartes portent le trait TRAP : le paquet de pieges (Shadow Labyrinth, Kraven). Cle du moteur : `t_TRAP`, sans le « ! » du trait imprime. */
+function sontDesPieges(liste: readonly unknown[] | undefined): boolean {
+  const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
+  return (
+    cartesDeck.length > 0 &&
+    cartesDeck.every((carte) => Object.keys(carte.traits ?? {}).some((trait) => trait.toUpperCase() === 'T_TRAP'))
+  )
+}
+
+/** Un deck (ou une defausse) supplementaire dont TOUTES les cartes sont des sbires ELITE HELLFIRE : le deck Hellfire du scenario 4 « Torn » (Hellfire Hunt, `hellfire_hunt_torn`). Cles du moteur : `t_ELITE` et `t_HELLFIRE`. */
+function sontDuHellfire(liste: readonly unknown[] | undefined): boolean {
+  const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
+  const porte = (carte: WorldCard, trait: string) => Object.keys(carte.traits ?? {}).some((cle) => cle.toUpperCase() === trait)
+  return cartesDeck.length > 0 && cartesDeck.every((carte) => porte(carte, 'T_ELITE') && porte(carte, 'T_HELLFIRE'))
+}
+
 /** Une carte de type vilain (utilise sur le brut du descripteur ou une WorldCard). */
 function estVilain(carte: unknown): boolean {
   return (
@@ -650,6 +722,13 @@ function estVilain(carte: unknown): boolean {
 
 function airesVilains(world: World, rendu: Rendu): UniteAffichee[] {
   const actifs = posees(world.area_villain, rendu)
+  // La ville : le CAPO d'une autre rangee que la notre est grise (on n'interagit qu'avec les vilains de son territoire).
+  for (const unite of actifs) {
+    if (vilainDUnAutreTerritoire(world, rendu.ctx.playerId, Number(unite.carte.id))) {
+      unite.carte.inactif = true
+      unite.carte.etiquetteInactif = t('Autre territoire')
+    }
+  }
   // Le tri par nom se fait sur le nom du MOTEUR, jamais sur celui qui est
   // dessine : `UniteAffichee.carte.name` est traduit depuis le 11/09/2026
   // (voir noms-cartes-fr.ts) alors que `WorldCard.name` reste anglais. Les
@@ -755,6 +834,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
       playerId: options.playerId,
       actives: new Set(world.active_card_ids ?? []),
       catalogue: options.catalogue,
+      planetesParId: planetesParId(world),
     },
     ecartes: { total: 0 },
     representantsDePile: new Map(),
@@ -854,6 +934,15 @@ export function construirePlateau(world: World, options: Options): Plateau {
     cartes: pile,
   }))
 
+  // Le paquet de pieges (cartes TRAP) et sa defausse ont leurs propres piles ; les autres decks supplementaires restent fondus.
+  const paquetsDePieges = decksSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
+  const defaussesDePieges = defaussesSupplementaires.filter((pile) => sontDesPieges(pile.cartes))
+  // Le deck Hellfire (Torn) et sa defausse ont, eux aussi, leurs propres piles sous le deck de rencontre.
+  const decksHellfire = decksSupplementaires.filter((pile) => sontDuHellfire(pile.cartes))
+  const defaussesHellfire = defaussesSupplementaires.filter((pile) => sontDuHellfire(pile.cartes))
+  const autresDecks = decksSupplementaires.filter((pile) => !sontDesPieges(pile.cartes) && !sontDuHellfire(pile.cartes))
+  const autresDefausses = defaussesSupplementaires.filter((pile) => !sontDesPieges(pile.cartes) && !sontDuHellfire(pile.cartes))
+
   const emplacements = [
     emplacement('piles-rencontre', t('Deck Rencontre'), [
       piles(
@@ -868,6 +957,25 @@ export function construirePlateau(world: World, options: Options): Plateau {
             regardable: true,
             titre: t('Défausse Rencontre'),
           },
+        ],
+        rendu
+      ),
+      // Shadow Labyrinth / Kraven : le paquet de pieges et sa defausse, SOUS le deck et la defausse de rencontre (23/10/2026, demande de
+      // l'utilisateur : il y a la place). Ce sont des decks supplementaires du moteur ; ils ne sont plus dans la pile « Cartes cachees ».
+      piles(
+        'pieges',
+        [
+          ...paquetsDePieges.map((pile) => ({ ...pile, videAffichable: true, titre: t('Paquet de pièges') })),
+          ...defaussesDePieges.map((pile) => ({ ...pile, regardable: true, videAffichable: true, titre: t('Défausse de pièges') })),
+        ],
+        rendu
+      ),
+      // Torn : le deck Hellfire et sa defausse (sbires ELITE HELLFIRE), sous le paquet de pieges. Le deck n'est pas regardable (l'ordre est cache), la defausse l'est.
+      piles(
+        'hellfire',
+        [
+          ...decksHellfire.map((pile) => ({ ...pile, videAffichable: true, titre: t('Deck Hellfire') })),
+          ...defaussesHellfire.map((pile) => ({ ...pile, regardable: true, videAffichable: true, titre: t('Défausse Hellfire') })),
         ],
         rendu
       ),
@@ -924,8 +1032,8 @@ export function construirePlateau(world: World, options: Options): Plateau {
         // la zone, apres tout le monde — pas seulement apres NOTRE ligne de
         // combat, sinon un autre joueur s'intercalerait entre les deux en
         // multijoueur.
-        posees(world.area_environment, rendu),
-        posees(notre?.environment_area, rendu),
+        posees(environnementVisible(world, options.playerId, world.area_environment), rendu),
+        posees(environnementVisible(world, options.playerId, notre?.environment_area), rendu),
       ],
       // Lot 5 du 06/10/2026 (question 6) : le siege de chaque groupe, pour
       // poser une carte chez le joueur du groupe vise. L'environnement n'est a
@@ -1141,7 +1249,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
           },
           { cle: 'victoire', cartes: world.victory_display, titre: t('Pile de victoire') },
           { cle: 'retirees', cartes: world.area_removed, titre: t('Retirées de la partie') },
-          ...defaussesSupplementaires.map((pile, index) => ({
+          ...autresDefausses.map((pile, index) => ({
             ...pile,
             titre: `${t('Défausse supplémentaire')} ${index + 1}`,
           })),
@@ -1154,7 +1262,7 @@ export function construirePlateau(world: World, options: Options): Plateau {
         t('Cartes cachées'),
         [
           { cle: 'mise-de-cote', cartes: notre?.set_aside_deck, titre: t('Deck mis de côté') },
-          ...decksSupplementaires.map((pile, index) => ({
+          ...autresDecks.map((pile, index) => ({
             ...pile,
             titre: `${t('Deck supplémentaire')} ${index + 1}`,
           })),
@@ -1162,6 +1270,25 @@ export function construirePlateau(world: World, options: Options): Plateau {
         rendu,
         false
       ),
+      // AJOUT (pack mephisto) : la Damnation, UNE pile par joueur (decision du
+      // 09/11), face cachee pour tous : le clic dit combien il y en a, jamais
+      // lesquelles. Dans les annexes (zone commune) et non dans la zone du
+      // joueur, pour que chaque camp voie le compteur des autres : la defaite
+      // se joue sur le TOTAL, 10 cartes par joueur.
+      ...joueurs.map((joueur, index) => {
+        if (!surLaTable(joueur)) return []
+        const nom = nomHero(joueur)
+        const unites = pileFondue(
+          `damnation-${index}`,
+          multi ? `${t('Damnation')} — ${nom ?? ''}` : t('Damnation'),
+          [{ cle: `damnation-${index}`, cartes: joueur.damnation, titre: t('Damnation') }],
+          rendu,
+          false
+        )
+        // Étiquette sur la table : « Damnation », et le héros à plusieurs joueurs (chaque camp a SA pile).
+        for (const unite of unites) unite.etiquette = multi && nom ? `${t('Damnation')}\n${nom}` : t('Damnation')
+        return unites
+      }),
     ]),
 
 

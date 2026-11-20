@@ -72,6 +72,21 @@ export function ecrireReglage(reglage: ReglageMode): void {
   }
 }
 
+/**
+ * Sommes-nous, MAINTENANT, sur le plateau du telephone ? Meme decision que `useModeMobile`, mais lisible hors d'un
+ * composant (le mode de la phase du mechant se lit au demarrage et par des fonctions pures, 26/10/2026) :
+ * ecran etroit (`REQUETE_MOBILE`) sans le reglage « plateau PC », ou `?mobile` dans l'adresse.
+ */
+export function estTelephoneMaintenant(): boolean {
+  try {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false
+    if (new URLSearchParams(window.location.search).has('mobile')) return true
+    return modeEffectif(lireReglage(), window.matchMedia(REQUETE_MOBILE).matches) === 'mobile'
+  } catch {
+    return false
+  }
+}
+
 export function useModeMobile(): {
   mode: ModeRendu
   reglage: ReglageMode

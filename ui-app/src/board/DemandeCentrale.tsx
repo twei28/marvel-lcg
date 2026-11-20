@@ -1,25 +1,33 @@
+import { estDefausseFinDePhase } from './defausse-fin-tour'
 import { QuestionSurTable, type ChoixSurTable } from './TableSansModale'
 import { ligneDefense } from './ligne-attaque'
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import { classeTonaliteAction } from './action-style'
 import type { Demande, Option } from './ask'
+import { createPortal } from 'react-dom'
 import { CarteApercu } from './Board'
+import { CarteOuverte } from './mobile/CarteOuverte'
 import { nettoyerNarration, nomLisible, sansIdentifiants } from './BarreAction'
 import { t } from './langue'
+import { DEMANDER_A_UN_AUTRE, estDemandeAUnAutre, libelleDemandeAUnAutre } from './demande-a-un-autre'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import { usePlacement } from './placement/usePlacement'
 import { useGlisserPanneau, styleAvecDecalage } from './placement/useGlisserPanneau'
-import { traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
+import { traduireMoteur, traduireQuestionImage, traduireTitreRepetition } from './vocabulaire-moteur'
 import type { WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
 import { NOMS_FR } from './noms-fr'
+import { NOMS_FR_FANMADE } from './noms-fr-fanmade'
+import { narrationEnFrancais } from './narration-fr'
 import { scansFrActifs } from './scans-fr'
 import './boutons-bd.css'
 
 type DemandeCentraleProps = {
   demande: Demande
   options: Option[]
+  /** Les choix sans cible (bug 129, choix-refuses.ts) : montres grises apres les vrais, jamais cliquables. */
+  optionsRefusees?: Option[]
   cartesParId: Map<number, WorldCard>
   choisirOption: (option: Option) => void
   annuler: () => void
@@ -42,6 +50,11 @@ type DemandeCentraleProps = {
    * carteDeLOption.
    */
   carteAuSurvol?: (option: Option) => ScanCardProps | undefined
+  /**
+   * Les cartes d'un LOT que l'option designe (« Role: Brawler » : les cinq ameliorations du role), montrees TOUTES
+   * au survol A LA PLACE de la carte porteuse (la manigance, qui ne dit rien du choix). Voir option-carte.ts.
+   */
+  cartesDuLot?: (option: Option) => ScanCardProps[] | undefined
   /** Le nom (francais si connu) de la carte qui porte l'option, comme dans la barre d'action. */
   nomPorteur?: (bindId: number) => string | undefined
   /**
@@ -83,16 +96,25 @@ type DemandeCentraleProps = {
  */
 export function sansIdentifiantsEnFrancais(texte: string): string {
   if (!scansFrActifs()) return sansIdentifiants(texte)
-  return texte.replace(/\[+\(\s*\d+\s*,\s*([0-9a-z_]+)\s*\)\s*([^[\]]+?)\]+/g, (_, code: string, nom: string) => NOMS_FR[code] ?? nom)
+  // Les noms de cartes en francais, puis les restes anglais de la narration (etapes, piles, statuts : narration-fr.ts).
+  return narrationEnFrancais(
+    texte.replace(/\[+\(\s*\d+\s*,\s*([0-9a-z_]+)\s*\)\s*([^[\]]+?)\]+/g, (_, code: string, nom: string) => NOMS_FR[code] ?? NOMS_FR_FANMADE[code] ?? nom)
+  )
 }
 
 /** Le texte que le moteur a VRAIMENT envoyé, ou rien s'il n'a rien dit. */
 function promptDemande(demande: Demande): string {
   const prompt = nettoyerNarration(sansIdentifiantsEnFrancais(demande.prompt_text))
-  return prompt ? traduireTitreRepetition(prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')) : ''
+  if (!prompt) return ''
+  const nettoye = prompt.replace(/^---\s*/, '').replace(/\s*---$/, '')
+  // Rapport de bug du 08/11/2026 (J. Jonah Jameson) : une question construite
+  // par `AskChooseOneText` (pas de carte-modele a imiter par le moteur) reste
+  // sinon en anglais, la seule des deux formes a ne pas matcher.
+  // `traduireMoteur` en dernier : un titre posé par le moteur (`AskChooseOneText(titre=...)`, ex. « Cosmo: name a card type »).
+  return traduireMoteur(traduireQuestionImage(traduireTitreRepetition(nettoye)))
 }
 
-function texteDemande(demande: Demande): string {
+export function texteDemande(demande: Demande): string {
   const prompt = promptDemande(demande)
   if (prompt) return prompt
   if (demande.ability_type) return traduireMoteur(demande.ability_type)
@@ -220,6 +242,13 @@ function nomSourceParId(
  */
 export function nomDeCapacite(option: Option, texteCapacite: string | undefined): string {
   const nom = nomLisible(option)
+  // La défausse de fin de phase (« End Phase », de 0 à toute la main) n'est la capacité d'aucune carte : sans ce garde, le
+  // bouton prenait le nom imprimé de l'identité (« SCIENTIFIQUE » de Peter Parker, inventaire des fenêtres du 19/11/2026).
+  if (estDefausseFinDePhase(option)) return t('Défausser et piocher')
+  // Un CHOIX PAR NOM (« Hero », « Ally »... de Cosmo) n'est pas une capacité de la carte qui porte la question : sans ce
+  // garde, « Hero » passait pour un nom propre et prenait celui de l'identité (« Empathetic Advantage », rapport #149).
+  // Seulement les choix SANS carte cible : « Futuriste » (choisir une des 3 cartes regardées) garde le nom imprimé.
+  if (option.is_text_choice && option.all_legal_targets.length === 0) return nom
   if (!texteCapacite) return nom
   const entete = texteCapacite.match(/^[«"]?\s*([^«»"—]{2,60}?)\s*[»"]?\s+—\s/)
   if (!entete) return nom
@@ -239,6 +268,7 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
 
 /** Un vrai nom de capacite (« Spider-Sense »), pas un TYPE ni un nom technique. */
 function estNomDeCapacite(nomMoteur: string): boolean {
+  if (nomMoteur === DEMANDER_A_UN_AUTRE) return false
   if (nomMoteur.includes('_')) return false
   return !TYPES_DE_CAPACITE.test(nomMoteur.trim())
 }
@@ -268,6 +298,8 @@ export function libelleRefus(
   if (!reaction) return t('Passer')
   if (options.length !== 1) return t('Ne rien jouer')
   const option = options[0]!
+  // Seule la demande a un autre joueur reste : la refuser, c'est que personne ne defend.
+  if (estDemandeAUnAutre(option)) return t('Ne pas défendre')
   const carte = nomSource(option, cartesParId, nomPorteur)
   if (estEnMain?.(option.bind_id)) return carte ? `${t('Ne pas jouer')} ${carte}` : t('Ne rien jouer')
   // Capacite en jeu : le MEME nom que son bouton (« Spider-Sense », « Objection
@@ -429,12 +461,14 @@ export function EvenementCentrale({
 export function DemandeCentrale({
   demande,
   options,
+  optionsRefusees,
   cartesParId,
   choisirOption,
   annuler,
   survolerOption,
   carteDeLOption,
   carteAuSurvol,
+  cartesDuLot,
   nomPorteur,
   texteCapacite,
   estEnMain,
@@ -445,6 +479,8 @@ export function DemandeCentrale({
   annulerAction,
 }: DemandeCentraleProps) {
   const reaction = estFenetreDeReaction(demande)
+  // Ce qu'on MONTRE : les vrais choix puis les refuses. Tous les comptes (choix unique, taille) restent sur `options`.
+  const affichees = optionsRefusees?.length ? [...options, ...optionsRefusees] : options
   // UN SEUL CHOIX, SANS « Passer » : le titre recopiait le bouton (« Fin de
   // phase pour Domino » au-dessus de « FIN DE PHASE / Domino »). Demande de
   // l'utilisateur, 03/10/2026 : garder seulement le bouton. Le bandeau reste en
@@ -467,6 +503,10 @@ export function DemandeCentrale({
   // compris). C'est LUI qui repond a « je ne sais pas ce que fait la carte » :
   // la vignette du bouton ne fait que la reconnaitre.
   const [carteRegardee, setCarteRegardee] = useState<ScanCardProps | undefined>(undefined)
+  const [lotRegarde, setLotRegarde] = useState<ScanCardProps[] | undefined>(undefined)
+  // TELEPHONE (bug 136, 16/11/2026) : pas de survol, donc la vignette ne se lisait jamais. Un appui dessus ouvre la carte
+  // en grand (la meme carte ouverte que sur le plateau) ; le choix ne part qu'avec son bouton d'action.
+  const [carteZoomee, setCarteZoomee] = useState<{ carte: ScanCardProps; option: Option; libelle: string } | undefined>(undefined)
   const signature = useMemo(
     () => `${demande.event_name}|${demande.ability_type}|${options.map((option) => option.id).join(',')}`,
     [demande.ability_type, demande.event_name, options]
@@ -489,6 +529,24 @@ export function DemandeCentrale({
   // n'aide. Inactif en scene (`enScene`), ou le panneau ne flotte pas.
   const { decalage, gestes: gestesGlisser } = useGlisserPanneau(signature)
   const styleDeplace: typeof style = enScene ? style : styleAvecDecalage(style, decalage)
+
+  // TELEPHONE (17/11/2026, rapport n°142 : « je vois les 3 cartes en partie à cause du héros qui s'affiche, je peux juste annuler ») :
+  // la question et la fenêtre « Cartes regardées » sont deux feuilles posées au MÊME endroit, la question recouvrait le bas de la liste
+  // des cartes à choisir. La hauteur de la question est publiée (`--feuille-demande-h`) : les grandes feuilles (cartes regardées,
+  // sélecteur) s'arrêtent au-dessus d'elle (menus-mobile.css).
+  useEffect(() => {
+    const element = panneau.current
+    if (enScene || !element || !document.body.classList.contains('mode-plateau-portrait')) return
+    const racine = document.documentElement
+    const publier = () => racine.style.setProperty('--feuille-demande-h', `${Math.round(element.getBoundingClientRect().height)}px`)
+    publier()
+    const observateur = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(publier)
+    observateur?.observe(element)
+    return () => {
+      observateur?.disconnect()
+      racine.style.removeProperty('--feuille-demande-h')
+    }
+  }, [enScene, signature])
 
   // EPURE (16/10/2026) : devant le cartouche « Pendant ton tour » / de la phase du
   // mechant, la question n'a plus de bandeau a elle ; ses boutons SUIVENT le
@@ -545,6 +603,7 @@ export function DemandeCentrale({
     const vise = options.find((option) => String(option.id) === zone?.dataset.optionId)
     if (!vise) {
       setCarteRegardee(undefined)
+      setLotRegarde(undefined)
       survolerOption?.(undefined)
       return
     }
@@ -553,18 +612,22 @@ export function DemandeCentrale({
 
   const quitterZone = () => {
     setCarteRegardee(undefined)
+    setLotRegarde(undefined)
     survolerOption?.(undefined)
   }
 
   const activerOption = (option: Option, carte?: ScanCardProps) => {
     // L'agrandissement s'ouvre MEME sur une option indisponible : savoir
     // pourquoi on ne peut pas la prendre demande de lire la carte.
-    setCarteRegardee(carte)
+    const lot = cartesDuLot?.(option)
+    setLotRegarde(lot)
+    setCarteRegardee(lot ? undefined : carte)
     if (!option.failure_reason) survolerOption?.(option)
   }
 
   const desactiverOption = (option: Option) => {
     setCarteRegardee(undefined)
+    setLotRegarde(undefined)
     if (!option.failure_reason) survolerOption?.(undefined)
   }
 
@@ -583,8 +646,10 @@ export function DemandeCentrale({
       ? t('Qui défend contre cette attaque ?')
       : titreDepuisSource(demande, options, cartesParId).replace(/\s*\(\+0\)\s*$/, '')
     const posees = new Set<number>()
-    const choix: ChoixSurTable[] = options.map((option) => {
-      const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+    const choix: ChoixSurTable[] = affichees.map((option) => {
+      const nomBrut = estDemandeAUnAutre(option)
+        ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
+        : reaction || estNomDeCapacite(option.name) ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
       const source = nomSource(option, cartesParId, nomPorteur)
       const defense = option.name === 'Defense' && source !== undefined
       const nom = defense ? `${t('Défendre avec')} ${source}` : nomBrut
@@ -618,7 +683,54 @@ export function DemandeCentrale({
         }
       />
       {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      {lotRegarde ? <ApercuLot cartes={lotRegarde} /> : null}
       </>
+    )
+  }
+
+  // TELEPHONE, PLUSIEURS CARTES PEUVENT REAGIR (variante B, 24/10/2026 : Ant-Man + Cran au changement de forme) :
+  // les cartes cote a cote, chacune avec SON texte ; un toucher joue celle-la en premier, l'autre revient ensuite.
+  // Les copies identiques (trois Cran en main) ne font qu'une carte. « Ignorer les deux » passe tout d'un geste.
+  const auTelephone = typeof document !== 'undefined' && document.body.classList.contains('mode-plateau-portrait')
+  const cartesQuiReagissent = (() => {
+    if (!reaction || enScene || !auTelephone) return []
+    const vues = new Map<string, { option: Option; carte?: ScanCardProps; nom: string; texte?: string }>()
+    for (const option of options) {
+      if (estDemandeAUnAutre(option) || option.failure_reason !== '') continue
+      const carte = carteDeLOption?.(option) ?? carteAuSurvol?.(option)
+      const texte = texteCapacite?.(option)
+      const nom = carte?.name ?? nomDeCapacite(option, texte)
+      const cle = `${nom}|${texte ?? ''}`
+      if (!vues.has(cle)) vues.set(cle, { option, carte, nom, texte })
+    }
+    return [...vues.values()]
+  })()
+  if (cartesQuiReagissent.length >= 2) {
+    return (
+      <section className="demande-centrale dc-cote-a-cote" role="dialog" aria-label="Game decision" aria-live="polite">
+        <div className="dc-texte">
+          <span className="plateau-eyebrow">{libelleTypeDemande(demande)}</span>
+          <strong>{t('Touche la carte à jouer en premier')}</strong>
+        </div>
+        <div className="dc-cartes-reaction">
+          {cartesQuiReagissent.map(({ option, carte, nom, texte }) => (
+            <button type="button" key={option.id} className="dc-carte-reaction" data-option-id={option.id} onClick={() => choisirOption(option)}>
+              {carte ? (
+                <span className="dc-carte-reaction-scan">
+                  <ScanCard {...carte} state="targetable" highlight={false} />
+                </span>
+              ) : null}
+              <b>{nom}</b>
+              {texte ? <span className="dc-carte-reaction-texte">{avecIcones(marquerRessources(texte))}</span> : null}
+            </button>
+          ))}
+        </div>
+        {demande.show_cancel ? (
+          <button type="button" className="af-action tonalite-general dc-pass dc-ignorer-tout" onClick={annuler}>
+            {cartesQuiReagissent.length === 2 ? t('Ignorer les deux') : t('Tout ignorer')}
+          </button>
+        ) : null}
+      </section>
     )
   }
 
@@ -676,9 +788,10 @@ export function DemandeCentrale({
 
       {/* Le TEXTE de l'effet, sous le titre (Épuré, 17/10/2026 : « Réponse : après que Squirrel Girl entre
           en jeu… »). Masqué hors Épuré (board.css) : les autres affichages gardent leur fenêtre. */}
-      {reaction && !enScene
+      {(reaction || auTelephone) && !enScene
         ? (() => {
-            const textes = [...new Set(options.map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
+            // La demande a un autre joueur n'a pas de texte : celui de son porteur serait une autre capacite.
+            const textes = [...new Set(options.filter((option) => !estDemandeAUnAutre(option)).map((option) => texteCapacite?.(option)).filter((x): x is string => Boolean(x)))]
             if (textes.length === 0) return null
             // « Réponse : après que… » : le nom de la capacité en gras, le reste en clair.
             const brut = textes.join(' ')
@@ -687,7 +800,7 @@ export function DemandeCentrale({
           })()
         : null}
 
-      <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
+      <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}${options.length > 8 ? ' est-nombreux' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {/*
           ⚠ UNE SEULE VIGNETTE PAR IMAGE, ET PAS UNE PAR BOUTON.
           Signale en jeu le 15/09/2026, capture a l'appui : « pourquoi il montre
@@ -701,8 +814,10 @@ export function DemandeCentrale({
           sous `bind_id === 0`) : regrouper par porteur les fondrait en une
           seule vignette et on ne saurait plus ce qu'on choisit.
         */}
-        {options.map((option) => {
-          const nomBrut = reaction ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
+        {affichees.map((option) => {
+          const nomBrut = estDemandeAUnAutre(option)
+            ? libelleDemandeAUnAutre(option, demande.event_name, (id) => nomSourceParId(id, cartesParId, nomPorteur))
+            : reaction || estNomDeCapacite(option.name) ? nomDeCapacite(option, texteCapacite?.(option)) : nomLisible(option)
           const source = nomSource(option, cartesParId, nomPorteur)
           // « Défendre avec Domino » plutôt que « DÉFENDRE / Domino » : le bouton
           // dit d'un trait QUI défend (demande de l'utilisateur, 03/10/2026).
@@ -718,7 +833,9 @@ export function DemandeCentrale({
           // La vignette : la carte nommee, sinon, sur une fenetre de reaction,
           // la carte PORTEUSE (elle n'apparaissait qu'au survol). Reconnaitre
           // la carte est la moitie de la comprehension.
-          const carteBrute = carteDeLOption?.(option) ?? (reaction ? carteAuSurvol?.(option) : undefined)
+          // Au telephone, pas de survol : la carte porteuse se montre toujours (24/10/2026, « Reflexes innes » :
+          // « comment je suis cense savoir ce que ca fait ? »).
+          const carteBrute = carteDeLOption?.(option) ?? (reaction || auTelephone ? carteAuSurvol?.(option) : undefined)
           const dejaMontree = carteBrute !== undefined && vignettesPosees.has(carteBrute.id)
           if (carteBrute) vignettesPosees.add(carteBrute.id)
           const carte = dejaMontree ? undefined : carteBrute
@@ -733,12 +850,12 @@ export function DemandeCentrale({
                   geste naturel, et c'est celui de toutes les autres cartes de
                   l'ecran. Le survol, lui, ouvre le grand apercu. */}
               {carte ? (
-                <span className="dc-vignette">
+                <span className={`dc-vignette${auTelephone ? ' est-agrandissable' : ''}`}>
                   <ScanCard
                     {...carte}
                     state={indisponible ? 'disabled' : 'targetable'}
                     highlight={false}
-                    onSelect={() => choisirOuInformer(option)}
+                    onSelect={() => (auTelephone ? setCarteZoomee({ carte, option, libelle: nom }) : choisirOuInformer(option))}
                   />
                 </span>
               ) : null}
@@ -788,6 +905,26 @@ export function DemandeCentrale({
           texte francais. Il se monte dans <body> (portail) et passe devant ce
           panneau, comme il passe devant la table. */}
       {carteRegardee ? <CarteApercu carte={carteRegardee} /> : null}
+      {carteZoomee ? (
+        <CarteOuverte
+          carte={{ ...carteZoomee.carte, onSelect: () => choisirOuInformer(carteZoomee.option) }}
+          libelleAction={carteZoomee.libelle}
+          onFermer={() => setCarteZoomee(undefined)}
+        />
+      ) : null}
+      {lotRegarde ? <ApercuLot cartes={lotRegarde} /> : null}
     </section>
+  )
+}
+
+/** Les cartes d'un lot, cote a cote, montees dans <body> comme l'apercu d'une carte (voir CarteApercu). */
+function ApercuLot({ cartes }: { cartes: readonly ScanCardProps[] }) {
+  return createPortal(
+    <div className="apercu-lot" aria-hidden="true">
+      {cartes.map((carte) => (
+        <ScanCard key={carte.id} {...carte} state="ready" highlight={false} />
+      ))}
+    </div>,
+    document.body
   )
 }

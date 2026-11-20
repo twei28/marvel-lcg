@@ -1,0 +1,171 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 42,
+        "time": "2026-10-22 11-49",
+        "playtime": "2.1"
+    },
+    "rules": [],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Rhino",
+        "villain": [
+            "01094",
+            "01095"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "01097a,01097b"
+        ],
+        "set_aside": [],
+        "encounters": [
+            "01098",
+            "01099",
+            "01099",
+            "01100",
+            "01101",
+            "01101",
+            "01102",
+            "01103",
+            "01104",
+            "01104",
+            "01105",
+            "01105",
+            "01106",
+            "01106",
+            "01106",
+            "01107",
+            "01108"
+        ],
+        "encounter_sets": [
+            "standard",
+            "bomb_scare"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.9",
+            "name": "Agent 13",
+            "hero": [
+                "ag001a,ag001b"
+            ],
+            "hero_deck": [
+                "ag002",
+                "ag003",
+                "ag003",
+                "ag003",
+                "ag004",
+                "ag004",
+                "ag004",
+                "ag005",
+                "ag005",
+                "ag006",
+                "ag006",
+                "ag007",
+                "ag008",
+                "ag009",
+                "ag010"
+            ],
+            "obligations": [
+                "ag015"
+            ],
+            "nemesis_set": [
+                "ag011",
+                "ag012",
+                "ag013",
+                "ag014",
+                "ag014"
+            ],
+            "player_deck": [
+                "53035",
+                "52033",
+                "01051",
+                "10011",
+                "18011",
+                "16043",
+                "16043",
+                "54016",
+                "54016",
+                "09037",
+                "09037",
+                "28014",
+                "28014",
+                "19030",
+                "10018",
+                "01057",
+                "56013",
+                "06018",
+                "06018",
+                "06017",
+                "01055",
+                "01055",
+                "01088",
+                "01089",
+                "01090"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [
+        {
+            "step": 0,
+            "event": "m117 WhenPlayerChooseAbility",
+            "effect": {
+                "id": "e1 Choose c1 ag001b",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:36,15:-2,22:-2,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        },
+        {
+            "step": 1,
+            "event": "m293 WhenUnitWouldAttack",
+            "effect": {
+                "id": "e20 Play c15 ag005",
+                "targets": [],
+                "resources": [
+                    "e16 Discard c22 ag010"
+                ]
+            },
+            "crc": "{1:37,8:23,15:-2,22:-2,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        },
+        {
+            "step": 2,
+            "event": "m400 WhenUnitWouldTakeDamage",
+            "effect": {
+                "id": "e9 Interrupt c8 ag002",
+                "targets": [
+                    "c8 ag002"
+                ],
+                "resources": []
+            },
+            "crc": "{1:37,8:24,22:-3,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        }
+    ],
+    "checksum": "1d5baa086495efac0fbc9e72f31561459c07cc6d1217550e79c79df0a65235f2"
+}

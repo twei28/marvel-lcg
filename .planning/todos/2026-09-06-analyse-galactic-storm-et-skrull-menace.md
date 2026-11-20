@@ -1,5 +1,7 @@
 # Galactic Storm et Skrull Menace : analyse avant portage
 
+> **MISE A JOUR 20/10/2026 : CE DOCUMENT EST PERIME SUR LE POINT CENTRAL.** Le matériel de Galactic Storm (et de Skrull Menace) n'est pas « incomplet » : les quatre archives `MC custom content by Kajislav-20261014T200011Z-1-00{1..4}.zip` contiennent les 319 cartes, les cinq scénarios, les deux héros, les modulaires et le livret 1.2. Skrull Menace est porté. Voir `docs/packs/galactic-storm/INVENTAIRE.md` et `REGLES.md`. La conclusion « sans les cartes, il n'y a rien à porter » (§2 et §6) et la recommandation « ne rien porter » sont caduques ; les §1 (doublons) et §4-5 (machinerie, difficulté) restent vrais.
+
 Relevé du 06/09/2026, **sans écrire une ligne de code**. Les deux zips traînaient
 dans `A créer` en **double exemplaire** et ne figuraient dans aucune ligne du
 tableau de difficulté du plan de portage.

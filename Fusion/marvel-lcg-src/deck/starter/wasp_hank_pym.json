@@ -1,0 +1,42 @@
+{
+ "version": "0.5.8",
+ "name": "Wasp (Hank Pym)",
+ "metadata": {
+  "url": "",
+  "author": "JackHKP",
+  "note": "Pack « Wasp » (JackHKP), version Hank Pym a TROIS formes (Wasp minuscule, Hank Pym, Wasp geant). Aucune decklist d'aspect fournie par l'auteur : player_deck vide (regle PROCESSUS-HEROS etape 3). Seized Control (hp016) est MIS DE COTE au setup par hp001b (BeginGameWithSetAside) et non melange au set nemesis : Ultron le cherche « set-aside » a sa revelation."
+ },
+ "hero": [
+  "hp001a,hp001b,hp001c"
+ ],
+ "hero_deck": [
+  "hp002",
+  "hp003",
+  "hp004",
+  "hp004",
+  "hp004",
+  "hp005",
+  "hp006",
+  "hp006",
+  "hp007",
+  "hp008",
+  "hp009",
+  "hp010",
+  "hp011",
+  "hp011",
+  "hp012"
+ ],
+ "set_aside": [
+  "hp016"
+ ],
+ "obligations": [
+  "hp013"
+ ],
+ "nemesis_set": [
+  "hp014",
+  "hp015",
+  "hp017",
+  "hp018"
+ ],
+ "player_deck": []
+}

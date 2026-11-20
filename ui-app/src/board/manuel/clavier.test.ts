@@ -88,9 +88,11 @@ describe('les touches du mode manuel, calquées sur OCTGN', () => {
   it('haut / bas : points de vie d’un héros ou d’un méchant, dégâts d’un allié, menace d’une manigance, marqueur ailleurs', () => {
     expect(interpreterTouche(touche('ArrowUp'), HEROS)).toEqual({ geste: 'jetons', id: 1, nature: 'pv', nombre: 1 })
     expect(interpreterTouche(touche('ArrowDown'), VILAIN)).toEqual({ geste: 'jetons', id: 7, nature: 'pv', nombre: -1 })
-    // Comme OCTGN : sur un allié ou un sbire, haut = +1 dégât, bas = -1 dégât.
-    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: 1 })
-    expect(interpreterTouche(touche('ArrowDown'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'degats', nombre: -1 })
+    // Allié et sbire comme un héros : haut = +1 PV (soigne), bas = -1 PV (blesse).
+    expect(interpreterTouche(touche('ArrowUp'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'pv', nombre: 1 })
+    expect(interpreterTouche(touche('ArrowDown'), ALLIE)).toEqual({ geste: 'jetons', id: 2, nature: 'pv', nombre: -1 })
+    expect(interpreterTouche(touche('ArrowUp'), SBIRE)).toEqual({ geste: 'jetons', id: 3, nature: 'pv', nombre: 1 })
+    expect(interpreterTouche(touche('ArrowDown'), SBIRE)).toEqual({ geste: 'jetons', id: 3, nature: 'pv', nombre: -1 })
     expect(interpreterTouche(touche('ArrowDown'), MANIGANCE))
       .toEqual({ geste: 'jetons', id: 9, nature: 'menace', nombre: -1 })
     expect(interpreterTouche(touche('ArrowUp'), SOUTIEN)).toEqual({ geste: 'compteur', id: 5, nombre: 1 })
@@ -202,7 +204,8 @@ describe('ce que mesure une carte', () => {
   it('suit le type', () => {
     expect(natureDe('Hero')).toBe('pv')
     expect(natureDe('Villain')).toBe('pv')
-    expect(natureDe('Minion')).toBe('degats')
+    expect(natureDe('Ally')).toBe('pv')
+    expect(natureDe('Minion')).toBe('pv')
     expect(natureDe('MainScheme')).toBe('menace')
     expect(natureDe('Upgrade')).toBe('marqueur')
   })

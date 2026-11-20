@@ -107,7 +107,7 @@ test.describe('Les menus du plateau portrait en feuilles', () => {
     // jamais.
     // Depuis le 04/10/2026 les onglets sont Apparence, Son, Jeu, Avancé.
     await page.getByRole('tab', { name: /Jeu/ }).tap();
-    await expect(page.locator('.ligne-option', { hasText: 'Phase du méchant' }).first()).toBeVisible();
+    await expect(page.locator('.ligne-option', { hasText: 'Présentation' }).first()).toBeVisible();
 
     await page.locator('.reglages-fermer').tap();
     await expect(fenetre).toHaveCount(0);

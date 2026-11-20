@@ -25,6 +25,9 @@ export type LigneJournal =
       type: EntreeHistorique['type']
       famille?: FamillePhase
       cartes: RefCarte[]
+      /** Action annulée depuis (barrée), ou la ligne « Action annulée » elle-même. */
+      annule?: boolean
+      annulation?: boolean
     }
 
 /** La famille d'une phase du moteur ; `undefined` quand le moteur ne dit rien d'utile (le fait garde celle d'a cote). */
@@ -94,6 +97,8 @@ export function lignesCompactes(entrees: EntreeHistorique[]): LigneJournal[] {
       type: entree.type,
       famille: familleCourante,
       cartes: referencesDeEntree(entree),
+      annule: entree.annule,
+      annulation: entree.annulation,
     })
   }
   // Ni bandeau de phase ni separateur de round orphelins.

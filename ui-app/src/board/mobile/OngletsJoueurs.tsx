@@ -13,10 +13,13 @@ export function OngletsJoueurs({
   joueurs,
   actif,
   choisir,
+  verrouilles = [],
 }: {
   joueurs: Array<{ id: number; nom: string }>
   actif: number
   choisir: (id: number) => void
+  /** Pendant une carte a Peril (Q68) : les joueurs qui ne peuvent pas reagir, onglet verrouille. */
+  verrouilles?: number[]
 }): ReactElement | null {
   if (joueurs.length < 2) return null
   return (
@@ -27,9 +30,11 @@ export function OngletsJoueurs({
           role="tab"
           key={id}
           aria-selected={id === actif}
-          className={`portrait-onglet${id === actif ? ' est-actif' : ''}`}
+          className={`portrait-onglet${id === actif ? ' est-actif' : ''}${verrouilles.includes(id) ? ' est-verrouille' : ''}`}
+          disabled={verrouilles.includes(id)}
           onClick={() => choisir(id)}
         >
+          {verrouilles.includes(id) ? '🔒 ' : ''}
           {nom}
         </button>
       ))}

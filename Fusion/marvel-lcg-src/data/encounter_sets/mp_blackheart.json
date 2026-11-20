@@ -1,0 +1,11 @@
+{
+  "version": "0.5.8",
+  "name": "Blackheart",
+  "encounters": [
+    "mp101",
+    "mp102",
+    "mp103",
+    "mp104",
+    "mp105"
+  ]
+}

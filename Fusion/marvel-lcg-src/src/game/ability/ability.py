@@ -43,6 +43,9 @@ class Ability:
 
         self.can_work_also_in_hand = False
         self.can_work_only_in_hand = False
+        # Phrase (francais) dite au joueur quand CETTE capacite n'est pas offerte faute de condition ou de cible
+        # (`SetRaisonRefus`). Vide : le plateau retombe sur un message generique.
+        self.raison_refus: str = ""
         self.any_player_can_trigger_this_when: List[Callable[['Effect'], bool]] = []
 
         self.labels: List['Ability.LABEL'] = []
@@ -268,6 +271,10 @@ class Ability:
         from game.message import TriggerPlayerMessage, TriggerMessage
         if not self.ignore.game_area and not isinstance(self.on_event, OnEvent.GameArea): # Fix for "11004"
             def check_game_area(effect: 'Effect', message: 'Message2') -> bool:
+                # PU-5 (21/10/2026) : une carte de la zone COMMUNE (manigances, environnements de la ville) reagit depuis toutes les zones.
+                commune = effect.world.game_area_commune
+                if commune is not None and effect.this.card.GetGameArea() is commune:
+                    return True
                 # Fix "43021" in Kang stage 2
                 if isinstance(message, TriggerPlayerMessage) and message.to_player != None:
                     return effect.this.card.GetGameArea() == message.GetToPlayer().GetGameArea() or \
@@ -310,7 +317,7 @@ class Ability:
                     else:
                         unit = this
                     if isinstance(unit, Ally|Hero):
-                        return unit.IsCanDefense(attacker)
+                        return unit.IsCanDefense(attacker, message.attacked_targets)
                     else:
                         return False
                 else:
@@ -390,6 +397,11 @@ class Ability:
 
     ################################################################################
     #
+    def SetRaisonRefus(self, phrase: str) -> 'Ability':
+        """La phrase montree au joueur quand l'action n'est pas offerte (aucune arme dans la defausse, etc.)."""
+        self.raison_refus = phrase
+        return self
+
     def SetLabel(self, *labels: 'Ability.LABEL') -> 'Ability':
         # self.sub_types.append(sub_type)
         # += will raise error

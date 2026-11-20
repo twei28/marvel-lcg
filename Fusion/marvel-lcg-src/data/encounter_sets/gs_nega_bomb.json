@@ -1,0 +1,9 @@
+{
+  "version": "0.5.8",
+  "name": "Nega-Bomb",
+  "encounters": [
+    "gs222a,gs222b",
+    "gs223",
+    "gs223"
+  ]
+}

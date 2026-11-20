@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Lady Sif",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Commandement (construite par le portage, aspect arbitre le 03/09/2026).",
         "pouvoirs_de_base_note": "LA MECANIQUE VEDETTE DU PACK : chaque pouvoir de base paie deux fois. ls001a Valiant Warrior retire 1 menace a CHAQUE pouvoir de base, SANS limite ; ls009 Sif's Crest pioche 1 carte au premier de chaque phase. Le deck multiplie donc les occasions d'en utiliser : ls004 (attaque de base gratuite), ls006 (defense de base gratuite), ls008 Sif's Steed (redresse apres chaque epuisement), 01069 Get Ready et 03017 Strength In Numbers. 06032 Teamwork est le meilleur choix d'aspect du lot : il ajoute la statistique d'un allie a un pouvoir de BASE, donc sans jamais faire perdre le declenchement de Valiant Warrior. Piege de lecture : cette carte s'appelle « Teamwork » comme le MOT-CLE porte par ls015 Skurge, mais les deux n'ont aucun rapport.",

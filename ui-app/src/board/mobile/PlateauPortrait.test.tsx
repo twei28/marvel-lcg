@@ -228,6 +228,20 @@ describe('PlateauPortrait — la main derriere son encoche', () => {
     expect(questionSurLaMain([unite('12', { kind: 'event' })], new Map([[99, { role: 'cible', choisie: false } as EtatInteractif]]))).toBe(false)
   })
 
+  it('plateau en ronds, au paiement : les cartes de la main ne sont pas repetees apres « EN JEU » (25/10/2026)', () => {
+    window.localStorage.setItem('marvel-tel-plateau', 'ronds')
+    const payer = (id: number) => [id, { role: 'ressource', choisie: false, agir: () => {} } as EtatInteractif] as const
+    const donnees = plateau(
+      emplacement('main', unite('12', { kind: 'event' })),
+      emplacement('terrain-soutien', unite('30', { kind: 'support' }))
+    )
+    render(<PlateauPortrait world={monde} playerId={0} plateau={donnees} interactifs={new Map([payer(12), payer(30)])} />)
+    const rangee = document.querySelector('.main-dock-rangee')!
+    expect(rangee.querySelectorAll('[data-card-id="12"]')).toHaveLength(1)
+    expect(rangee.querySelectorAll('[data-card-id="30"]')).toHaveLength(1)
+    window.localStorage.removeItem('marvel-tel-plateau')
+  })
+
   it('zone 3 : une carte que le moteur propose de JOUER se choisit d un toucher, puis « Jouer » la joue', () => {
     const jouer = vi.fn()
     const main = plateau(emplacement('main', unite('12', { kind: 'event' })))

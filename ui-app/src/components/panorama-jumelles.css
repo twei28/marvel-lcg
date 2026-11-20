@@ -10,8 +10,44 @@
   position: relative;
 }
 
-/* Bord à bord : plus de liseré, de coins arrondis ni d'ombre côté raccord. */
+/* Bord à bord : plus de liseré, de coins arrondis ni d'ombre côté raccord.
+
+   RACCORD SANS TRAIT (20/10/2026). La table est mise à l'échelle par un
+   `transform: scale(--echelle)` : le raccord des deux cartes tombe presque
+   toujours sur une fraction de pixel d'écran (mesuré : x = 391,33 à 100 %). Le
+   bord de chacune est alors anticrénelé (la gauche couvre 33 % du pixel du
+   raccord, la droite 67 %), et ces deux couvertures se COMPOSENT au lieu de
+   s'additionner : le fond, l'anneau de camp et l'ombre de la carte de droite
+   filtrent par ce pixel. Résultat : une fine ligne verticale au milieu de
+   l'illustration, à tous les niveaux de zoom du navigateur.
+
+   Correctif : les deux cartes se RECOUVRENT de `--recouvrement-panorama`
+   (1,2 px d'écran). La gauche se prolonge sous la droite (son scan couvre donc
+   entièrement le pixel du raccord) ; la droite ne commence à se dessiner qu'à
+   la fin du recouvrement (rognage du cadre), si bien que son anneau, qui vit à
+   gauche de son bord, ne tombe jamais dans la zone dessinée. Le scan de droite
+   NE se décale PAS : son image est calée sur les pixels entiers alors que le
+   rognage ne l'est pas, et décalée elle laisserait voir le fond du cadre (clair)
+   dans le pixel du rognage, ce qui recréait la ligne. Coût : environ un pixel
+   d'illustration manque au raccord (1,2 px d'écran), invisible.
+
+   Géométrie (d = recouvrement) : la gauche s'étend jusqu'à S + 2d, la droite ne
+   se dessine qu'à partir de S + d. Deux conditions : (1) la droite commence
+   après son propre anneau (S + d > S, sinon le clip anticrénelé laisse filtrer
+   le violet / le vert de camp) ; (2) la gauche dépasse le début de la droite
+   d'au moins un pixel, sinon deux bords anticrénelés se retrouvent au même
+   endroit et recréent la ligne. Sur la table l'échelle est `--echelle` ; dans
+   l'aperçu agrandi (hors de la scène) elle vaut 1 (`--echelle-raccord`). */
+.scan-card.est-panorama .scan-frame {
+  --recouvrement-panorama: calc(1.2px / var(--echelle-raccord, var(--echelle, 1)));
+}
+
 .scan-card.est-panorama.panorama-gauche .scan-frame {
+  width: calc(100% + 2 * var(--recouvrement-panorama));
+  /* Le rapport 127/176 s'applique à la largeur : prolongée, elle rallongerait
+     le cadre. La hauteur est donc posée à la main, celle de la carte normale. */
+  aspect-ratio: auto;
+  height: calc(var(--card-w) * 176 / 127);
   border-right-width: 0;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -22,7 +58,24 @@
   border-left-width: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  clip-path: inset(-24px -24px -24px 0);
+  clip-path: inset(-24px -24px -24px var(--recouvrement-panorama));
+}
+
+/* Ni fond de cadre ni cartouche de repli sous le scan d'une moitié : à l'arête
+   anticrénelée du scan, ils (clairs, couleur d'accent) filtreraient par le
+   pixel du raccord et dessineraient la ligne (mesuré : la colonne du raccord
+   était la couleur du repli à moitié opacité). On ne les montre que si le scan
+   manque vraiment (`data-missing`, posé par ScanCard). */
+.scan-card.est-panorama .scan-frame {
+  background: transparent;
+}
+
+.scan-card.est-panorama .scan-fallback {
+  display: none;
+}
+
+.scan-card.est-panorama .scan-frame:has(img[data-missing='true']) .scan-fallback {
+  display: grid;
 }
 
 /* Épuisée : JAMAIS de rotation (ni `state-exhausted` ni `est-epuise`). */

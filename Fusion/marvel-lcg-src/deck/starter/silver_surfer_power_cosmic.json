@@ -1,0 +1,42 @@
+{
+    "version": "0.5.8",
+    "name": "Silver Surfer (Power Cosmic)",
+    "metadata": {
+        "url": "",
+        "deck_note": "Pack en construction (05/11/2026) : identite pc001a/b + les 17/17 cartes numerotees du hero_deck ecrites et prouvees. pc003 Zenn-La/pc005 Sakaar/pc006 Newhaven/pc007 Xandar/pc017 Ego NE SONT PAS dans hero_deck : ils vivent dans le planet deck personnel (5 cartes, pose par SetupPutIntoPlay sur pc001b/jouer_planete), pas le deck de joueur. Set nemesis Terrax (pc019-pc023) + obligation Hunger of Galactus (pc024) ecrits, pas encore tous prouves en jeu. player_deck vide : decision utilisateur du 04/11/2026, cartes d'aspect maison laissees de cote."
+    },
+    "hero": [
+        "pc001a,pc001b"
+    ],
+    "hero_deck": [
+        "pc002",
+        "pc004",
+        "pc016",
+        "pc008",
+        "pc008",
+        "pc009",
+        "pc009",
+        "pc010",
+        "pc010",
+        "pc011",
+        "pc011",
+        "pc012",
+        "pc013",
+        "pc014",
+        "pc015",
+        "pc015",
+        "pc018"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "pc024"
+    ],
+    "nemesis_set": [
+        "pc019",
+        "pc020",
+        "pc021",
+        "pc022",
+        "pc023"
+    ],
+    "player_deck": []
+}

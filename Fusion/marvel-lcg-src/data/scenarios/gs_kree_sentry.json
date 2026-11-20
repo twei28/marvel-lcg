@@ -1,0 +1,39 @@
+{
+  "version": "0.5.8",
+  "name": "Kree Sentry",
+  "villain": [
+    "gs076",
+    "gs077"
+  ],
+  "expert": false,
+  "schemes": [
+    "gs079a,gs079b",
+    "gs080a,gs080b"
+  ],
+  "set_aside": [
+    "gs081",
+    "gs082",
+    "gs082"
+  ],
+  "encounters": [
+    "gs083",
+    "gs084",
+    "gs084",
+    "gs085",
+    "gs086",
+    "gs086",
+    "gs087",
+    "gs088",
+    "gs088",
+    "gs089",
+    "gs089",
+    "gs090",
+    "gs090"
+  ],
+  "encounter_sets": [
+    "standard"
+  ],
+  "modular_sets": [
+    "gs_imperial_guard"
+  ]
+}

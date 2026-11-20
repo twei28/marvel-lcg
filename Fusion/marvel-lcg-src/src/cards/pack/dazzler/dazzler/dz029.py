@@ -11,6 +11,13 @@ from . import *
 # donc dans chaque branche.
 #
 # « the MAIN scheme » : pas de selection, la machination principale.
+#
+# CORRECTIF DU 20/10/2026 (backlog 12) : « Choose: » est un choix OBLIGATOIRE
+# (`ChooseAbilities`, sans option Cancel). Le module passait par
+# `MayChooseOneAbility`, qui offrait « Cancel » : la carte pouvait etre jouee
+# pour rien.
+# « a FRIENDLY character » : `Friend` (tout personnage du cote des joueurs),
+# au lieu de « YouControlUnit » qui excluait les personnages des autres joueurs.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -38,12 +45,12 @@ def GetAbilities() -> Sequence['Ability']:
         def soigner(targets: Sequence['CardFace']) -> None:
             this.HealthUnits(targets, 1 + compter_statuts(effect), effect)
 
-        joueur.MayChooseOneAbility(
+        joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility("Remove threat from the main scheme",
                                             menace),
             AbilityFactory.ForChoiceAbility("Heal a friendly character", soigner)
-            .SetTarget("YouControlUnit", canbe_heal=True),
+            .SetTarget(Friend, canbe_heal=True),
         )
 
     return [

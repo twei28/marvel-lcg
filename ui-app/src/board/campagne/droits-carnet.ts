@@ -17,9 +17,14 @@ export function droitSurChamp(
   champ: ChampVictoire,
   joueurId: number,
   siege: number,
-  estHote: boolean
+  estHote: boolean,
+  tableUnique = false
 ): DroitCarnet {
   if (siege < 0) return 'lecture'
+  // Une seule table, un seul écran : il tient TOUS les sièges (même règle que
+  // `siegesControles`). Sans cela, le héros 2 d'une partie à deux héros sur un
+  // même appareil restait « à remplir par » lui-même, sans personne pour le faire.
+  if (tableUnique) return 'saisie'
   if (champ.parJoueur) return joueurId === siege ? 'saisie' : 'lecture'
   return estHote ? 'saisie' : 'lecture'
 }

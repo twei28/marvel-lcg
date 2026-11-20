@@ -79,7 +79,7 @@ partie.cles_sieges = ["cle0", "cle1", "cle2", "cle3"]
 attente = o.page_attente("chloe").decode("utf-8")
 verifier("l'attente se rafraichit toute seule",
          'http-equiv="refresh"' in attente and "/entrer" in attente)
-verifier("l'attente dit ce qu'on attend", "Ton jeu demarre" in attente)
+verifier("l'attente dit ce qu'on attend", "Ton jeu démarre" in attente)
 
 o.ERREURS_DEMARRAGE["chloe"] = "Le moteur n'a pas repondu a temps."
 casse = o.page_attente("chloe").decode("utf-8")
@@ -88,7 +88,7 @@ verifier("en cas d'echec, la page ne boucle PAS", 'http-equiv="refresh"' not in 
 # morceau qui n'en contient pas, sans quoi le cas passerait a cote.
 verifier("en cas d'echec, la raison est dite",
          "pas repondu a temps" in casse, casse[-400:])
-verifier("en cas d'echec, on peut reessayer", "Reessayer" in casse)
+verifier("en cas d'echec, on peut reessayer", "Réessayer" in casse)
 o.ERREURS_DEMARRAGE.pop("chloe", None)
 
 arret = o.page_arret("chloe").decode("utf-8")
@@ -97,7 +97,7 @@ verifier("l'arret propose de rallumer", "/entrer" in arret)
 # Le geste a un effet que personne ne devinerait : il coupe les acces des
 # invites. Une page qui le fait sans le dire vaut un piege.
 verifier("l'arret annonce que les invites sont mis dehors",
-         "ne rouvrent plus" in arret and "invites" in arret, arret[-500:])
+         "ne rouvrent plus" in arret and "invités" in arret, arret[-500:])
 
 # --- Le bouton Administration n'est pose QUE pour l'administrateur ---------
 # ⚠ On appelle VRAIMENT `_config_partie`. Se contenter de poser la cle
@@ -627,7 +627,7 @@ _code, _, _corps = appel("POST", "/connexion", b"pseudo=inconnu-x&mdp=faux")
 _texte = _corps.decode("utf-8", "replace")
 verifier("la tentative suivante est REFUSEE", _code == 429, str(_code))
 verifier("et on dit au joueur combien de temps attendre",
-         "Trop de tentatives" in _texte and "Reessaie dans" in _texte,
+         "Trop de tentatives" in _texte and "Réessaie dans" in _texte,
          _texte[:300])
 
 # Par ADRESSE : changer de compte ne relache rien, le flot vient du meme
@@ -1032,7 +1032,7 @@ verifier("un lien de plus de 24 heures ne vaut plus rien",
          and not [r for r in o.reinitialisations_ouvertes() if r["jeton"] == "vieux-jeton"], "encore valable")
 _code, _, _corps = appel("GET", "/connexion")
 verifier("la page de connexion dit ou demander un lien",
-         b"Mot de passe oublie" in _corps, "rappel absent")
+         "Mot de passe oublié".encode() in _corps, "rappel absent")
 _oublier_oublieux()
 
 # --- Le nom du DECK, et le suivi servi DANS /admin -------------------------
@@ -1449,6 +1449,97 @@ with o._cx() as cx:
     cx.execute("DELETE FROM rapports")
 
 
+# --- Le tchat garde 30 jours, pas juste les N derniers messages -------------
+# ⚠ `PRIVES_GARDES` (500) est un filet par NOMBRE, PARTAGE entre TOUTES les
+# conversations privees : une conversation tres active pouvait faire perdre
+# l'historique d'une autre, restee calme. Demande de l'utilisateur
+# (06/11/2026) : rouvrir une conversation doit retrouver les derniers jours,
+# pas repartir de zero. `purger_messages_anciens` est le filet par AGE, et ne
+# doit toucher ni un message recent, general ou prive, ni un message prive
+# d'une conversation calme simplement vieille de moins de 30 jours.
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+o.dire("chloe", "message general recent")
+o.dire("chloe", "message prive recent pour hugo", "hugo")
+with o._cx() as cx:
+    _vieux_general = cx.execute(
+        "INSERT INTO messages (pseudo, texte, quand, destinataire) VALUES (?,?,?,?)",
+        ("chloe", "message general tres vieux",
+         (datetime.now() - timedelta(days=40)).strftime("%Y-%m-%d %H:%M"), None)).lastrowid
+    _vieux_prive = cx.execute(
+        "INSERT INTO messages (pseudo, texte, quand, destinataire) VALUES (?,?,?,?)",
+        ("chloe", "message prive tres vieux",
+         (datetime.now() - timedelta(days=40)).strftime("%Y-%m-%d %H:%M"), "hugo")).lastrowid
+
+_efface = o.purger_messages_anciens(30)
+verifier("les deux messages de plus de 30 jours sont effaces", _efface == 2, str(_efface))
+with o._cx() as cx:
+    _ids_restants = {r["id"] for r in cx.execute("SELECT id FROM messages")}
+verifier("⚠ le vieux message general est bien parti", _vieux_general not in _ids_restants)
+verifier("⚠ le vieux message prive est bien parti", _vieux_prive not in _ids_restants)
+with o._cx() as cx:
+    _textes_restants = {r["texte"] for r in cx.execute("SELECT texte FROM messages")}
+verifier("le message general recent reste", "message general recent" in _textes_restants, str(_textes_restants))
+verifier("le message prive recent reste", "message prive recent pour hugo" in _textes_restants, str(_textes_restants))
+
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+
+# --- Le tchat general, en direct depuis Play (sans compte, sans moteur) -----
+# ⚠ PLAY N'A PAS DE MOTEUR DERRIERE LUI (il tourne dans le navigateur) : ces
+# deux routes sont le SEUL chemin pour que Play ait un tchat (chantier du
+# 06/11/2026, demande de l'utilisateur : un pseudo tape une fois a l'ouverture).
+# Un visiteur SANS COMPTE (donc sans cookie de session) doit pouvoir lire et
+# ecrire dans le general avec juste un pseudo, et JAMAIS dans un prive. Et la
+# reponse doit porter les en-tetes CORS/CORP, sans quoi le navigateur de Play
+# (une autre origine) refuserait de la lire.
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+_origine_play_test = "http://127.0.0.1"
+_code, _entetes_play, _corps_play = appel(
+    "POST", "/tchat/dire",
+    b"texte=salut+depuis+play&pseudo=invite-play",
+    {"Origin": _origine_play_test})
+verifier("un visiteur sans compte peut ecrire dans le general avec un pseudo",
+         _code == 200, str((_code, _corps_play)))
+verifier("la reponse porte le CORS pour l'origine de Play",
+         _entetes_play.get("Access-Control-Allow-Origin") == _origine_play_test, str(_entetes_play.items()))
+verifier("et le CORP pour le COEP de Play (Safari)",
+         _entetes_play.get("Cross-Origin-Resource-Policy") == "same-site", str(_entetes_play.items()))
+
+_code, _entetes_play, _corps_play = appel(
+    "GET", "/tchat/vue?depuis=0&pseudo=invite-play",
+    entetes={"Origin": _origine_play_test})
+_vue_play = json.loads(_corps_play)
+verifier("il relit bien son propre message",
+         any(m["texte"] == "salut depuis play" for m in _vue_play["messages"]), str(_vue_play))
+verifier("la lecture porte aussi le CORS pour Play",
+         _entetes_play.get("Access-Control-Allow-Origin") == _origine_play_test, str(_entetes_play.items()))
+
+_code, _, _corps_play = appel(
+    "GET", "/tchat/vue?depuis=0&avec=hote&pseudo=invite-play",
+    entetes={"Origin": _origine_play_test})
+verifier("⚠ un visiteur sans compte ne lit jamais un prive, meme sur Play",
+         _code == 403, str((_code, _corps_play)))
+
+_code, _, _corps_play = appel(
+    "POST", "/tchat/dire", b"texte=coucou&a=hote&pseudo=invite-play",
+    {"Origin": _origine_play_test})
+verifier("⚠ et n'en ecrit jamais non plus", _code == 403, str((_code, _corps_play)))
+
+_code, _entetes_sans_play, _ = appel("POST", "/tchat/dire", b"texte=bonjour&pseudo=autre-invite")
+verifier("sans Origin de Play, pas de CORS (requete normale, meme site)",
+         "Access-Control-Allow-Origin" not in _entetes_sans_play, str(_entetes_sans_play.items()))
+verifier("⚠ mais le CORP reste pose (inoffensif, toujours la pour Safari)",
+         _entetes_sans_play.get("Cross-Origin-Resource-Policy") == "same-site")
+
+with o._cx() as cx:
+    cx.execute("DELETE FROM messages")
+
+
 # --- Le journal d'un moteur survit au rallumage de sa table -----------------
 # ⚠ Le cas qui compte est le RALLUMAGE : `.site/moteur-N.log` etait ouvert en
 # "w", et le journal de la partie d'avant, seule piece a conviction d'un
@@ -1698,8 +1789,8 @@ try:
     _dit = ""
 except ValueError as _e:
     _dit = str(_e)
-verifier("la connexion d'un compte expire dit pourquoi", "expire" in _dit, _dit)
-verifier("et dit quoi faire", "Ecris-moi" in _dit, _dit)
+verifier("la connexion d'un compte expire dit pourquoi", "expiré" in _dit, _dit)
+verifier("et dit quoi faire", "Écris-moi" in _dit, _dit)
 
 # Sa session en cours est coupee : le statut est relu en base a chaque requete.
 verifier("un compte expire ne garde pas sa session",
@@ -1710,8 +1801,8 @@ verifier("un compte expire ne garde pas sa session",
 # libere sur le papier mais la personne suivante s'entend quand meme repondre
 # « Plus aucun espace de jeu disponible » : les places sont toutes tenues par
 # des comptes qui ne viennent plus.
-_places_avant = o.NB_EMPLACEMENTS
-o.NB_EMPLACEMENTS = len([1 for _x in o.liste_comptes() if _x["emplacement"] is not None])
+_places_avant = o.NB_EMPLACEMENTS_COMPTES
+o.NB_EMPLACEMENTS_COMPTES = len([1 for _x in o.liste_comptes() if _x["emplacement"] is not None])
 try:
     o.inscrire("nouveau", "nouveau@exemple.fr", "motdepasse123")
     _refus = ""
@@ -1734,7 +1825,7 @@ except ValueError as _e:
     _refus = str(_e)
 verifier("sans compte expire a recycler, le site se dit complet",
          "espace de jeu" in _refus, _refus or "aucun refus")
-o.NB_EMPLACEMENTS = _places_avant
+o.NB_EMPLACEMENTS_COMPTES = _places_avant
 
 # --- Le remettre en service --------------------------------------------------
 o.changer_statut("dormeur", "valide")
@@ -2631,10 +2722,10 @@ _page_fr = o.page_signalements("yarro").decode("utf-8")
 _lang.poser("en")
 _page_en = o.page_signalements("yarro").decode("utf-8")
 _lang.poser("fr")
-verifier("la meme page parle francais", "Ce que tu as signale" in _page_fr)
+verifier("la meme page parle francais", "Ce que tu as signalé" in _page_fr)
 verifier("⚠ et anglais", "What you reported" in _page_en, _page_en[:120])
 verifier("sans laisser de francais derriere",
-         "Se deconnecter" not in _page_en and "Mes signalements" not in _page_en)
+         "Se déconnecter" not in _page_en and "Mes signalements" not in _page_en)
 
 
 print()

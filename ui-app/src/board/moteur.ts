@@ -19,6 +19,8 @@ import { lireDemande, type Demande, type Reponse } from './ask'
 import { chargerPartieEnCours } from './sources'
 import type { World } from './world'
 import { doitRattraperLesSieges, DELAI_PREMIERE_TRAME_MS } from './sieges-hot-seat'
+import { estTablette } from './tablette/tablette'
+import { estTelephoneMaintenant } from './mobile/useModeMobile'
 
 /**
  * Le rythme de la phase du mechant, en TROIS positions.
@@ -143,7 +145,9 @@ export function migrerReglagesPhase(): void {
     // valeur inconnue : il cliquait, ou il n'a jamais rien demande.
     const avanceAuto = brut === 'pas-a-pas'
 
-    window.localStorage.setItem(CLE_MODE_PHASE, 'detaille')
+    // LA TABLETTE (24/10/2026, decision 8) : une installation NEUVE y demarre sur
+    // « Plateau anime », la table reste entiere. Le PC et les anciens reglages ne changent pas.
+    window.localStorage.setItem(CLE_MODE_PHASE, brut === null && estTablette() ? 'sur-table' : 'detaille')
     window.localStorage.setItem(CLE_AVANCE_AUTO, avanceAuto ? 'on' : 'off')
   } catch {
     /* stockage refuse : les lecteurs retomberont sur leurs defauts, tant pis */
@@ -175,8 +179,21 @@ function porteDeChantier(): boolean {
   }
 }
 
+/**
+ * SUR TELEPHONE LA PHASE DU MECHANT EST D'OFFICE « GUIDEE » (26/10/2026, demande de l'utilisateur : « pas d'autres
+ * choix »). Le mode `detaille` est celui de la presentation « Guidee » (voir `presentationEffective`). Le mode RANGE n'est
+ * jamais ecrase : il se lit seulement autrement sur un telephone, et un PC ou une tablette du meme joueur gardent le leur.
+ */
+export function modePhaseEffectif(modeRange: ModePhaseMechant, telephone: boolean): ModePhaseMechant {
+  return telephone ? 'detaille' : modeRange
+}
+
 export function lireModePhaseMechant(): ModePhaseMechant {
   if (porteDeChantier()) return 'sur-table'
+  return modePhaseEffectif(lireModePhaseMechantRange(), estTelephoneMaintenant())
+}
+
+function lireModePhaseMechantRange(): ModePhaseMechant {
   try {
     const brut = window.localStorage.getItem(CLE_MODE_PHASE)
     // 10/10/2026 : « Étape par étape Bis » EST devenu « Étape par étape ». Qui
@@ -278,6 +295,49 @@ export function ecrireSauvegardeAuto(actif: boolean): void {
 }
 
 /**
+ * « PHASE DU MECHANT AUTOMATIQUE » (23/10/2026, demande de l'utilisateur) : Non / 2 s / 5 s. Chaque etape du cartouche se valide seule
+ * apres ce delai, comme l'ancienne case « Avance auto » retiree le 03/10/2026. Reglage PERSONNEL (localStorage) : en multijoueur, chacun
+ * le sien. Il vaut pour les presentations qui ont un cartouche (« Etape par etape », « Plateau animé ») ; « Accéléré » n'a rien a faire
+ * avancer. Defaut : Non, comme avant.
+ */
+export const CLE_DELAI_AUTO_PHASE = 'marvel-board-phase-auto'
+export const EVENEMENT_DELAI_AUTO_PHASE = 'marvel-board-phase-auto-change'
+export type DelaiAutoPhase = 0 | 2000 | 5000
+
+export function lireDelaiAutoPhase(): DelaiAutoPhase {
+  try {
+    const brut = window.localStorage.getItem(CLE_DELAI_AUTO_PHASE)
+    return brut === '2000' ? 2000 : brut === '5000' ? 5000 : 0
+  } catch {
+    return 0
+  }
+}
+
+export function ecrireDelaiAutoPhase(delai: DelaiAutoPhase): void {
+  try {
+    window.localStorage.setItem(CLE_DELAI_AUTO_PHASE, String(delai))
+  } catch {
+    /* stockage refuse : le reglage vaudra jusqu'au rechargement */
+  }
+  // Le cartouche et la fenetre des reglages sont deux composants sans parent commun : l'evenement les relie dans la meme page.
+  window.dispatchEvent(new CustomEvent(EVENEMENT_DELAI_AUTO_PHASE, { detail: delai }))
+}
+
+/** Suit les changements du reglage (cette page, ou un autre onglet). Rend la fonction qui arrete le suivi. */
+export function suivreDelaiAutoPhase(auChangement: (delai: DelaiAutoPhase) => void): () => void {
+  const relire = () => auChangement(lireDelaiAutoPhase())
+  const surStockage = (e: StorageEvent) => {
+    if (e.key === CLE_DELAI_AUTO_PHASE) relire()
+  }
+  window.addEventListener(EVENEMENT_DELAI_AUTO_PHASE, relire)
+  window.addEventListener('storage', surStockage)
+  return () => {
+    window.removeEventListener(EVENEMENT_DELAI_AUTO_PHASE, relire)
+    window.removeEventListener('storage', surStockage)
+  }
+}
+
+/**
  * La reponse figee a la question « une ambiance s'allume, on la garde ? »
  * (voir ModaleAmbiance.tsx). Reglage PERSONNEL, donc localStorage, sur le
  * meme modele que lireAvanceAuto/ecrireAvanceAuto ci-dessus.
@@ -309,6 +369,30 @@ export function ecrireReponseAmbiance(valeur: ReponseAmbiance): void {
     // cle absente se relit sans dependre d'une valeur ecrite un jour.
     if (valeur === 'demander') window.localStorage.removeItem(CLE_AMBIANCE_DEMANDE)
     else window.localStorage.setItem(CLE_AMBIANCE_DEMANDE, valeur)
+  } catch {
+    /* idem */
+  }
+}
+
+/**
+ * « L'explication d'Annuler a ete lue » (voir ModaleAnnuler.tsx). Reglage
+ * PERSONNEL, localStorage, meme modele que la reponse d'ambiance ci-dessus.
+ * Absent -> la modale s'ouvre a chaque clic ; seule une case cochee ecrit.
+ */
+export const CLE_ANNULER_EXPLIQUE = 'marvel-board-annuler-explique'
+
+export function lireAnnulerExplique(): boolean {
+  try {
+    return window.localStorage.getItem(CLE_ANNULER_EXPLIQUE) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function ecrireAnnulerExplique(valeur: boolean): void {
+  try {
+    if (valeur) window.localStorage.setItem(CLE_ANNULER_EXPLIQUE, '1')
+    else window.localStorage.removeItem(CLE_ANNULER_EXPLIQUE)
   } catch {
     /* idem */
   }

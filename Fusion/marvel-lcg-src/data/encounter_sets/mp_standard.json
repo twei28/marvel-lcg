@@ -1,0 +1,13 @@
+{
+  "version": "0.5.8",
+  "name": "Mephisto Standard",
+  "encounters": [
+    "mp151",
+    "mp152",
+    "mp153",
+    "mp154",
+    "mp155",
+    "mp156",
+    "mp157"
+  ]
+}

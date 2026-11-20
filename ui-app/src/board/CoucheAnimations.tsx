@@ -68,6 +68,20 @@ const GAP = 70
  */
 const MAX_VOLS = 10
 
+/**
+ * AU-DELA DE `MAX_VOLS`, UN SEUL VOL GROUPE PAR GROUPE (20/10/2026).
+ *
+ * ⚠ AVANT, la coupure etait brutale : 11 cartes ou plus, et plus rien ne
+ * bougeait (fiche 2026-09-14-animations-molles, point 5). Maintenant chaque
+ * groupe (pioche, mise en jeu, defausse) devient UNE pile fantome qui glisse
+ * d'un bloc, du centre de ses departs au centre de ses arrivees, avec le
+ * nombre de cartes en pastille. Les vraies cartes restent masquees pendant ce
+ * temps, comme pour un vol ordinaire, et reapparaissent toutes ensemble.
+ *
+ * Le nombre de fantomes reste borne (au plus 4 groupes) : on ne retombe pas
+ * dans « 40 cartes qui volent en meme temps ». Les groupes s'enchainent comme
+ * les vols ordinaires.
+ */
 /** Ordre d'enchainement des groupes (par type de source). */
 const GROUPE_RENCONTRE = 0
 const GROUPE_PIOCHE = 1
@@ -77,6 +91,9 @@ const GROUPE_DEFAUSSE = 3
 type Mesure = { rect: Boite; zone: string; src: string; el: HTMLElement }
 type Vol = {
   cle: string
+  /** Vol GROUPE : le nombre de cartes que la pile fantome represente (sinon 1). */
+  nombre: number
+
   src: string
   depart: Boite
   arrivee: Boite
@@ -184,34 +201,76 @@ function VolCarte({ vol }: { vol: Vol }) {
   // ferait recharger la page (meme raison que la garde de ScanCard), et une
   // image cassee ne montrait de toute facon rien de plus qu'un rectangle.
   return (
-    <div className="vol-carte" style={style}>
+    <div className={`vol-carte${vol.nombre > 1 ? ' est-pile' : ''}`} style={style}>
       <div className={`vol-carte-geste${atterri ? ' est-pose' : ''}`} style={geste}>
         {vol.src ? <img className="vol-carte-image" src={vol.src} alt="" /> : null}
       </div>
+      {vol.nombre > 1 ? <span className="vol-carte-nombre">{vol.nombre}</span> : null}
     </div>
   )
 }
 
-/** L'ancienne duree, gardee pour tout le monde sauf les essais. */
-const DUREE_AVANT_ESSAIS = 250
+type BrouillonGroupable = {
+  groupe: number
+  src: string
+  depart: Boite
+  arrivee: Boite
+  el?: HTMLElement
+  elArrivee?: HTMLElement
+  autres?: HTMLElement[]
+  nombre?: number
+}
+
+/** Le centre d'un ensemble de boites, a la taille de la premiere. */
+function centreDes(boites: Boite[]): Boite {
+  const premiere = boites[0]!
+  const cx = boites.reduce((somme, b) => somme + b.x + b.w / 2, 0) / boites.length
+  const cy = boites.reduce((somme, b) => somme + b.y + b.h / 2, 0) / boites.length
+  return { x: cx - premiere.w / 2, y: cy - premiere.h / 2, w: premiere.w, h: premiere.h }
+}
+
+/**
+ * Un brouillon par GROUPE, quand il y en a trop pour voler un a un.
+ *
+ * Un groupe d'une seule carte reste un vol ordinaire. Pour les autres, depart
+ * et arrivee sont le centre des departs et des arrivees (pour la pioche, les
+ * departs sont tous le deck : la pile part bien de la pioche).
+ */
+export function regrouper<T extends BrouillonGroupable>(brouillons: T[]): T[] {
+  const parGroupe = new Map<number, T[]>()
+  for (const b of brouillons) {
+    const liste = parGroupe.get(b.groupe) ?? []
+    liste.push(b)
+    parGroupe.set(b.groupe, liste)
+  }
+  const resultat: T[] = []
+  for (const liste of parGroupe.values()) {
+    const premier = liste[0]!
+    if (liste.length === 1) {
+      resultat.push(premier)
+      continue
+    }
+    resultat.push({
+      ...premier,
+      // La premiere image DISPONIBLE : une carte qui vient d'apparaitre n'a pas toujours charge la sienne.
+      src: liste.find((b) => b.src)?.src ?? '',
+      depart: centreDes(liste.map((b) => b.depart)),
+      arrivee: centreDes(liste.map((b) => b.arrivee)),
+      el: premier.el,
+      autres: liste.slice(1).flatMap((b) => (b.el ? [b.el] : [])),
+      elArrivee: liste.find((b) => b.elArrivee)?.elArrivee,
+      nombre: liste.length,
+    })
+  }
+  return resultat
+}
 
 export function CoucheAnimations({
   renderId,
   actif,
-  essais = false,
 }: {
   renderId: number
   actif: boolean
-  /**
-   * Le poids, le geste et le « clac » (14/09/2026).
-   *
-   * ⚠ RESERVES A UN SEUL COMPTE tant qu'ils ne sont pas valides a l'usage
-   * (voir `board/essais.ts`). Faux = comportement d'avant, a l'identique :
-   * 250 ms fixes, aucune inclinaison, aucun depassement, aucun tressaillement.
-   * C'est du code TEMPORAIRE : le jour ou l'utilisateur valide, ce drapeau et
-   * les deux branches disparaissent.
-   */
-  essais?: boolean
 }) {
   const [vols, setVols] = useState<Vol[]>([])
   const compteur = useRef(0)
@@ -292,10 +351,14 @@ export function CoucheAnimations({
         arrivee: Boite
         /** La vraie carte a masquer pendant que son fantome vole. */
         el?: HTMLElement
+        /** Vol groupe : les autres vraies cartes du groupe, masquees avec la premiere. */
+        autres?: HTMLElement[]
+        /** Vol groupe : combien de cartes cette pile fantome represente. */
+        nombre?: number
         /** La PILE qui recoit, quand il y en a une : elle tressaille. */
         elArrivee?: HTMLElement
       }
-      const brouillons: Brouillon[] = []
+      let brouillons: Brouillon[] = []
 
       // On n'anime QUE les mouvements qui touchent la MAIN du joueur (pioche,
       // mise en jeu, defausse depuis la main). Raison : le client ne recoit que
@@ -313,6 +376,19 @@ export function CoucheAnimations({
           if (m.zone === 'zone-main' && deckJoueur) {
             brouillons.push({ groupe: GROUPE_PIOCHE, src: m.src, depart: deckJoueur, arrivee: m.rect, el: m.el })
           }
+        } else if (
+          avant.zone === 'zone-piles-joueur' &&
+          m.zone === 'zone-main' &&
+          deckJoueur &&
+          Math.abs(avant.rect.x - deckJoueur.x) < 2 &&
+          Math.abs(avant.rect.y - deckJoueur.y) < 2
+        ) {
+          // LA CARTE DU DESSUS DU DECK. Elle est deja a l'ecran (la pile montre sa
+          // carte du dessus) : elle n'« apparait » donc pas dans la main, elle
+          // change de zone. Sans ce cas, la premiere carte d'une pioche ne volait
+          // pas (12 cartes piochees : 11 dans la pile groupee, mesure du 20/10/2026).
+          // Seule la pile du DECK compte, pas la defausse : meme zone, autre place.
+          brouillons.push({ groupe: GROUPE_PIOCHE, src: m.src || avant.src, depart: deckJoueur, arrivee: m.rect, el: m.el })
         } else if (avant.zone === 'zone-main' && m.zone !== 'zone-main') {
           // Carte qui QUITTE la main vers la table = mise en jeu.
           brouillons.push({ groupe: GROUPE_JEU, src: m.src || avant.src, depart: avant.rect, arrivee: m.rect, el: m.el })
@@ -334,9 +410,10 @@ export function CoucheAnimations({
       }
 
       if (brouillons.length > MAX_VOLS) {
-        // Resynchronisation massive : on saute l'animation pour ce rendu.
-        console.warn(`[anim] ${brouillons.length} mouvements d'un coup -> saute (resync)`)
-      } else if (brouillons.length > 0) {
+        // Trop de cartes pour les faire voler une a une : un vol groupe par groupe.
+        brouillons = regrouper(brouillons)
+      }
+      if (brouillons.length > 0) {
         // Enchainer par GROUPE (type de deck) : chaque groupe demarre apres
         // l'atterrissage du precedent, plutot que tout en meme temps.
         const parGroupe = new Map<number, Brouillon[]>()
@@ -378,7 +455,7 @@ export function CoucheAnimations({
           dureeMax = 0
           liste.forEach((b, i) => {
             const delai = base + i * CASCADE
-            const duree = essais ? dureeDe(b.depart, b.arrivee) : DUREE_AVANT_ESSAIS
+            const duree = dureeDe(b.depart, b.arrivee)
             dureeMax = Math.max(dureeMax, duree)
             nouveaux.push({
               cle: `v${compteur.current++}`,
@@ -387,11 +464,13 @@ export function CoucheAnimations({
               arrivee: b.arrivee,
               delai,
               duree,
-              angle: essais ? inclinaisonDe(b.depart, b.arrivee) : 0,
-              clac: essais && seule,
+              nombre: b.nombre ?? 1,
+              angle: inclinaisonDe(b.depart, b.arrivee),
+              clac: seule,
             })
             if (b.el) masquer(b.el, delai, duree)
-            if (essais) tressaillir(b.elArrivee, 20 + delai + duree)
+            for (const autre of b.autres ?? []) masquer(autre, delai, duree)
+            tressaillir(b.elArrivee, 20 + delai + duree)
           })
           base += (liste.length - 1) * CASCADE + dureeMax + GAP
         }
@@ -406,11 +485,11 @@ export function CoucheAnimations({
     }
 
     memoire = courant
-  }, [renderId, actif, essais])
+  }, [renderId, actif])
 
   if (vols.length === 0) return null
   return (
-    <div className={`couche-animations${essais ? ' est-essai' : ''}`} aria-hidden="true">
+    <div className="couche-animations est-essai" aria-hidden="true">
       {vols.map((vol) => (
         <VolCarte key={vol.cle} vol={vol} />
       ))}

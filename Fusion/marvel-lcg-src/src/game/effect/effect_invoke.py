@@ -263,6 +263,13 @@ class EffectInvoker:
             if not Build.release:
                 controller_manager.console.TryBreak(world)
 
+            # CORRECTIF (25/10/2026, pack custom roz) : on note chaque capacite « Special » REELLEMENT resolue
+            # (cout paye, operation passee) pour son joueur : rz002 / rz003 / rz016 en ont besoin
+            # (`PlayerStat.this_turn_resolved_specials`). Une capacite dont la limite ou la condition bloque
+            # n'arrive jamais ici.
+            if ability.flags.is_special and isinstance(to_player, Player):
+                to_player.stat.RecordResolvedSpecial(this)
+
             send_resolve_message = message and message.send_resolve_message or message == None
             if send_resolve_message and \
                 not ability.flags.is_check_pay and \

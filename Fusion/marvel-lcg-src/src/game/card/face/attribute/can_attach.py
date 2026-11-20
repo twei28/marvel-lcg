@@ -53,6 +53,12 @@ class CanAttach(CardFace):
 
         if not face.card.IsOnField():
             return False
+        # BRIQUE 2 (20/10/2026) : une carte JOUEUR ne s'attache pas a une face
+        # insensible aux cartes joueur, quel que soit l'effet qui l'y pose.
+        from game.operate.immunity import PlayerCardImmunity
+        from game.card.face.base import PlayerCard
+        if PlayerCard.IsType(self) and PlayerCardImmunity.IsProtected(face):
+            return False
         self.refers_to_the_villain_refers_to_attached = None
 
         message = Message.WhenCardWouldAttachTo(self, face, by_effect)

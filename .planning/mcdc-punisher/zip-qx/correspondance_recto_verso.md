@@ -1,0 +1,147 @@
+# Correspondance des faces et des exemplaires
+
+- **qx001** ← MC/DC 6001 : a = 6001A - 01A - Main Scheme 1A - DS.jpg, b = 6001B - 01B - Main Scheme 1B - DS.jpg
+- **qx002** ← MC/DC 6002 : a = 6002A - 02A - Main Scheme 2A - DS.jpg, b = 6002B - 02B - Main Scheme 2B - DS.jpg
+- **qx003** ← MC/DC 6003 : a = 6003A - 03A - Main Scheme 3A - DS.jpg, b = 6003B - 03B - Main Scheme 3B - DS.jpg
+- **qx004** ← MC/DC 6004 : unique = 6004 - 04 - Gunrunner - AE.jpg
+- **qx005** ← MC/DC 6005 : unique = 6005 - 05 - The City - AE.jpg
+- **qx006** ← MC/DC 6006 : unique = 6006 - 06 - Never Sleeps - AE.jpg
+- **qx007** ← MC/DC 6007 : unique = 6007 - 07 - Burning Building - RE.jpg
+- **qx008** ← MC/DC 6008 : unique = 6008 - 08 - Citizens in Danger - RE.jpg
+- **qx009** ← MC/DC 6009 : unique = 6009 - 09 - Hunted by the Past - RE.jpg
+- **qx010** ← MC/DC 6010 : unique = 6010 - 10 - It_s a Trap! - RE.jpg
+- **qx011** ← MC/DC 6011 : unique = 6011 - 11 - Bellona - RE.jpg
+- **qx012** ← MC/DC 6012 : unique = 6012 - 12 - Black Tarantula - RE.jpg
+- **qx013** ← MC/DC 6013 : unique = 6013 - 13 - Overdrive - RE.jpg
+- **qx014** ← MC/DC 6014 : unique = 6014 - 14 - Muse - RE.jpg
+- **qx015** ← MC/DC 6015 : unique = 6015 - 15 - Screwball - RE.jpg
+- **qx016** ← MC/DC 6016 : unique = 6016 - 16 - Busted - RE.jpg
+- **qx017** ← MC/DC 6017 : unique = 6017 - 17 - Conflicting Evidence - RE.jpg
+- **qx018** ← MC/DC 6018 : unique = 6018 - 18 - Red Herring - RE.jpg
+- **qx019** ← MC/DC 6019 : unique = 6019 - 19 - Red Herring - RE.jpg
+- **qx020** ← MC/DC 6020 : unique = 6020 - 20 - Shootout - RE.jpg
+- **qx021** ← MC/DC 6021 : unique = 6021 - 21 - Bank Robbery - RE.jpg
+- **qx022** ← MC/DC 6022 : unique = 6022 - 22 - Like and Subscribe - RE.jpg
+- **qx023** ← MC/DC 6023 : unique = 6023 - 01 - U1 upper west side - AE.jpg
+- **qx024** ← MC/DC 6024 : unique = 6024 - 02 - U2 harlem - AE.jpg
+- **qx025** ← MC/DC 6025 : unique = 6025 - 03 - U3 the bronx - AE.jpg
+- **qx026** ← MC/DC 6026 : unique = 6026 - 04 - U1 west side warrior - AE.jpg
+- **qx027** ← MC/DC 6027 : unique = 6027 - 05 - U2 the harlem hustle - AE.jpg
+- **qx028** ← MC/DC 6028 : unique = 6028 - 06 - U3 bronx bombered - AE.jpg
+- **qx029** ← MC/DC 6029 : unique = 6029 - 07 - uptown expansion instructions - AE.jpg
+- **qx030** ← MC/DC 6030 : unique = 6030 - 01 - hells kitchen - AE.jpg
+- **qx031** ← MC/DC 6031 : unique = 6031 - 02 - theater district - AE.jpg
+- **qx032** ← MC/DC 6032 : unique = 6032 - 03 - upper east side - AE.jpg
+- **qx033** ← MC/DC 6033 : unique = 6033 - 04 - west village - AE.jpg
+- **qx034** ← MC/DC 6034 : unique = 6034 - 05 - midtown - AE.jpg
+- **qx035** ← MC/DC 6035 : unique = 6035 - 06 - lower east side - AE.jpg
+- **qx036** ← MC/DC 6036 : unique = 6036 - 07 - soho - AE.jpg
+- **qx037** ← MC/DC 6037 : unique = 6037 - 08 - financial district - AE.jpg
+- **qx038** ← MC/DC 6038 : unique = 6038 - 09 - chinatown - AE.jpg
+- **qx039** ← MC/DC 6039 : unique = 6039 - 01 - bar fight at josies - AE.jpg
+- **qx040** ← MC/DC 6040 : unique = 6040 - 02 - art heals the soul - AE.jpg
+- **qx041** ← MC/DC 6041 : unique = 6041 - 03 - a walk in the park - AE.jpg
+- **qx042** ← MC/DC 6042 : unique = 6042 - 04 - village of the dammed - AE.jpg
+- **qx043** ← MC/DC 6043 : unique = 6043 - 05 - midtown memories - AE.jpg
+- **qx044** ← MC/DC 6044 : unique = 6044 - 06 - kings of yancy street - AE.jpg
+- **qx045** ← MC/DC 6045 : unique = 6045 - 07 - wheres my rent - AE.jpg
+- **qx046** ← MC/DC 6046 : unique = 6046 - 08 - play the market - AE.jpg
+- **qx047** ← MC/DC 6047 : unique = 6047 - 09 - forget it its chinatown - AE.jpg
+- **qx048** ← MC/DC 6048 : a = 6048A - 01A - Count Nefaria - DS.jpg, b = 6048B - 01B - Count Nefaria - DS.jpg
+- **qx049** ← MC/DC 6049 : a = 6049A - 02A - Crime Master - DS.jpg, b = 6049B - 02B - Crime Master - DS.jpg
+- **qx050** ← MC/DC 6050 : a = 6050A - 03A - Ringmaster - DS.jpg, b = 6050B - 03B - Ringmaster - DS.jpg
+- **qx051** ← MC/DC 6051 : a = 6051A - 04A - Lady Yulan - DS.jpg, b = 6051B - 04B - Lady Yulan - DS.jpg
+- **qx052** ← MC/DC 6052 : a = 6052A - 05A - Mr Negative - DS.jpg, b = 6052B - 05B - Mr Negative - DS.jpg
+- **qx053** ← MC/DC 6053 : a = 6053A - 06A - The Rose - DS.jpg, b = 6053B - 06B - The Rose - DS.jpg
+- **qx054** ← MC/DC 6054 : a = 6054A - 07A - Nightshade - DS.jpg, b = 6054B - 07B - Nightshade - DS.jpg
+- **qx055** ← MC/DC 6055 : a = 6055A - 08A - Diamondback - DS.jpg, b = 6055B - 08B - Diamondback - DS.jpg
+- **qx056** ← MC/DC 6056 : a = 6056A - 01A - Jigsaw I - DS.jpg, b = 6056B - 01B - Jigsaw II - DS.jpg
+- **qx057** ← MC/DC 6057 : a = 6057A - 02A - Jigsaw II - DS.jpg, b = 6057B - 02B - Jigsaw III - DS.jpg
+- **qx058** ← MC/DC 6058 : unique = 6058 - 03 - Jigsaw_s Knife - RE.jpg
+- **qx059** ← MC/DC 6059 : unique = 6059 - 04 - Bushwacker - RE.jpg
+- **qx060** ← MC/DC 6060 : unique = 6060 - 05 - Maggia Thug - RE.jpg
+- **qx061** ← MC/DC 6061 : unique = 6061 - 06 - Maggia Thug - RE.jpg
+- **qx062** ← MC/DC 6062 : unique = 6062 - 07 - Maggia Thug - RE.jpg
+- **qx063** ← MC/DC 6063 : unique = 6063 - 08 - Man Mountain Marko - RE.jpg
+- **qx064** ← MC/DC 6064 : unique = 6064 - 09 - The Eel - RE.jpg
+- **qx065** ← MC/DC 6065 : unique = 6065 - 10 - Putting the Pieces Together - RE.jpg
+- **qx066** ← MC/DC 6066 : unique = 6066 - 11 - Cut to Pieces - RE.jpg
+- **qx067** ← MC/DC 6067 : unique = 6067 - 12 - Cut to Pieces - RE.jpg
+- **qx068** ← MC/DC 6068 : unique = 6068 - 13 - Friends of Ours - RE.jpg
+- **qx069** ← MC/DC 6069 : unique = 6069 - 14 - Friends of Ours - RE.jpg
+- **qx070** ← MC/DC 6070 : unique = 6070 - 15 - A Made Man - RE.jpg
+- **qx071** ← MC/DC 6071 : a = 6071A - 01A - Hobgoblin I - DS.jpg, b = 6071B - 01B - Hobgoblin II - DS.jpg
+- **qx072** ← MC/DC 6072 : a = 6072A - 02A - Hobgoblin II - DS.jpg, b = 6072B - 02B - Hobgoblin III - DS.jpg
+- **qx073** ← MC/DC 6073 : unique = 6073 - 03 - Goblin Glider - AE.jpg
+- **qx074** ← MC/DC 6074 : unique = 6074 - 04 - Flaming Sword - RE.jpg
+- **qx075** ← MC/DC 6075 : unique = 6075 - 05 - Prowler - RE.jpg
+- **qx076** ← MC/DC 6076 : unique = 6076 - 06 - Rabble - RE.jpg
+- **qx077** ← MC/DC 6077 : unique = 6077 - 07 - The Enforcers - RE.jpg
+- **qx078** ← MC/DC 6078 : unique = 6078 - 08 - Torn to Pieces - RE.jpg
+- **qx079** ← MC/DC 6079 : unique = 6079 - 09 - Designs on Crimes - RE.jpg
+- **qx080** ← MC/DC 6080 : unique = 6080 - 10 - Guise to Terrorize - RE.jpg
+- **qx081** ← MC/DC 6081 : unique = 6081 - 11 - Guise to Terrorize - RE.jpg
+- **qx082** ← MC/DC 6082 : unique = 6082 - 12 - Smashing Pumpkins - RE.jpg
+- **qx083** ← MC/DC 6083 : unique = 6083 - 13 - Smashing Pumpkins - RE.jpg
+- **qx084** ← MC/DC 6084 : unique = 6084 - 14 - Wrath of the Hobgoblin - RE.jpg
+- **qx085** ← MC/DC 6085 : unique = 6085 - 15 - Wrath of the Hobgoblin - RE.jpg
+- **qx086** ← MC/DC 6086 : a = 6086A - 01A - Punisher I - DS.jpg, b = 6086B - 01B - Punisher II - DS.jpg
+- **qx087** ← MC/DC 6087 : a = 6087A - 02A - Punisher II - DS.jpg, b = 6087B - 02B - Punisher III - DS.jpg
+- **qx088** ← MC/DC 6088 : a = 6088A - 03A - Punisher Main 1A - DS.jpg, b = 6088B - 03B - Punisher Main 1B - DS.jpg
+- **qx089** ← MC/DC 6089 : a = 6089A - 04A - Punisher Main 2A - DS.jpg, b = 6089B - 04B - Punisher Main 2B - DS.jpg
+- **qx090** ← MC/DC 6090 : a = 6090A - 05A - Justice or Punishment - DS.jpg, b = 6090B - 05B - Justice or Punishment - DS.jpg
+- **qx091** ← MC/DC 6091 : a = 6091A - 06A - Target Lock Focused - DS.jpg, b = 6091B - 06B - Target Lock Distracted - DS.jpg
+- **qx092** ← MC/DC 6092 : unique = 6092 - 07 - In the Crosshairs - AE.jpg
+- **qx093** ← MC/DC 6093 : unique = 6093 - 08 - Punisher_s Assault Rifle - RE.jpg
+- **qx094** ← MC/DC 6094 : unique = 6094 - 09 - Punisher_s RPG - RE.jpg
+- **qx095** ← MC/DC 6095 : unique = 6095 - 10 - Punishers M1911s - RE.jpg
+- **qx096** ← MC/DC 6096 : unique = 6096 - 11 - Mexican Standoff - RE.jpg
+- **qx097** ← MC/DC 6097 : unique = 6097 - 12 - Microchip - RE.jpg
+- **qx098** ← MC/DC 6098 : unique = 6098 - 13 - Rachel Cole Alves - RE.jpg
+- **qx099** ← MC/DC 6099 : unique = 6099 - 14 - Judge, Jury Side Scheme - RE.jpg
+- **qx100** ← MC/DC 6100 : unique = 6100 - 15 - Back Against the Wall - RE.jpg
+- **qx101** ← MC/DC 6101 : unique = 6101 - 16 - Back Against the Wall - RE.jpg
+- **qx102** ← MC/DC 6102 : unique = 6102 - 17 - Bullet Spray - RE.jpg
+- **qx103** ← MC/DC 6103 : unique = 6103 - 18 - Bullet Spray - RE.jpg
+- **qx104** ← MC/DC 6104 : unique = 6104 - 19 - Flash Bang - RE.jpg
+- **qx105** ← MC/DC 6105 : unique = 6105 - 20 - Say Goodnight - RE.jpg
+- **qx106** ← MC/DC 6106 : a = 6106A - 01A - punisher_s hit list - DS.jpg, b = 6106B - 01B - satchel charge - DS.jpg
+- **qx107** ← MC/DC 6107 : unique = 6107 - 02 - punisher - RE.jpg
+- **qx108** ← MC/DC 6108 : unique = 6108 - 03 - rachel cole alves - RE.jpg
+- **qx109** ← MC/DC 6109 : unique = 6109 - 04 - punishers katana - RE.jpg
+- **qx110** ← MC/DC 6110 : unique = 6110 - 05 - punishers M1911 - RE.jpg
+- **qx111** ← MC/DC 6111 : unique = 6111 - 06 - dramatic entrance - RE.jpg
+- **qx112** ← MC/DC 6112 : unique = 6112 - 07 - dramatic entrance - RE.jpg
+- **qx113** ← MC/DC 6113 : unique = 6113 - 08 - punishers arsenal - RE.jpg
+- **qx114** ← MC/DC 6114 : unique = 6114 - 01 - Punishers Armory - RE.jpg
+- **qx115** ← MC/DC 6115 : unique = 6115 - 02 - Punishers Shotgun - RE.jpg
+- **qx116** ← MC/DC 6116 : unique = 6116 - 03 - Punishers Sniper Rifle - RE.jpg
+- **qx117** ← MC/DC 6117 : unique = 6117 - 04 - Punishers SMG - RE.jpg
+- **qx118** ← MC/DC 6118 : unique = 6118 - 05 - Frag Grenade - RE.jpg
+- **qx119** ← MC/DC 6119 : unique = 6119 - 01 - SWAT - AE.jpg
+- **qx120** ← MC/DC 6120 : unique = 6120 - 02 - Cole North - RE.jpg
+- **qx121** ← MC/DC 6121 : unique = 6121 - 03 - Riot Police - RE.jpg
+- **qx122** ← MC/DC 6122 : unique = 6122 - 04 - Riot Police - RE.jpg
+- **qx123** ← MC/DC 6123 : unique = 6123 - 05 - Tactical Sniper - RE.jpg
+- **qx124** ← MC/DC 6124 : unique = 6124 - 06 - Tactical Sniper - RE.jpg
+- **qx125** ← MC/DC 6125 : unique = 6125 - 01 - beetle - RE.jpg
+- **qx126** ← MC/DC 6126 : unique = 6126 - 02 - white rabbit - RE.jpg
+- **qx127** ← MC/DC 6127 : unique = 6127 - 03 - electro - RE.jpg
+- **qx128** ← MC/DC 6128 : unique = 6128 - 04 - lady octopus - RE.jpg
+- **qx129** ← MC/DC 6129 : unique = 6129 - 05 - scorpia - RE.jpg
+- **qx130** ← MC/DC 6130 : unique = 6130 - 06 - trapstr - RE.jpg
+- **qx131** ← MC/DC 6131 : unique = 6131 - 07 - the syndicate - RE.jpg
+- **qx132** ← MC/DC 6132 : a = 6132A - 01A - campaign 1 instructions - DS.jpg, b = 6132B - 01B - campaign 1 reward - DS.jpg
+- **qx133** ← MC/DC 6133 : a = 6133A - 02A - campaign 2 instructions - DS.jpg, b = 6133B - 02B - campaign 2 reward - DS.jpg
+- **qx134** ← MC/DC 6134 : a = 6134A - 03A - campaign 3 instructions - DS.jpg, b = 6134B - 03B - campaign 3 reward - DS.jpg
+- **qx135** ← MC/DC 6135 : a = 6135A - 01A - kingsfall instructions - DS.jpg, b = 6135B - 01B - power to the people - DS.jpg
+- **qx136** ← MC/DC 6136 : a = 6136A - 02A - Long Live - DS.jpg, b = 6136B - 02B - Down With - DS.jpg
+- **qx137** ← MC/DC 6137 : unique = 6137 - 03 - The King - AE.jpg
+- **qx138** ← MC/DC 6138 : unique = 6138 - A - punisher - RP.jpg
+- **qx139** ← MC/DC 6139 : unique = 6139 - Capo of the Past - RE.jpg
+- **qx140** ← MC/DC 6140 : a = 6140A - 01 - rise of the machines - DS.jpg, b = 6140B - 02 - secret agent - DS.jpg
+- **qx141** ← MC/DC 6141 : a = 6141A - 03 - its a trap - DS.jpg, b = 6141B - 04 - angry birds - DS.jpg
+- **qx142** ← MC/DC 6182 : a = 6182A - Clint Barton - DS.jpg, b = 6182B - Hawkeye - DS.jpg
+- **qx143** ← MC/DC 6183 : a = 6183A - punisher hand A.jpg, b = 6183B - punisher hand B.jpg
+
+Ne pas regrouper des numéros de source distincts simplement parce que le nom imprimé est identique (par exemple Red Herring ou Maggia Thug).

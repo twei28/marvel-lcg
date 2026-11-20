@@ -11,6 +11,7 @@ import { CartoucheHorsPhase } from './CartouchePhase'
 import type { EtapeDeroule } from './deroule-phase'
 import type { ScanCardProps } from '../components/ScanCard'
 import { ecran as screen } from '../test-textes'
+import { ecrireDelaiAutoPhase } from './moteur'
 import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import type { QuestionDuMoteur } from './sous-cadre'
@@ -365,24 +366,26 @@ describe('cartouche du deroule', () => {
     expect(temps(container, /Menace/i)?.className).toContain('est-passe')
   })
 
-  it('un temps vide a son etape courte, avec Suivant (decision du 03/10/2026)', () => {
-    // Menace, mechant, distribution : les sbires et la revelation n'ont rien
-    // produit. Chacun est DIT par une etape courte qui coute un clic, au lieu
-    // d'etre saute en silence.
+  it('un temps vide n’a plus d’etape ni de clic, son onglet est grise (inventaire des fenetres, 19/11/2026)', () => {
+    // Menace, mechant, distribution : les sbires et la revelation n'ont rien produit. Avant (decision du 03/10/2026),
+    // chacun avait son etape courte (« Aucun sbire engagé ») qui coutait un clic. Choix de l'utilisateur (nicodede62,
+    // « trop de pop-ups ») : le temps vide saute tout seul, et son onglet reste visible, grise.
     const onTerminer = vi.fn()
     const sansSbiresNiRevelation: EtapeDeroule[] = [
       { cle: 'a', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] },
       { cle: 'b', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', boosts: [] },
       { cle: 'c', temps: 'distribution', titre: 'distribution', regle: '', boosts: [] },
     ]
-    render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
-    fireEvent.click(suivant())
-    fireEvent.click(suivant())
-    expect(etapeLue()).toBe('Aucun sbire engagé')
-    fireEvent.click(suivant())
-    fireEvent.click(suivant())
-    expect(etapeLue()).toBe('Rien à révéler')
-    fireEvent.click(suivant())
+    const { container } = render(<DeroulePhase etapes={sansSbiresNiRevelation} onTerminer={onTerminer} />)
+    const lues: string[] = [etapeLue()]
+    for (let i = 0; i < 6 && !screen.queryByRole('button', { name: /Terminer/i }); i++) {
+      fireEvent.click(suivant())
+      lues.push(etapeLue())
+    }
+    expect(lues).not.toContain('Aucun sbire engagé')
+    expect(lues).not.toContain('Rien à révéler')
+    const sbires = [...container.querySelectorAll('.deroule-pastille')].find((li) => li.textContent?.startsWith('2B'))
+    expect(sbires?.className).toMatch(/est-vide/)
     expect(onTerminer).not.toHaveBeenCalled()
     fireEvent.click(terminer())
     expect(onTerminer).toHaveBeenCalledTimes(1)
@@ -2376,6 +2379,20 @@ describe("l'annonce d'une activation", () => {
     expect(screen.getByText('4 dégâts subis')).toBeInTheDocument()
   })
 
+  // 25/10/2026, telephone : le boost ★ de Weapons Runner inscrit son ENTREE avant que l'attaque ne se complete. Le correctif
+  // du 19/10 (« suiteDifferee ») ne valait que sur la table : au telephone, « Étape suivante » sautait l'attaque et ses boosts.
+  it.each([
+    ['telephone', { telephone: true }],
+    ['PC, cartouche', {}],
+  ])("une entree issue d'un boost ★ attend que l'attaque soit resolue (%s)", (_nom, mode) => {
+    const entree: EtapeDeroule = { cle: 'entree:70', temps: 'mechant', titre: 'entree', regle: '', carteId: 70, cibleNom: 'Weapons Runner', boosts: [] }
+    const { rerender } = render(<DeroulePhase etapes={[annonce, entree]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} {...mode} />)
+    fireEvent.click(screen.getAllByRole('button', { name: /Suivant/i })[0])
+    expect(etapeLue()).toBe('Klaw va attaquer Colossus')
+    rerender(<DeroulePhase etapes={[resolue, entree]} identitePhase={3} phaseMechantEnCours onTerminer={() => {}} {...mode} />)
+    expect(etapeLue()).toBe('Klaw attaque Colossus')
+  })
+
   // Le test que la decision 7 reclame mot pour mot : UN accuse, pas deux.
   it("acquitte l'intention tout de suite quand aucune question n'est posee", () => {
     const onSuivant = vi.fn()
@@ -4082,3 +4099,106 @@ describe('lot 4 : l ecran du resultat se signale a la table', () => {
     expect(vus.every((v) => v === false)).toBe(true)
   })
 })
+
+// « Phase du méchant automatique » : Non / 2 s / 5 s (réglage personnel, demande du 23/10/2026).
+describe('cartouche du deroule : phase du mechant automatique', () => {
+  beforeEach(() => {
+    window.localStorage.clear()
+    vi.useFakeTimers()
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    window.localStorage.clear()
+  })
+
+  it('par defaut (Non) : l etape attend le clic, meme apres 10 s', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(10000)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+  })
+
+  it('2 s : l etape suivante s affiche toute seule apres 2 s, pas avant', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '2000')
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(1900)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+    act(() => {
+      vi.advanceTimersByTime(200)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+
+  it('5 s : rien a 4 s, l etape suivante a 5 s', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '5000')
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      vi.advanceTimersByTime(4000)
+    })
+    expect(etapeLue()).toBe('Menace sur la manigance principale')
+    act(() => {
+      vi.advanceTimersByTime(1100)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+
+  // Rapport nicodede62 (18/11/2026) : « pendant le tour du méchant, il attend toujours que je valide avec espace ». Les boosts se
+  // retournent au clic (« Révéler le boost suivant ») ; le minuteur était coupé tant qu'il en restait, l'étape attendait Espace.
+  it('2 s, en Guidé : les boosts se retournent tout seuls, sans clic', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '2000')
+    const attaque: EtapeDeroule[] = [{
+      cle: 'atk', temps: 'mechant', titre: 'attaque', regle: 'regle:activations', etat: 'resolu', carteId: 50, cibleId: 12,
+      auteurNom: 'Ultron', cibleNom: 'Shuri', base: 2, montant: 4, restant: 6,
+      boosts: [{ cle: 'b1', nom: 'Assaut', cibleId: 70, apport: 1 }, { cle: 'b2', nom: 'Avancée', cibleId: 71, apport: 1 }],
+    }]
+    render(<DeroulePhase etapes={attaque} essai onTerminer={() => {}} />)
+    expect(document.querySelector('button[data-boost-suivant]')).not.toBeNull()
+    act(() => {
+      vi.advanceTimersByTime(2100)
+    })
+    expect(document.querySelector('button[data-boost-suivant]')).toBeNull()
+  })
+
+  // Inventaire des fenetres du 19/11/2026 (nicodede62, « trop de pop-ups ») : en defilement automatique, le bilan se ferme
+  // seul ; sans defilement, il attend toujours « Terminer ».
+  it('2 s : le bilan se ferme seul apres le delai', () => {
+    window.localStorage.setItem('marvel-board-phase-auto', '2000')
+    const onTerminer = vi.fn()
+    const menace: EtapeDeroule[] = [{ cle: 'm', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] }]
+    render(<DeroulePhase etapes={menace} onTerminer={onTerminer} />)
+    for (let i = 0; i < 4 && onTerminer.mock.calls.length === 0; i++) {
+      act(() => {
+        vi.advanceTimersByTime(2100)
+      })
+    }
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+  })
+
+  it('sans defilement, le bilan attend Terminer', () => {
+    const onTerminer = vi.fn()
+    const menace: EtapeDeroule[] = [{ cle: 'm', temps: 'menace', titre: 'menace', regle: 'regle:menace', boosts: [] }]
+    render(<DeroulePhase etapes={menace} onTerminer={onTerminer} />)
+    fireEvent.click(suivant())
+    act(() => {
+      vi.advanceTimersByTime(20_000)
+    })
+    expect(onTerminer).not.toHaveBeenCalled()
+    fireEvent.click(terminer())
+    expect(onTerminer).toHaveBeenCalledTimes(1)
+  })
+
+  it('le reglage change en cours de phase : pris en compte tout de suite', () => {
+    render(<DeroulePhase etapes={etapes} onTerminer={() => {}} />)
+    act(() => {
+      ecrireDelaiAutoPhase(2000)
+    })
+    act(() => {
+      vi.advanceTimersByTime(2100)
+    })
+    expect(etapeLue()).toBe('Ultron attaque Shuri')
+  })
+})
+

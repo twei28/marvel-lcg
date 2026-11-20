@@ -68,7 +68,7 @@
     display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 2;
     flex-direction: column; gap: 4px; padding: 8px 12px 12px;
     background: #0b0d12; border-bottom: 1px solid rgba(255,255,255,.14);
-    max-height: 70dvh; overflow-y: auto;
+    max-height: calc(100dvh - 130px); overflow-y: auto;
   }
   html.tel .tel-entete.menu-ouvert .tel-menu { display: flex; animation: tel-fondu .15s ease-out; }
   html.tel .tel-menu .tel-lien {
@@ -86,6 +86,33 @@
     min-height: 44px; min-width: 44px; padding: 0 12px; font-size: 14px;
   }
   html.tel .tel-menu .reprise-boutons .rb-libelle { display: inline; font-size: 14px; }
+  /* Les outils (Reprendre, Revoir, Stats, Puzzles, Player, Administration...) : UNE LIGNE PAR OUTIL, icone + nom (24/10/2026,
+     demande de l'utilisateur : « je vois pas tous les icones en haut »). Les icones seules ne disaient pas leur nom, et la
+     rangee en grille se coupait. Meme habillage que le menu des autres pages (tel-pages.css, `.tp-menu`). */
+  html.tel .tel-menu .reprise-boutons { display: flex; flex-direction: column; flex-wrap: nowrap; gap: 2px !important; margin: 4px 0 0; }
+  html.tel .tel-menu .reprise-boutons > button,
+  html.tel .tel-menu .reprise-boutons > a {
+    width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 8px !important;
+    display: flex !important; justify-content: flex-start; align-items: center; gap: 12px;
+    background: transparent; box-shadow: none; border: 0; clip-path: none !important; color: #fff; text-decoration: none;
+    font: 700 16px "Segoe UI", system-ui, sans-serif !important;
+  }
+  html.tel .tel-menu .reprise-boutons > button i.fa,
+  html.tel .tel-menu .reprise-boutons > a i.fa { width: 24px; text-align: center; font-size: 17px; }
+  html.tel .tel-menu .reprise-boutons .rb-libelle {
+    position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; font-size: 16px;
+  }
+
+  /* Le bouton d'affichage (l'oeil) du menu : une ligne avec son nom, comme les outils (24/10/2026 : il etait seul, sans nom). */
+  html.tel .tel-menu .btn-affichage {
+    width: 100% !important; height: 46px !important; min-height: 46px !important; padding: 0 8px !important;
+    display: flex !important; justify-content: flex-start; align-items: center; gap: 12px; align-self: stretch;
+    font: 700 16px "Segoe UI", system-ui, sans-serif !important;
+  }
+  html.tel .tel-menu .btn-affichage i.fa { width: 24px; text-align: center; font-size: 17px; }
+  html.tel .tel-menu .btn-affichage .rb-libelle {
+    display: inline !important; position: static !important; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal; font-size: 16px;
+  }
 
   /* ---- Le bandeau : l'affiche en haut, qui rétrécit au défilement --------- */
   html.tel .team-b {
@@ -155,6 +182,21 @@
   html.tel .tb-entete { display: flex; align-items: center; gap: 8px; min-height: 44px; }
   html.tel .tb-entete b { font-size: 22px; }
   html.tel .tb-compte { font-size: 11px; letter-spacing: .1em; }
+  /* Le filtre « Fan-made (n) » du choix du méchant (24/10/2026) : cache partout hors de la mise en page PC a trois colonnes,
+     donc introuvable au telephone. Un bouton de 44 px, a cote du compte, qui s'allume quand les fan-made sont affichees. */
+  /* Contour --fan-made, fond inchange meme allume (06/11/2026, meme repere que
+     sur ordinateur -- selection-mechant.css, prepare.css) : avant, l'etat
+     allume prenait --affiche-jaune (detourne en bleu par l'epure), le repos
+     n'avait aucune couleur a part. */
+  html.tel .ext-fanmade {
+    display: inline-flex; align-items: center; flex: none; min-height: 44px; padding: 0 12px;
+    border: 2px solid var(--fan-made); background: #2d3746; color: var(--fan-made);
+    font: 800 13px "Segoe UI", system-ui, sans-serif; letter-spacing: .02em; text-transform: uppercase; white-space: nowrap;
+  }
+  html.tel .ext-fanmade.on { background: #2d3746; color: var(--fan-made); box-shadow: 0 0 0 2px var(--fan-made); }
+  html[data-epure].tel .ext-fanmade { background: var(--ep-champ); color: var(--fan-made); border: 1px solid var(--fan-made); border-radius: 8px; box-shadow: var(--ep-relief); clip-path: none; font-family: var(--ep-police); font-weight: 600; text-transform: none; }
+  /* !important : le degrade que l'Epure pose sur tous ses boutons (« html[data-epure] … button ») cachait la couleur de l'etat allume. */
+  html[data-epure].tel .ext-fanmade.on { background: var(--ep-champ) !important; color: var(--fan-made) !important; border: 1px solid var(--fan-made) !important; box-shadow: none !important; font-weight: 700; }
   html.tel .tb-mode {
     margin-left: auto; min-height: 44px; max-width: 62%; padding: 0 2px;
     font-size: 11px; letter-spacing: .06em; text-align: right;
@@ -162,7 +204,8 @@
   }
   html.tel .tb-filtres { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
   html.tel .tb-filtres .tb-search { flex: 1 1 100%; }
-  html.tel .tb-filtres .tampon { flex: 1 1 auto; justify-content: center; min-width: 0; max-width: 100%; }
+  /* Favoris, vagues et Fan-made tiennent sur UNE rangée : la grille de héros monte d'autant. */
+  html.tel .tb-filtres .tampon { flex: 1 1 0; justify-content: center; min-width: 0; max-width: 100%; padding-left: 6px; padding-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   html.tel input.search, html.tel select, html.tel .tb-search, html.tel .tb-filtres .tampon,
   html.tel .tel-outils .tampon, html.tel .deck-aspects-bascule, html.tel .ext-tab {
     min-height: 44px; font-size: 16px;
@@ -199,10 +242,14 @@
   html.tel .tb-deck:hover { transform: none; }
   html.tel .tb-deck .do-name { font-size: 16px; }
   html.tel .tel-deck-actions { display: flex; gap: 8px; margin-top: 10px; }
-  html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; }
+  /* Trois boutons (Voir les cartes, Supprimer, Choisir) tiennent sur la largeur : le texte passe a la ligne au lieu de deborder. */
+  html.tel .tel-deck-actions .ts-btn { flex: 1 1 0; min-width: 0; white-space: normal; text-align: center; line-height: 1.15; padding: 6px 8px; overflow-wrap: anywhere; }
   html.tel .tel-outils { display: flex; flex-wrap: wrap; gap: 8px; }
   html.tel .tel-outils .tampon { flex: 1 1 auto; justify-content: center; }
-  html.tel .deck-aspects-bascule { width: 100%; }
+  /* `flex: none` (26/10/2026) : prepare.css donne à la bascule `flex: 0 0 100%`, pensé pour une rangée qui passe à la ligne.
+     Ici la liste est une COLONNE : 100 % devient 100 % de la HAUTEUR de la liste, et chaque bouton « Paquets d'aspect / Decks du
+     tableur » faisait un quart d'écran de cadre vide avant le premier deck. */
+  html.tel .deck-aspects-bascule { width: 100%; flex: none; }
   html.tel .deck-aspects.est-deplie { display: flex; flex-direction: column; gap: 10px; }
 
   /* ---- Barre du bas : équipe, puis Retour / Aléatoire / Continuer --------- */
@@ -312,7 +359,23 @@
   html.tel .dm-edit { min-height: 44px; }
   html.tel .dm-head { flex-wrap: wrap; gap: 8px; }
   html.tel .dm-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Le volet d'une feuille basse défile au doigt (26/10/2026). `html[data-epure] .deck-modal-panel { overflow: hidden }`
+     (affichage-epure-pages.css) écrasait le `overflow: auto` du panneau : on ne voyait que les trois premières rangées d'un
+     deck de 47 cartes, sans moyen d'aller plus bas. Le panneau redéfile (et ne passe pas le geste à la page derrière) ; pour
+     la grille des cartes d'un deck, c'est la GRILLE qui défile, sous une poignée et un titre qui restent en place : fermer
+     reste toujours à portée du pouce. */
+  html.tel .deck-modal .deck-modal-panel { overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+  html.tel .deck-modal .deck-modal-panel:has(> .dm-grid) { overflow: hidden; }
+  html.tel .deck-modal .deck-modal-panel > .dm-grid {
+    flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain;
+    align-content: start; padding-bottom: 8px; -webkit-overflow-scrolling: touch;
+  }
   html.tel .tb-cartes-grille { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  /* Les cartes d'un heros (14/11/2026) : une image pas encore chargee (chargement paresseux, reseau mobile) ne pesait
+     que sa bordure (6 px). Le panneau n'avait alors AUCUNE hauteur a defiler : le doigt faisait defiler la PAGE
+     (Chrome masque sa barre) au lieu de la grille, et les cartes du bas n'arrivaient jamais. `auto 225/326` reserve la
+     place d'une carte en attendant, puis prend le vrai rapport de l'image (carte paysage comprise). */
+  html.tel .tb-carte img { aspect-ratio: auto 225 / 326; background: rgba(255, 255, 255, .06); }
   html.tel .vh-panel .vh-actions { flex-wrap: wrap; }
   html.tel .vh-panel .vh-actions .tampon { min-height: 44px; flex: 1 1 auto; justify-content: center; }
   html.tel .fiche-heros .fh-art { height: min(26dvh, 220px); }
@@ -344,4 +407,82 @@
 @media (max-width: 767px) and (prefers-reduced-motion: reduce) {
   html.tel .deck-modal-panel, html.tel .tel-menu, html.tel .tel-voile, html.tel .tb-art,
   html.tel .reprise-panneau, html.tel .reprise-voile { animation: none !important; }
+}
+
+/* ---- Épuré au téléphone (23/10/2026) : la même peau que le PC ---------------------------------------------------
+   Les règles ci-dessus gardent l'ancien habillage (rouge, gros traits, ombres dures) ; l'Épuré est le défaut du jeu
+   (affichage-epure-pages.css, jetons --ep-*) : on y ramène les pièces propres au téléphone. Aucune mesure ne change
+   (44 px, trois colonnes), seules les couleurs, bords et typographies. */
+@media (max-width: 767px) {
+  html[data-epure].tel body { background: var(--ep-fond); }
+  html[data-epure].tel .tel-entete, html[data-epure].tel .nav { background: var(--ep-surface); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .tel-menu { background: var(--ep-surface); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .tel-menu .tel-lien { font-family: var(--ep-police); font-weight: 600; }
+  html[data-epure].tel .tel-langue, html[data-epure].tel .tel-burger { color: var(--ep-texte); font-family: var(--ep-police); }
+  html[data-epure].tel .tel-etapes .pstep { background: transparent; box-shadow: none; border-radius: 0; color: var(--ep-doux); }
+  html[data-epure].tel .tel-etapes .pstep.active { color: var(--ep-texte); border-bottom-color: var(--ep-jaune); }
+  html[data-epure].tel .tel-etapes .pstep .pnum { background: var(--ep-champ); color: var(--ep-texte); border-radius: 6px; }
+  html[data-epure].tel .tel-etapes .pstep.active .pnum { background: var(--ep-jaune); color: #fff; }
+
+  /* Accueil */
+  html[data-epure].tel .acc-tel-jouer {
+    background: var(--ep-jaune); color: #fff; border: 0; border-radius: 10px; box-shadow: 0 0 0 1px #1d4a8a;
+    clip-path: none; font-family: var(--ep-police);
+  }
+  html[data-epure].tel .acc-tel-jouer b { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .02em; }
+  html[data-epure].tel .acc-tel-vignette, html[data-epure].tel .acc-tel-mode-nom {
+    background: var(--ep-champ); border: 0; border-radius: 10px; box-shadow: var(--ep-relief); clip-path: none;
+    font-family: var(--ep-police);
+  }
+  html[data-epure].tel .acc-tel-vignette { border-left: 4px solid var(--ep-jaune); border-radius: 4px 10px 10px 4px; }
+  html[data-epure].tel .acc-tel-vignette i.fa { color: var(--ep-jaune-vif); }
+  html[data-epure].tel .acc-tel-vignette b, html[data-epure].tel .acc-tel-mode-nom b,
+  html[data-epure].tel .acc-tel-feuille-titre { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .03em; }
+  html[data-epure].tel .acc-tel-vignette small, html[data-epure].tel .acc-tel-mode-nom small { color: var(--ep-doux); }
+  html[data-epure].tel .acc-tel-mode { border-top-color: var(--ep-bord); }
+
+  /* Étape Héros / Méchant : bandeau, boutons du bandeau, filtres */
+  html[data-epure].tel .tb-scene { background: var(--ep-fond); border-bottom: 1px solid var(--ep-bord); }
+  html[data-epure].tel .ts-btn { background: var(--ep-champ); color: var(--ep-texte); border: 0; border-radius: 8px; box-shadow: var(--ep-relief); clip-path: none; font-family: var(--ep-police); font-weight: 600; transform: none; }
+  html[data-epure].tel .ts-btn.jaune { background: var(--ep-jaune); color: #fff; box-shadow: 0 0 0 1px #1d4a8a; font-weight: 700; }
+  html[data-epure].tel .tb-port.apercu::after { box-shadow: inset 0 0 0 3px var(--ep-texte); border-radius: 8px; }
+  html[data-epure].tel .tb-port.chosen.apercu::after { box-shadow: inset 0 0 0 3px var(--ep-jaune); }
+  html[data-epure].tel .tb-droite { background: var(--ep-fond); }
+  html[data-epure].tel .tb-entete b, html[data-epure].tel .tb-roster-deck .do-name { font-family: var(--ep-titres); font-weight: 400; letter-spacing: .03em; }
+
+  /* Decks */
+  html[data-epure].tel .tb-deck { background: var(--ep-champ); border: 0; border-radius: 10px; box-shadow: var(--ep-relief); clip-path: none; }
+  html[data-epure].tel .tb-deck.chosen { box-shadow: 0 0 0 2px var(--ep-jaune); }
+
+  /* Feuilles basses */
+  html[data-epure].tel .deck-modal-panel, html[data-epure].tel .reprise-panneau { background: var(--ep-surface); border-color: var(--ep-bord); color: var(--ep-texte); }
+  html[data-epure].tel .reprise-panneau > .tel-poignee { background: var(--ep-surface); }
+  html[data-epure].tel .stats-table tr { background: var(--ep-champ); border: 0; box-shadow: var(--ep-relief); border-radius: 10px; }
+  html[data-epure].tel .tel-poignee span { background: var(--ep-bord-fort); }
+
+  /* L'Épuré du PC pose des hauteurs, des biseaux de 34 px et des onglets à 17 px en !important : on les ramène à l'échelle du doigt. */
+  html[data-epure].tel header.progress.tel-entete { height: auto !important; min-height: 0 !important; padding: 0 !important; margin: 0; position: relative; background: var(--ep-surface); border-bottom: 2px solid var(--ep-jaune); box-shadow: none; }
+  html[data-epure].tel header.progress.tel-entete .tel-rang { padding: 2px 6px 2px 12px; }
+  html[data-epure].tel header.progress .tel-etapes { width: 100%; justify-content: stretch; gap: 0; padding: 0; }
+  html[data-epure].tel header.progress .tel-etapes .pstep {
+    flex: 1 1 0; min-width: 0; margin: 0 !important; padding: 2px 2px 0 !important; min-height: 44px; clip-path: none;
+    border: 0 !important; border-bottom: 3px solid transparent !important; border-radius: 0 !important;
+    background: transparent !important; box-shadow: none !important; color: var(--ep-doux);
+  }
+  html[data-epure].tel header.progress .tel-etapes .pstep.active { background: var(--ep-champ) !important; border-bottom-color: var(--ep-jaune) !important; color: #fff; }
+  html[data-epure].tel header.progress .tel-etapes .pstep .plabel { font-size: 13px !important; letter-spacing: .04em; }
+  html[data-epure].tel header.progress .tel-etapes .pstep .pnum { border-radius: 6px !important; border: 0 !important; box-shadow: none !important; background: var(--ep-champ) !important; color: var(--ep-jaune-vif) !important; }
+  html[data-epure].tel header.progress .tel-etapes .pstep.active .pnum { background: var(--ep-jaune) !important; color: #fff !important; }
+  html[data-epure].tel .tampon, html[data-epure].tel .tb-mode { clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)) !important; }
+  html[data-epure].tel footer.nav { background: var(--ep-surface); border-top: 2px solid var(--ep-jaune); box-shadow: none !important; }
+
+  /* Écran Final : l'éclair du PC écrase les cartes d'un écran de 430 px. Au téléphone, un « VS » blanc en Bangers
+     (div.fo-vs-texte posé par app.js) entre les deux blocs empilés. */
+  html.tel .face-a-face .fo-vs-texte {
+    content: none; width: auto !important; height: auto !important; max-width: none; filter: none; transform: translate(-50%, -50%) !important;
+    top: 50% !important; left: 50% !important; z-index: 5; pointer-events: none;
+    font: 400 64px/1 var(--ep-titres, "Bangers", Impact, sans-serif); letter-spacing: .04em; color: #fff;
+    text-shadow: 3px 3px 0 #000, 0 0 14px rgba(0, 0, 0, .7);
+  }
+  html[data-epure].tel .face-a-face .fo-side.heroes-side { width: 100% !important; padding-right: 22px !important; clip-path: none !important; }
 }

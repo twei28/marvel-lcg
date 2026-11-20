@@ -29,23 +29,28 @@ async function etapeMechant(page: Page) {
 
 async function choisirMechant(page: Page, boite: string, scn: string) {
   // Depuis le 19/10/2026 la liste n'a que les boîtes officielles OU que les fan-made : le filtre « Fan-made » bascule.
-  if (/custom/i.test(boite) && (await page.locator('.ext-fanmade.on').count()) === 0) await page.locator('.ext-fanmade').click();
+  // Le filtre est devenu l'onglet de groupe « FAN-MADE » (#ext-groupes).
+  if (/custom/i.test(boite)) await page.locator('#ext-groupes').getByText(/fan-made/i).click();
   await page.waitForTimeout(500);
-  await page.locator(`#ext-tabs .ext-tab[title="${boite}"]`).click();
+  // Les pochettes n'ont plus d'attribut `title` : on les trouve a leur nom (« Set de base » en francais).
+  const etiquette = boite.replace(/^\d+\.\s*/, '');
+  const motif = etiquette === 'Core Set' ? /Set de base|Core Set/ : new RegExp(etiquette.replace(/^Custom \((.*)\)$/, '$1'), 'i');
+  await page.locator('#ext-tabs .ext-tab').filter({ hasText: motif }).first().click();
   await page.locator(`#scn-grid .tb-port[data-scn="${scn}"]`).click();
   await page.mouse.move(5, 5);
   await page.waitForTimeout(3_000); // la carte qui surgit au choix dure 2,8 s
 }
 
-const CASE = '#tb-menace .intense-combatants input[type="checkbox"]';
+const CASE = '#tb-niveau .intense-combatants input[type="checkbox"]';
 
 test('la case apparait pour Shredder (TMNT Standard), decochee, avec le texte FR de te201', async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1920, height: 1080 });
   await etapeMechant(page);
   await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
+  await page.getByRole('button', { name: /continuer/i }).click(); // l'etape Difficulte porte la case (30/10/2026)
 
-  const ligne = page.locator('#tb-menace .intense-combatants');
+  const ligne = page.locator('#tb-niveau .intense-combatants');
   await expect(ligne).toBeVisible();
   await expect(ligne).toContainText('Intense Combatants (environnement optionnel)');
   await expect(ligne).toContainText('Interruption forcée');
@@ -61,8 +66,9 @@ test('la case n apparait pas pour Rhino', async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await etapeMechant(page);
   await choisirMechant(page, '1. Core Set', 'rhino');
-  await expect(page.locator('#tb-menace .tb-menace-ligne').first()).toBeVisible();
-  await expect(page.locator('#tb-menace .intense-combatants')).toHaveCount(0);
+  await page.getByRole('button', { name: /continuer/i }).click();
+  await expect(page.locator('#tb-niveau .tb-menace-ligne').first()).toBeVisible();
+  await expect(page.locator('#tb-niveau .intense-combatants')).toHaveCount(0);
 });
 
 test('le descripteur porte la regle seulement case cochee ET scenario TMNT', async ({ page }) => {
@@ -109,6 +115,7 @@ test('cocher la case envoie la regle au serveur (/new)', async ({ page }) => {
   await page.route(/\/app\/board\.html/, (route) => route.fulfill({ status: 200, body: 'plateau' }));
   await etapeMechant(page);
   await choisirMechant(page, '190. Custom (Shredder)', 'shredder');
+  await page.getByRole('button', { name: /continuer/i }).click(); // l'etape Difficulte porte la case (30/10/2026)
   await page.locator(CASE).check();
   // Jusqu'au lancement : « Continuer » (decks, puis final), puis « Lancer la partie » (.btn.launch).
   await page.locator('footer.nav .btn.primary').click({ timeout: 10_000 });

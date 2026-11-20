@@ -58,9 +58,13 @@ test("aucune option : la modale ne s'ouvre pas ; une seule suffit à l'ouvrir", 
     const o = optionsDuHeros(seul, { arts: [{ code: "m3t" }] });
     assert.equal(o.aucune, false);
     assert.equal(o.arts.length, 1);
-    // Deux versions suffisent.
+    // Les DECKS multiples n'ouvrent PLUS la modale (04/11/2026) : ils se choisissent à l'étape DECKS,
+    // pas dans la fenêtre d'options du héros, qui ne sert qu'aux arts (et identités).
     const deux = regrouperVariantes([deck("a"), deck("b", { variante_de: "a" })])[0];
-    assert.equal(optionsDuHeros(deux, {}).versions.length, 2);
+    assert.equal(optionsDuHeros(deux, { arts: [] }).versions.length, 0);
+    assert.equal(optionsDuHeros(deux, { arts: [] }).aucune, true);
+    // ...mais un art alternatif rouvre bien la fenêtre, même avec plusieurs decks.
+    assert.equal(optionsDuHeros(deux, { arts: [{ code: "m3t" }] }).aucune, false);
 });
 
 test("la clé d'une identité est le couple de faces, pas la face héros seule", () => {

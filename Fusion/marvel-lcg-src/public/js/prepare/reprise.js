@@ -18,8 +18,9 @@
   // la lecture de localStorage['marvel-langue'] et un petit dictionnaire local
   // limité aux libellés de ce fichier (même contrat : clé FR -> texte EN,
   // clé absente = FR conservé).
+  // La langue passe par langue-classique.js (window.MarvelLangue : choix dans le jeu > cookie du site > navigateur > français).
   const LANGUE = (function () {
-    try { return localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'; }
+    try { return window.MarvelLangue ? window.MarvelLangue.actuelle() : (localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'); }
     catch { return 'fr'; }
   })();
   const DICO_EN_LOCAL = {
@@ -67,6 +68,15 @@
     'Hauts faits': 'Feats',
     'Hauts faits debloques et progression': 'Unlocked feats and progress',
     'Partie sauvegardee': 'Saved game',
+    'Continuer la partie': 'Continue your game',
+    'Continuer': 'Continue',
+    'Mes parties en cours': 'My games in progress',
+    "Tes parties non terminées, la plus récente d'abord. Une partie reprise reste gardée jusqu'à sa fin.":
+      'Your unfinished games, most recent first. A game you resume stays saved until it ends.',
+    'Manche': 'Round',
+    'héros': 'heroes',
+    'Supprimer cette partie ? Elle ne pourra plus être reprise.': "Delete this game? It can't be resumed.",
+    'à l\'instant': 'just now',
   };
   function t(fr) {
     return LANGUE === 'en' && Object.prototype.hasOwnProperty.call(DICO_EN_LOCAL, fr)
@@ -163,6 +173,31 @@
     .stats-victoire { color: #6fbf73; font-weight: 700; }
     .stats-defaite { color: #e06c65; font-weight: 700; }
     .reprise-vide { color: #999; padding: 1rem 0; }
+    /* ---- Bandeau « Continuer la partie » (18/11/2026) : biseau et bleu du jeu, variables de la teinte active ---- */
+    .bandeau-reprise { --cut: 14px; margin: 0 0 1.1rem; box-sizing: border-box; width: 100%; }
+    .bandeau-reprise:empty { display: none; }
+    .br-bouton { --cut: 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; width: 100%;
+      text-align: left; cursor: pointer; font: inherit; color: var(--txt, #f2f3f5); padding: .6rem .9rem; border: 0; border-radius: 0;
+      background: linear-gradient(90deg, rgba(63,134,224,.20), transparent 55%), var(--steel, #1c2028);
+      box-shadow: inset 0 0 0 1px var(--line, #383e49), inset 3px 0 0 var(--agir, #3f86e0);
+      clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut))); }
+    .br-bouton:hover { background: linear-gradient(90deg, rgba(63,134,224,.32), transparent 60%), var(--steel2, #292e38); }
+    .br-bouton:focus-visible { outline: 2px solid var(--agir, #3f86e0); outline-offset: 2px; }
+    .br-icone { width: 2.3rem; height: 2.3rem; display: grid; place-items: center; background: var(--agir, #3f86e0); color: #fff; font-size: 1.1rem; }
+    .br-texte small { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--agir, #3f86e0); }
+    .br-texte b { font-size: 1.15rem; line-height: 1.2; margin-right: .7rem; font-family: Bangers, Anton, Impact, sans-serif; letter-spacing: .03em; font-weight: 400; text-transform: uppercase; }
+    .br-texte span { color: var(--dim, #9da5b3); font-size: .85rem; }
+    .br-go { background: var(--agir, #3f86e0); color: #fff; font-weight: 700; padding: .5rem 1rem; white-space: nowrap; }
+    .br-pastille { display: inline-block; min-width: 1.4em; text-align: center; background: rgba(255,255,255,.22); margin-left: .4rem; padding: 0 .35em; font-size: .8rem; }
+    .br-liste .reprise-ligne { background: var(--ink, #111318); border: 1px solid var(--line, #383e49); margin-bottom: .5rem; padding: .6rem .7rem; }
+    .br-liste .reprise-ligne.recente { border-color: var(--agir, #3f86e0); }
+    .br-liste .reprise-ligne button.principal { background: var(--agir, #3f86e0); border-color: var(--agir, #3f86e0); color: #fff; border-radius: 0; }
+    .br-liste .reprise-ligne button.principal:hover { filter: brightness(1.15); }
+    .br-etat { display: inline-block; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; padding: 0 .4rem; margin-left: .45rem;
+      border: 1px solid var(--agir, #3f86e0); color: var(--agir, #3f86e0); vertical-align: middle; }
+    html.tel .bandeau-reprise { margin-bottom: .8rem; }
+    html.tel .br-bouton { grid-template-columns: auto 1fr; }
+    html.tel .br-go { grid-column: 1 / -1; text-align: center; }
   `;
   document.head.append(style);
 
@@ -445,6 +480,99 @@
     }
     zone.append(derniers);
   }
+
+
+  // ------------------------------------------------- continuer la partie --
+  // Le moteur range chaque partie non terminee dans son fichier (src/engine/en_cours.py) et en rend la liste (5 au plus).
+  let partiesEnCours = null; // dernier resultat connu : un nouveau bandeau (le rendu efface l'ancien) s'affiche sans attendre
+  async function chargerPartiesEnCours() {
+    const liste = await lireJson('/en_cours_liste');
+    partiesEnCours = Array.isArray(liste) ? liste : [];
+    return partiesEnCours;
+  }
+
+  function ilYA(secondes) {
+    const ecart = Math.max(0, Math.round(Date.now() / 1000 - secondes));
+    const min = Math.floor(ecart / 60), h = Math.floor(ecart / 3600), j = Math.floor(ecart / 86400);
+    if (ecart < 60) return t("à l'instant");
+    const fr = LANGUE !== 'en';
+    if (j >= 1) return fr ? `il y a ${j} j` : `${j} d ago`;
+    if (h >= 1) return fr ? `il y a ${h} h` : `${h} h ago`;
+    return fr ? `il y a ${min} min` : `${min} min ago`;
+  }
+
+  function resume(p) {
+    const heros = Array.isArray(p.heros) ? p.heros : [];
+    const parts = [];
+    if (p.round > 0) parts.push(`${t('Manche')} ${p.round}`);
+    if (heros.length > 1) parts.push(`${heros.length} ${t('héros')}`);
+    parts.push(ilYA(p.quand));
+    return parts.join(' · ');
+  }
+  const titrePartie = (p) => [p.villain, (p.heros || []).join(', ')].filter(Boolean).join(' · ') || t('Partie sauvegardee');
+
+  async function reprendrePartie(p) {
+    // Meme chemin que « Reprendre » de l'ecran de preparation : on charge au dernier pas, puis on entre au plateau.
+    await fetch(`/debug?/load ${p.fichier}:-1`).catch(() => undefined);
+    await fetch(`/en_cours_reprendre?fichier=${encodeURIComponent(p.fichier)}`).catch(() => undefined);
+    window.location.href = '/app/board.html?p=0';
+  }
+
+  function ouvrirPartiesEnCours() {
+    const panneau = el('div', { class: 'reprise-panneau br-liste' }, titre(t('Mes parties en cours')));
+    const zone = el('div', null);
+    panneau.append(el('p', { class: 'reprise-vide', style: 'padding:0 0 .8rem' },
+      t("Tes parties non terminées, la plus récente d'abord. Une partie reprise reste gardée jusqu'à sa fin.")), zone);
+    const dessiner = () => {
+      zone.textContent = '';
+      for (const [i, p] of (partiesEnCours || []).entries()) {
+        zone.append(el('div', { class: 'reprise-ligne' + (i === 0 ? ' recente' : '') },
+          el('div', { class: 'info' }, el('div', null, titrePartie(p)), el('small', null, resume(p))),
+          el('button', { class: 'principal', onclick: () => reprendrePartie(p) }, t('Reprendre')),
+          el('button', {
+            class: 'discret', 'aria-label': t('Supprimer'), title: t('Supprimer'),
+            onclick: async () => {
+              if (!confirm(t('Supprimer cette partie ? Elle ne pourra plus être reprise.'))) return;
+              const r = await fetch(`/en_cours_supprimer?fichier=${encodeURIComponent(p.fichier)}`).catch(() => undefined);
+              if (r && r.ok) {
+                partiesEnCours = (partiesEnCours || []).filter((x) => x.fichier !== p.fichier);
+                rafraichirBandeaux();
+                if (partiesEnCours.length === 0) fermer(); else dessiner();
+              } else alert(t('Suppression impossible.'));
+            },
+          }, '\u{1F5D1}')));
+      }
+    };
+    dessiner();
+    ouvrir(panneau);
+  }
+
+  const bandeaux = new Set();
+  function dessinerBandeau(boite) {
+    boite.textContent = '';
+    const liste = partiesEnCours || [];
+    if (liste.length === 0) return;
+    const p = liste[0];
+    const autres = liste.length - 1;
+    boite.append(el('button', {
+      type: 'button', class: 'br-bouton',
+      // Une seule partie : on la reprend tout de suite. Plusieurs : la liste, pour choisir.
+      onclick: () => (liste.length === 1 ? reprendrePartie(p) : ouvrirPartiesEnCours()),
+    },
+      el('span', { class: 'br-icone', 'aria-hidden': 'true' }, '▶'),
+      el('span', { class: 'br-texte' }, el('small', null, t('Continuer la partie')), el('b', null, titrePartie(p)), el('span', null, resume(p))),
+      el('span', { class: 'br-go' }, t('Continuer'), autres > 0 ? el('span', { class: 'br-pastille' }, String(autres)) : null, ' ›')));
+  }
+  function rafraichirBandeaux() { for (const b of bandeaux) { if (b.isConnected) dessinerBandeau(b); else bandeaux.delete(b); } }
+
+  // `window.bandeauReprise()` : appele par l'assistant (app.js) a chaque rendu de l'accueil et des etapes.
+  window.bandeauReprise = function () {
+    const boite = el('div', { class: 'bandeau-reprise' });
+    bandeaux.add(boite);
+    if (partiesEnCours !== null) dessinerBandeau(boite);
+    chargerPartiesEnCours().then(rafraichirBandeaux);
+    return boite;
+  };
 
   // ------------------------------------------------------------- montage --
   // Reutilise la rangee si un autre module (puzzles.js) l'a deja creee.

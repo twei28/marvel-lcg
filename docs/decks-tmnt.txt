@@ -1,0 +1,2060 @@
+DECKS TMNT : 4 PAR HÉROS
+========================
+Établi le 30/10/2026 pour les 8 héros TMNT du jeu : Raphael, Leonardo, Donatello, Michelangelo, Casey Jones,
+Jennika, Venus, Alopex.
+
+Les 4 decks de chaque héros :
+  1. Facile       : le plus simple à jouer, solide dès la première partie.
+  2. Puissant     : plus ambitieux, exploite au mieux le héros.
+  3. Autre aspect : un autre aspect (ou, pour Jennika, un autre style Shinobi : elle ne prend aucun aspect).
+  4. Spécial TMNT : surtout des cartes spécifiques TMNT.
+Les decks 1 à 3 piochent dans tout le jeu ; le deck 4 est fait surtout de cartes TMNT.
+
+CE QUI EST VÉRIFIÉ ET CE QUI NE L'EST PAS
+  - Les 32 decks sont déclarés LÉGAUX par le même contrôle que l'éditeur de decks du jeu (40 à 50 cartes, 3 exemplaires
+    maximum, un seul aspect, règles Shinobi, cartes uniques). Ce contrôle est refait à chaque fichier.
+  - Aucun deck n'a été joué. Les choix viennent du texte des cartes ; le moteur peut appliquer certaines cartes
+    autrement que leur texte (les agents n'ont pas pu le vérifier pour Overswing, Casey's Bag, Side Holster).
+  - Les noms français ne sont donnés que pour les cartes officielles : le jeu n'en a pas d'autres.
+  - Les icônes de ressource : presque chaque carte en porte une, donc les totaux dépassent « 10 à 13 ». Chaque fiche donne le
+    détail par type.
+
+COMMENT S'EN SERVIR
+  Chaque deck finit par un bloc « IDS » (« 3 ub012 ») : un identifiant et un nombre par ligne, sans les cartes signature (le
+  jeu les ajoute). Elles se retrouvent dans l'éditeur de decks ou par import, avec le héros choisi.
+
+PIÈGES COMMUNS À TOUTES LES TORTUES
+  - Deux cartes uniques qui représentent le même personnage ne peuvent pas être dans le même deck (Raph et Red Shell,
+    Leo et Shōgun, Donnie et Bo-Wing/Hatamoto/Cyber Ninja, Mikey et Turtle Titan...) : chaque tortue n'apparaît qu'une fois.
+  - Les armes « Restricted » : deux au plus en jeu. Les armes signature de Raphael, Leonardo et Michelangelo en occupent
+    déjà deux, donc leurs decks n'ajoutent aucune autre arme « Restricted ».
+
+SOMMAIRE
+  - Raphael
+  - Leonardo
+  - Donatello
+  - Michelangelo
+  - Casey Jones
+  - Jennika
+  - Venus
+  - Alopex
+
+
+
+####################################################################################################
+#  RAPHAEL
+####################################################################################################
+
+=== RAPHAEL — Deck 1 : Le Mur (Protection) ===
+En une phrase : Pour qui veut un Raphael costaud qui encaisse les coups du méchant et les rend aussitôt, avec très peu de décisions à prendre.
+Comment le jouer : Au premier tour, en forme Raph (alter ego), utilise son action : défausse 1 carte et mets tes deux Sai en jeu (ils arrivent épuisés et se redressent au tour suivant). Pose vite tes améliorations de défense (Veste blindée, Né pour la Défense, Réflexes Innés) : Raphael a 14 PV et défend presque toujours à ta place. Quand le méchant ou un sbire l'attaque, laisse Raphael défendre, puis joue Contre-Attaque au Poing ou Provoked! juste après. Chaque coup reçu donne un jeton de rage (3 au maximum) : ces jetons paient tes gros coups physiques (Headbutt, Savage Assault). Pour la menace, Bait and Switch retire 4 menaces du plan principal, et tes alliés et Disarm font le reste. Si l'obligation « Out of Control » tombe, tu ne peux plus défendre ni contrer la menace : garde 2 jetons de rage pour t'en débarrasser avec son action.
+Pourquoi ces cartes : Les cartes de Protection ne font que rendre Raphael plus dur à tuer et plus utile quand on le frappe. Contre-Attaque au Poing coûte 0 et inflige les dégâts de son ATQ à l'ennemi qui vient d'attaquer ; Provoked! et Indomitable le remettent debout après sa défense pour qu'il puisse encore frapper. Limitless Stamina (réservé aux héros à 14 PV, ce qu'est Raphael) le remet debout pour 1 seule carte. Les alliés (Usagi, Jōtarō, Luke Cage...) encaissent et aident à contrer la menace, le point faible de Raphael (THW 1).
+Ressources (icônes des cartes choisies) : physique 17, mental 5, énergie 7, joker 1 — total 30 ; en plus, les jetons de rage de Raphael comptent comme des ressources physiques. Les 15 cartes de signature apportent 14 icônes physiques et 1 joker.
+Cartes (30 + les 15 signature) :
+  [Alliés]
+    1× Usagi Yōjimbō — coût 3, Allié, ressource énergie
+    1× Jōtarō — coût 3, Allié, ressource physique
+    1× Luke Cage — coût 4, Allié, ressource énergie
+    1× Patriot — coût 3, Allié, ressource énergie
+    1× Rockslide — coût 4, Allié, ressource physique
+    1× Donatello — coût 3, Allié, ressource mental
+    1× Michelangelo — coût 3, Allié, ressource énergie
+  [Événements]
+    3× Counter-Punch (Contre-Attaque au Poing) — coût 0, Événement, ressource physique
+    2× Provoked! — coût 0, Événement, ressource physique
+    2× Bait and Switch (Servir d'Appât) — coût 1, Événement, ressource énergie
+    2× Never Back Down (Ne Jamais Reculer) — coût 1, Événement, ressource physique
+    2× Limitless Stamina (Vigueur Inépuisable) — coût 1, Événement, ressource physique
+    1× Taunt (Moquerie) — coût 1, Événement, ressource physique
+    2× Hard Knocks (Coup Violent) — coût 3, Événement, ressource physique
+    2× Expert Defense (Defense experte) — coût 0, Événement, ressource mental
+  [Améliorations]
+    1× Armored Vest (Veste blindée) — coût 1, Amélioration, ressource mental
+    1× Defensive Conditioning (Né Pour la Défense) — coût 2, Amélioration, ressource physique
+    1× Innate Reflexes (Réflexes Innés) — coût 1, Amélioration, ressource aucune
+    1× Indomitable (Inébranlable) — coût 1, Amélioration, ressource énergie
+  [Soutiens]
+    1× Lindsey Baker — coût 1, Soutien, ressource mental
+  [Ressources]
+    1× Strength (Force) — sans coût, Ressource, ressource physique x2
+    1× The Power of Protection (Le Pouvoir de la Protection) — sans coût, Ressource, ressource joker
+
+=== RAPHAEL — Deck 2 : Les Sai de feu (Agression) ===
+En une phrase : Pour les joueurs qui aiment frapper fort : le deck met les deux Sai en jeu puis les utilise pour de gros coups pas chers.
+Comment le jouer : Au premier tour, en alter ego (Raph), utilise son action pour mettre les deux Sai en jeu (ils arrivent épuisés : ils servent dès le tour suivant), puis passe en héros. Les Sai sont des armes : Firepower (1 seule carte) inflige 3 dégâts par arme épuisée, donc 6 dégâts avec les deux Sai ; Fusillade en fait 5 avec une seule arme ; Mean Swing donne +3 ATQ à une attaque de base. Garde tes gros coups (Uppercut, Charge Corporelle Totale, Savage Assault) pour les ennemis dangereux, et les petits événements 0 coût pour finir. Attention : ce deck a peu de défense. Laisse tes alliés (Slash, Wolverine, Leatherhead) protéger les points de vie de Raphael, et regarde ta santé avant de jouer Toe to Toe, qui fait attaquer l'ennemi contre toi.
+Pourquoi ces cartes : Toutes les armes du deck dépendent des Sai de Raphael : ils sont déjà des armes (WEAPON), donc Firepower, Fusillade et Mean Swing deviennent très rentables. Les jetons de rage paient les coûts physiques des événements de la signature et du deck. Toe to Toe et Counterattack transforment les dégâts reçus en gros dégâts infligés, et en rage. Slash (Basic) gagne +1 ATQ à chaque attaque du méchant sur toi.
+Ressources (icônes des cartes choisies) : physique 21, mental 7, énergie 3, joker 2 — total 33 ; en plus, les jetons de rage de Raphael comptent comme des ressources physiques. Les 15 cartes de signature apportent 14 icônes physiques et 1 joker.
+Cartes (32 + les 15 signature) :
+  [Alliés]
+    1× Slash — coût 4, Allié, ressource physique
+    1× Wolverine — coût 4, Allié, ressource physique
+    1× Leatherhead — coût 4, Allié, ressource physique
+    1× Bo-Wing — coût 3, Allié, ressource mental
+    1× Valkyrie — coût 3, Allié, ressource énergie
+    1× Assassin — coût 3, Allié, ressource mental
+  [Événements]
+    3× Firepower (Puissance de Feu) — coût 1, Événement, ressource physique
+    2× Fusillade — coût 2, Événement, ressource mental
+    2× Mean Swing (Coup avec Élan) — coût 0, Événement, ressource physique
+    2× Toe to Toe (Face à face) — coût 1, Événement, ressource mental
+    2× Uppercut — coût 3, Événement, ressource physique
+    1× Full-Body Charge (Charge Corporelle Totale) — coût 4, Événement, ressource physique
+    2× Quick Strike (Frappe Véloce) — coût 2, Événement, ressource physique
+    2× Skilled Strike (Frappe précise) — coût 0, Événement, ressource physique
+    2× Limitless Stamina (Vigueur Inépuisable) — coût 1, Événement, ressource physique
+  [Améliorations]
+    1× Combat Training (Entraînement au Combat) — coût 2, Amélioration, ressource physique
+    1× Counterattack (Contre-Attaque) — coût 1, Amélioration, ressource physique
+    1× Brute Force (Force Brute) — coût 1, Amélioration, ressource mental
+  [Soutiens]
+    1× Pete — coût 1, Soutien, ressource énergie
+    1× Tac Team (Équipe Tactique) — coût 3, Soutien, ressource énergie
+  [Ressources]
+    1× Strength (Force) — sans coût, Ressource, ressource physique x2
+    1× The Power of Aggression (Le Pouvoir de l'Agressivité) — sans coût, Ressource, ressource joker
+    1× Aggressive Energy (Énergie Aggressive) — sans coût, Ressource, ressource joker
+
+=== RAPHAEL — Deck 3 : L'enquêteur costaud (Justice) ===
+En une phrase : Pour ceux qui trouvent que la menace monte trop vite : Raphael frappe, et des alliés spécialistes du terrain la retirent.
+Comment le jouer : Raphael seul est faible contre la menace (THW 1). Ici, ce sont les alliés et les événements qui s'en occupent. Joue vite un allié pour retirer la menace et garde Raphael pour frapper et défendre. Utilise Crisis Averted ou For Justice! quand la menace du plan principal devient grosse. Making an Entrance donne +2 THW à la prochaine attaque de menace de base, ce qui fait 3 pour Raphael. Dès qu'il reste peu de menace, concentre-toi sur les ennemis. Comme dans les autres decks, les Sai se mettent en jeu depuis l'alter ego (action de Raph, ils arrivent épuisés).
+Pourquoi ces cartes : La Justice comble le vrai défaut de Raphael : sa menace. Les alliés comme Captain Britain, Daredevil ou Sally Pride enlèvent de la menace pendant que Raphael encaisse et frappe (ses jetons de rage paient ses événements). Warning réduit les dégâts de 1 : Raphael garde de la vie et, comme il reste des dégâts, il gagne quand même son jeton de rage.
+Ressources (icônes des cartes choisies) : physique 14, mental 7, énergie 7, joker 2 — total 30 ; en plus, les jetons de rage de Raphael comptent comme des ressources physiques. Les 15 cartes de signature apportent 14 icônes physiques et 1 joker.
+Cartes (29 + les 15 signature) :
+  [Alliés]
+    1× Captain Britain — coût 4, Allié, ressource mental
+    1× Daredevil — coût 4, Allié, ressource physique
+    1× Quasar — coût 3, Allié, ressource énergie
+    1× Sally Pride — coût 3, Allié, ressource physique
+    1× Hatamoto — coût 3, Allié, ressource physique
+    1× Tomoe Ame — coût 3, Allié, ressource énergie
+    1× Inspector Ishida — coût 3, Allié, ressource physique
+    1× Lita — coût 3, Allié, ressource énergie
+    1× Jessica Jones — coût 3, Allié, ressource énergie
+  [Événements]
+    2× For Justice! (Pour la Justice !) — coût 2, Événement, ressource énergie
+    2× Crisis Averted (Danger Écarté) — coût 3, Événement, ressource mental
+    2× Multitasking (Multitâche) — coût 1, Événement, ressource physique
+    2× Know Your Enemy (Connais ton Ennemi) — coût 1, Événement, ressource mental
+    1× Stealth Strike — coût 3, Événement, ressource mental
+    2× Limitless Stamina (Vigueur Inépuisable) — coût 1, Événement, ressource physique
+    2× Making an Entrance (Soigner son Entrée) — coût 1, Événement, ressource physique
+    2× Warning (Alerte) — coût 0, Événement, ressource physique
+    1× First Aid (Premiers Soins) — coût 1, Événement, ressource mental
+  [Améliorations]
+    1× Heroic Intuition (Instinct Héroïque) — coût 2, Amélioration, ressource énergie
+  [Ressources]
+    1× Strength (Force) — sans coût, Ressource, ressource physique x2
+    1× The Power of Justice (Le Pouvoir de la Justice) — sans coût, Ressource, ressource joker
+    1× Determination (Détermination) — sans coût, Ressource, ressource joker
+
+=== RAPHAEL — Deck 4 : Les Ninjas du Dojo (Protection (cartes TMNT)) ===
+En une phrase : Pour ceux qui aiment les personnages TMNT : on joue surtout Leonardo, Donatello, Michelangelo, Slash, Usagi et leurs amis.
+Comment le jouer : Pose tes alliés dès que possible : Donatello pioche 2 cartes, Michelangelo soigne, Usagi défend sans s'épuiser et renvoie 2 dégâts. Garde-les près de Raphael pour qu'ils prennent aussi les coups. Protection Training donne +3 PV à un allié NINJA (Leonardo, Donatello, Michelangelo, Slash...). Raphael défend comme dans le deck 1 : après sa défense, Contre-Attaque au Poing ou Provoked! (cartes non-TMNT) le font riposter. Ace Duck cherche un événement dans les 5 premières cartes du paquet. Surveille les jetons de rage : What Doesn't Kill Me (physique requis) soigne 2 et redresse Raphael.
+Pourquoi ces cartes : Slash (Basic) devient énorme quand le méchant t'attaque. Les allié(e)s Ninja profitent de Protection Training. What Doesn't Kill Me est pensée pour Raphael : il paie avec sa rage, soigne 2 PV et se redresse. Environ 63 % des cartes choisies viennent des sets TMNT.
+Ressources (icônes des cartes choisies) : physique 20, mental 7, énergie 2, joker 1 — total 30 ; en plus, les jetons de rage de Raphael comptent comme des ressources physiques. Les 15 cartes de signature apportent 14 icônes physiques et 1 joker.
+Cartes (30 + les 15 signature) :
+  [Alliés]
+    1× Usagi Yōjimbō — coût 3, Allié, ressource énergie
+    1× Jōtarō — coût 3, Allié, ressource physique
+    1× Ninja He-Man — coût 4, Allié, ressource physique
+    1× Grotto — coût 4, Allié, ressource physique
+    1× Nobody — coût 3, Allié, ressource mental
+    1× Herman — coût 2, Allié, ressource physique
+    1× Ace Duck — coût 3, Allié, ressource mental
+    1× Leonardo — coût 3, Allié, ressource physique
+    1× Michelangelo — coût 3, Allié, ressource énergie
+    1× Donatello — coût 3, Allié, ressource mental
+    1× Slash — coût 4, Allié, ressource physique
+    1× Mary — coût 3, Allié, ressource physique
+  [Événements]
+    2× What Doesn't Kill Me — coût 2, Événement, ressource physique
+    3× Counter-Punch (Contre-Attaque au Poing) — coût 0, Événement, ressource physique
+    2× Provoked! — coût 0, Événement, ressource physique
+    2× Limitless Stamina (Vigueur Inépuisable) — coût 1, Événement, ressource physique
+    1× Multitalented — coût 3, Événement, ressource physique
+  [Améliorations]
+    2× Protection Training — coût 1, Amélioration, ressource mental
+    1× Armored Vest (Veste blindée) — coût 1, Amélioration, ressource mental
+    1× Defensive Conditioning (Né Pour la Défense) — coût 2, Amélioration, ressource physique
+    1× Innate Reflexes (Réflexes Innés) — coût 1, Amélioration, ressource aucune
+  [Soutiens]
+    1× Lindsey Baker — coût 1, Soutien, ressource mental
+  [Ressources]
+    1× Strength — sans coût, Ressource, ressource physique x2
+    1× The Power of Protection (Le Pouvoir de la Protection) — sans coût, Ressource, ressource joker
+
+=== IDS (prêts à coller ; les 15 cartes signature sont ajoutées d'office) ===
+--- IDS Deck 1 ---
+3 01077
+2 sk019
+2 15030
+2 14014
+2 31023
+1 56048
+2 19016
+2 03033
+1 01081
+1 56046
+1 60038
+1 01082
+1 up041
+1 up021
+1 01076
+1 56041
+1 33013
+1 ub008
+1 ub029
+1 01090
+1 01079
+1 up022
+
+--- IDS Deck 2 ---
+3 54014
+2 20026
+2 06015
+2 10015
+2 01054
+1 45045
+2 25018
+2 09037
+2 31023
+1 01057
+1 08030
+1 14029
+1 ub048
+1 32041
+1 ua026
+1 ua006
+1 06012
+1 ua003
+1 01090
+1 01055
+1 32047
+1 ua033
+1 01056
+
+--- IDS Deck 3 ---
+2 01060
+2 15012
+2 15013
+2 60023
+1 uj030
+2 31023
+2 20013
+1 01065
+1 41012
+1 01058
+1 21047
+1 uj027
+1 uj012
+1 uj033
+1 uj016
+1 uj018
+1 01059
+2 09021
+1 01086
+1 01090
+1 01062
+1 21052
+
+--- IDS Deck 4 ---
+1 up041
+1 up021
+1 ub033
+1 up014
+1 up024
+1 up016
+1 up001
+1 ub025
+1 ub029
+1 ub008
+1 ub048
+2 up042
+3 01077
+2 sk019
+2 31023
+1 ub030
+2 up027
+1 ub028
+1 01081
+1 56046
+1 60038
+1 up022
+1 ub054
+1 01079
+
+
+####################################################################################################
+#  LEONARDO
+####################################################################################################
+
+LEONARDO — 4 decks prêts à jouer (Marvel Champions LCG, jeu custom)
+===========================================================================
+À savoir avant de lire :
+- Les 15 cartes « signature » de Leonardo sont ajoutées automatiquement (Splinter, 2 Uke Nagashi, 2 Vigilant, 2 Stoicism, 2 Yo Ko Giri, Leo's Greenhouse, Iaijutsu, Taichō, Nukitsuke, Leonardo's Katana, Leonardo's Other Katana). Tu ne les mets pas dans la liste.
+- Tour 1, TOUJOURS, dans les 4 decks : tu es Leo (l'identité civile). Défausse 1 carte de ta main dont tu n'as pas besoin avec son action : les deux katanas arrivent gratuitement en jeu (fatigués), puis passe en forme Leonardo. Chaque tour, le pouvoir « Kenjutsu » de Leonardo redresse gratuitement un katana (1 fois par tour de jeu).
+- Les katanas donnent un joker (ressource qui remplace n'importe quel type) mais seulement pour payer les cartes propres à Leonardo (les cartes signature). Pour tout le reste, tu payes en défaussant des cartes de ta main comme d'habitude.
+- Les deux katanas sont « Restricted » : on ne peut en avoir que 2 en jeu de ce genre. J'ai donc exclu des 4 decks toute autre carte « Restricted » (sinon elle ne pourrait pas être jouée).
+- Ressources : j'indique pour chaque deck le nombre d'icônes de chaque type sur les 45 cartes (signature comprise). Dans tous les cas, ~45 icônes pour 45 cartes : c'est la norme, et toutes les couleurs sont présentes.
+- Danger commun : l'obligation « Brainwashed Betrayal » te force à défausser un allié, t'interdit d'attaquer le méchant, et inflige 3 dégâts à un allié au début de ton tour. Pour la retirer : en forme Leo, action « épuise Leo et subis 2 dégâts ». Fais-le dès que possible.
+
+
+=== LEONARDO — Deck 1 : Le Mur de la Tortue (Protection) ===
+En une phrase : Pour celui qui veut un Leonardo presque indestructible : il encaisse les coups, riposte, et reste debout partie après partie.
+Comment le jouer : Tour 1 : fais arriver les katanas avec Leo (voir plus haut), puis pose tes améliorations de défense (Armored Vest, Defensive Conditioning, Endurance) : Leonardo monte à 18 points de vie et 4 de défense. Ensuite, à chaque tour, attaque ou retire de la menace avec Leonardo, puis redresse-le (Stoicism, Uke Nagashi payée avec une ressource physique, Desperate Defense) pour qu'il puisse encore défendre quand le méchant frappe : un héros fatigué ne défend pas. Garde toujours 1 ou 2 cartes de défense en main (Expert Defense coûte 0) et défends avec Leonardo plutôt qu'avec un allié. Usagi et Luke Cage sont des boucliers de secours.
+Pourquoi ces cartes : Presque toutes les cartes de défense coûtent 0 ou 1 : tu peux en jouer plusieurs par tour. Les katanas paient gratuitement les cartes de Leonardo (jokers), donc ta main sert à payer les cartes Protection. Plusieurs cartes retirent aussi de la menace en défendant (Not Today!, Get Their Attention, True Grit, Bait and Switch), ce qui compense le petit pouvoir de menace de Leonardo (2). Iaijutsu (signature) te permet de jouer Hard Knocks ou Haymaker quand un ennemi attaque : tu frappes en premier.
+Cartes (31 + les 15 signature) :
+ Alliés :
+  1× Ace Duck — coût 3, allié, ressource mental
+  1× Donatello — coût 3, allié, ressource mental
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Nobody — coût 3, allié, ressource mental
+  1× Usagi Yōjimbō — coût 3, allié, ressource énergie
+  1× Luke Cage — coût 4, allié, ressource énergie
+ Événements :
+  2× Counter-Punch (Contre-Attaque au Poing) — coût 0, événement, ressource physique
+  3× Expert Defense (Defense experte) — coût 0, événement, ressource mental
+  1× Bait and Switch (Servir d'Appât) — coût 1, événement, ressource énergie
+  2× Desperate Defense (Défense désespérée) — coût 1, événement, ressource énergie
+  1× First Aid (Premiers Soins) — coût 1, événement, ressource mental
+  2× Never Back Down (Ne Jamais Reculer) — coût 1, événement, ressource physique
+  2× Not Today! (Pas Aujourd'hui !) — coût 1, événement, ressource mental
+  1× Riposte — coût 1, événement, ressource énergie
+  1× True Grit (Véritable Courage) — coût 1, événement, ressource énergie
+  2× Get Their Attention (Capter Leur Attention) — coût 2, événement, ressource mental
+  1× Haymaker — coût 2, événement, ressource énergie
+  1× Powerful Punch (Coup de Poing Puissant) — coût 2, événement, ressource physique
+  1× Hard Knocks (Coup Violent) — coût 3, événement, ressource physique
+ Améliorations :
+  1× Armored Vest (Veste blindée) — coût 1, amélioration, ressource mental
+  1× Electrostatic Armor (Armure Électrostatique) — coût 1, amélioration, ressource énergie
+  1× Endurance — coût 1, amélioration, ressource énergie
+  1× Defensive Conditioning (Né Pour la Défense) — coût 2, amélioration, ressource physique
+ Soutiens :
+  1× Med Team (Équipe Médicale) — coût 3, soutien, ressource énergie
+Icônes de ressource (45 cartes, signature comprise) : 16 énergie, 17 mental, 10 physique, 3 joker = 46.
+Points faibles : Peu de dégâts, donc des parties longues : il faut être patient. Un seul pouvoir de soin sérieux (Med Team, First Aid).
+
+=== LEONARDO — Deck 2 : Tempête de Katanas (Agression) ===
+En une phrase : Pour celui qui aime frapper fort : les katanas servent de « batteries » pour de gros coups (5 dégâts pour 2 de coût, jusqu'à 9 dégâts pour 1).
+Comment le jouer : Tour 1, en forme Leo : joue Plan of Attack (coût 0 ; en forme Leo il fouille tes 7 premières cartes pour trouver un événement d'attaque, prends Fusillade ou Firepower), défausse une carte pour les katanas, puis passe en Leonardo. Pose vite tes armes (Shuriken, ou Casey Jones qui va en chercher une). Un tour type : Fusillade (épuise une arme, 5 dégâts), puis Kenjutsu redresse cette arme, puis Firepower (épuise jusqu'à 3 armes, 3 dégâts à distance par arme). Mean Swing (coût 0) ajoute +3 à une attaque normale. Attention : un katana épuisé ne peut plus servir de joker pour payer : choisis entre le coup et la ressource. Garde Uke Nagashi pour te défendre.
+Pourquoi ces cartes : Fusillade, Firepower et Mean Swing épuisent une « arme » : Leonardo n'a que 2 katanas mais son pouvoir Kenjutsu en redresse un chaque tour, et les 2 Shuriken (qui ne se fatiguent jamais d'eux-mêmes) et Casey Jones ajoutent des armes. Plan of Attack et Katsuichi trouvent les bonnes cartes. Party Wagon donne un joker (Leonardo est une Tortue) et Tac Team ajoute 6 dégâts. Le deck est riche en ressources physiques (rouges), idéal pour Uke Nagashi qui redresse Leonardo quand elle est payée en physique.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Bo-Wing — coût 3, allié, ressource mental
+  1× Casey Jones — coût 3, allié, ressource physique
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Valkyrie — coût 3, allié, ressource énergie
+  1× Wolverine — coût 4, allié, ressource physique
+ Événements :
+  1× Chase Them Down (Poursuivons-Les) — coût 0, événement, ressource mental
+  2× Mean Swing (Coup avec Élan) — coût 0, événement, ressource physique
+  2× Plan of Attack (Plan d'Attaque) — coût 0, événement, ressource mental
+  1× Skilled Strike (Frappe précise) — coût 0, événement, ressource physique
+  2× Firepower (Puissance de Feu) — coût 1, événement, ressource physique
+  1× Toe to Toe (Face à face) — coût 1, événement, ressource mental
+  3× Fusillade — coût 2, événement, ressource mental
+  2× Piercing Strike (Coup Perçant) — coût 2, événement, ressource physique
+  1× Relentless Assault (Assaut Implacable) — coût 2, événement, ressource énergie
+  2× Uppercut — coût 3, événement, ressource physique
+ Améliorations :
+  1× Combat Training (Entraînement au Combat) — coût 2, amélioration, ressource physique
+  2× Shuriken — coût 2, amélioration, ressource énergie
+  1× Aggressive Conditioning (Né Pour l'Agressivité) — coût 3, amélioration, ressource physique
+ Soutiens :
+  1× Party Wagon — coût 3, soutien, ressource énergie
+  1× Tac Team (Équipe Tactique) — coût 3, soutien, ressource énergie
+ Ressources :
+  1× Strength (Force) — ressource, ressource : 2 physique
+Icônes de ressource (45 cartes, signature comprise) : 11 énergie, 14 mental, 18 physique, 3 joker = 46.
+Points faibles : Peu de défense et de soin : Leonardo n'a que 12 points de vie, ne le laisse pas fatigué avant le tour du méchant. Peu de menace retirée (compte sur Vigilant, Bo-Wing, Chase Them Down). Dépend des katanas : s'ils sont épuisés, plus de gros coup.
+
+=== LEONARDO — Deck 3 : La Famille Tortue (Commandement (Leadership)) ===
+En une phrase : Pour celui qui aime jouer en équipe : Leonardo mène ses frères et ses amis ninjas, et tout le monde frappe ensemble.
+Comment le jouer : Tour 1 : katanas avec Leo, puis pose The Triskelion et The Kennel Klub : ils font passer ta limite de 3 à 5 alliés (tous tes alliés sont des ninjas). Joue ensuite tes alliés un par un : quand l'un d'eux arrive, The Kennel Klub redresse Leonardo (1 fois par tour), donc une action de plus. Teamwork (coût 0) : tu fatigues un allié pour ajouter sa force à l'attaque ou à la menace de Leonardo (par exemple 2 + 3 = 5). Go All Out frappe pour 6 (menace + attaque + défense de Leonardo) pour 2 de coût : garde une ressource énergie (jaune) pour la payer. Turtle Power! va chercher une Tortue dans tes 5 premières cartes et la met en jeu pour 1.
+Pourquoi ces cartes : Tous les alliés du deck sont des ninjas, ce qui active The Kennel Klub. Michelangelo soigne, Donatello pioche 2 cartes, Red Shell encaisse les coups à ta place, Alopex et Ninja He-Man arrivent protégés. Splinter Dojo Training, Inspired et Naginata renforcent les alliés ; Naginata est aussi une arme, donc Kenjutsu peut la redresser. Band Together (carte ressource) donne jusqu'à 3 jokers quand tu as des alliés : tu manques rarement de ressources.
+Cartes (31 + les 15 signature) :
+ Alliés :
+  1× Alopex — coût 3, allié, ressource mental
+  1× Donatello — coût 3, allié, ressource mental
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Red Shell — coût 3, allié, ressource mental
+  1× Shinobi Batman — coût 3, allié, ressource mental
+  1× Ninja He-Man — coût 4, allié, ressource physique
+ Événements :
+  1× Get Ready (Se Préparer) — coût 0, événement, ressource physique
+  1× Make the Call (Appel de détresse) — coût 0, événement, ressource mental
+  3× Teamwork — coût 0, événement, ressource énergie
+  2× "Turtle Power!" — coût 1, événement, ressource énergie
+  2× Morale Boost (Soutien Moral) — coût 1, événement, ressource énergie
+  1× Ready for Action (Prêt pour l'Action) — coût 1, événement, ressource mental
+  1× Take a Stand (Prendre Position) — coût 1, événement, ressource énergie
+  2× Go All Out — coût 2, événement, ressource mental
+  1× Lead from the Front (Commander en Première Ligne) — coût 2, événement, ressource énergie
+ Améliorations :
+  1× Inspired (Motivé) — coût 1, amélioration, ressource physique
+  1× Naginata — coût 1, amélioration, ressource mental
+  2× Splinter Dojo Training — coût 1, amélioration, ressource physique
+ Soutiens :
+  1× The Triskelion (Le Triskelion) — coût 1, soutien, ressource énergie
+  1× The Kennel Klub — coût 2, soutien, ressource mental
+  1× Command Team (État-Major) — coût 2, soutien, ressource énergie
+  1× Defensive Formation — coût 2, soutien, ressource énergie
+  1× Party Wagon — coût 3, soutien, ressource énergie
+ Ressources :
+  2× Band Together — ressource, ressource : génère un joker par allié (3 max)
+Icônes de ressource (45 cartes, signature comprise) : 18 énergie, 15 mental, 8 physique, 3 joker = 44.
+Points faibles : Les alliés sont fragiles : l'obligation Brainwashed Betrayal inflige 3 dégâts à l'un d'eux chaque tour, retire-la vite (Defensive Formation protège un peu). Beaucoup de cartes jaunes (énergie), peu de rouges. Leonardo lui-même défend moins bien : laisse parfois un allié encaisser.
+
+=== LEONARDO — Deck 4 : La Voie du Samouraï (Justice + cartes Shinobi Bushido (Voie Samurai)) ===
+En une phrase : Pour celui qui veut un Leonardo samouraï très TMNT : il épuise un katana pour se redresser et agir deux ou trois fois par tour.
+Comment le jouer : Mets la carte Voie « Samurai » en jeu au départ : elle te donne accès aux cartes Shinobi (noires), mais tu piocheras 1 carte de moins (main de 4 au lieu de 5). Tour 1 : katanas avec Leo, puis pose Courage (+1 attaque), Loyalty (+1 défense, coût 0) et Rectitude (+1 menace) : ce sont des serments à 3 utilisations. Ensuite : attaque ou retire de la menace, puis joue Kensei (coût 1 : épuise un katana, Leonardo se redresse) et recommence ; Kenjutsu et Devotion redressent le katana. La Voie Samurai fait pareil sans carte : retire 2 jetons de tes serments, Leonardo se redresse et tu piocheras 1 carte. Uno et Iaidō remettent des jetons. Migatte (+2 défense) te redresse aussi si tu la paies avec une carte Shinobi.
+Pourquoi ces cartes : Kensei, Nendō (4 dégâts + étourdit, en épuisant un katana), Omawari (te protège) et Devotion tournent tous autour des katanas : Leonardo en a 2, et Kenjutsu en redresse un. La partie Justice apporte ce qui manque à un samouraï : retirer de la menace (Know Your Enemy, Stealth Strike, Sally Pride, Inspector Ishida) et des alliés solides. Turtle Line est une arme de plus (à poser sur un allié, pas sur Leonardo) pour nourrir Kensei. 100 % des 30 cartes viennent des sets TMNT.
+Cartes (30 + la Voie Samurai + les 15 signature) :
+ Voie (mise de côté, hors des 30 cartes) :
+  1× Samurai — voie, se met en jeu au départ
+ Alliés :
+  1× Hatamoto — coût 3, allié, ressource physique
+  1× Inspector Ishida — coût 3, allié, ressource physique
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Sally Pride — coût 3, allié, ressource physique
+  1× Uno — coût 3, allié, ressource mental
+ Événements :
+  2× Iaidō — coût 1, événement, ressource mental
+  3× Kensei — coût 1, événement, ressource mental
+  2× Know Your Enemy — coût 1, événement, ressource mental
+  2× Migatte — coût 1, événement, ressource physique
+  1× Omawari — coût 1, événement, ressource physique
+  2× Nendō — coût 2, événement, ressource physique
+  2× Stealth Strike — coût 3, événement, ressource mental
+ Améliorations :
+  1× Gratitude — coût 0, amélioration, ressource physique
+  2× Loyalty — coût 0, amélioration, ressource physique
+  2× Courage — coût 1, amélioration, ressource mental
+  2× Devotion — coût 1, amélioration, ressource énergie
+  1× Rectitude — coût 1, amélioration, ressource énergie
+  1× Turtle Line — coût 2, amélioration, ressource énergie
+ Soutiens :
+  1× Party Wagon — coût 3, soutien, ressource énergie
+Icônes de ressource (45 cartes, signature comprise) : 10 énergie, 18 mental, 14 physique, 3 joker = 45.
+Points faibles : Le plus technique des 4 : il faut suivre les jetons des serments et décider quoi faire des deux katanas. Main de 4 cartes seulement. Katanas épuisés ou absents = Kensei, Nendō et Omawari ne servent à rien. Peu d'alliés.
+
+
+=== IDS (prêts à coller, tels que validés par l'outil : LEGAL) ===
+
+IDS Deck 1 — Le Mur de la Tortue (Protection)
+1 up041
+1 up001
+1 01076
+1 ub008
+1 ub029
+1 up024
+1 01081
+1 56046
+1 05023
+1 10031
+3 03033
+2 09015
+1 48018
+2 14014
+2 38016
+2 60049
+2 01077
+1 19016
+1 15030
+1 18031
+1 32014
+1 01087
+1 01080
+1 01086
+
+IDS Deck 2 — Tempête de Katanas (Agression)
+3 20026
+2 54014
+2 06015
+2 01054
+1 01053
+2 04044
+1 10015
+2 18013
+1 01052
+1 09037
+2 63021
+1 01057
+1 56013
+1 06012
+1 32041
+1 ua006
+1 ub005
+1 ub023
+1 ub029
+1 ub036
+1 01056
+1 01090
+
+IDS Deck 3 — La Famille Tortue (Commandement (Leadership))
+1 ub008
+1 ub029
+1 ul021
+1 ul001
+1 ub045
+1 ub033
+1 ub024
+1 01073
+1 ub036
+1 23016
+1 ul006
+2 ul028
+1 01074
+1 ul016
+3 ul034
+2 ul009
+2 ul035
+2 05032
+1 01070
+1 01069
+1 04017
+1 62015
+1 01071
+2 ul002
+
+IDS Deck 4 — La Voie du Samouraï (Justice + cartes Shinobi Bushido (Voie Samurai))
+1 se003
+3 sb012
+2 sb009
+2 sb003
+2 sb001
+1 sb002
+2 sb020
+2 sc001
+1 sc003
+2 sc006
+1 sb017
+1 sb005
+2 uj017
+2 uj030
+1 uj016
+1 uj027
+1 uj012
+1 uj034
+1 ub036
+1 ub029
+1 ub023
+
+
+####################################################################################################
+#  DONATELLO
+####################################################################################################
+
+=== DONATELLO — Deck 1 : Le Rempart (Protection) ===
+En une phrase : Pour qui veut jouer sans se prendre la tête : on encaisse, on soigne, on pioche, et les alliés costauds font le travail d'attaque.
+Comment le jouer : Au début, garde Donatello en forme héros et joue tes alliés les moins chers (Clyde, Casey Jones) pour piocher et aller chercher le Bō ou le Gantelet. Garde Luke Cage, Usagi et Honor Blade comme gardes du corps : ils sont solides et défendent à ta place. Quand tu as deux cartes bleues (mental) en trop dans ta main, utilise « Kashikoi » (2 mentales pour piocher 2 cartes, une fois par tour). Soigne-toi avec First Aid et Med Team avant que tes PV ne descendent trop bas. Si l'Obligation « Broken Shell » arrive, défausse la Carapace ou paie deux mentales pour la retirer.
+Pourquoi ces cartes : Donatello n'attaque presque pas (ATQ 1) : ce deck lui donne des alliés qui frappent fort (Luke Cage a 5 d'attaque) et des améliorations de défense (Armored Vest, Indomitable, Energy Barrier) qui lui laissent le temps de piocher. Haymaker est une attaque simple qui devient très forte avec le Gantelet Anti-Gravité (+3 dégâts). Casey Jones va chercher tes armes (Bō, Gantelet) dans ton paquet. Genius, Ingenuity et les cartes bleues alimentent Kashikoi et Metalhead.
+Cartes (30 + les 15 signature) :
+  Alliés :
+    1× Luke Cage — coût 4, allié, énergie
+    1× Usagi Yōjimbō — coût 3, allié, énergie
+    1× Nobody — coût 3, allié, mental
+    1× Ace Duck — coût 3, allié, mental
+    1× Honor Blade — coût 3, allié, énergie
+    1× Clyde — coût 2, allié, mental
+    1× Mockingbird — coût 3, allié, physique
+    1× Nick Fury — coût 4, allié, mental
+    1× Casey Jones — coût 3, allié, physique
+    1× Michelangelo — coût 3, allié, énergie
+  Événements :
+    3× Haymaker — coût 2, événement, énergie
+    2× First Aid (Premiers Soins) — coût 1, événement, mental
+    2× Counter-Punch (Contre-Attaque au Poing) — coût 0, événement, physique
+  Améliorations :
+    1× Armored Vest (Veste blindée) — coût 1, amélioration, mental
+    2× Indomitable (Inébranlable) — coût 1, amélioration, énergie
+    2× Energy Barrier — coût 2, amélioration, énergie
+    1× Electrostatic Armor — coût 1, amélioration, énergie
+    1× Ingenuity — coût 2, amélioration, mental
+  Soutiens :
+    1× Med Team (Équipe Médicale) — coût 3, soutien, énergie
+    1× Lindsey Baker — coût 1, soutien, mental
+    1× Turtle Lair — coût 4, soutien, mental
+  Ressources :
+    1× Energy (Énergie) — ressource, énergie ×2
+    1× Genius (Génie) — ressource, mental ×2
+    1× Strength (Force) — ressource, physique ×2
+
+=== DONATELLO — Deck 2 : Le Tireur de Précision (Agression) ===
+En une phrase : Pour qui aime faire de gros dégâts : le Gantelet Anti-Gravité et les armes de Donatello transforment chaque attaque en explosion.
+Comment le jouer : Pose vite le Gantelet Anti-Gravité (signature) et garde les armes en jeu : Bō, Gantelet, Shuriken, Daitō. Ensuite joue « Firepower » : elle épuise jusqu'à 3 armes et inflige 3 dégâts par arme à des ennemis de ton choix. Uppercut, Relentless Assault et Haymaker font de gros dégâts, et le Gantelet ajoute +3 si tu défausses une carte de ta main. Garde un allié en défense (Leatherhead ou Assassin), car Donatello seul se défend moyennement. Attention : les cartes mentales sont moins nombreuses ici, donc Kashikoi se déclenche un peu moins souvent.
+Pourquoi ces cartes : Le Gantelet donne +3 dégâts à tous les événements d'attaque : ce deck en a 10 (Uppercut, Relentless Assault, Haymaker, Firepower) en plus de Singularity (10 dégâts). Les armes (Bō, Gantelet, Shuriken, Daitō) servent aussi à payer Firepower. Casey Jones va chercher une arme dans ton paquet. Pete et Tac Team ajoutent des petits dégâts gratuits chaque tour.
+Cartes (30 + les 15 signature) :
+  Alliés :
+    1× Casey Jones — coût 3, allié, physique
+    1× Tigra — coût 3, allié, mental
+    1× Kitsune — coût 3, allié, énergie
+    1× Assassin — coût 3, allié, mental
+    1× Ray Fillet — coût 3, allié, mental
+    1× Leatherhead — coût 4, allié, physique
+    1× Michelangelo — coût 3, allié, énergie
+  Événements :
+    3× Uppercut — coût 3, événement, physique
+    2× Relentless Assault (Assaut Implacable) — coût 2, événement, énergie
+    2× Haymaker — coût 2, événement, énergie
+    3× Firepower — coût 1, événement, physique
+    1× Chase Them Down (Poursuivons-Les) — coût 0, événement, mental
+  Améliorations :
+    1× Combat Training (Entraînement au Combat) — coût 2, amélioration, physique
+    2× Shuriken — coût 2, amélioration, énergie
+    1× Daitō — coût 1, amélioration, physique
+    1× Ingenuity — coût 2, amélioration, mental
+  Soutiens :
+    1× Tac Team (Équipe Tactique) — coût 3, soutien, énergie
+    1× Pete — coût 1, soutien, énergie
+  Ressources :
+    1× Energy (Énergie) — ressource, énergie ×2
+    1× Genius (Génie) — ressource, mental ×2
+    1× Strength (Force) — ressource, physique ×2
+    2× The Power of Aggression (Le Pouvoir de l'Agressivité) — ressource, joker
+
+=== DONATELLO — Deck 3 : L'Équipe des Tortues (Commandement) ===
+En une phrase : Pour qui veut jouer la grande famille des tortues : beaucoup d'alliés pas chers, des cartes qui en mettent en jeu gratuitement.
+Comment le jouer : Joue d'abord Heroes in a Half Shell : tes alliés Tortue coûtent alors 1 ressource de moins (Donatello et Donnie sont Tortues). Ensuite pose tes alliés (Red Shell défend très bien, Turtle Titan soigne) et utilise « Turtle Power! » pour en mettre un en jeu depuis les 5 premières cartes de ton paquet. Teamwork te laisse épuiser un allié pour ajouter sa force à l'attaque ou à la menace de Donatello. Tu ne peux avoir que 3 alliés en jeu, mais Le Triskelion t'en autorise un 4e.
+Pourquoi ces cartes : Donatello et Donnie ont le trait TORTUE : Heroes in a Half Shell réduit donc le coût des tortues, et « Turtle Power! » marche. Katsuichi retrouve une carte propre à Donatello (Bō, Carapace, événements). Party Wagon et Team-Building Exercise accélèrent. Splinter Dojo Training rend un allié Ninja plus fort. Les alliés Splinter, Maria Hill et Clyde aident à piocher en plus de Kashikoi.
+Cartes (30 + les 15 signature) :
+  Alliés :
+    1× Red Shell — coût 3, allié, mental
+    1× Venus — coût 3, allié, mental
+    1× Turtle Titan — coût 4, allié, physique
+    1× Leonardo — coût 3, allié, physique
+    1× Splinter — coût 2, allié, mental
+    1× Maria Hill — coût 2, allié, mental
+    1× Katsuichi — coût 3, allié, mental
+    1× Alopex — coût 3, allié, mental
+    1× Clyde — coût 2, allié, mental
+    1× Casey Jones — coût 3, allié, physique
+    1× Zetian — coût 3, allié, énergie
+  Événements :
+    2× "Turtle Power!" — coût 1, événement, énergie
+    2× Teamwork — coût 0, événement, énergie
+    1× Make the Call (Appel de détresse) — coût 0, événement, mental
+    1× Get Ready (Se Préparer) — coût 0, événement, physique
+  Améliorations :
+    2× Splinter Dojo Training — coût 1, amélioration, physique
+    1× Naginata — coût 1, amélioration, mental
+    1× Ingenuity — coût 2, amélioration, mental
+  Soutiens :
+    1× Heroes in a Half Shell — coût 3, soutien, mental
+    1× The Triskelion (Le Triskelion) — coût 1, soutien, énergie
+    1× Team-Building Exercise — coût 2, soutien, physique
+    1× Party Wagon — coût 3, soutien, énergie
+  Ressources :
+    1× Energy (Énergie) — ressource, énergie ×2
+    1× Genius (Génie) — ressource, mental ×2
+    1× Strength (Force) — ressource, physique ×2
+    2× The Power of Leadership (Le Pouvoir du Commandement) — ressource, joker
+
+=== DONATELLO — Deck 4 : La Bande des Égouts (Justice) ===
+En une phrase : Pour qui veut surtout des cartes TMNT : une équipe de Ninjas et de Mutants qui protège la ville en retirant la menace des plans ennemis.
+Comment le jouer : Le but est de vaincre les complots de l'ennemi : Donatello a une bonne menace (2), et les alliés Justice en ajoutent. Joue Cowabunga et Mondo Gecko tôt, puis Tomoe Ame et Lita qui piochent des cartes. Stealth Strike (attaque + retire de la menace) et Know Your Enemy (retire 2 menaces pour 1 ressource) sont tes cartes de tous les jours. Mona Lisa rejoue Bō Tobu ou Know Your Enemy depuis ta défausse. Attention : tu n'as que 3 alliés en jeu, rejette les moins utiles.
+Pourquoi ces cartes : 28 des 30 cartes choisies viennent des séries TMNT. Mission Training donne +1 menace et +2 PV à un allié Ninja, et Party Wagon donne une ressource joker (Donatello est Ninja/Tortue). Mona Lisa rejoue un événement de menace (Bō Tobu est de type MENACE). Genius et Ingenuity fournissent le mental pour Kashikoi. One Way or Another est une carte gratuite qui pioche 3 cartes si le deck de rencontre contient une intrigue annexe.
+Cartes (30 + les 15 signature) :
+  Alliés :
+    1× Cowabunga — coût 2, allié, mental
+    1× Shinobi Batman — coût 3, allié, mental
+    1× Mondo Gecko — coût 2, allié, mental
+    1× Sally Pride — coût 3, allié, physique
+    1× Lita — coût 3, allié, énergie
+    1× Tomoe Ame — coût 3, allié, énergie
+    1× Katsuichi — coût 3, allié, mental
+    1× Clyde — coût 2, allié, mental
+    1× Casey Jones — coût 3, allié, physique
+    1× Fugitoid — coût 2, allié, énergie
+    1× Inspector Ishida — coût 3, allié, physique
+  Événements :
+    3× Stealth Strike — coût 3, événement, mental
+    2× Know Your Enemy — coût 1*, événement, mental
+    1× One Way or Another — coût 0, événement, mental
+    1× Multitalented — coût 3, événement, physique
+  Améliorations :
+    2× Mission Training — coût 1, amélioration, mental
+    1× Shell Phone — coût 2, amélioration, énergie
+    1× Ingenuity — coût 2, amélioration, mental
+  Soutiens :
+    1× Mona Lisa — coût 0, soutien, mental
+    1× Party Wagon — coût 3, soutien, énergie
+    1× Turtle Lair — coût 4, soutien, mental
+  Ressources :
+    1× Genius — ressource, mental ×2
+    1× Energy — ressource, énergie ×2
+    1× Strength — ressource, physique ×2
+    2× The Power of Justice (Le Pouvoir de la Justice) — ressource, joker
+
+######## IDS PRÊTS À COLLER (sans les 15 cartes signature) ########
+--- IDS Deck 1 ---
+1 01076
+1 up041
+1 up024
+1 up001
+1 up017
+1 ub006
+1 01083
+1 01084
+1 ub005
+1 ub029
+3 01087
+2 01086
+2 01077
+1 01081
+2 01082
+2 up011
+1 up010
+1 ub021
+1 01080
+1 up022
+1 ub057
+1 01088
+1 01089
+1 01090
+
+--- IDS Deck 2 ---
+1 ub005
+1 01051
+1 ua025
+1 ua003
+1 ua036
+1 ua026
+1 ub029
+3 01054
+2 01053
+2 01087
+3 ua018
+1 01052
+1 01057
+2 ub046
+1 ua014
+1 01056
+1 ua033
+1 01088
+1 01089
+1 01090
+1 ub021
+2 01055
+
+--- IDS Deck 3 ---
+1 ul021
+1 ul039
+1 ul036
+1 ub025
+1 ul029
+1 01067
+1 ul010
+1 01073
+1 ub055
+1 ub036
+2 ul035
+2 ul034
+1 01071
+1 01069
+2 ul028
+1 ul016
+1 01088
+1 01089
+1 01090
+1 ub021
+2 01072
+1 ub023
+1 ul001
+1 ub006
+1 ub005
+1 ul046
+
+--- IDS Deck 4 ---
+1 uj004
+1 ub045
+1 uj021
+1 uj027
+1 uj018
+1 uj033
+1 ub023
+1 ub006
+1 ub005
+1 ub014
+1 uj016
+3 uj030
+2 uj017
+1 uj024
+1 ub030
+2 uj019
+1 ub044
+1 uj020
+1 ub036
+1 ub057
+1 ub016
+1 ub011
+1 ub054
+1 ub021
+2 01062
+
+
+####################################################################################################
+#  MICHELANGELO
+####################################################################################################
+
+MICHELANGELO (Marvel Champions LCG custom) — 4 decks jouables
+=============================================================
+Le héros en deux mots : Michelangelo a 11 points de vie, 1 en attaque, 1 en menace et 2 en défense. Il est donc faible tout seul : ce sont ses ALLIÉS et ses ÉVÉNEMENTS (les cartes qui se jouent une fois) qui font le travail. Sous sa forme normale (Mikey), il a 6 cartes en main et récupère 3 points de vie par tour de repos.
+Ses deux atouts :
+ - « Booyakasha » : à chaque fois qu'il utilise un pouvoir de base (menace, attaque ou défense), il peut DÉPLACER jusqu'à 3 menaces d'un complot vers un autre. Astuce : déplace la menace du complot principal vers « I'm Here to Help » (une petite quête à lui, déjà en jeu au début). Quand elle est vidée, tu pioches 3 cartes. Attention : on ne peut pas poser de menace sur un complot annexe qui en a déjà 5 ou plus (par joueur).
+ - Les deux nunchakus (« Michelangelo's Nunchuck » et « Other Nunchuck ») : chacun donne les DEUX effets suivants à tous les nunchakus que tu contrôles. (1) Après avoir joué un événement, tu épuises le nunchaku : +1 à un pouvoir de base jusqu'à la fin du tour. (2) Quand une attaque va te blesser, tu épuises le nunchaku : -1 dégât et 1 dégât à l'attaquant. Donc plus tu joues d'événements, plus Mikey est fort. Dès le tour 1, sous sa forme Mikey, défausse 1 carte avec sa capacité « Action » pour mettre les deux nunchakus en jeu gratuitement.
+ - Autres cartes de départ à connaître : « Impulsive » (pose 2 menaces sur le complot principal, puis prépare Michelangelo et une arme et pioche 1 : tu peux ensuite déplacer ces 2 menaces avec Booyakasha), « Majime » (tu te fais mal pour retirer des menaces ET blesser un ennemi, max 3) et « Kaiten » (3 dégâts, plus étourdir ou embrouiller si tu épuises un nunchaku).
+Règles à retenir pour tous les decks :
+ - Les cartes avec une * devant leur nom sont uniques : 1 seul exemplaire. De plus, deux versions d'un même personnage (Leo, Raph, Donnie, Mikey) ne peuvent pas être dans le même deck ; c'est pour ça qu'on ne voit qu'une tortue de chaque nom dans chaque deck.
+ - « Restricted » (restreint) : un héros ne peut avoir que 2 cartes restreintes en jeu. Les deux nunchakus prennent déjà les 2 places : ne mets JAMAIS dans ce deck une autre arme « Restricted » (ex. Hand Cannon, Jarnbjorn, Sonic Rifle, Jō...), elle serait injouable. Dans les decks, les armes ajoutées ne sont pas restreintes.
+ - Pour payer une carte, n'importe quelle icône de ressource compte (la couleur importe seulement pour de petits bonus ou pour les cartes marquées « Requirement »).
+ - L'obligation « All Alone » (de ta carte héros) te remet en forme Mikey et épuise tes alliés : garde toujours 1 carte inutile à défausser pour t'en débarrasser (Action de Mikey).
+ - Pour chaque deck : 30 cartes choisies + les 15 cartes de départ du héros = 45 cartes. Les 15 cartes de départ sont ajoutées automatiquement.
+
+
+=== MICHELANGELO — Deck 1 : Gardien costaud (Protection) ===
+En une phrase : Pour qui veut un deck tranquille : de gros alliés encaissent les coups pendant que tu pioches et que tu retires la menace petit à petit.
+Comment le jouer : Au tour 1, en forme Mikey, défausse 1 carte pour mettre les nunchakus en jeu puis pose un allié qui fait piocher (Donatello ou Clyde). Ensuite pose tes gros alliés à PV élevés (Usagi, Luke Cage, Charlie-27, Jōtarō) : ils ont « Toughness » (un bouclier qui absorbe la 1re blessure) et défendent à ta place. Quand le méchant attaque, garde 1 ou 2 cartes de défense en main (Expert Defense, Side Step, Warning) : elles coûtent 0 ou 1 et chacune active un nunchaku. Utilise « To the Rescue! » pour retirer la menace et Booyakasha pour pousser la menace du complot principal vers « I'm Here to Help », puis vide-le pour piocher 3 cartes.
+Pourquoi ces cartes : Presque tous les événements de ce deck (défense, soin, menace) déclenchent un nunchaku : tu gagnes +1 menace ou +1 attaque presque gratuitement. « Armored Vest » passe ta défense de 2 à 3, et les nunchakus réduisent encore chaque coup subi. Les alliés avec « Toughness » ou « Retaliate » rendent les coups du méchant coûteux pour lui. « Majime » (se blesser pour agir) est sans danger ici grâce à « First Aid », à « Optimism » (qui soigne) et à la défense. Donatello, Clyde et Nick Fury font entrer des cartes et de l'avance au bon moment.
+Point faible : Peu de dégâts contre les gros méchants (ton attaque de base est de 1) et peu de menace retirée en une fois : le deck gagne en durant, pas en finissant vite.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Clyde [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Donatello [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Jōtarō [unique] — coût 3, allié, ressource physique (rouge)
+  1× Leonardo [unique] — coût 3, allié, ressource physique (rouge)
+  1× Nobody [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Raphael [unique] — coût 3, allié, ressource physique (rouge)
+  1× Shinobi Batman [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Usagi Yōjimbō [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Charlie-27 [unique] — coût 4, allié, ressource physique (rouge)
+  1× Luke Cage [unique] — coût 4, allié, ressource énergie (jaune)
+  1× Nick Fury [unique] — coût 4, allié, ressource mentale (bleu)
+ Événements :
+  1× Counter-Punch (Contre-Attaque au Poing) — coût 0, événement, ressource physique (rouge)
+  2× Expert Defense (Defense experte) — coût 0, événement, ressource mentale (bleu)
+  2× Warning (Alerte) — coût 0, événement, ressource physique (rouge)
+  1× First Aid (Premiers Soins) — coût 1, événement, ressource mentale (bleu)
+  1× Get Behind Me! (Restez derrière moi !) — coût 1, événement, ressource mentale (bleu)
+  2× Side Step (Pas de Côté) — coût 1, événement, ressource mentale (bleu)
+  3× To the Rescue! (À la rescousse !) — coût 2, événement, ressource physique (rouge)
+  1× Multitalented — coût 3, événement, ressource physique (rouge)
+ Améliorations :
+  1× Armored Vest (Veste blindée) — coût 1, amélioration, ressource mentale (bleu)
+  1× Indomitable (Inébranlable) — coût 1, amélioration, ressource énergie (jaune)
+ Soutiens :
+  1× Party Wagon [unique] — coût 3, soutien, ressource énergie (jaune)
+ Ressources :
+  1× Energy (Énergie) — ressource, donne 2× énergie (jaune)
+  1× Genius (Génie) — ressource, donne 2× mentale (bleu)
+  1× Strength (Force) — ressource, donne 2× physique (rouge)
+
+=== MICHELANGELO — Deck 2 : Machine à menaces (Justice) ===
+En une phrase : Pour le joueur qui aime que tout s'enchaîne : beaucoup d'événements « menace » qui font chauffer les nunchakus et vident les complots.
+Comment le jouer : Tour 1 : mets les nunchakus en jeu, puis pose « Heroic Intuition » (ta menace passe à 2) et un allié pas cher. Chaque tour : joue 1 ou 2 événements de menace (For Justice!, Clear the Area, Multitasking...) ; chaque événement permet d'épuiser un nunchaku pour +1 à ton prochain pouvoir de base. Après chaque menace de base, utilise Booyakasha pour déplacer des menaces là où tu peux les retirer facilement (ex. vers « I'm Here to Help », qui rapporte 3 cartes quand elle est vidée). « Turn the Tide » (0 coût) inflige 3 dégâts quand tu viens de vider un complot : garde-le pour ces moments. Garde « Stealth Strike », « Haymaker » et tes alliés pour les ennemis.
+Pourquoi ces cartes : L'aspect Justice est celui qui retire le plus de menace par carte, et chaque carte jouée active un nunchaku : même le pouvoir de base de Mikey (1) monte à 3 ou plus. « Passion for Justice » ajoute +1 menace retirée à chaque événement qu'elle paie. Booyakasha permet de vider un complot d'un coup de menace pour déclencher « Turn the Tide » ou les bonus de victoire. Les alliés (Wiccan, Sally Pride, Lita, Speed...) retirent eux aussi de la menace et libèrent Mikey pour attaquer. Donatello pioche, et « Mission Training » rend un ninja plus solide.
+Point faible : Défense fragile (11 points de vie, défense 2) et peu de cartes pour finir un méchant costaud : il faut s'occuper des attaques avec les nunchakus et les alliés. Deck à un peu plus de décisions que le deck 1.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Mondo Gecko [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Quake [unique] — coût 2, allié, ressource énergie (jaune)
+  1× Wiccan [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Donatello [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Jessica Jones [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Lita [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Sally Pride [unique] — coût 3, allié, ressource physique (rouge)
+  1× Tomoe Ame [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Daredevil [unique] — coût 4, allié, ressource physique (rouge)
+  1× Ram-Shell [unique] — coût 4, allié, ressource physique (rouge)
+  1× Speed [unique] — coût 4, allié, ressource physique (rouge)
+ Événements :
+  2× Turn the Tide (Renverser la Situation) — coût 0, événement, ressource énergie (jaune)
+  2× Clear the Area (Dégager la Zone) — coût 1, événement, ressource mentale (bleu)
+  2× Multitasking (Multitâche) — coût 1, événement, ressource physique (rouge)
+  2× For Justice! (Pour la Justice !) — coût 2, événement, ressource énergie (jaune)
+  1× Haymaker — coût 2, événement, ressource énergie (jaune)
+  1× Impede (Retenir l'Ennemi) — coût 2, événement, ressource mentale (bleu)
+  1× Crisis Averted (Danger Écarté) — coût 3, événement, ressource mentale (bleu)
+  1× Stealth Strike — coût 3, événement, ressource mentale (bleu)
+ Améliorations :
+  1× Mission Training — coût 1, amélioration, ressource mentale (bleu)
+  1× Heroic Intuition (Instinct Héroïque) — coût 2, amélioration, ressource énergie (jaune)
+ Soutiens :
+  1× Party Wagon [unique] — coût 3, soutien, ressource énergie (jaune)
+ Ressources :
+  1× Energy (Énergie) — ressource, donne 2× énergie (jaune)
+  2× Passion for Justice (La Passion de la Justice) — ressource, donne joker
+  1× Strength (Force) — ressource, donne 2× physique (rouge)
+
+=== MICHELANGELO — Deck 3 : Escouade de ninjas (Leadership) ===
+En une phrase : Pour celui qui aime jouer en équipe : beaucoup d'alliés qui piochent ou protègent, et des cartes qui prêtent leur force au héros.
+Comment le jouer : Au tour 1, mets les nunchakus en jeu et pose 1 ou 2 alliés pas chers (Splinter, Rasputin, Napoleon, Kaluu). Tu ne peux avoir que 3 alliés à la fois : pose « The Triskelion » (+1 allié) dès que possible. Les alliés qui piochent ou cherchent (Donatello, Splinter, Zetian, White Tiger, Kaluu qui trouve un événement) enrichissent ta main. Quand Mikey attaque ou menace, joue « Teamwork » (0 coût) : tu épuises un allié et tu ajoutes sa force à celle de Mikey. « Lead from the Front » donne +1/+1 à tout le monde pour le tour. Mets « Splinter Dojo Training » sur un ninja (Alopex, Red Shell, Donatello, Leonardo...). Les cartes « Band Together » valent beaucoup une fois que 3 alliés sont en jeu : ne les paie pas trop tôt.
+Pourquoi ces cartes : Mikey a de mauvaises stats, mais « Teamwork » lui prête celles d'un allié (3 ou plus) pour 0 coût, ce qui compte comme événement pour les nunchakus. Les alliés ninjas/tortues (Leonardo, Donatello, Red Shell, Alopex) profitent des améliorations d'entraînement. Leonardo prépare un autre ninja après avoir utilisé un pouvoir, Red Shell absorbe des dégâts, Alopex a Retaliate et se camoufle. 14 alliés permettent d'avoir presque toujours quelque chose à poser.
+Point faible : Démarrage lent : sans alliés en jeu, le héros est faible. Tes alliés peuvent être battus par un méchant qui frappe fort, et la limite de 3 alliés (4 avec le Triskelion) freine un peu.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Kaluu [unique] — coût 2, allié, ressource énergie (jaune)
+  1× Maria Hill [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Napoleon [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Rasputin [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Splinter [unique] — coût 2, allié, ressource mentale (bleu)
+  1× Alopex [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Black Knight (Chevalier Noir) [unique] — coût 3, allié, ressource physique (rouge)
+  1× Dask [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Donatello [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Hawkeye [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Leonardo [unique] — coût 3, allié, ressource physique (rouge)
+  1× Red Shell [unique] — coût 3, allié, ressource mentale (bleu)
+  1× White Tiger (Tigre Blanc) [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Zetian [unique] — coût 3, allié, ressource énergie (jaune)
+ Événements :
+  1× Get Ready (Se Préparer) — coût 0, événement, ressource physique (rouge)
+  1× Make the Call (Appel de détresse) — coût 0, événement, ressource mentale (bleu)
+  1× Strength In Numbers (La Force du Nombre) — coût 0, événement, ressource physique (rouge)
+  2× Teamwork — coût 0, événement, ressource énergie (jaune)
+  1× Morale Boost (Soutien Moral) — coût 1, événement, ressource énergie (jaune)
+  2× Lead from the Front (Commander en Première Ligne) — coût 2, événement, ressource énergie (jaune)
+ Améliorations :
+  1× Inspired (Motivé) — coût 1, amélioration, ressource physique (rouge)
+  2× Splinter Dojo Training — coût 1, amélioration, ressource physique (rouge)
+ Soutiens :
+  1× The Triskelion (Le Triskelion) [unique] — coût 1, soutien, ressource énergie (jaune)
+  1× Team-Building Exercise — coût 2, soutien, ressource physique (rouge)
+ Ressources :
+  2× Band Together — ressource, donne un joker par allié (max 3)
+  1× The Power of Leadership (Le Pouvoir du Commandement) — ressource, donne joker
+
+=== MICHELANGELO — Deck 4 : Armes et cartes TMNT (Agression) ===
+En une phrase : Pour le fan de tortues ninja qui veut cogner : un deck presque entièrement TMNT qui transforme les deux nunchakus (des armes) en gros dégâts.
+Comment le jouer : Tour 1 : mets les nunchakus en jeu. Quand un ennemi coriace arrive, joue « Firepower » (coût 1) : tu épuises tes armes (les 2 nunchakus, plus Daitō ou Shuriken si tu en as) et chaque arme inflige 3 dégâts à un ennemi de ton choix, à distance. « Impulsive » prépare une arme et Mikey de nouveau pour un deuxième coup (et pose 2 menaces sur le complot principal, que Booyakasha peut déplacer ou que tu retires ensuite). « Fusillade » (5 dégâts) et « Mean Swing » (+3 attaque) utilisent aussi une arme. Pose « Attack Training » sur un allié ninja ou mutanimal, et attache Daitō à un ALLIÉ (pas à Mikey : il deviendrait restreint). Attention : une arme épuisée ne peut plus servir de nunchaku ce tour-ci.
+Pourquoi ces cartes : Les nunchakus sont des « armes » (WEAPON) : le deck est fait de cartes qui les épuisent pour un gros effet (Firepower, Fusillade, Mean Swing), et « Impulsive » les prépare. Casey Jones va chercher une arme dans le deck ou la défausse. Les alliés TMNT (Assassin, Raphael, Donatello, Leatherhead, Ujigami, Ray Fillet...) donnent le reste des dégâts, et « Pete » ajoute 1 dégât à chaque coup. 87 % des cartes choisies viennent des sets TMNT.
+Point faible : Presque aucune carte pour retirer de la menace (seulement Majime, Multitalented et quelques alliés) : les complots peuvent monter vite. Il faut tuer les méchants avant que la menace n'explose et utiliser Booyakasha pour étaler la menace.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Rave [unique] — coût 2, allié, ressource énergie (jaune)
+  1× Assassin [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Atilla [unique] — coût 3, allié, ressource physique (rouge)
+  1× Casey Jones [unique] — coût 3, allié, ressource physique (rouge)
+  1× Donatello [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Kitsune [unique] — coût 3, allié, ressource énergie (jaune)
+  1× Mary [unique] — coût 3, allié, ressource physique (rouge)
+  1× Raphael [unique] — coût 3, allié, ressource physique (rouge)
+  1× Ray Fillet [unique] — coût 3, allié, ressource mentale (bleu)
+  1× Heavy Metal [unique] — coût 4, allié, ressource énergie (jaune)
+  1× Leatherhead [unique] — coût 4, allié, ressource physique (rouge)
+  1× Ujigami [unique] — coût 4, allié, ressource physique (rouge)
+ Événements :
+  2× Mean Swing (Coup avec Élan) — coût 0, événement, ressource physique (rouge)
+  3× Firepower — coût 1, événement, ressource physique (rouge)
+  2× Fusillade — coût 2, événement, ressource mentale (bleu)
+  1× Multitalented — coût 3, événement, ressource physique (rouge)
+ Améliorations :
+  2× Attack Training — coût 1, amélioration, ressource physique (rouge)
+  2× Daitō — coût 1, amélioration, ressource physique (rouge)
+  1× Shuriken — coût 2, amélioration, ressource énergie (jaune)
+ Soutiens :
+  1× Pete [unique] — coût 1, soutien, ressource énergie (jaune)
+  1× Party Wagon [unique] — coût 3, soutien, ressource énergie (jaune)
+ Ressources :
+  1× Energy — ressource, donne 2× énergie (jaune)
+  1× Genius — ressource, donne 2× mentale (bleu)
+  1× Strength — ressource, donne 2× physique (rouge)
+
+=== IDENTIFIANTS PRÊTS À COLLER (fichiers validés LEGAL par tools/valider_deck.mjs michelangelo) ===
+--- IDS Deck 1 ---
+1 ub008
+1 ub006
+1 ub025
+1 ub041
+1 up041
+1 up024
+1 up021
+1 01076
+1 21059
+1 01084
+1 ub045
+2 03033
+2 14015
+1 01077
+1 01078
+2 09021
+3 10019
+1 01086
+1 ub030
+1 01081
+1 ub036
+1 01088
+1 01089
+1 01090
+1 01082
+
+--- IDS Deck 2 ---
+1 15011
+1 uj027
+1 uj018
+1 uj033
+1 15010
+1 01058
+1 01059
+1 ub008
+1 uj021
+1 uj026
+1 08012
+2 01060
+2 04049
+2 15013
+2 15015
+1 18016
+1 15012
+1 uj030
+1 01087
+1 01065
+1 uj019
+2 34020
+1 01088
+1 01090
+1 ub036
+
+--- IDS Deck 3 ---
+1 ul001
+1 ul021
+1 ul029
+1 ul017
+1 ul020
+1 ul046
+1 ub008
+1 ub025
+1 21014
+1 04012
+1 ul005
+1 21013
+1 01066
+1 01067
+2 ul034
+2 01070
+1 03017
+1 01071
+1 01069
+1 05032
+2 ul028
+1 01074
+1 01073
+1 ub055
+2 ul002
+1 01072
+
+--- IDS Deck 4 ---
+1 ua003
+1 ub041
+1 ub008
+1 ua040
+1 ua036
+1 ua025
+1 ua026
+1 ua035
+1 ub003
+1 ub028
+1 ud003
+1 ub005
+3 ua018
+2 20026
+2 06015
+1 ub030
+2 ua004
+2 ua014
+1 ub046
+1 ua033
+1 ub036
+1 ub011
+1 ub016
+1 ub054
+
+
+####################################################################################################
+#  CASEY JONES
+####################################################################################################
+
+Casey Jones — 4 decks jouables (moteur Marvel Champions LCG custom)
+
+LE HÉROS EN DEUX MOTS
+Casey Jones est un justicier armé d'une batte : 10 points de vie, attaque 2, menace 2, défense 2, et 5 cartes en main. Il commence avec Casey's Bag (un sac à armes) déjà en jeu et 15 cartes de départ : 8 événements (Clap Back, Cross Block, Face-Off, Grand Slam, chacun en 2 exemplaires), 5 armes (Baseball Bat, Cricket Willow, Driving Iron, Hockey Stick, Persuader), Casey's Mask et Anything Goes.
+Son pouvoir (Overswing) : en défaussant une arme « Restricted » qu'il contrôle, il génère 3 ressources jokers pour payer un événement d'attaque, de menace ou de défense (une fois par phase). Une arme « Restricted » est une arme qui compte dans la limite de 2 par joueur : ne joue pas de troisième arme sans en défausser une. Casey's Bag ramène une arme de la défausse (action gratuite, une fois par tour : la carte se redresse au tour suivant) et la rend rejouable ; passer en alter ego (forme civile) ramène aussi une arme de la défausse en main.
+Son obligation (Daddy Issues) le force à passer en alter ego et l'empêche de changer de forme tant qu'il n'a pas épuisé Casey Jones pour la retirer du jeu : paie-la dès que possible.
+Remarque : l'allié « Casey Jones » (Basic) ne peut pas être joué dans ces decks, car il porte le même nom que le héros.
+Les icônes de ressource comptent toutes les cartes du paquet, signature comprise (15 cartes de départ : 6 physique, 5 énergie, 4 mental). Le compte donné à chaque deck est celui des cartes choisies seules.
+
+=== CASEY JONES — Deck 1 : Facile (Agression) ===
+En une phrase : Pour qui veut frapper fort sans se creuser la tête : des gros coups d'Agression, des alliés solides, et les armes de Casey qui paient le tout.
+Comment le jouer : Commence par poser un ou deux alliés pas chers (Spider-Girl, Mockingbird, Tigra) et une arme de Casey peu chère (Baseball Bat ou Driving Iron, coût 1). Dès que tu as un gros coup en main (Uppercut, Drop Kick, Grand Slam, Clap Back), défausse l'arme posée : c'est le pouvoir « Overswing » de Casey, qui donne 3 ressources gratuites pour payer un événement d'attaque, de menace ou de défense (une seule fois par phase). Attention : tu ne peux avoir que 2 armes « Restricted » en jeu à la fois, donc ne joue pas de troisième arme avant d'en avoir défaussé une. Garde Cross Block (+3 en défense) pour les grosses attaques du méchant, et si Casey est mal en point, passe en alter ego : une arme de ta défausse revient alors en main.
+Pourquoi ces cartes : Les cartes d'attaque coûtent souvent 3 : l'Overswing de Casey les rend presque gratuites, donc on les joue sans réfléchir. Les alliés (Nick Fury, Bo-Wing, Brawn, Wolverine) prennent le relais pour frapper et retirer de la menace pendant que Casey s'occupe de l'essentiel. Jarnbjorn est une arme de plus à défausser pour l'Overswing, et Fusillade (qui épuise une arme) transforme une arme posée en 5 dégâts pour 2 de coût. Les cartes défensives (Endurance, Aggressive Conditioning) ajoutent des points de vie pour que le deck tienne tout seul.
+Ressources (cartes choisies) : 16 physique, 7 énergie, 8 mental, 0 joker ; avec les 15 cartes de départ : 22 physique, 12 énergie, 12 mental, 0 joker.
+Points faibles : Un peu lourd en cartes à 3-4 de coût ; peu de menace retirée (compte sur Clap Back, Bo-Wing, To the Rescue).
+Cartes (30 + les signature) :
+ Alliés (8)
+  1× Valkyrie — coût 3, allié, ressource énergie
+  1× Tigra — coût 3, allié, ressource mental
+  1× Bo-Wing — coût 3, allié, ressource mental
+  1× Brawn — coût 3, allié, ressource mental
+  1× Spider-Girl — coût 2, allié, ressource énergie
+  1× Mockingbird — coût 3, allié, ressource physique
+  1× Nick Fury — coût 4, allié, ressource mental
+  1× Wolverine — coût 4, allié, ressource physique
+ Événements (17)
+  3× Uppercut — coût 3, événement, ressource physique
+  2× Relentless Assault (Assaut Implacable) — coût 2, événement, ressource énergie
+  2× Haymaker — coût 2, événement, ressource énergie
+  2× Drop Kick (Coup de Pied Tombé) — coût 3, événement, ressource physique
+  2× Fusillade — coût 2, événement, ressource mental
+  2× Savage Strike (Coup Sauvage) — coût 3, événement, ressource physique
+  2× Chase Them Down (Poursuivons-Les) — coût 0, événement, ressource mental
+  2× To the Rescue! (À la rescousse !) — coût 2, événement, ressource physique
+ Améliorations (4)
+  1× Jarnbjorn — coût 1, amélioration, ressource physique
+  1× Aggressive Conditioning (Né Pour l'Agressivité) — coût 3, amélioration, ressource physique
+  1× Endurance — coût 1, amélioration, ressource énergie
+  1× Martial Prowess (Prouesse Martiale) — coût 2, amélioration, ressource physique
+ Ressources (1)
+  1× Strength (Force) — sans coût, ressource, ressource physique + physique
+
+=== CASEY JONES — Deck 2 : Puissant (Agression) ===
+En une phrase : Pour qui aime les combos : un moteur d'armes qui enchaîne les gros coups chaque tour (Firepower, Fusillade, Overswing).
+Comment le jouer : Joue d'abord Side Holster (coût 0) : il te permet d'avoir 3 armes « Restricted » en jeu au lieu de 2. Pose ensuite tes armes pas chères (Baseball Bat, Driving Iron, Jarnbjorn), puis utilise Firepower : il épuise jusqu'à 3 armes et inflige 3 dégâts par arme (9 dégâts pour 1 de coût). Casey's Bag, déjà en jeu au début de la partie, peut récupérer une arme de ta défausse chaque tour (action gratuite, une fois par tour) : tu la rejoues comme si elle était en main, donc tes armes servent plusieurs fois. Plan of Attack cherche dans le haut du paquet l'événement d'attaque qu'il te faut. À surveiller : ce deck a peu d'alliés et peu de défense, donc garde Cross Block pour les attaques dangereuses et ne te surexpose pas.
+Pourquoi ces cartes : Tout tourne autour des armes : le deck en contient 7 (5 de Casey, Jarnbjorn, Hand Cannon) plus Side Holster pour en poser davantage. Overswing défausse une arme pour payer un gros événement ; Fusillade et Firepower, eux, épuisent les armes sans les perdre. Le Bag et le passage en alter ego les ramènent ensuite en main. Aggressive Energy (ressource joker) ajoute 1 dégât à chaque attaque qu'elle paie, et Fluid Motion / Martial Prowess gonflent encore les événements d'attaque.
+Ressources (cartes choisies) : 14 physique, 6 énergie, 9 mental, 2 joker ; avec les 15 cartes de départ : 20 physique, 11 énergie, 13 mental, 2 joker.
+Points faibles : Peu d'alliés et presque aucune défense : si les armes tardent à arriver, Casey encaisse. Les combos demandent de bien suivre quelles armes sont en jeu.
+Cartes (31 + les signature) :
+ Alliés (6)
+  1× Nick Fury — coût 4, allié, ressource mental
+  1× Valkyrie — coût 3, allié, ressource énergie
+  1× Tigra — coût 3, allié, ressource mental
+  1× Mockingbird — coût 3, allié, ressource physique
+  1× Spider-Girl — coût 2, allié, ressource énergie
+  1× Brawn — coût 3, allié, ressource mental
+ Événements (17)
+  3× Firepower (Puissance de Feu) — coût 1, événement, ressource physique
+  3× Fusillade — coût 2, événement, ressource mental
+  3× Uppercut — coût 3, événement, ressource physique
+  2× Into the Fray (Au Cœur de la Mêlée) — coût 3, événement, ressource énergie
+  1× Full-Body Charge (Charge Corporelle Totale) — coût 4, événement, ressource physique
+  2× Plan of Attack (Plan d'Attaque) — coût 0, événement, ressource mental
+  1× Chase Them Down (Poursuivons-Les) — coût 0, événement, ressource mental
+  2× To the Rescue! (À la rescousse !) — coût 2, événement, ressource physique
+ Améliorations (6)
+  1× Side Holster (Ceinturon) — coût 0, amélioration, ressource physique
+  1× Jarnbjorn — coût 1, amélioration, ressource physique
+  1× Hand Cannon (Canon Portatif) — coût 2, amélioration, ressource physique
+  1× Fluid Motion (Fluidité de Mouvement) — coût 1, amélioration, ressource énergie
+  1× Martial Prowess (Prouesse Martiale) — coût 2, amélioration, ressource physique
+  1× Endurance — coût 1, amélioration, ressource énergie
+ Ressources (2)
+  2× Aggressive Energy (Énergie Aggressive) — sans coût, ressource, ressource joker
+
+=== CASEY JONES — Deck 3 : Autre aspect (Protection) ===
+En une phrase : Pour qui préfère encaisser et riposter : Casey bloque les attaques puis renvoie les coups, avec très peu de risque de tomber.
+Comment le jouer : Garde Casey en forme de héros et laisse-le défendre : chaque attaque bloquée avec Riposte, Expert Defense ou Cross Block devient une chance de renvoyer des dégâts (Counter-Punch, Powerful Punch) ou de retirer de la menace (True Grit, Get Their Attention). Pose Armored Vest, Defensive Conditioning et Endurance dès que possible : ils donnent +2 de défense et +6 points de vie. Bait and Switch fait attaquer le méchant sur toi : joue-le seulement quand tu as une carte de défense en main. Utilise Tonfa et Excelsior comme armes : elles aident aussi à défendre, et tu peux les défausser pour l'Overswing si tu veux un gros coup.
+Pourquoi ces cartes : L'Overswing marche aussi pour les événements de défense : Casey peut payer Riposte ou Powerful Punch avec 3 ressources gratuites et garder ses vraies ressources pour poser ses alliés. Cross Block (+3 en défense, puis Casey se redresse) permet de défendre deux fois par tour avec les cartes de Protection comme Riposte (+2 en défense et 3 dégâts si aucun dégât n'est pris). Defensive Energy pioche une carte à chaque événement de défense payé avec elle.
+Ressources (cartes choisies) : 11 physique, 11 énergie, 6 mental, 2 joker ; avec les 15 cartes de départ : 17 physique, 16 énergie, 10 mental, 2 joker.
+Points faibles : Beaucoup moins d'attaque : les parties sont plus longues. Bait and Switch fait attaquer le méchant sur Casey : à jouer avec une carte de défense en main.
+Cartes (30 + les signature) :
+ Alliés (6)
+  1× Luke Cage — coût 4, allié, ressource énergie
+  1× Charlie-27 — coût 4, allié, ressource physique
+  1× Rockslide — coût 4, allié, ressource physique
+  1× Ace Duck — coût 3, allié, ressource mental
+  1× Echo — coût 3, allié, ressource physique
+  1× Patriot — coût 3, allié, ressource énergie
+ Événements (16)
+  3× Riposte — coût 1, événement, ressource énergie
+  2× Expert Defense (Defense experte) — coût 0, événement, ressource mental
+  2× Counter-Punch (Contre-Attaque au Poing) — coût 0, événement, ressource physique
+  2× Powerful Punch (Coup de Poing Puissant) — coût 2, événement, ressource physique
+  2× Get Their Attention (Capter Leur Attention) — coût 2, événement, ressource mental
+  1× True Grit (Véritable Courage) — coût 1, événement, ressource énergie
+  2× Bait and Switch (Servir d'Appât) — coût 1, événement, ressource énergie
+  2× Hard Knocks (Coup Violent) — coût 3, événement, ressource physique
+ Améliorations (6)
+  1× Tonfa — coût 1, amélioration, ressource physique
+  1× Excelsior — coût 1, amélioration, ressource énergie
+  1× Stun Gun (Pistolet Etourdissant) — coût 2, amélioration, ressource énergie
+  1× Defensive Conditioning (Né Pour la Défense) — coût 2, amélioration, ressource physique
+  1× Armored Vest (Veste blindée) — coût 1, amélioration, ressource mental
+  1× Endurance — coût 1, amélioration, ressource énergie
+ Ressources (2)
+  2× Defensive Energy (Énergie Défensive) — sans coût, ressource, ressource joker
+
+=== CASEY JONES — Deck 4 : Spécial TMNT (Justice) ===
+En une phrase : Pour les fans des Tortues : plein de personnages des films et dessins animés (April, Donatello, Katsuichi...) autour de Casey, avec une bonne dose de menace retirée.
+Comment le jouer : Joue d'abord Martial Arts Training (gratuit, il est « de départ » : prends-le en main au début) : Casey devient « Martial Artist » et Know Your Enemy coûte 0. Pose Turtle Lair tôt pour piocher plus, puis des alliés : Donatello et Clyde pour piocher, Mary et Michelangelo pour étourdir ou soigner, Katsuichi pour aller chercher une carte de Casey (une arme ou un événement fort) dans ton paquet. April O'Neil est un joker puissant (piocher 3 cartes ou 4 dégâts), mais elle part à la fin du tour : joue-la quand tu en as vraiment besoin. Press and Protect est la carte d'équipe April + Casey (3 menace en moins + une carte robuste). Turtle Line se pose sur Casey : c'est aussi une arme à défausser pour l'Overswing.
+Pourquoi ces cartes : Katsuichi est une carte « sur mesure » : il cherche une carte spécifique à Casey (Grand Slam, Clap Back, une arme) dans le paquet. Les alliés TMNT retirent de la menace ou pigent des cartes, ce qui compense la faible attaque de Casey (2) ; Stealth Strike et Multitalented font les gros dégâts, et Casey a quand même ses 8 événements de départ. Turtle Line et Sonic Rifle sont des armes en plus pour l'Overswing, et Side Holster permet d'en avoir une de plus en jeu.
+Ressources (cartes choisies) : 7 physique, 8 énergie, 14 mental, 1 joker ; avec les 15 cartes de départ : 13 physique, 13 énergie, 18 mental, 1 joker.
+Points faibles : 11 alliés mais 3 maximum en jeu : certains attendront en main. Peu d'attaque directe en dehors de Stealth Strike, Haymaker, Multitalented et des cartes de départ ; April part à la fin du tour.
+Cartes (30 + les signature) :
+ Alliés (11)
+  1× April O'Neil — coût 4, allié, ressource mental
+  1× Donatello — coût 3, allié, ressource mental
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Leonardo — coût 3, allié, ressource physique
+  1× Mary — coût 3, allié, ressource physique
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Clyde — coût 2, allié, ressource mental
+  1× Tomoe Ame — coût 3, allié, ressource énergie
+  1× Sally Pride — coût 3, allié, ressource physique
+  1× Atilla — coût 3, allié, ressource physique
+  1× Inspector Ishida — coût 3, allié, ressource physique
+ Événements (13)
+  2× Stealth Strike — coût 3, événement, ressource mental
+  3× Know Your Enemy — coût 1*, événement, ressource mental
+  1× Press and Protect — coût 1, événement, ressource joker
+  1× Multitalented — coût 3, événement, ressource physique
+  2× For Justice! (Pour la Justice !) — coût 2, événement, ressource énergie
+  2× Haymaker — coût 2, événement, ressource énergie
+  1× Crisis Averted (Danger Écarté) — coût 3, événement, ressource mental
+  1× Hit and Run (Frappe et Court) — coût 3, événement, ressource énergie
+ Améliorations (4)
+  1× Turtle Line — coût 2, amélioration, ressource énergie
+  1× Martial Arts Training — coût 1, amélioration, ressource aucune
+  1× Side Holster (Ceinturon) — coût 0, amélioration, ressource physique
+  1× Sonic Rifle (Fusil Sonique) — coût 3, amélioration, ressource mental
+ Soutiens (1)
+  1× Turtle Lair — coût 4, soutien, ressource mental
+ Ressources (1)
+  1× Genius — sans coût, ressource, ressource mental + mental
+
+IDS (prêts à coller, une carte par ligne : « nombre identifiant ». Les cartes signature sont ajoutées d'office.)
+
+--- IDS Deck 1 ---
+1 06012
+1 01051
+1 ua006
+1 10011
+1 04040
+1 01083
+1 01084
+1 32041
+3 01054
+2 01053
+2 01087
+2 10014
+2 20026
+2 56017
+2 01052
+2 10019
+1 06019
+1 56013
+1 05023
+1 10018
+1 01090
+
+--- IDS Deck 2 ---
+1 01084
+1 06012
+1 01051
+1 01083
+1 04040
+1 10011
+3 54014
+3 20026
+3 01054
+2 13013
+1 45045
+2 18013
+1 01052
+2 10019
+1 20021
+1 06019
+1 16046
+1 28016
+1 10018
+1 05023
+2 32047
+
+--- IDS Deck 3 ---
+1 01076
+1 21059
+1 33013
+1 up001
+1 61038
+1 56041
+3 48018
+2 03033
+2 01077
+2 32014
+2 60049
+1 18031
+2 15030
+2 19016
+1 64020
+1 56045
+1 52020
+1 56046
+1 01081
+1 05023
+2 32018
+
+--- IDS Deck 4 ---
+1 ub001
+1 ub008
+1 ub023
+1 ub025
+1 ub028
+1 ub029
+1 ub006
+1 uj033
+1 uj027
+1 ub003
+1 uj016
+2 uj030
+3 uj017
+1 ub040
+1 ub030
+2 01060
+2 01087
+1 15012
+1 uj034
+1 ub027
+1 20021
+1 20015
+1 ub057
+1 ub016
+1 18020
+
+
+####################################################################################################
+#  JENNIKA
+####################################################################################################
+
+JENNIKA : 4 DECKS PRÊTS À JOUER (tous validés LEGAL avec l'outil valider_deck.mjs)
+Rappels : tu joues d'abord en Jenny (forme civile) et tu utilises son action « défausse 1 carte pour mettre tes 2 Tekko-Kagi en jeu » ; la Voie Sōsaiken est mise en jeu d'office. Jennika n'accepte que des cartes Shinobi (Bushido, Kuji-Kiri, Ninjutsu, Taijutsu) et des cartes de base, jamais d'aspect (Agression, Justice, Commandement, Protection) : c'est pourquoi le « deck d'un autre aspect » est ici un autre style Shinobi (Bushido). Elle ne peut pas ajouter une 2e Voie.
+Ressources : dans ce jeu chaque carte porte une icône de ressource (physique, énergie, mental ou joker), on les compte donc sur toutes les cartes ; les décks contiennent les trois grosses cartes Force / Énergie / Génie (2 icônes) ou les jokers, et les Tekko-Kagi donnent un joker pour les cartes Shinobi.
+Carte « Restricted » : on ne peut avoir que 2 cartes de ce type en jeu ; l'Arc de Jennika (de départ) en est une, donc 1 seule autre au maximum.
+
+=== JENNIKA — Deck 1 : Poings et Parades (Taijutsu + cartes de base) ===
+En une phrase : Pour qui veut un héros qui frappe et se défend sans réfléchir : beaucoup de petits coups gratuits, des parades, et des alliés solides.
+Comment le jouer : Au premier tour, joue en Jenny (forme civile) et utilise son action : défausse une carte pour mettre tes deux Tekko-Kagi (les gants de Jennika) en jeu. Ensuite passe en Jennika. Joue tes alliés en premier (Clyde et Donatello font piocher), puis garde 1 ou 2 cartes « Raising Block » ou « Countercross » en main pour te défendre. Pour une grosse attaque (Straight Cross, 5 dégâts), paie-la avec une carte d'attaque de ta main (Stiff Jab, Flying Kick) : elle étourdit l'ennemi en prime. Quand le méchant attaque, défends avec Jennika (ou un allié) et n'oublie pas qu'elle gagne +1 partout chaque fois que tu joues une carte Shinobi (noire).
+Pourquoi ces cartes : Les cartes Taijutsu se « paient » les unes avec les autres : défense payée par défense = pioche, attaque payée par attaque = bonus, etc. Chaque carte Taijutsu jouée déclenche aussi le +1 ATK/THW/DEF de Jennika et fait piocher grâce à sa Voie Sōsaiken. Keep the Momentum rend un coup déjà joué, Martial Skill pioche quand on joue un événement, et les Tekko-Kagi donnent de l'énergie joker pour les cartes Shinobi.
+Cartes (31 + les 15 signature) :
+ Alliés :
+  1× Clyde — coût 2, allié, mental
+  1× Michelangelo — coût 3, allié, énergie
+  1× Leonardo — coût 3, allié, physique
+  1× Odyn — coût 3, allié, physique
+  1× Casey Jones — coût 3, allié, physique
+  1× Donatello — coût 3, allié, mental
+ Événements :
+  3× Raising Block — coût 0, événement, physique
+  2× Stiff Jab — coût 1, événement, physique
+  2× Straight Cross — coût 3, événement, énergie
+  2× Flying Kick — coût 2, événement, mental
+  2× Double Kick — coût 2, événement, mental
+  2× Countercross — coût 1, événement, physique
+  1× Foot Sweep — coût 2, événement, énergie
+  2× Elbow Strike — coût 0, événement, physique
+  1× Toss — coût 1, événement, mental
+  2× Sideswipe — coût 0, événement, mental
+ Améliorations :
+  1× Martial Skill — coût 1, amélioration, énergie
+ Ressources :
+  1× Strength — coût -, ressource, 2× physique
+  1× Energy — coût -, ressource, 2× énergie
+  1× Genius — coût -, ressource, 2× mental
+  2× Keep the Momentum — coût -, ressource, joker
+
+=== JENNIKA — Deck 2 : Ombre et Frappe (Ninjutsu (furtivité) + Taijutsu) ===
+En une phrase : Pour qui aime les ninjas furtifs : Jennika se cache (statut « camouflé »), puis lance des coups énormes et des actions presque gratuites.
+Comment le jouer : Commence en Jenny, mets tes Tekko-Kagi en jeu, puis passe en Jennika. Joue « Moonlighting » (carte de départ, gratuite) ou « Stealth Proficiency » pour te camoufler : tant que tu l'es, « Scale the Wall » (pioche 2), « Run the Rooftops » (retire 2 menace) et « Assassinate » (7 dégâts à un sbire) sont jouables pour 0 ou 2. Si tu n'es pas camouflé, utilise « Shroud and Protect » en défense ou « Cut-and-Run » pour le redevenir. Attention : ces cartes « camouflage obligatoire » sont mortes en main sans camouflage ; si tu en as trop, défausse-les pour payer d'autres cartes.
+Pourquoi ces cartes : Le camouflage est le moteur : presque chaque carte l'obtient ou le dépense (Gaslight, Kenbu, Kusari-Kagi, Black Ops, Smoke Bombs). Jennika gagne +1 partout à chaque carte Shinobi jouée, donc enchaîner plusieurs cartes à 0 coût la rend très forte. Kusari-Kagi est « Restricted » (limite de 2 cartes de ce type en jeu) : avec l'Arc de Jennika de départ, ça fait pile 2, donc ne joue pas d'autre carte Restricted.
+Cartes (32 + les 15 signature) :
+ Alliés :
+  1× Moja — coût 3, allié, énergie
+  1× Odyn — coût 3, allié, physique
+  1× Ninja He-Man — coût 4, allié, physique
+  1× Clyde — coût 2, allié, mental
+  1× Leonardo — coût 3, allié, physique
+ Événements :
+  2× Scale the Wall — coût 0, événement, énergie
+  2× Run the Rooftops — coût 0, événement, énergie
+  2× Assassinate — coût 2, événement, mental
+  2× Cut-and-Run — coût 2, événement, physique
+  2× Kenbu — coût 2, événement, mental
+  2× Hitodama — coût 2, événement, mental
+  2× Shroud and Protect — coût 1, événement, physique
+  2× Stealth Proficiency — coût 0, événement, mental
+  1× Gaslight — coût 1, événement, mental
+  2× Raising Block — coût 0, événement, physique
+ Améliorations :
+  1× Smoke Bombs — coût 1, amélioration, physique
+  1× Kusari-Kagi — coût 1, amélioration, physique
+  1× Black Ops — coût 1, amélioration, physique
+ Soutiens :
+  1× Hidden Passage — coût 1, soutien, mental
+ Ressources :
+  1× Strength — coût -, ressource, 2× physique
+  1× Energy — coût -, ressource, 2× énergie
+  1× Genius — coût -, ressource, 2× mental
+  1× From the Shadows — coût -, ressource, joker
+
+=== JENNIKA — Deck 3 : Voie du Samouraï (Bushido (autre style de jeu)) ===
+En une phrase : Pour qui préfère le côté samouraï : de l'équipement (Courage, Loyalty...) qui renforce Jennika, puis des coups à dégâts garantis.
+Comment le jouer : Mets d'abord tes Tekko-Kagi en jeu avec l'action de Jenny. Pose ensuite les améliorations « serments » (Loyalty coûte 0, Courage et Rectitude 1) : elles donnent +1 en défense, attaque ou menace, mais s'usent après chaque utilisation (3 jetons). Quand tu as 2 ou 3 de ces serments, « Tsujigiri » (dégâts = ton ATQ) et « Vow » (retire autant de menace que ta MEN) deviennent très forts. « Devotion » et « Kensei » redonnent la main à tes armes (Arc, Tekko-Kagi) pour les utiliser deux fois par tour. Ne gaspille pas Santōryū Ōgi : joue-le quand tu as de la place pour une arme.
+Pourquoi ces cartes : Les jetons « samouraï » sont consommés par les serments mais rechargés par Uno, Integrity, Iaidō et Tsujigiri ; Gusoku/Devotion/Kensei utilisent ces jetons pour redresser le héros ou les armes. Les armes de Jennika (Arc, Tekko-Kagi) sont des armes WEAPON : Casey Jones en retrouve une et Santōryū Ōgi met l'Arc en jeu sans la limite « Restricted ».
+Cartes (32 + les 15 signature) :
+ Alliés :
+  1× Uno — coût 3, allié, mental
+  1× Casey Jones — coût 3, allié, physique
+  1× Leonardo — coût 3, allié, physique
+  1× Raphael — coût 3, allié, physique
+  1× Michelangelo — coût 3, allié, énergie
+ Événements :
+  2× Tsujigiri — coût 2, événement, physique
+  2× Vow — coût 2, événement, énergie
+  2× Iaidō — coût 1, événement, mental
+  1× Kensei — coût 1, événement, mental
+  2× Nendō — coût 2, événement, physique
+  2× Migatte — coût 1, événement, physique
+  1× Omawari — coût 1, événement, physique
+ Améliorations :
+  2× Courage — coût 1, amélioration, mental
+  2× Loyalty — coût 0, amélioration, physique
+  1× Rectitude — coût 1, amélioration, énergie
+  1× Self-Control — coût 2, amélioration, mental
+  1× Integrity — coût 2, amélioration, physique
+  2× Devotion — coût 1, amélioration, énergie
+  1× Santōryū Ōgi — coût 0, amélioration, joker
+  1× Gusoku — coût 2, amélioration, physique
+  1× Shuriken — coût 2, amélioration, énergie
+ Ressources :
+  1× Strength — coût -, ressource, 2× physique
+  1× Energy — coût -, ressource, 2× énergie
+  1× Genius — coût -, ressource, 2× mental
+
+=== JENNIKA — Deck 4 : Équipe des Tortues (Spécial TMNT (tous les Shinobi + alliés des Tortues)) ===
+En une phrase : Pour le fan de la série : Leonardo, Raphaël, Michelangelo, Donatello, Odyn et Moja se battent avec Jennika, avec un mélange de coups ninja.
+Comment le jouer : Mets tes Tekko-Kagi en jeu avec Jenny, puis pose Party Wagon (donne un joker à chaque tour) et tes alliés Tortues, 3 au maximum en même temps. Leonardo, quand il attaque ou thwart, redresse un autre ninja, et « Up in Smoke » (0 coût) redresse un allié ninja ou le sauve s'il va être défaussé. Utilise « Hitodama » et « Kenbu » pour de gros dégâts et garde « Migatte » et « Raising Block » pour les attaques du méchant. Casey Jones et Katsuichi vont chercher l'Arc de Jennika dans ton paquet.
+Pourquoi ces cartes : 100 % des cartes viennent des sets TMNT (Shinobi + cartes de base). Jennika, la Tortue ninja, profite de Party Wagon, Team-Building Exercise (jouer pour 1 de moins une carte qui partage un trait avec Jennika, comme les alliés Tortues ou ninjas) et de Katsuichi, qui va chercher dans ton paquet une carte de départ de Jennika (l'Arc par exemple). Les cartes Dual (Hitodama, Kenbu, Migatte) mélangent plusieurs écoles Shinobi, ce qui déclenche à chaque fois le bonus de Ninja Senpai.
+Cartes (34 + les 15 signature) :
+ Alliés :
+  1× Leonardo — coût 3, allié, physique
+  1× Raphael — coût 3, allié, physique
+  1× Michelangelo — coût 3, allié, énergie
+  1× Donatello — coût 3, allié, mental
+  1× Odyn — coût 3, allié, physique
+  1× Moja — coût 3, allié, énergie
+  1× Casey Jones — coût 3, allié, physique
+  1× Ninja He-Man — coût 4, allié, physique
+  1× Clyde — coût 2, allié, mental
+  1× Katsuichi — coût 3, allié, mental
+ Événements :
+  2× Hitodama — coût 2, événement, mental
+  2× Kenbu — coût 2, événement, mental
+  2× Migatte — coût 1, événement, physique
+  2× Straight Cross — coût 3, événement, énergie
+  2× Raising Block — coût 0, événement, physique
+  2× Countercross — coût 1, événement, physique
+  2× Cut-and-Run — coût 2, événement, physique
+  2× Up in Smoke — coût 0, événement, énergie
+  2× Tsujigiri — coût 2, événement, physique
+ Améliorations :
+  1× Martial Skill — coût 1, amélioration, énergie
+ Soutiens :
+  1× Party Wagon — coût 3, soutien, énergie
+  1× Team-Building Exercise — coût 2, soutien, physique
+ Ressources :
+  1× Strength — coût -, ressource, 2× physique
+  1× Energy — coût -, ressource, 2× énergie
+  1× Genius — coût -, ressource, 2× mental
+
+=== IDS (prêts à coller, signature non comprises) ===
+--- IDS Deck 1 ---
+1 ub006
+1 ub029
+1 ub025
+1 sh017
+1 ub005
+1 ub008
+3 sh001
+2 sh003
+2 sh004
+2 sh006
+2 sh005
+2 sh018
+1 sh002
+2 sh011
+1 sh009
+2 sh019
+1 sh010
+1 ub054
+1 ub011
+1 ub016
+2 sh015
+
+--- IDS Deck 2 ---
+1 sa017
+1 sh017
+1 ub033
+1 ub006
+1 ub025
+2 sa004
+2 sa005
+2 sa001
+2 sa006
+2 sc011
+2 sc012
+2 sa002
+2 sa011
+1 sa019
+2 sh001
+1 sa008
+1 sa015
+1 sa012
+1 sa014
+1 ub054
+1 ub011
+1 ub016
+1 sa020
+
+--- IDS Deck 3 ---
+1 sb017
+1 ub005
+1 ub025
+1 ub041
+1 ub029
+2 sb003
+2 sb001
+1 sb002
+1 sb008
+1 sb007
+2 sb009
+2 sb010
+2 sb011
+2 sb020
+1 sb012
+2 sc001
+2 sc006
+1 sc003
+1 sb013
+1 sb019
+1 ub046
+1 ub054
+1 ub011
+1 ub016
+
+--- IDS Deck 4 ---
+1 ub025
+1 ub041
+1 ub029
+1 ub008
+1 sh017
+1 sa017
+1 ub005
+1 ub033
+1 ub006
+1 ub023
+1 ub036
+1 ub055
+2 sc012
+2 sc011
+2 sc006
+2 sh004
+2 sh001
+2 sh018
+2 sa006
+2 sa013
+2 sb010
+1 sh010
+1 ub054
+1 ub011
+1 ub016
+
+
+####################################################################################################
+#  VENUS
+####################################################################################################
+
+VENUS (Venus de Milo / Bonnie) — 4 decks de 30 cartes choisies (45 cartes avec les 15 cartes de départ)
+
+À SAVOIR SUR VENUS (valable pour les 4 decks)
+- Venus : 10 points de vie, menace 2, attaque 1, défense 2, main de 4 cartes. Bonnie (sa forme normale) : 10 PV, récupération 4, main de 6.
+- Ses 15 cartes de départ sont déjà dans le deck : 6 améliorations « ELEMENT » (Arcane Emitting Diode, Cosmic Requiem, Dragon Scale, Dream Weaver, Reanimator Engine, Turtle Shell), 6 événements (Arc Nova, Brain Burn x2, Eldritch Lance, Quantanucleic Acid, Resistance x2), l'allié Bludgeon et la ressource Evanescence.
+- TOUTES ses cartes de départ ont des icônes « joker » (wild) : elles paient n'importe quel type de ressource. C'est pour cela que n'importe quel aspect fonctionne avec elle. Attention : une icône joker ne compte PAS comme « mentale », « physique » ou « énergie » pour les bonus du type « si tu as payé avec une ressource mentale » : ces bonus demandent une vraie icône de ce type, d'où les cartes Genius / Strength / Energy et les cartes colorées du deck.
+- Le jeton « dredge » (« fouille ») : une fois par tour, Venus pose 1 jeton par amélioration ELEMENT en jeu (maximum 6). On dépense ces jetons pour de gros effets : Arc Nova (4 dégâts par jeton dépensé), Resistance (annule toute une attaque, et avec 2 jetons on pioche 3 cartes), Brain Burn, Quantanucleic Acid, etc. Seules les 6 améliorations de départ sont des ELEMENT : il faut donc les mettre en jeu (2 ressources chacune).
+- Bonnie, au début de la partie (« Setup »), défausse le haut de son deck jusqu'à trouver une amélioration ELEMENT et la met gratuitement en jeu. Beaucoup de ses cartes défaussent aussi des cartes du dessus du deck : c'est voulu (le deck 45 cartes tient largement la partie), et Reanimator Engine / Bludgeon remettent de bonnes cartes dessus.
+- Son obligation « Faulty Creation » : elle te force à repasser en Bonnie une fois (action : épuiser Bonnie pour la retirer). Rien de grave.
+- Points faibles de Venus : peu de menace (2) et attaque de base faible (1) ; il faut des événements/alliés pour compléter. Son deck a 4 cartes en main seulement, donc on joue peu de cartes par tour : les cartes à coût bas sont reines.
+- Règle de nom : les cartes avec une étoile (*) sont uniques : 1 seul exemplaire par deck (c'est le cas de presque tous les alliés).
+
+=== VENUS — Deck 1 : Le Bouclier Facile (Justice) ===
+En une phrase : Pour débuter : Venus protège avec ses cartes de départ et utilise les cartes Justice (retirer de la menace) pour qu'on ne perde jamais la partie à cause du plan du méchant.
+Comment le jouer : Au début, joue d'abord les améliorations « ELEMENT » de Venus (2 ressources) et pose tes jetons « dredge » avec l'action de Venus à chaque tour. Garde tes 2 cartes Resistance pour les grosses attaques du méchant : elles annulent tous les dégâts (et piochent 3 cartes si tu défausses 2 jetons). Utilise les événements Justice (For Justice!, Clear the Area, Multitasking, Crisis Averted) pour faire baisser la menace du plan principal, et les alliés pour taper les sbires. Fais attention à ne pas laisser monter la menace du plan principal : c'est elle qui fait perdre la partie. Heroic Intuition donne +1 de menace en permanence à Venus (elle passe à 3).
+Pourquoi ces cartes : Venus est forte en défense et en attaque par événements, mais faible pour retirer la menace : le deck Justice comble ce trou avec 14 cartes qui retirent de la menace. Quand tu paies avec une icône mentale (bleue : Genius, Donatello, Clear the Area...), For Justice! retire 4 menaces au lieu de 3 et Multitasking retire 2 menaces sur un 2e plan en plus. Katsuichi va chercher une carte de départ (par exemple Resistance ou Arc Nova), Donatello pioche 2 cartes, Genghis arrive gratuitement quand il est défaussé du dessus du deck (très fréquent avec Venus).
+Cartes (30 + les 15 signature) :
+  Alliés (8) :
+  1× Donatello — coût 3, allié, ressource mentale (pioche 2 cartes en arrivant)
+  1× Genghis — coût 3, allié, ressource énergie (entre gratuitement en jeu si on le défausse du dessus du deck)
+  1× Michelangelo — coût 3, allié, ressource énergie (soigne 2 dégâts)
+  1× Speed (Thomas Shepherd) — coût 4, allié, ressource physique (se remet prêt après avoir retiré de la menace)
+  1× Katsuichi — coût 3, allié, ressource mentale (cherche une carte de départ de Venus dans le deck)
+  1× Quake (Daisy Johnson) — coût 2, allié, ressource énergie (inflige 2 dégâts à un sbire qui complote)
+  1× Daredevil — coût 4, allié, ressource physique (inflige 1 dégât après avoir retiré de la menace)
+  1× Jessica Jones — coût 3, allié, ressource énergie
+  Événements (17) :
+  3× For Justice! (Pour la Justice !) — coût 2, événement, ressource énergie (retire 3 menaces, 4 si payé avec une ressource mentale)
+  3× Multitasking (Multitâche) — coût 1, événement, ressource physique (retire 2 menaces, plus 2 sur un autre plan si payé avec du mental)
+  3× Clear the Area (Dégager la Zone) — coût 1, événement, ressource mentale (retire 2 menaces, pioche si le plan est vidé)
+  2× Crisis Averted (Danger Écarté) — coût 3, événement, ressource mentale (retire 6 menaces du plan principal)
+  3× Making an Entrance (Soigner son Entrée) — coût 1, événement, ressource physique (+2 menace pour l'action de base de Venus ; soigne 2 si le plan est vidé)
+  3× Stealth Strike (Frappe furtive) — coût 3, événement, ressource mentale (4 dégâts à un ennemi ; s'il est vaincu, retire 2 menaces)
+  Améliorations (1) :
+  1× Heroic Intuition (Instinct Héroïque) — coût 2, amélioration, ressource énergie (+1 menace permanent pour Venus)
+  Soutiens (2) :
+  2× Surveillance Team (Équipe de Surveillance) — coût 2, soutien, ressource mentale (3 utilisations : retire 1 menace chacune)
+  Ressources (2) :
+  1× Genius — ressource, 2 icônes mentales
+  1× Energy — ressource, 2 icônes énergie
+  (Icônes de ressource des 30 cartes : 14 mentales, 10 énergie, 8 physiques, plus les icônes « joker » des cartes de départ.)
+
+=== VENUS — Deck 2 : Le Moteur de Défausse (Justice) ===
+En une phrase : Pour ceux qui aiment les combos : on fait tourner son deck vite, on rejoue ses meilleurs événements et on écrase la menace très tôt.
+Comment le jouer : Mets en jeu tes améliorations ELEMENT, puis utilise-les : Cosmic Requiem (défausse le haut du deck jusqu'à un événement et te le donne en main), Dream Weaver (pareil, mais pour un allié ou une amélioration) et Reanimator Engine (remet 2 cartes de la défausse dans le deck). Mona Lisa (coût 0) range un événement de menace de ta défausse (par exemple For Justice!) et te permet de le rejouer une fois. Dire Straits est puissant mais te fait subir 3 dégâts et défausser 3 cartes du deck : ne le joue que quand Venus est en bonne santé, de préférence juste après un Resistance ou un soin. Surveille ton deck : s'il devient trop petit, Reanimator Engine ou Bludgeon le remplit à nouveau.
+Pourquoi ces cartes : Venus défausse beaucoup de cartes du dessus de son deck : le deck est donc rempli d'événements bon marché (18 événements) que Cosmic Requiem retrouve toujours, et de Genghis (entre en jeu gratuitement quand il est défaussé). Mona Lisa rejoue un événement de menace défaussé. Dire Straits (« Rampage ») coûte seulement 1 mais défausse 3 cartes : c'est un cadeau pour le moteur de Venus, qui aime défausser. Sally Pride retire 2 menaces à chaque attaque ou action de menace, ce qui se combine bien avec la menace gratuite de Venus.
+Cartes (30 + les 15 signature) :
+  Alliés (8) :
+  1× Genghis — coût 3, allié, ressource énergie
+  1× Katsuichi — coût 3, allié, ressource mentale
+  1× Donatello — coût 3, allié, ressource mentale
+  1× Sally Pride — coût 3, allié, ressource physique (retire 2 menaces après chaque attaque ou menace)
+  1× Tomoe Ame — coût 3, allié, ressource énergie (pioche une carte quand il vainc un sbire ou un plan secondaire)
+  1× Inspector Ishida — coût 3, allié, ressource physique (retire 2 menaces quand on le joue de la main)
+  1× Quake (Daisy Johnson) — coût 2, allié, ressource énergie
+  1× Speed (Thomas Shepherd) — coût 4, allié, ressource physique
+  Événements (18) :
+  3× For Justice! (Pour la Justice !) — coût 2, événement, ressource énergie
+  2× Dire Straits — coût 1 (plus 3 dégâts et 3 cartes défaussées du deck), événement, ressource énergie (retire 3 menaces)
+  3× Clear the Area (Dégager la Zone) — coût 1, événement, ressource mentale
+  3× Multitasking (Multitâche) — coût 1, événement, ressource physique
+  2× Crisis Averted (Danger Écarté) — coût 3, événement, ressource mentale
+  2× Making an Entrance (Soigner son Entrée) — coût 1, événement, ressource physique
+  3× Stealth Strike — coût 3, événement, ressource mentale
+  Améliorations (1) :
+  1× Heroic Intuition (Instinct Héroïque) — coût 2, amélioration, ressource énergie
+  Soutiens (1) :
+  1× Mona Lisa — coût 0, soutien, ressource mentale (rejoue un événement de menace de la défausse)
+  Ressources (2) :
+  1× Genius — ressource, 2 icônes mentales
+  1× Energy — ressource, 2 icônes énergie
+  (Icônes de ressource des 30 cartes : 13 mentales, 11 énergie, 8 physiques, plus les icônes « joker » des cartes de départ.)
+
+=== VENUS — Deck 3 : La Forteresse Qui Provoque (Protection) ===
+En une phrase : Pour ceux qui aiment encaisser et riposter : Venus provoque le méchant, l'arrête avec ses protections et profite de chaque attaque pour retirer de la menace.
+Comment le jouer : Installe tes alliés solides (Luke Cage, Charlie-27, Rockslide) pour absorber les coups des sbires. Quand ta main est bonne, joue Taunt : le méchant t'attaque (sans que personne d'autre puisse défendre), tu défends avec Resistance (annule tous les dégâts) ou Expert Defense/Not Today, et tu pioches 3 cartes. True Grit retire alors de la menace du plan principal juste après ta défense. Bait and Switch retire 4 menaces du plan principal mais fait attaquer le méchant : ne le joue que si tu as une défense en main. Utilise Second Wind et Med Team pour te soigner.
+Pourquoi ces cartes : Venus a déjà 2 Resistance et 6 améliorations qui piochent : les cartes Protection ajoutent des défenses bon marché (0 à 1 coût) pour que Venus puisse défendre tous les tours sans rien perdre. Le plan du méchant est ralenti par Not Today, True Grit et Bait and Switch (menace retirée gratuitement après une défense). Brother Voodoo cherche un événement parmi les 5 premières cartes du deck.
+Cartes (30 + les 15 signature) :
+  Alliés (8) :
+  1× Luke Cage — coût 4, allié, ressource énergie (arrive avec une carte « solide » : encaisse bien)
+  1× Brother Voodoo (Frère Vaudou) — coût 3, allié, ressource mentale (cherche un événement dans les 5 premières cartes du deck)
+  1× Daredevil — coût 2, allié, ressource physique (renvoie 1 dégât à l'attaquant après avoir défendu)
+  1× Charlie-27 — coût 4, allié, ressource physique (riposte et solide)
+  1× Rockslide — coût 4, allié, ressource physique (6 PV, riposte)
+  1× Genghis — coût 3, allié, ressource énergie
+  1× Michelangelo — coût 3, allié, ressource énergie (soigne 2 dégâts)
+  1× Donatello — coût 3, allié, ressource mentale
+  Événements (16) :
+  3× Taunt (Moquerie) — coût 1, événement, ressource physique (le méchant t'attaque, tu pioches 3 cartes)
+  2× Bait and Switch (Servir d'Appât) — coût 1, événement, ressource énergie (retire 4 menaces du plan principal, le méchant t'attaque)
+  2× True Grit (Véritable Courage) — coût 1, événement, ressource énergie (après avoir défendu, retire de la menace)
+  2× Not Today! (Pas Aujourd'hui !) — coût 1, événement, ressource mentale (+2 défense ; si aucun dégât, retire 2 menaces)
+  2× Side Step (Pas de Côté) — coût 1, événement, ressource mentale (évite 3 dégâts)
+  2× Expert Defense (Defense experte) — coût 0, événement, ressource mentale (+3 défense)
+  1× Powerful Punch (Coup de Poing Puissant) — coût 2, événement, ressource physique (4 dégâts à qui attaque)
+  1× Hard Knocks (Coup Violent) — coût 3, événement, ressource physique (4 dégâts)
+  1× Second Wind (Second Souffle) — coût 3, événement, ressource mentale (soigne 4 ou 5 dégâts)
+  Améliorations (3) :
+  1× Armored Vest (Veste blindée) — coût 1, amélioration, ressource mentale (+1 défense)
+  2× Indomitable (Inébranlable) — coût 1, amélioration, ressource énergie (après avoir défendu, remet Venus prête)
+  Soutiens (1) :
+  1× Med Team (Équipe Médicale) — coût 3, soutien, ressource énergie (3 soins de 2)
+  Ressources (2) :
+  1× Strength — ressource, 2 icônes physiques
+  1× Energy — ressource, 2 icônes énergie
+  (Icônes de ressource des 30 cartes : 10 mentales, 12 énergie, 10 physiques, plus les icônes « joker » des cartes de départ.)
+
+=== VENUS — Deck 4 : L'Équipe des Tortues (Spécial TMNT, Justice) ===
+En une phrase : Pour les fans des Tortues Ninja : que des cartes TMNT (alliés Justice et cartes de base TMNT) autour de Venus, avec une grande équipe d'alliés et des événements risqués mais puissants.
+Comment le jouer : Pose tes alliés dès que possible (Inspector Ishida retire 2 menaces en arrivant, Cowabunga et Donatello piochent). Garde les ressources en main pour Cowabunga (il défausse une carte « ressource » de ta main pour piocher 2 cartes et soigner 2). Mona Lisa rejoue un événement de menace de la défausse (Mona Lisa le met de côté en entrant en jeu). Dire Straits (retire 3 menaces pour 1 seule ressource) coûte 3 dégâts et 3 cartes du deck : à utiliser avec précaution. Multitalented gagne un effet par type de ressource utilisé pour la payer (physique : 2 dégâts, mental : 2 menaces retirées, énergie : 2 soins) : paie-la avec des cartes de 3 couleurs différentes quand tu peux (les icônes joker, elles, ne comptent pas). Party Wagon fournit une ressource joker en plus.
+Pourquoi ces cartes : Venus est une tortue/ninja (traits Ninja et Turtle), donc elle peut jouer Ninja He-Man et Party Wagon (qui nécessitent le trait Ninja ou Turtle). Les alliés TMNT de Justice (Sally Pride, Tomoe Ame, Lita, Mondo Gecko...) retirent de la menace et piochent, ce qui comble le point faible de Venus : sa petite menace. 100 % des cartes choisies viennent des sets TMNT (Basic et Justice).
+Cartes (30 + les 15 signature) :
+  Alliés (11) :
+  1× Cowabunga — coût 2, allié, ressource mentale (défausse une carte ressource de la main : pioche 2 et soigne 2)
+  1× Sally Pride — coût 3, allié, ressource physique (retire 2 menaces après chaque attaque ou menace)
+  1× Inspector Ishida — coût 3, allié, ressource physique (retire 2 menaces quand on le joue)
+  1× Donatello — coût 3, allié, ressource mentale (pioche 2 cartes)
+  1× Tomoe Ame — coût 3, allié, ressource énergie (pioche une carte)
+  1× Genghis — coût 3, allié, ressource énergie
+  1× Ninja He-Man — coût 4, allié, ressource physique (solide, entre en jeu camouflé)
+  1× Mondo Gecko — coût 2, allié, ressource mentale (entre en jeu camouflé)
+  1× Zebulon — coût 2, allié, ressource mentale (retire de la menace avec ses jetons)
+  1× Lita — coût 3, allié, ressource énergie
+  1× Ram-Shell — coût 4, allié, ressource physique (accumule des jetons quand tes personnages retirent de la menace, puis blesse un ennemi)
+  Événements (9) :
+  3× Dire Straits — coût 1 (plus 3 dégâts et 3 cartes défaussées du deck), événement, ressource énergie
+  3× Stealth Strike — coût 3, événement, ressource mentale (4 dégâts)
+  3× Multitalented — coût 3, événement, ressource physique (attaque/menace/soin selon la ressource utilisée)
+  Améliorations (4) :
+  2× Watch the Exits — coût 2, amélioration, ressource physique (retire 2 menaces quand un sbire arrive)
+  2× Shell Phone — coût 2, amélioration, ressource énergie (3 utilisations : attaque ou menace avec +1/+1)
+  Soutiens (3) :
+  1× Mona Lisa — coût 0, soutien, ressource mentale
+  1× Party Wagon — coût 3, soutien, ressource énergie (donne une ressource joker)
+  1× Turtle Lair — coût 4, soutien, ressource mentale (pioche 1 carte par tour)
+  Ressources (3) :
+  1× Strength — ressource, 2 icônes physiques
+  1× Genius — ressource, 2 icônes mentales
+  1× Energy — ressource, 2 icônes énergie
+  (Icônes de ressource des 30 cartes : 13 mentales, 11 énergie, 11 physiques, plus les icônes « joker » des cartes de départ.)
+
+IDS (prêts à coller, SANS les 15 cartes signature)
+
+--- IDS Deck 1 ---
+1 ub008
+1 ub015
+1 ub029
+1 15010
+1 ub023
+1 08012
+1 01058
+1 01059
+3 01060
+3 15013
+3 04049
+2 15012
+3 20013
+3 08013
+1 01065
+2 01064
+1 ub016
+1 ub011
+
+--- IDS Deck 2 ---
+1 ub015
+1 ub023
+1 ub008
+1 uj027
+1 uj033
+1 uj016
+1 08012
+1 15010
+3 01060
+2 uj006
+3 04049
+3 15013
+2 15012
+2 20013
+3 uj030
+1 01065
+1 uj020
+1 ub016
+1 ub011
+
+--- IDS Deck 3 ---
+1 01076
+1 09012
+1 31014
+1 21059
+1 33013
+1 ub015
+1 ub029
+1 ub008
+3 42016
+2 15030
+2 18031
+2 38016
+2 14015
+2 03033
+1 32014
+1 19016
+1 06033
+1 01081
+2 01082
+1 01080
+1 ub054
+1 ub011
+
+--- IDS Deck 4 ---
+1 uj004
+1 uj027
+1 uj016
+1 ub008
+1 uj033
+1 ub015
+1 ub033
+1 uj021
+1 uj039
+1 uj018
+3 uj006
+3 uj030
+3 ub030
+2 uj037
+2 ub044
+1 uj020
+1 ub036
+1 ub057
+1 ub054
+1 ub016
+1 ub011
+1 uj026
+
+
+####################################################################################################
+#  ALOPEX
+####################################################################################################
+
+=== ALOPEX — Deck 1 : Le Mur (Protection) ===
+En une phrase : Un deck prudent qui encaisse les coups, pioche beaucoup et laisse Alopex apprendre ses propres règles sans stress.
+Comment le jouer : Au premier tour, restez Alopex civile : utilisez son action (défausser 1 carte) pour mettre ses deux Kamas en jeu, puis passez en héroïne. Ensuite, jouez d'abord les alliés bon marché qui font piocher (Clyde, Donatello), puis les plus gros. Attaquez avec Alopex : dès qu'elle touche un ennemi, sa Proie (Prey) s'y accroche et chaque attaque suivante fait 1 dégât de plus. Quand un ennemi vous attaque, gardez en main « Expert Defense » (+3 défense) ou « Counter-Punch » (vous rendez les coups). Attention : Alopex repousse mal les complots (sa menace de base n'est que de 1), donc jouez vos alliés pour retirer de la menace et gardez « To the Rescue! » pour les moments chauds.
+Pourquoi ces cartes : Alopex a déjà 3 de défense ; avec Armored Vest et Defensive Conditioning elle monte à 5, ce qui annule presque toutes les attaques. Toutes ses cartes de départ ont une icône mentale : Black Widow peut donc annuler une carte rencontre dangereuse en dépensant une de ces icônes. Katsuichi va chercher dans le paquet une carte propre à Alopex (une Kama, Pounce...), et Nick Fury ou April O'Neil donnent un gros coup de main ponctuel (piocher 3 cartes, retirer 2 menaces ou infliger 4 dégâts).
+Cartes (31 + les 15 signature) :
+ Alliés :
+  1× Black Widow — coût 3, allié, ressource physique
+  1× Luke Cage — coût 4, allié, ressource énergie
+  1× Donatello — coût 3, allié, ressource mental
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Shinobi Batman — coût 3, allié, ressource mental
+  1× Ninja He-Man — coût 4, allié, ressource physique
+  1× Clyde — coût 2, allié, ressource mental
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Nick Fury — coût 4, allié, ressource mental
+  1× April O'Neil — coût 4, allié, ressource mental
+  1× Angel — coût 3, allié, ressource mental
+ Événements :
+  3× Expert Defense (Defense experte) — coût 0, événement, ressource mental
+  2× Counter-Punch (Contre-Attaque au Poing) — coût 0, événement, ressource physique
+  2× Desperate Defense (Défense désespérée) — coût 1, événement, ressource énergie
+  2× To the Rescue! (À la rescousse !) — coût 2, événement, ressource physique
+  1× First Aid (Premiers Soins) — coût 1, événement, ressource mental
+  2× Side Step (Pas de Côté) — coût 1, événement, ressource mental
+ Améliorations :
+  1× Armored Vest (Veste blindée) — coût 1, amélioration, ressource mental
+  1× Indomitable (Inébranlable) — coût 1, amélioration, ressource énergie
+  1× Defensive Stance (Posture Défensive) — coût 2, amélioration, ressource énergie
+  1× Defensive Conditioning (Né Pour la Défense) — coût 2, amélioration, ressource physique
+  1× Endurance — coût 1, amélioration, ressource énergie
+  1× Unflappable (Imperturbable) — coût 1, amélioration, ressource mental
+ Soutiens :
+  1× Med Team (Équipe Médicale) — coût 3, soutien, ressource énergie
+ Ressources :
+  1× Genius (Génie) — ressource, ressource 2 mentales
+
+=== ALOPEX — Deck 2 : La Chasseuse (Agression) ===
+En une phrase : Pour celles et ceux qui veulent frapper très fort : on pose la Proie sur un ennemi, puis on le fait exploser.
+Comment le jouer : Le tout premier tour sert à mettre les Kamas en jeu (action d'Alopex civile : défausser 1 carte). Ensuite, le plan est toujours le même : 1) attaquez un ennemi (attaque de base ou « Pounce ») pour que la Proie s'accroche à lui ; 2) frappez-le maintenant avec « Take That! » (7 dégâts) ou « Surprise Move » (+2 d'attaque, et Alopex se redresse si l'ennemi meurt). Contre un sbire normal, « Coup de Grâce » le tue d'un coup tant que la Proie y est. Pensez à retirer de la menace avec Brawn, Winter Soldier, « Chase Them Down » et « Prowl » : ce deck gagne en tuant vite, mais il ne doit pas oublier les complots.
+Pourquoi ces cartes : La Proie est une amélioration collée sur l'ennemi : c'est exactement ce que demandent « Take That! », « Coup de Grâce », « Surprise Move » et Shark-Girl (+1 attaque par amélioration sur la cible). Les Kamas ajoutent des petits dégâts gratuits à chaque tour et font revenir Alopex en jeu quand la Proie disparaît. Combat Training, Aggressive Conditioning et Brute Force montent encore son attaque (elle passe vite à 5 ou 6 par coup).
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Brawn — coût 3, allié, ressource mental
+  1× Winter Soldier (Le Soldat de l'Hiver) — coût 3, allié, ressource mental
+  1× Shark-Girl — coût 2, allié, ressource énergie
+  1× Valkyrie — coût 3, allié, ressource énergie
+  1× Two-Gun Kid (Le Pistoléro) — coût 3, allié, ressource mental
+  1× Shinobi Batman — coût 3, allié, ressource mental
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Donatello — coût 3, allié, ressource mental
+  1× Ninja He-Man — coût 4, allié, ressource physique
+  1× Tigra — coût 3, allié, ressource mental
+ Événements :
+  2× Take That! (Prends Ça !) — coût 3, événement, ressource énergie
+  2× Coup de Grâce — coût 2, événement, ressource mental
+  3× Surprise Move (Attaque Inattendue) — coût 1, événement, ressource mental
+  2× Skilled Strike (Frappe précise) — coût 0, événement, ressource physique
+  2× Chase Them Down (Poursuivons-Les) — coût 0, événement, ressource mental
+  1× Uppercut — coût 3, événement, ressource physique
+  1× Relentless Assault (Assaut Implacable) — coût 2, événement, ressource énergie
+  1× Melee (Mêlée) — coût 3, événement, ressource mental
+  1× Press the Advantage (Prendre l'Ascendant) — coût 1, événement, ressource mental
+ Améliorations :
+  1× Combat Training (Entraînement au Combat) — coût 2, amélioration, ressource physique
+  1× Brute Force (Force Brute) — coût 1, amélioration, ressource mental
+  1× Aggressive Conditioning (Né Pour l'Agressivité) — coût 3, amélioration, ressource physique
+ Soutiens :
+  1× War Room (Salle de Crise) — coût 1, soutien, ressource mental
+ Ressources :
+  1× Genius (Génie) — ressource, ressource 2 mentales
+
+=== ALOPEX — Deck 3 : Pluie de menace (Justice) ===
+En une phrase : Alopex change de rôle : elle protège le plan principal, retire énormément de menace, puis frappe en profitant de ses complots nettoyés.
+Comment le jouer : Commencez par les Kamas (action d'Alopex civile : défausser 1 carte), puis jouez vos améliorations de menace (Heroic Intuition, Innate Perception) : Alopex passe à 3 de menace, et 4 avec la Proie. Pour les complots, utilisez « For Justice! », « Multitasking » et « Crisis Averted », en les payant avec des cartes de départ d'Alopex (icône mentale) : toutes donnent un bonus. « Waylay » est la grosse carte combo : après une menace, elle inflige 4 dégâts (7 si le complot est vidé). Pour se défendre, comptez sur vos alliés ; Alopex n'a que 3 de défense, donc ne laissez pas trop d'ennemis s'accumuler.
+Pourquoi ces cartes : Les cartes de départ d'Alopex sont toutes mentales, et la Justice adore ça : For Justice!, Multitasking, Crisis Averted et Eros donnent un bonus quand on les paie en mental. Sense of Justice crée un autre mental pour les événements de menace. Chaque menace réussie fait aussi arriver la Proie, et les Kamas retirent 1 menace chacune sans effort. Turn the Tide et Waylay transforment le nettoyage de complots en dégâts.
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Wiccan — coût 2, allié, ressource mental
+  1× Eros — coût 2, allié, ressource mental
+  1× Speed — coût 4, allié, ressource physique
+  1× Daredevil — coût 4, allié, ressource physique
+  1× Quasar — coût 3, allié, ressource énergie
+  1× Donatello — coût 3, allié, ressource mental
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Shinobi Batman — coût 3, allié, ressource mental
+  1× Nick Fury — coût 4, allié, ressource mental
+ Événements :
+  3× For Justice! (Pour la Justice !) — coût 2, événement, ressource énergie
+  3× Multitasking (Multitâche) — coût 1, événement, ressource physique
+  1× Crisis Averted (Danger Écarté) — coût 3, événement, ressource mental
+  2× Clear the Area (Dégager la Zone) — coût 1, événement, ressource mental
+  2× Waylay (Assaillir) — coût 3, événement, ressource physique
+  1× Impede (Retenir l'Ennemi) — coût 2, événement, ressource mental
+  1× Turn the Tide (Renverser la Situation) — coût 0, événement, ressource énergie
+  1× Stealth Strike (Frappe furtive) — coût 3, événement, ressource mental
+ Améliorations :
+  1× Heroic Intuition (Instinct Héroïque) — coût 2, amélioration, ressource énergie
+  1× Innate Perception (Perception Innée) — coût 2, amélioration, ressource aucune
+  1× Sense of Justice (Sens de la Justice) — coût 2, amélioration, ressource mental
+  1× Justice Served (Justice Rendue) — coût 1, amélioration, ressource mental
+  1× Skilled Investigator (Enquêteur Chevronné) — coût 0, amélioration, ressource physique
+ Soutiens :
+  1× Interrogation Room (Salle d'Interrogatoire) — coût 1, soutien, ressource énergie
+ Ressources :
+  1× Genius (Génie) — ressource, ressource 2 mentales
+
+=== ALOPEX — Deck 4 : L'Équipe Ninja (spécial TMNT) ===
+En une phrase : Pour les fans de tortues : une vraie bande de ninjas (Leonardo, Donatello, Splinter...) qui se relaient autour d'Alopex.
+Comment le jouer : Commencez par les Kamas (action d'Alopex civile : défausser 1 carte). Posez « The Kennel Klub » dès que possible : à chaque fois qu'un allié ninja arrive en jeu, vous redressez un ninja (Alopex y compris, elle est ninja), donc vous pouvez attaquer deux fois. Jouez ensuite vos alliés ninjas un à un (la limite est de 3 alliés en jeu ; Kennel Klub permet 4 si tous sont ninjas ou mutanimaux). « Teamwork » est la carte magique : épuisez un allié pour ajouter sa force à l'attaque ou à la menace d'Alopex. Les alliés sont fragiles : ne les laissez pas défendre sans besoin.
+Pourquoi ces cartes : Alopex est ninja, comme la plupart de ces alliés : Team-Building Exercise réduit donc le coût d'une carte ninja de la main. Leonardo redresse un autre ninja, Michelangelo soigne, Donatello pioche, Splinter fouille le paquet, Katsuichi cherche une carte d'Alopex. Les Splinter Dojo Training donnent +1 menace/+1 attaque/+1 vie à un allié, et « Party Time » le redresse. Tout le deck vient des sets TMNT (100 % des cartes choisies).
+Cartes (30 + les 15 signature) :
+ Alliés :
+  1× Splinter — coût 2, allié, ressource mental
+  1× Red Shell — coût 3, allié, ressource mental
+  1× Donatello — coût 3, allié, ressource mental
+  1× Leonardo — coût 3, allié, ressource physique
+  1× Michelangelo — coût 3, allié, ressource énergie
+  1× Zato-Ino — coût 3, allié, ressource énergie
+  1× Jennika — coût 3, allié, ressource énergie
+  1× Ninja He-Man — coût 4, allié, ressource physique
+  1× Shinobi Batman — coût 3, allié, ressource mental
+  1× Katsuichi — coût 3, allié, ressource mental
+  1× Clyde — coût 2, allié, ressource mental
+  1× April O'Neil — coût 4, allié, ressource mental
+ Événements :
+  2× Teamwork — coût 0, événement, ressource énergie
+  1× Snow and Shadow — coût 2, événement, ressource mental
+  2× Party Time — coût 0, événement, ressource énergie
+  1× "Special Delivery!" — coût 0, événement, ressource énergie
+  1× Multitalented — coût 3, événement, ressource physique
+ Améliorations :
+  2× Naginata — coût 1, amélioration, ressource mental
+  3× Splinter Dojo Training — coût 1, amélioration, ressource physique
+ Soutiens :
+  1× The Kennel Klub — coût 2, soutien, ressource mental
+  1× Team-Building Exercise — coût 2, soutien, ressource physique
+  1× Party Wagon — coût 3, soutien, ressource énergie
+  1× Herold Lilja's Lab — coût 1, soutien, ressource mental
+  1× Splinter Dojo — coût 2, soutien, ressource énergie
+ Ressources :
+  1× Genius — ressource, ressource 2 mentales
+
+=== IDS (prêts à coller ; les 15 cartes signature sont ajoutées d'office) ===
+-- IDS Deck 1 --
+1 01075
+1 01076
+1 ub008
+1 ub023
+1 ub045
+1 ub033
+1 ub006
+1 ub029
+1 01084
+1 ub001
+1 33019
+3 03033
+2 01077
+2 09015
+2 10019
+1 01086
+2 14015
+1 01081
+1 01082
+1 08032
+1 56046
+1 05023
+1 09020
+1 01080
+1 01089
+
+-- IDS Deck 2 --
+1 10011
+1 53035
+1 46012
+1 06012
+1 56010
+1 ub045
+1 ub023
+1 ub008
+1 ub033
+1 01051
+2 46016
+2 56016
+3 46015
+2 09037
+2 01052
+1 01054
+1 01053
+1 05030
+1 04043
+1 01057
+1 14029
+1 56013
+1 37030
+1 01089
+
+-- IDS Deck 3 --
+1 15011
+1 22011
+1 15010
+1 01058
+1 21047
+1 ub008
+1 ub023
+1 ub045
+1 01084
+3 01060
+3 15013
+1 15012
+2 04049
+2 47014
+1 18016
+1 15015
+1 08013
+1 01065
+1 61036
+1 14030
+1 22014
+1 04047
+1 01063
+1 01089
+
+-- IDS Deck 4 --
+1 ul029
+1 ul021
+1 ub008
+1 ub025
+1 ub029
+1 ul045
+1 ub022
+1 ub033
+1 ub045
+1 ub023
+1 ub006
+1 ub001
+2 ul034
+1 ub049
+2 ub035
+1 ub050
+2 ul016
+3 ul028
+1 ub024
+1 ub055
+1 ub036
+1 ub018
+1 ub052
+1 ub016
+1 ub030

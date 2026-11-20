@@ -21,7 +21,9 @@ describe('les boutons des questions en style BD', () => {
       .flatMap((m) => m[1].split(',').map((s) => s.trim()))
     expect(selecteurs.length).toBeGreaterThan(0)
     // `:not(...)` reste dans le panneau : il ne fait que l'affiner (la question du centre hors cartouche).
-    for (const s of selecteurs) expect(s).toMatch(/^\.(demande-centrale|assistant-action|deroule-phase)(:not\([^)]*\))? /)
+    // Sur téléphone (commit 8cf9c6fe, 25/10/2026), la règle des boutons de défense s'écrit `body.mode-plateau-portrait .demande-centrale ...` :
+    // le préfixe de mode ne sort pas du panneau, il le restreint au plateau en portrait.
+    for (const s of selecteurs) expect(s).toMatch(/^(body\.mode-plateau-portrait )?\.(demande-centrale|assistant-action|deroule-phase)(:not\([^)]*\))? /)
   })
 
   it('le choix unique (Fin de phase) prend le jaune de « Continuer », en plus grand', () => {

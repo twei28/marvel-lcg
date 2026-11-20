@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « PAS ENCORE CODÉ » »). Preuve : `server_get.py:1007` route `get_equipe_salon` (publie héros choisi par siège sans le deck), `public/css/salon.css:123, 132` classes `.tb-scene` et `.tb-roster`, nouveautés du 09/10 (ligne 292) ; la route et le code sont arrivés par le commit de récupération `4f40f966` (14/10) (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°5).
+
 # Salon multijoueur (écran de l'invité) : refonte (décidée le 09/10/2026, PAS ENCORE CODÉE)
 
 Constat (captures réelles, moteur d'essai à deux sièges, scratchpad `salon/`) : `public/salon.html` + `public/js/salon/`

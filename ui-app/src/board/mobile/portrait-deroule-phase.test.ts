@@ -39,9 +39,9 @@ describe('la scene de la phase du mechant en portrait', () => {
     expect(regle).toContain('transform: none')
   })
 
-  it('plafonne sa hauteur a la moitie de l ecran et defile au-dela', () => {
+  it('plafonne sa hauteur a l ecran moins l entete (24/10/2026, avant : la moitie) et defile au-dela', () => {
     const regle = bloc('.deroule-phase:has(~ .plateau-portrait)')
-    expect(regle).toContain('max-height: 50dvh')
+    expect(regle).toContain('max-height: calc(100dvh - 56px)')
     expect(regle).toContain('overflow-y: auto')
   })
 

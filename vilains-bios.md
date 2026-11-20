@@ -1562,3 +1562,18 @@
 - **Ennemis** : Les Tortues Ninja, Splinter
 - **Première apparition** : Teenage Mutant Ninja Turtles #1 (1984)
 
+
+## Mephisto (fan-made)
+
+`mp001`
+
+
+**FR** — Mephisto règne sur une dimension infernale et se nourrit des âmes qu'il arrache aux mortels. Plutôt que de les prendre de force, il préfère les tenter : un pacte, une promesse, une clause cachée, et la victime se damne d'elle-même. Père de Blackheart, il revient sans cesse défier les héros de la Terre, dont il convoite l'âme autant que la chute.
+
+
+**EN** — Mephisto rules an infernal dimension and feeds on the souls he wrests from mortals. Rather than take them by force, he prefers to tempt them: a pact, a promise, a hidden clause, and the victim damns themselves. Father of Blackheart, he keeps coming back to challenge Earth's heroes, whose souls he covets as much as their downfall.
+
+
+- **Base** : Une dimension infernale
+- **Ennemis** : Silver Surfer, Doctor Strange, Ghost Rider
+- **Première apparition** : Silver Surfer #3 (1968)

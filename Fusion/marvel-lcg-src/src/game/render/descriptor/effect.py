@@ -34,6 +34,11 @@ class EffectDescriptor:
     is_search: bool
     # Option de cout d'une carte rencontre reduite au plus gros morceau payable : le plateau la surligne.
     au_maximum: bool = False
+    # AJOUT 07/11/2026 : cette option vient d'`AskChooseOneText`/`ForChoiceAbility` (le moteur ne
+    # transporte que le NOM de la carte, `bind_id` vaut l'identite du joueur, jamais la carte choisie).
+    # Signale au plateau de retrouver la vraie carte par son nom et de l'afficher en grille de vignettes
+    # plutot qu'en bouton de texte brut (ui-app/src/board/option-carte.ts, DemandeCentrale.tsx).
+    is_text_choice: bool = False
 
     # is_ex_effect check `AskOption`
 

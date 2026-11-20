@@ -80,6 +80,25 @@ porte le commentaire complet.
   is **not in play**, summon it … **instead** »), et les autres cartes le
   supposent. Chercher une carte déjà sur le terrain la dupliquerait.
 
+**Second pack qui l'emploie : `silver_surfer` (DesignHacker, 24/10/2026).** La
+notice du pack (« Silver Surfer Insert ») donne SA définition : « search the
+deck, discard pile, hand, or anywhere out of play for that card, then follow
+the additional instructions. If any decks were searched, shuffle them » — la
+même que MC4DB. Deux emplois : `sv011` Silver Down (« Summon Dawn Greenwood
+**and remove her from the game** » : la carte est trouvée puis retirée de la
+partie, sans passer par la main) et, côté recherche simple, `sv001b` Toomie !
+(« search your deck and discard pile for … », qui n'est PAS un `summon`).
+Helpers : `Convoquer` et `PeutConvoquer` de `silver_surfer/silver_surfer/__init__.py`.
+
+- ⚠ **Un summon qui doit être *choisi* (une option « Summon X → … ») ne se
+  propose que si la carte existe hors jeu** : `PeutConvoquer` la cherche sans
+  ouvrir de fenêtre (deck, défausse, main), sinon la branche est offerte et ne
+  fait rien.
+- ⚠ **Ordre de fouille : zones ordinaires d'abord, « retiré de la partie » en
+  dernier.** Une carte unique n'existe qu'à un endroit, mais le banc de test
+  laisse l'exemplaire du deck de héros dans la zone « retiré de la partie » :
+  fouillé en premier, il masquait la copie du deck (cas `sv011`, 24/10/2026).
+
 **Variantes maison** : aucune autre à ce jour. La définition ci-dessus est
 celle du glossaire MC4DB ; un futur pack qui imprimerait sa propre parenthèse
 l'emporterait sur elle (texte imprimé > MC4DB > fiche).

@@ -22,6 +22,13 @@ class SenderPlayer:
             text = TransText("{card}: only one option is possible, {option}", card=card, option=option)
             self.Present(text, "")
 
+    class NoResultNotice_Text(TextMessage):
+        """Une recherche sans resultat dont la suite (« Then ») n'est pas resolue : le DIRE au journal (Safe House #30, 26/10/2026)."""
+        def __init__(self, player: 'Player', card: str, notice: str) -> None:
+            super().__init__(world=player.world)
+            text = TransText("{card}: {notice}", card=card, notice=TransText(notice).text_symbol)
+            self.Present(text, "")
+
     class WhenPlayerSearchingDeckCards_Text(TextMessage):
         def __init__(self, player: 'Player', deck: 'Deck', size: int|None, faces: Sequence['CardFace']) -> None:
             if len(faces) > 0 and player.world.is_game_started:
@@ -71,6 +78,69 @@ class SenderPlayer:
             self.discarded_faces: Final = discarded_faces
             super().__init__(player=player)
 
+    class AfterPlayerResolveFlow(TriggerPlayerMessage):
+        """MOT-CLE MAISON Flow (pack custom shang_chi, DesignHacker, 24/10/2026).
+
+        Le joueur vient de RESOUDRE une capacite « Flow » : la carte du dessus de State of Flow
+        portait une ressource imprimee egale a celle que la capacite exige, et il a accepte d'en
+        resoudre les effets. `flow_face` est la carte (evenement) dont le Flow a ete resolu.
+        Envoye par le helper `ResoudreFlow` du set Shang-Chi ; Chi Mastery (ch001a) y reagit
+        (« After you resolve a "Flow" ability, ready Shang-Chi »). Fiche mots-cles/flow.md.
+        """
+        def __init__(self, player: 'Player', flow_face: 'CardFace') -> None:
+            self.flow_face: Final = flow_face
+            super().__init__(player=player)
+            text = TransText("{player} resolves the Flow of {card}", player=player, card=flow_face)
+            self.Present(text, "", flow_face)
+
+    class AfterCharacterArrivePlanet(TriggerNonePlayerMessage):
+        """MOT-CLE MAISON PLANET / PLAYER ENVIRONMENT (pack custom silver_surfer_power_cosmic, prefixe pc, 04/11/2026).
+
+        `character_face` vient d'ARRIVER (helper `ArriverA`, pack __init__.py) a la carte PLANET
+        `planet_face`. Aucune carte ne change de zone (revirement du 04/11/2026) : `ArriverA` pose
+        un simple marqueur (`personnage.card.pc_planete_actuelle`) et envoie ce message.
+        `player` est le JOUEUR de `character_face` (celui qui controle le personnage arrivant, pas
+        forcement le proprietaire de la carte PLANET : Black Hole peut y faire arriver le mechant/un
+        sbire, auquel cas `player` est None — les cartes du pack qui recompensent une arrivee ne
+        reagissent qu'aux PERSONNAGES DU JOUEUR, jamais a un ennemi envoye la, d'ou le filtre de la
+        fabrique `AfterCharacterArrivePlanet` (factory/setup.py). Fiche
+        docs/reference/mots-cles/environnement-joueur.md.
+
+        ⚠ CORRECTIF (05/11/2026, pc013 Cosmic Awareness) : herite de
+        `TriggerNonePlayerMessage` (qui accepte reellement `player=None`), PAS
+        `TriggerPlayerMessage` (son `__init__` deref `player.world`
+        inconditionnellement -> `AttributeError: 'NoneType' object has no
+        attribute 'world'` des qu'un ENNEMI sans joueur arrive a une
+        planete -- exactement le cas que ce message pretendait deja gerer).
+        `world` doit donc etre fourni explicitement, pris sur la carte qui
+        arrive (toujours presente, joueur ou non).
+        """
+        def __init__(self, player: 'Player|None', character_face: 'CardFace', planet_face: 'CardFace') -> None:
+            self.character_face: Final = character_face
+            self.planet_face: Final = planet_face
+            super().__init__(player=player, world=character_face.card.world)
+            text = TransText("{character} arrives at {planet}", character=character_face, planet=planet_face)
+            self.Present(text, "", character_face, planet_face)
+
+    class AfterCharacterDepartPlanet(TriggerNonePlayerMessage):
+        """MOT-CLE MAISON PLANET / PLAYER ENVIRONMENT (pack custom silver_surfer_power_cosmic, prefixe pc, 04/11/2026).
+
+        Symetrique de `AfterCharacterArrivePlanet` : `character_face` vient de QUITTER la carte PLANET
+        `planet_face` (Departir). Les cartes « Hero Response (attack/thwart) : After Silver Surfer
+        departs a PLANET » (Cosmic Blast, Lightspeed Entrance) et « Hero Interrupt : ... Silver Surfer
+        arrives at that planet, then departs » (Tactical Navigation) y reagissent, et testent
+        `planet_face` pour « if that PLANET was Sakaar/Newhaven ».
+
+        ⚠ Meme correctif que `AfterCharacterArrivePlanet` ci-dessus (05/11/2026) :
+        `TriggerNonePlayerMessage`, pas `TriggerPlayerMessage`, `world` fourni explicitement.
+        """
+        def __init__(self, player: 'Player|None', character_face: 'CardFace', planet_face: 'CardFace') -> None:
+            self.character_face: Final = character_face
+            self.planet_face: Final = planet_face
+            super().__init__(player=player, world=character_face.card.world)
+            text = TransText("{character} departs {planet}", character=character_face, planet=planet_face)
+            self.Present(text, "", character_face, planet_face)
+
     class WhenPlayerWouldDrawCard(TriggerPlayerMessage, TriggerFaceMessage, CanBeInstead):
         def __init__(self, player: 'Player', face: 'CardFace', by_effect: 'Effect') -> None:
             self.by_effect: Final = by_effect
@@ -95,11 +165,49 @@ class SenderPlayer:
             text = TransText("{player} gains {faces}", player=player, faces=faces)
             self.Present(text, "draw", by_effect.this, *faces)
 
+    # AJOUT (04/11/2026, pack dm 3-D Man, carte Secret Initiative) : message
+    # declenchable pose au point de passage unique `PlayerAction.LookAtDeck`
+    # (voir deck.py), pour TOUTE capacite "look at the top N cards of the
+    # encounter deck" deja existante (Precognition, Tri-Force Vision...),
+    # sans liste a maintenir carte par carte. Ne fait rien d'autre que porter
+    # les donnees : pas de `Present`, le texte de journal est deja envoye par
+    # `Faces.LookAt` (`LookAt_Text`) juste avant.
+    class AfterPlayerLookedAtEncounterDeck(TriggerPlayerMessage):
+        def __init__(self, player: 'Player', faces: Sequence['CardFace'], by_effect: 'Effect') -> None:
+            self.by_effect: Final = by_effect
+            self.looked_faces: Final = list(faces)
+            super().__init__(player=player)
+
     class GameAreaAddPlayer(TriggerPlayerMessage):
         def __init__(self, player: 'Player') -> None:
             super().__init__(player=player)
             text = TransText("{player} enters game area", player=player)
             self.Present(text, "activate", player.GetIdentity())
+
+    class AfterPlayerMovedInCity(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7, brique Ville) : un joueur change de LIEU (meme sans changer de rangee). Sert aux effets continus de lieu
+        (West Village, Lower East Side...) qui doivent se recalculer quand on arrive ou part. `depuis` / `vers` : les cartes de lieu quittee et
+        atteinte (`depuis` est None a la mise en place)."""
+        def __init__(self, player: 'Player', depuis: 'CardFace|None'=None, vers: 'CardFace|None'=None) -> None:
+            self.depuis: Final = depuis
+            self.vers: Final = vers
+            super().__init__(player=player)
+
+    class WhenPlayerWouldLeaveLocation(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7) : « When a player leaves this location » (Interruption, avant le depart). `lieu` = la carte de lieu quittee,
+        `vers` = celle ou le joueur va."""
+        def __init__(self, player: 'Player', lieu: 'CardFace', vers: 'CardFace') -> None:
+            self.lieu: Final = lieu
+            self.vers: Final = vers
+            super().__init__(player=player)
+
+    class WhenPlayerWouldEnterLocation(TriggerPlayerMessage):
+        """AJOUT (22/10/2026, PU-7) : « When a player enters this location » (Interruption, avant l'arrivee). `lieu` = la carte de lieu atteinte,
+        `depuis` = celle que le joueur quitte."""
+        def __init__(self, player: 'Player', lieu: 'CardFace', depuis: 'CardFace') -> None:
+            self.lieu: Final = lieu
+            self.depuis: Final = depuis
+            super().__init__(player=player)
 
     class GameAreaAddCard(TriggerFaceMessage):
         def __init__(self, face: 'CardFace') -> None:

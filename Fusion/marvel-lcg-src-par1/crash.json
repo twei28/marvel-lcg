@@ -1,0 +1,147 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 42,
+        "time": "2026-10-22 11-53",
+        "playtime": "1.3"
+    },
+    "rules": [],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Rhino",
+        "villain": [
+            "01094",
+            "01095"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "01097a,01097b"
+        ],
+        "set_aside": [],
+        "encounters": [
+            "01098",
+            "01099",
+            "01099",
+            "01100",
+            "01101",
+            "01101",
+            "01102",
+            "01103",
+            "01104",
+            "01104",
+            "01105",
+            "01105",
+            "01106",
+            "01106",
+            "01106",
+            "01107",
+            "01108"
+        ],
+        "encounter_sets": [
+            "standard",
+            "bomb_scare"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.8",
+            "name": "Speed",
+            "hero": [
+                "sd001a,sd001b"
+            ],
+            "hero_deck": [
+                "sd002",
+                "sd003",
+                "sd004",
+                "sd005",
+                "sd006",
+                "sd007",
+                "sd008",
+                "sd009",
+                "sd010",
+                "sd011",
+                "sd012",
+                "sd013",
+                "sd014",
+                "sd015",
+                "sd016"
+            ],
+            "obligations": [
+                "sd017"
+            ],
+            "nemesis_set": [
+                "sd018",
+                "sd019",
+                "sd020",
+                "sd021",
+                "sd022"
+            ],
+            "player_deck": [
+                "01050",
+                "01051",
+                "01052",
+                "01052",
+                "01053",
+                "01053",
+                "01053",
+                "01054",
+                "01054",
+                "01055",
+                "01055",
+                "01056",
+                "01057",
+                "01057",
+                "01057",
+                "01084",
+                "01085",
+                "01086",
+                "01087",
+                "01087",
+                "01087",
+                "01088",
+                "01088",
+                "01090",
+                "01092"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [
+        {
+            "step": 0,
+            "event": "m117 WhenPlayerChooseAbility",
+            "effect": {
+                "id": "e1 Choose c1 sd001b",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:35,15:-2,22:-2,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        }
+    ],
+    "checksum": "d9d76b327e7ada3301c1d53a33aaf53aedd999bb9af0bde94b395a70c92674d2"
+}

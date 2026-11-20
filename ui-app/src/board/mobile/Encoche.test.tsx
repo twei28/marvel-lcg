@@ -73,6 +73,19 @@ describe('Encoche deplacable (signalement Yarro #40)', () => {
     expect(window.localStorage.getItem('marvel-encoche-gauche')).toBe('0.3')
   })
 
+  it('glisser vers le haut deplace la languette tout de suite, sans appui long', () => {
+    const { bouton, onOuvrir } = monter()
+    fireEvent.pointerDown(bouton, { clientX: 5, clientY: 500 })
+    fireEvent.pointerMove(bouton, { clientX: 6, clientY: 480 })
+    expect(bouton).toHaveClass('est-deplacee')
+    fireEvent.pointerMove(bouton, { clientX: 6, clientY: 400 })
+    expect(bouton.style.top).toBe('calc(40% - 36px)')
+    fireEvent.pointerUp(bouton)
+    fireEvent.click(bouton)
+    expect(onOuvrir).not.toHaveBeenCalled()
+    expect(window.localStorage.getItem('marvel-encoche-gauche')).toBe('0.4')
+  })
+
   it('ne sort jamais de l ecran', () => {
     const { bouton } = monter('droite')
     fireEvent.pointerDown(bouton, { clientX: 995, clientY: 500 })

@@ -1,0 +1,19 @@
+{
+    "version": "0.5.8",
+    "name": "Fallen Heroes",
+    "encounters": [
+        "hg059",
+        "hg060",
+        "hg061",
+        "hg062",
+        "hg063",
+        "hg064",
+        "hg065",
+        "hg066",
+        "hg067",
+        "hg068",
+        "hg069",
+        "hg070",
+        "hg071"
+    ]
+}

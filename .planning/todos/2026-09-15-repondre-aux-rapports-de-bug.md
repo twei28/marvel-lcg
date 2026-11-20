@@ -80,5 +80,11 @@ pas réveillé : le fil a sa propre table.
 
 ### Reste
 
-Le volume : si le suivi se remplit de tickets jamais fermés, la question de
-l'archivage se posera d'elle-même. Non tranchée.
+**CLOS le 21/10/2026** (item 23 du backlog). Décision de l'utilisateur :
+archiver maintenant, pas attendre que le volume pose problème. `liste_rapports`
+(`site/orchestrateur.py`) remonte désormais TOUS les rapports actifs
+(nouveau, en cours) sans troncature, suivis des `limite` (60) derniers
+rapports classés (traité, refusé) seulement — un ticket actif ne peut plus
+jamais être repoussé hors de la fenêtre par une pile de tickets déjà classés.
+Les classés plus anciens restent consultables normalement (le fil et la
+purge à 30 jours existants sont inchangés), juste plus loin dans la liste.

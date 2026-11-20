@@ -132,11 +132,10 @@ test.describe('Le filtre fan-made honore les createurs', () => {
     await page.getByRole('button', { name: /^(Core Set|Set de base)$/ }).click();
     await expect(tuile('rhino')).toHaveText('Rhino');
 
-    // SETS MODULAIRES : la liste « Personnalises » du bloc de difficulte.
+    // SETS MODULAIRES : la liste de tous les sets, a l'etape Difficulte (30/10/2026).
     await page.locator('.tb-port[data-scn="rhino"]').click();
-    await page.getByRole('button', { name: /^Personnalisés$/ }).click();
-    // Le choix des sets s'ouvre dans le panneau de droite (.pm-droite) ; le resume du milieu les repete.
-    const chips = page.locator('.pm-droite .mod-chip');
+    await page.getByRole('button', { name: /continuer/i }).click();
+    const chips = page.locator('.dp-liste .dp-case > span');
     // Motifs ancres : « Muse » seul attraperait « Art Museum Heist ». Muse
     // n'est pas teste ici, il est mis de cote et ne parait dans aucune liste
     // joueur (_setsRencontreMasques).

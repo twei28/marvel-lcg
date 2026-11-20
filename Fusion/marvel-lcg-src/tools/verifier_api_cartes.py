@@ -98,6 +98,20 @@ import game.card.face as _face_mod
 _collecter(_face_mod)
 import game.card.face.card_type as _type_mod
 _collecter(_type_mod)
+# Les JOUEURS aussi : `hasattr(objet, "IsPlayer")` est la garde voulue de `Player.IsType(x)` (qui appelle `x.IsPlayer()` et leve
+# AttributeError sur une carte, player.py) ; `IsPlayer` existe sur User/Player, pas sur les faces. Sans cela, huit fichiers
+# `__init__.py` (ares, blade, sunfire, superior_spider_man, spider_man_2099) etaient signales a tort (26/10/2026).
+from game.player.player import Player as _Player
+ATTRIBUTS_CONNUS.update(dir(_Player))
+# Les attributs d'INSTANCE des messages (poses dans `__init__`, donc invisibles a `dir(classe)`) : `message.by_effect` existe sur
+# AfterUnitAttackUnit (sender_damage.py) et la garde de web_of_deceit/underling etait signalee morte a tort (26/10/2026). On n'ajoute
+# que des noms REELLEMENT assignes dans le code des messages : une garde sur un nom qui n'existe nulle part reste signalee.
+import glob as _glob
+for _fichier in _glob.glob(os.path.join(GAME_DIR, "game", "message", "**", "*.py"), recursive=True):
+    try:
+        ATTRIBUTS_CONNUS.update(re.findall(r"\bself\.(\w+)\s*(?::[^=\n]+)?=", open(_fichier, encoding="utf-8").read()))
+    except OSError:
+        pass
 
 # Signatures des constructeurs et fabriques dont un argument mal nomme ne se
 # voit qu'a l'execution. On collecte les noms d'arguments acceptes.
@@ -263,8 +277,18 @@ for dossier, _, noms in os.walk(racine_cartes):
             for noeud in ast.walk(arbre):
                 if isinstance(noeud, ast.ImportFrom) and noeud.module and \
                         any(a.name == "*" for a in noeud.names):
+                    cible_import = noeud.module
+                    if noeud.level:
+                        # Import RELATIF (`from .commun import *`, punisher_mcdc_2026) : on le resout depuis le paquet du
+                        # fichier. Sans cela il etait importe comme un module de premier niveau, echouait en silence et
+                        # `ComplotEn2A` (defini dans commun.py) etait signale « defini nulle part » (faux positif du 26/10/2026).
+                        base = os.path.relpath(os.path.dirname(chemin),
+                                               os.path.dirname(os.path.dirname(racine_cartes))).replace(os.sep, ".")
+                        morceaux = base.split(".")
+                        morceaux = morceaux[:len(morceaux) - (noeud.level - 1)]
+                        cible_import = ".".join(morceaux + [noeud.module])
                     try:
-                        autre = importlib.import_module(noeud.module)
+                        autre = importlib.import_module(cible_import)
                         disponibles |= set(dir(autre))
                     except Exception:
                         pass

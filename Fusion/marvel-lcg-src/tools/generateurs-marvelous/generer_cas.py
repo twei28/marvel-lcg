@@ -107,9 +107,26 @@ def cout(carte) -> int:
     return int(chiffres.group(0)) if chiffres else 0
 
 
-def carburant(n: int):
+# Une ressource de base par couleur : Energy (YY), Genius (BB), Strength (RR).
+RESSOURCE_DE_COULEUR = {"Y": "01088", "B": "01089", "R": "01090"}
+
+
+def carburant(n: int, exigence: str = ""):
+    """Les cartes de ressource a donner en main pour payer `n`.
+
+    ⚠ UNE EXIGENCE (`Requirement`, ex. « YYY » de ze006 Wrath of Olympus) EXIGE DES
+    COULEURS PRECISES, et le paiement automatique du harnais prend les PREMIERES cartes
+    de la main, sans lire l'exigence (`player_action.py`, « Will ignore "Requirement" »).
+    Avec les trois couleurs en main, l'ordre decide du paiement : le temoin payait en
+    Energy (exigence satisfaite), Stan Lee, dont le deck de 40 cartes contient deja des
+    Energy/Genius/Strength remontees dans un autre ordre, payait YY BB RR et la carte
+    restait en main (cas ze006 du 21/10/2026 : un artefact du cas, pas du moteur). Pour
+    une carte a exigence, on ne donne donc QUE les couleurs exigees.
+    """
     par_type = n // 2 + 1
-    return [r for r in CARBURANT for _ in range(par_type)]
+    couleurs = [RESSOURCE_DE_COULEUR[c] for c in dict.fromkeys(exigence) if c in RESSOURCE_DE_COULEUR]
+    types = couleurs or CARBURANT
+    return [r for r in types for _ in range(par_type)]
 
 
 def deck_pour(carte, decks):
@@ -153,6 +170,18 @@ def _cas(carte, deck_nom, decks, stan: bool):
     mise = []
     if forme == "hero" and alter:
         mise.append(f"Puzzle.ChangeForm('{alter}')")
+    # ⚠ UNE CARTE « (THWART) » N'A DE CIBLE QUE SUR UN COMPLOT QUI PORTE DE LA MENACE
+    # (`can_be_thwart_schemes`, `ability.py`). Au premier tour d'une partie d'essai le complot
+    # principal est a 0 : le temoin ne passait que si la mise en place de son alter-ego posait
+    # un complot (Cable, « Soldier X »), et Stan Lee, qui n'a pas cette mise en place, voyait
+    # Mind Scan « injouable » (cas 40003 du 21/10/2026 : un artefact du cas, pas du moteur).
+    # En vraie partie le complot a de la menace des la fin du premier tour.
+    # ⚠ APRES LE REMPLACEMENT DE LA MAIN (`declencher`, pas `mise_en_place`) : la main de depart
+    # de Stan Lee peut contenir une interruption (Great Responsibility) que le harnais joue seule
+    # et qui REMPLACE la menace posee ; la main exclusive n'a que la carte et ses ressources.
+    avant = []
+    if "(thwart)" in str(carte.get("text") or "").lower():
+        avant.append("Puzzle.PlaceThreat('01097b', 5)")
     cas = {
         "nom": f"[marvelous] {cid} {carte.get('name')} — {'Stan Lee' if stan else 'temoin ' + deck_nom}",
         "pourquoi": ("Stan Lee (Marvelous) doit pouvoir jouer cette carte signature "
@@ -161,8 +190,8 @@ def _cas(carte, deck_nom, decks, stan: bool):
         "scenario": SCENARIO,
         "heros": heros,
         "mise_en_place": mise,
-        "main_exclusive": [cid] + carburant(cout(carte)),
-        "declencher": [f"Puzzle.AssertJouable('{cid}')"],
+        "main_exclusive": [cid] + carburant(cout(carte), str((carte.get("desc") or {}).get("Requirement", ""))),
+        "declencher": avant + [f"Puzzle.AssertJouable('{cid}')"],
         "jouer": [cid],
         "verifier": "marvelous_jouee",
         "attendu": {"carte": cid, "type": carte.get("type"), "set": carte.get("set_name"),

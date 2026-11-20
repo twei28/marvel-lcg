@@ -75,6 +75,6 @@ describe('pastille de PV', () => {
       allie({ health: 1, max_health: 0, is_infinite_health: 1 }),
       contexte(catalogue)
     )
-    expect(carte.allyHp).toBe('INF')
+    expect(carte.allyHp).toBe('∞')
   })
 })

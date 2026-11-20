@@ -14,6 +14,9 @@ import { t } from './langue'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 import type { PiedMulti } from './CartouchePhase'
 import type { PhaseLecture } from './CoucheRencontreSurTable'
+import { tonaliteAction } from './action-style'
+import { traitEntre } from './trait-phase'
+import { avecIcones, marquerRessources, ressourcesEnMots } from './icones-ressources'
 
 /** Le rectangle de la carte, remesuré tant qu'elle bouge (vol, mise à l'échelle). */
 /**
@@ -91,6 +94,65 @@ export function useBoiteDeCarte(carteId: number | undefined, cle: string): Boite
     }
   }, [carteId, cle])
   return boite
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// LES TRAITS VERS LES CARTES CLIQUABLES (05/11/2026, demande de l'utilisateur) : un trait en pointilles relie le
+// bandeau (deplacable) a CHAQUE carte qu'on peut cliquer depuis lui -- defendre, viser une cible, repondre... La
+// couleur suit celle du halo de la carte (vert jouable/defendre, rouge cible, voir `tonaliteAction`). Le bandeau
+// est mesure comme une carte (meme polling 120ms que `useBoiteDeCarte`), pour que le trait suive quand on le
+// glisse. Reutilise `traitEntre` de `trait-phase.ts` (meme calcul de bord a bord que les traits de coup).
+// ---------------------------------------------------------------------------------------------------------------
+
+/** Le rectangle du bandeau deplacable, remesure tant qu'on le glisse ou qu'il bouge. */
+function useBoiteDuBandeau(cle: string): Boite | undefined {
+  const [boite, setBoite] = useState<Boite | undefined>(undefined)
+  useEffect(() => {
+    const mesurer = () => {
+      const cadre = cadreDuPlateau()
+      const el = cadre?.element.querySelector<HTMLElement>('.tsm-bandeau')
+      if (!cadre || !el) { setBoite(undefined); return }
+      const r = el.getBoundingClientRect()
+      const b: Boite = { x: r.left - cadre.origine.left, y: r.top - cadre.origine.top, w: r.width, h: r.height }
+      setBoite((avant) => (avant && avant.x === b.x && avant.y === b.y && avant.w === b.w && avant.h === b.h ? avant : b))
+    }
+    mesurer()
+    const minuteur = window.setInterval(mesurer, 120)
+    window.addEventListener('resize', mesurer)
+    return () => {
+      window.clearInterval(minuteur)
+      window.removeEventListener('resize', mesurer)
+    }
+  }, [cle])
+  return boite
+}
+
+/** Un trait, du bandeau vers UNE carte cliquable. Composant a part : `useBoiteDeCarte` est un crochet. */
+function TraitVersCarte({ carteId, cle, rouge, origine }: { carteId: number; cle: string; rouge: boolean; origine: Boite }) {
+  const boite = useBoiteDeCarte(carteId, cle)
+  if (!boite) return null
+  const trait = traitEntre(origine, boite)
+  if (!trait) return null
+  return (
+    <line
+      className={`tsm-trait${rouge ? ' est-rouge' : ''}`}
+      x1={trait.x1} y1={trait.y1} x2={trait.x2} y2={trait.y2}
+    />
+  )
+}
+
+/** Un trait par carte cliquable depuis le bandeau, superpose a la table (pointer-events: none). */
+function TraitsVersCartes({ cartes }: { cartes: ReadonlyArray<{ id: number; cle: string; rouge: boolean }> }) {
+  const origine = useBoiteDuBandeau('bandeau')
+  const cadre = cadreDuPlateau()
+  if (!origine || !cadre || cartes.length === 0) return null
+  return (
+    <svg className="tsm-traits" viewBox={`0 0 ${cadre.boite.w} ${cadre.boite.h}`} width={cadre.boite.w} height={cadre.boite.h} aria-hidden="true">
+      {cartes.map((c) => (
+        <TraitVersCarte key={c.id} carteId={c.id} cle={c.cle} rouge={c.rouge} origine={origine} />
+      ))}
+    </svg>
+  )
 }
 
 
@@ -369,11 +431,13 @@ function styleEtiquette(b: Boite, auDessus: boolean): CSSProperties {
 /** « Défendre avec Spider-Man » : le verbe en petit sur une ligne, le nom dessous (deux lignes au plus, puis « … »). */
 function TexteEtiquette({ nom }: { nom: string }) {
   const verbe = `${t('Défendre avec')} `
-  if (!nom.startsWith(verbe) || nom.length === verbe.length) return <span className="tsm-etiquette-texte">{nom}</span>
+  if (!nom.startsWith(verbe) || nom.length === verbe.length) {
+    return <span className="tsm-etiquette-texte">{avecIcones(marquerRessources(nom))}</span>
+  }
   return (
     <>
       <span className="tsm-etiquette-verbe">{verbe.trim()}</span>
-      <span className="tsm-etiquette-texte">{nom.slice(verbe.length)}</span>
+      <span className="tsm-etiquette-texte">{avecIcones(marquerRessources(nom.slice(verbe.length)))}</span>
     </>
   )
 }
@@ -469,7 +533,7 @@ export function QuestionSurTable({
             onBlur={() => survoler(c, false)}
             data-choix-unique={uniqueId === c.id ? '' : undefined}
           >
-            {c.nom}
+            {avecIcones(marquerRessources(c.nom))}
             {uniqueId === c.id ? <kbd className="tsm-touche">{t('Espace')}</kbd> : null}
           </button>
         ))}
@@ -496,6 +560,10 @@ export function QuestionSurTable({
       {surCarte.map((c) => (
         <PuceSurCarte key={c.id} choix={c} signaler={signaler} unique={uniqueId === c.id} />
       ))}
+      {/* Un trait pointille du bandeau vers chaque carte cliquable (05/11/2026, demande de
+          l'utilisateur) : toujours vert ici, ce sont des choix (defendre, repondre...), jamais des
+          cibles subies. */}
+      <TraitsVersCartes cartes={surCarte.filter((c) => c.carteId !== undefined).map((c) => ({ id: c.carteId!, cle: String(c.id), rouge: false }))} />
       {enEventail.length > 0 ? <EventailAmeliorations choix={enEventail} survoler={survoler} signaler={signaler} unique={uniqueId} /> : null}
     </>
   )
@@ -526,6 +594,28 @@ function PuceSurCarte({
     const minuteur = window.setTimeout(() => signaler(choix.id, true), 600)
     return () => window.clearTimeout(minuteur)
   }, [boite, choix.id, signaler])
+  // ⚠ ANCRER LA MAIN (05/11/2026, rapport de partie reelle : « la main monte
+  // et descend en boucle sans que je bouge la souris »). Cette puce RE-MESURE
+  // la carte toutes les 120ms (`useBoiteDeCarte`) pour rester collee dessus.
+  // Si la carte visee est dans la MAIN, `.zone-main` ne la releve QUE sur
+  // :hover CSS (transition de 180ms) -- d'ou la boucle : survoler la puce
+  // ne releve pas `.zone-main` (la puce est un bouton a part, pas un
+  // descendant), la carte reste donc en position basse ; mais des que la
+  // vraie carte en dessous recoit un :hover (meme bref), la main se releve,
+  // la puce se re-mesure sur une carte qui a bouge sous la souris immobile,
+  // ressort de son aire -> :hover retombe -> la main redescend -> la puce
+  // revient sous la souris -> :hover repart. Cycle sans fin tant que la
+  // question reste ouverte. Fixer la main en position haute pour toute la
+  // duree de la puce (meme modele que `main-visible-forcee`, voir
+  // `main-visible.ts`) supprime la cause : plus rien ne bouge sous la puce.
+  useEffect(() => {
+    if (choix.carteId === undefined) return
+    const carte = document.querySelector<HTMLElement>(`.zone-main .scan-card[data-card-id="${choix.carteId}"]`)
+    const main = carte?.closest<HTMLElement>('.zone-main')
+    if (!main) return
+    main.classList.add('main-ancree-par-choix')
+    return () => main.classList.remove('main-ancree-par-choix')
+  }, [choix.carteId])
   if (!boite) return null
   const hauteurTable = cadreDuPlateau()?.boite.h ?? Number.POSITIVE_INFINITY
   const enBas = boite.y + boite.h + 44 > hauteurTable
@@ -537,8 +627,8 @@ function PuceSurCarte({
         className={`tsm-utilisable${bloque ? ' est-inactif' : ''}`}
         style={boiteStyle(boite)}
         disabled={bloque}
-        aria-label={choix.nom}
-        title={choix.indisponible ?? choix.nom}
+        aria-label={ressourcesEnMots(choix.nom)}
+        title={choix.indisponible ?? ressourcesEnMots(choix.nom)}
         onClick={choix.choisir}
         onMouseEnter={() => choix.survoler?.(true)}
         onMouseLeave={() => choix.survoler?.(false)}
@@ -548,7 +638,7 @@ function PuceSurCarte({
         className={`tsm-etiquette${bloque ? ' est-inactif' : ''}`}
         style={styleEtiquette(boite, enBas)}
         disabled={bloque}
-        title={choix.nom}
+        title={ressourcesEnMots(choix.nom)}
         onClick={choix.choisir}
         data-choix-unique={unique ? '' : undefined}
       >
@@ -681,7 +771,14 @@ function EventailAmeliorations({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [place, ids])
   if (!place) return null
+  // Les originales restent dans la pile du porteur : on les masque (la place est conservee) tant que
+  // l'eventail les montre, sinon chaque amelioration apparait deux fois.
+  const masquer = choix.map((c) => `.plateau-cadre .est-attachee:has(.scan-card[data-card-id="${c.carteId}"])`).join(',\n        ')
   return (
+    <>
+    <style>{`
+        ${masquer} { visibility: hidden !important; }
+      `}</style>
     <div
       className="tsm-eventail"
       role="group"
@@ -698,8 +795,8 @@ function EventailAmeliorations({
             className={`tsm-eventail-carte${bloque ? ' est-inactif' : ''}`}
             style={{ '--rang': i } as CSSProperties}
             disabled={bloque}
-            aria-label={c.nom}
-            title={c.indisponible ?? c.nom}
+            aria-label={ressourcesEnMots(c.nom)}
+            title={c.indisponible ?? ressourcesEnMots(c.nom)}
             onClick={c.choisir}
             onMouseEnter={() => survoler(c, true)}
             onMouseLeave={() => survoler(c, false)}
@@ -720,6 +817,7 @@ function EventailAmeliorations({
         )
       })}
     </div>
+    </>
   )
 }
 
@@ -875,21 +973,25 @@ export function CiblageSurTable({
         ) : null}
         {ordreDeLaTable && !prete ? <span className="tsm-consigne">{t('ou clique les cartes une à une, dans l’ordre voulu')}</span> : null}
       </BandeauDeplacable>
+      {/* Rouge = une cible qu'on SUBIT (attaquer, contrer...) ; vert = « defendre », un choix du
+          joueur comme jouer une carte (point 5, plan mode-sur-la-table-ux-plan, 05/11/2026). */}
       {cibles.map((c) => (
-        <CarteCiblable key={c.id} cible={c} />
+        <CarteCiblable key={c.id} cible={c} rouge={tonaliteAction(titre) !== 'defense'} />
       ))}
+      {/* Meme trait que QuestionSurTable, meme couleur que le halo de chaque cible. */}
+      <TraitsVersCartes cartes={cibles.map((c) => ({ id: c.id, cle: `cible-${c.id}`, rouge: tonaliteAction(titre) !== 'defense' }))} />
     </>
   )
 }
 
-function CarteCiblable({ cible }: { cible: CibleSurTable }) {
+function CarteCiblable({ cible, rouge }: { cible: CibleSurTable; rouge: boolean }) {
   const boite = useBoiteDeCarte(cible.id, 'cible')
   if (!boite) return null
   return (
     <>
       <button
         type="button"
-        className={`tsm-utilisable${cible.choisie ? ' est-choisie' : ''}`}
+        className={`tsm-utilisable${rouge ? ' est-cible-rouge' : ''}${cible.choisie ? ' est-choisie' : ''}`}
         style={boiteStyle(boite)}
         onClick={cible.agir}
         aria-pressed={cible.choisie}

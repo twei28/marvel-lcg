@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mojo.campaign import CampaignSetup
 
 # Across the Mojoverse
 
@@ -49,6 +50,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(2),
         AbilityFactory.WhenCardSetup(
             "This",
             across_the_mojoverse

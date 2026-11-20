@@ -14,6 +14,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { PanneauRecompenses } from './PanneauRecompenses'
 import { CLE_CAMPAGNE } from './contexte'
 import { mondeDeTest } from './world-de-test'
+import { auBilan, auCarnet } from './parcours-test'
 
 const CAMPAGNE = {
   id: 'trors-1',
@@ -74,6 +75,7 @@ describe('le journal de campagne en mode manuel', () => {
   it('affiche une aide disant que les cases relevées par le jeu restent à remplir à la main', async () => {
     const monde = mondeDeTest({ mode_manuel: true })
     render(<PanneauRecompenses monde={monde} gagne siege={0} onTermine={() => {}} />)
+    await auBilan()
     await waitFor(() => expect(screen.getByText('Pions retard')).toBeInTheDocument())
     expect(screen.getByText(/mode manuel/i)).toBeInTheDocument()
   })
@@ -81,6 +83,7 @@ describe('le journal de campagne en mode manuel', () => {
   it("n'affiche rien de tel en partie ordinaire : le mode ordinaire ne perd rien", async () => {
     const monde = mondeDeTest({ mode_manuel: false })
     render(<PanneauRecompenses monde={monde} gagne siege={0} onTermine={() => {}} />)
+    await auBilan()
     await waitFor(() => expect(screen.getByText('Pions retard')).toBeInTheDocument())
     expect(screen.queryByText(/mode manuel/i)).toBeNull()
   })
@@ -88,6 +91,7 @@ describe('le journal de campagne en mode manuel', () => {
   it('la case relevée par le jeu reste saisissable en mode manuel, exactement comme en partie ordinaire', async () => {
     const monde = mondeDeTest({ mode_manuel: true })
     render(<PanneauRecompenses monde={monde} gagne siege={0} onTermine={() => {}} />)
+    await auCarnet()
     await waitFor(() => expect(screen.getByText('Pions retard')).toBeInTheDocument())
     const champ = screen.getByRole('spinbutton') as HTMLInputElement
     expect(champ.disabled).toBe(false)

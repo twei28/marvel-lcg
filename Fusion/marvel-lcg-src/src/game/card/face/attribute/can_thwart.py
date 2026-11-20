@@ -57,9 +57,9 @@ class HasThwart(HasAttribute):
 class CanThwart(CardFace):
 
     @override
-    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect') -> int|None:
+    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect', *, thwart_in_event: bool=False) -> int|None:
 
-        if by_effect.ability.is_like_thwart:
+        if thwart_in_event or by_effect.ability.is_like_thwart:
             property = ThwartProperty(additional_value=value)
 
             message = CanThwart.SpecialThwart(self, schemes, by_effect, property=property)
@@ -112,6 +112,12 @@ class CanThwart(CardFace):
             use_basic_power_message.Send()
         else:
             use_basic_power_message = None
+
+        # AJOUT (13/11/2026, Elektra) : un HEROS villainous recoit sa carte de boost aussi pour un deploiement de menace de base,
+        # et resout sa pile (voir `CanBoost.HeroBoostForBasicPower`). Inerte pour tout autre heros.
+        if is_basic_thwart and CanBoost.IsType(this):
+            this.HeroBoostForBasicPower(would_thw_message, "THW")
+            this = this.card.CastTo(Unit2)
 
         gain_value_when_divided(would_thw_message)
 

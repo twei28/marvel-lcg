@@ -1,0 +1,23 @@
+/* Le mélange du tirage manuel : une seconde (`DUREE_MELANGE_MS`), les dos s'échangent leurs places en glissant. */
+.tirage-cache-case {
+  display: inline-block;
+}
+
+.tirage-cache-cartes.est-melange .tirage-cache-case {
+  animation: tirage-cache-melange 1s ease-in-out both;
+  animation-delay: calc(var(--rang) * -90ms);
+}
+
+@keyframes tirage-cache-melange {
+  0% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(calc((var(--rang) - 1.5) * -60%)) rotate(-8deg); }
+  50% { transform: translateX(calc((var(--rang) - 1.5) * 40%)) translateY(-8px) rotate(6deg); }
+  75% { transform: translateX(calc((var(--rang) - 1.5) * -30%)) rotate(-4deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tirage-cache-cartes.est-melange .tirage-cache-case {
+    animation: none;
+  }
+}

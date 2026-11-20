@@ -38,11 +38,15 @@ def GetAbilities() -> Sequence['Ability']:
         heros = initiator.GetHero()
 
         declare = initiator.DeclareNumber(0, 3)
-        avant = heros.health
-        heros.TakeDamage(this, declare, effect)
-        x = avant - heros.health
-        if x <= 0:
+        if declare <= 0:
             return
+        subi = heros.TakeDamage(this, declare, effect)
+        # « Take X damage -> » : prendre des degats est un COUT. RR Cost : « that cost is not considered paid unless ALL of that damage
+        # was taken » : une prevention, meme PARTIELLE (Tough, Energy Barrier...), annule l'effet en entier (arbitrage du 26/10/2026,
+        # comme us004 Reckless). Remplace la lecture « X reel » de decisions-phase-b.md du 15/10/2026.
+        if subi is None or subi.took_damage < declare:
+            return
+        x = declare
 
         manigances = [s for s in Worlds.GetOnAllFieldScheme(effect) if s.threat > 0]
         if manigances:

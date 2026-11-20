@@ -19,10 +19,10 @@ export async function creerPartie(
   if (!r.ok()) throw new Error(`/new ${r.status()}`)
 }
 
-/** Les réglages de navigateur du mode « Sur la table » (français, présentation bis, aide déjà vue). */
+/** Les réglages de navigateur du mode « Sur la table » (français, présentation « tris » = Guidée, aide déjà vue). */
 export async function reglagesSurTable(ctx: BrowserContext | Page, extra: Record<string, string> = {}) {
   await ctx.addInitScript((e) => {
-    localStorage.setItem('mc_phase_presentation', 'bis')
+    localStorage.setItem('mc_phase_presentation', 'tris')
     localStorage.setItem('marvel-langue-choisie', '1')
     localStorage.setItem('marvel-langue', 'fr')
     localStorage.setItem('marvel-board-mode-phase-mechant', 'sur-table')

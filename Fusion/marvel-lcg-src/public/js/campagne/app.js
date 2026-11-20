@@ -14,7 +14,8 @@
 
 import { apiCampagne, pageLivretUrl } from "/public/js/campagne/api-campagne.js";
 import { lireBrouillon, ecrireBrouillon, effacerBrouillon } from "/public/js/campagne/brouillon.js";
-import { catalog } from "/public/js/prepare/catalog.js";
+import { catalog, nomSetRencontre } from "/public/js/prepare/catalog.js";
+import { nombreDeModules, listeDuCarnet, proposerModules } from "/public/js/campagne/modulaires.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { api, cardImageUrl, extensionImageUrl } from "/public/js/prepare/api.js";
 
@@ -50,12 +51,18 @@ function couvertureCampagne(code, cleExtension) {
     };
 }
 import { t, langueActuelle, synchroniserLangueServeur, boutonLangue } from "/public/js/prepare/langue.js";
-import { launch } from "/public/js/prepare/launcher.js";
+import { launch, URL_PLATEAU } from "/public/js/prepare/launcher.js";
+import { validate } from "/public/js/prepare/validation.js";
 import { urlNarval } from "/public/js/prepare/narval.js";
 import * as OL from "/public/js/campagne/ordre-libre.js";
 import * as LP from "/public/js/campagne/livre-pages.js";
+import { scenarioDuCatalogueDeLEtape } from "/public/js/campagne/catalogue-carnet.js";
 import { estTel, suivreTel, enteteTel, feuilleDansHistorique } from "/public/js/tel-pages.js";
 import { installerHistorique, noterEcran, reculerVers } from "/public/js/prepare/tel.js";
+import { marquerTablette } from "/public/js/tablette.js";
+
+// Tablette (24/10/2026, decision 11) : <html data-tablette> et ses cibles de 44 px (css/tablette-pages.css).
+marquerTablette();
 
 const root = document.getElementById("app");
 
@@ -87,6 +94,7 @@ const etat = {
     creation: null,      // brouillon en cours de saisie
     erreur: "",
     occupe: false,
+    invitation: null,    // {joueurs, cles, erreur, copie} : ecran d'invitation en ligne apres lancement multi-heros
 };
 
 /* ----------------------------------------------------------------- outils -- */
@@ -416,7 +424,7 @@ function vueListe() {
             ),
             cartes.length
                 ? el("div", { class: "cmp-grille" }, cartes)
-                : el("p", { class: "cmp-vide" }, t("Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que vous y gagnez vous suit d'un scénario au suivant.")),
+                : el("p", { class: "cmp-vide" }, t("Aucune campagne en cours. Une campagne enchaîne les scénarios d'une boîte dans l'ordre : ce que tu y gagnes te suit d'un scénario au suivant.")),
         ),
     );
 }
@@ -1080,7 +1088,8 @@ function vueCampagne() {
     const perdue = Boolean(campagne.perdue);
     const finie = perdue || estTerminee(campagne, definition);
     const scenario = finie ? definition.scenarios[definition.scenarios.length - 1] : definition.scenarios[index];
-    const duCatalogue = etat.scenarios.find((s) => s.id === scenario.id);
+    // Le fichier du catalogue peut dependre du carnet (Punisher MC×DC : combats 2 et 3) ; sinon c'est l'id de l'etape.
+    const duCatalogue = etat.scenarios.find((s) => s.id === scenarioDuCatalogueDeLEtape(scenario, campagne.carnet, campagne.difficulte === "expert"));
 
     const enCours = campagne.partieEnCours && campagne.partieEnCours.scenario === scenario.id;
     const tentatives = (campagne.tentatives || {})[scenario.id] || 0;
@@ -1108,8 +1117,11 @@ function vueCampagne() {
     if (finie) return el("div", { class: "cmp-page-campagne" }, entete(t("Campagne")), barre,
         el("main", { class: "cmp-corps" }, bandeauErreur(), vueConclusion(campagne, definition, perdue)));
 
+    // Une boite qui regle ses sets modulaires elle-meme (MojoMania) : le fichier de scenario en liste d'office, ce qui serait FAUX
+    // ici (le livret en fait tirer ou choisir quelques-uns, que l'ecran decrit plus bas).
+    const reglesModulaires = regleModulaires(definition, scenario);
     const sets = duCatalogue
-        ? [...(duCatalogue.rawJson.encounter_sets || []), ...(duCatalogue.rawJson.modular_sets || [])]
+        ? [...(duCatalogue.rawJson.encounter_sets || []), ...(reglesModulaires ? [] : (duCatalogue.rawJson.modular_sets || []))]
         : [];
 
     // Le livret en double page : debut de campagne, ou epilogue du scenario
@@ -1127,10 +1139,13 @@ function vueCampagne() {
         el("div", { class: "cmp-bloc" },
             el("h2", { class: "cmp-bloc-t" }, t("Mise en place")),
             el("p", { class: "cmp-bloc-aide" }, t("Imposée par le livret : le jeu la met en place pour toi, y compris ce que la campagne a déjà ajouté.")),
-            sets.length ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet)) : null,
+            sets.length || reglesModulaires
+                ? el("ul", { class: "cmp-sets" }, sets.map(ligneSet), reglesModulaires ? ligneModulaires(definition, campagne, reglesModulaires) : null)
+                : null,
             blocEliteDuScenario(campagne, definition, scenario.numero, enCours),
         ),
         blocOptionsCampagne(campagne, definition, enCours),
+        blocAssemblee(scenario, enCours),
         el("div", { class: "cmp-bloc cmp-bloc-lancer" },
         el("div", { class: "cmp-lancer" },
             tentatives ? el("p", { class: "cmp-tentatives" },
@@ -1621,18 +1636,50 @@ function titreSet(nom) {
 
 /** Un set de la mise en place, sous le NOM de son fichier (`name`) : l'identifiant
  *  d'un set fan-made porte un prefixe (« hs_feral_instincts »). Le titre deduit
- *  de l'identifiant s'affiche le temps de la lecture, et reste si elle echoue. */
+ *  de l'identifiant s'affiche le temps de la lecture, et reste si elle echoue.
+ *
+ *  ⚠ UN SEUL REESSAI, APRES UN COURT DELAI (21/10/2026, item 18 du backlog) :
+ *  au tout premier chargement, cet appel peut partir avant que le cookie
+ *  `app_version` (pose par un `get_version` qui tourne en parallele) ne soit
+ *  ecrit — le serveur repond alors sa page « Version Mismatch » a la place du
+ *  JSON attendu, `res.json()` leve une exception, et sans reessai le nom
+ *  recherche n'etait JAMAIS affiche pour le reste de cette visite (identifiant
+ *  brut mis en forme a la place, « Hs Feral Instincts »). Le cookie est pose
+ *  bien avant 400 ms dans tous les cas observes : un seul reessai suffit. */
 const _nomsSets = new Map();
+/** La regle de sets modulaires de ce scenario (definition.modulaires.par_scenario), ou null. */
+function regleModulaires(definition, scenario) {
+    const cfg = definition.modulaires;
+    return cfg && cfg.par_scenario && cfg.par_scenario[scenario.id] ? cfg.par_scenario[scenario.id] : null;
+}
+
+/** « 1 set modulaire tiré au sort », « 3 sets modulaires à choisir »... et ceux déjà passés à l'antenne. */
+function ligneModulaires(definition, campagne, regle) {
+    const cfg = definition.modulaires;
+    const n = nombreDeModules(regle.nombre, (campagne.equipe || []).length || 1);
+    const quoi = regle.hasard
+        ? (n === 1 ? t("1 set modulaire tiré au sort") : n + " " + t("sets modulaires tirés au sort"))
+        : (n === 1 ? t("1 set modulaire à choisir") : n + " " + t("sets modulaires à choisir"));
+    const utilises = listeDuCarnet((campagne.carnet || {})[cfg.cle_utilises]);
+    const dejaPasses = utilises.length ? " · " + t("déjà passés à l'antenne :") + " " + utilises.map(nomSetRencontre).join(", ") : "";
+    return el("li", { class: "cmp-sets-modulaires" }, quoi + dejaPasses);
+}
+
 function ligneSet(id) {
     const li = el("li", {}, _nomsSets.get(id) || titreSet(id));
     if (!_nomsSets.has(id)) {
+        const appliquer = (json) => {
+            if (!json || !json.name) return;
+            _nomsSets.set(id, json.name);
+            li.textContent = json.name;
+        };
         api.encounterSet(id)
-            .then((json) => {
-                if (!json || !json.name) return;
-                _nomsSets.set(id, json.name);
-                li.textContent = json.name;
-            })
-            .catch(() => undefined);
+            .then(appliquer)
+            .catch(() => {
+                setTimeout(() => {
+                    api.encounterSet(id).then(appliquer).catch(() => undefined);
+                }, 400);
+            });
     }
     return li;
 }
@@ -1643,7 +1690,7 @@ async function ouvrirCampagne(id) {
     const campagne = await apiCampagne.charger(id);
     const definition = await apiCampagne.definition(campagne.code);
     await cards.load();
-    const scenarios = await catalog.scenariosForExtension(definition.cle_extension);
+    const scenarios = await catalog.scenariosForExtension(definition.cle_extension, { campagne: true });
     etat.campagne = campagne;
     etat.definition = definition;
     etat.scenarios = scenarios;
@@ -1658,13 +1705,83 @@ async function ouvrirCampagne(id) {
  * exister qu'UNE facon de demarrer une partie. Les sets modulaires viennent du
  * fichier de scenario, jamais d'un choix : c'est tout l'interet du mode.
  */
+/* ----------------------------------------------- sets modulaires d'une campagne -- */
+
+/** Le joueur choisit `choix.nombre` sets parmi `choix.parmi` (MojoMania, livret p.13 et p.17). Rend la liste choisie ;
+ *  « Annuler » rejette, et le scenario ne part pas. */
+function demanderModules(choix, scenario) {
+    return new Promise((resoudre, rejeter) => {
+        const selection = new Set();
+        const compte = el("span", { class: "cmp-modules-compte" });
+        const valider = el("button", { class: "btn launch", disabled: true }, t("Valider"));
+        const fermer = () => fond.remove();
+        const maj = () => {
+            compte.textContent = `${selection.size} / ${choix.nombre}`;
+            valider.disabled = selection.size !== choix.nombre;
+            for (const b of puces) b.classList.toggle("on", selection.has(b.dataset.module));
+        };
+        const puces = choix.parmi.map((m) => el("button", {
+            class: "cmp-module-puce", type: "button", "data-module": m,
+            onclick: () => {
+                if (selection.has(m)) selection.delete(m);
+                else if (selection.size < choix.nombre) selection.add(m);
+                maj();
+            },
+        }, nomSetRencontre(m)));
+        valider.onclick = () => { fermer(); resoudre([...selection]); };
+        const fond = el("div", { class: "cmp-modules", role: "dialog", "aria-modal": "true" },
+            el("div", { class: "cmp-modules-panneau" },
+                el("h2", { class: "cmp-titre mvl" }, t("Sets modulaires")),
+                el("p", { class: "cmp-note" },
+                    choix.imposes.length
+                        ? t("Il ne reste pas assez de sets neufs. Ils partent d'office :") + " " + choix.imposes.map(nomSetRencontre).join(", ")
+                          + ". " + t("Complète avec des sets déjà passés à l'antenne.")
+                        : t("Choisis les sets modulaires de ce scénario. Ceux déjà passés à l'antenne ne sont plus proposés.")),
+                el("div", { class: "cmp-modules-puces" }, ...puces),
+                el("div", { class: "cmp-modules-pied" },
+                    compte,
+                    el("button", { class: "btn ghost", type: "button", onclick: () => { fermer(); rejeter(new Error(t("Choix des sets modulaires annulé."))); } }, t("Annuler")),
+                    valider)));
+        document.body.append(fond);
+        maj();
+    });
+}
+
+/**
+ * Les sets modulaires de ce scenario de campagne : la regle du livret quand la definition en porte une
+ * (`modulaires`, voir modulaires.js), sinon ceux du fichier de scenario comme avant.
+ * Rend `{ modules, cle }` : `cle` est la cle de carnet ou l'ecran pose la liste, pour que le moteur la releve.
+ */
+async function modulesDeCampagne(scenario, nbJoueurs, parDefaut) {
+    const cfg = etat.definition && etat.definition.modulaires;
+    const regle = cfg && cfg.par_scenario && cfg.par_scenario[scenario.id];
+    if (!regle) return { modules: parDefaut, cle: null };
+    const proposition = proposerModules({
+        reserve: cfg.reserve,
+        utilises: listeDuCarnet((etat.campagne.carnet || {})[cfg.cle_utilises]),
+        nombre: nombreDeModules(regle.nombre, nbJoueurs),
+        hasard: !!regle.hasard,
+    });
+    let modules = proposition.modules;
+    if (proposition.choix) {
+        const choisis = await demanderModules(proposition.choix, scenario);
+        modules = [...proposition.choix.imposes, ...choisis];
+    }
+    return { modules, cle: cfg.cle_injectee || null };
+}
+
 async function lancerScenario(scenario, options = {}) {
     const campagne = etat.campagne;
+    const choixAssemblee = scenario.assemblee ? etat.assembleeChoix : null;
+    if (choixAssemblee && choixAssemblee.mode === "rejoindre" && !String(choixAssemblee.code || "").trim()) {
+        throw new Error(t("Saisis le code de l'assemblée à rejoindre."));
+    }
     // En ordre libre, le fichier du catalogue depend du vilain choisi
     // (`<affaire>_<vilain>`) ou d'un id de catalogue propre au final : l'id de
     // la definition reste celui que le plateau et l'estampille du moteur
     // connaissent, seul le fichier lance change.
-    const idCatalogue = options.catalogue || scenario.catalogue || scenario.id;
+    const idCatalogue = options.catalogue
+        || scenarioDuCatalogueDeLEtape(scenario, campagne.carnet, campagne.difficulte === "expert");
     const duCatalogue = etat.scenarios.find((s) => s.id === idCatalogue);
     if (!duCatalogue) throw new Error(t("Scénario introuvable dans le catalogue :") + " " + idCatalogue);
 
@@ -1673,6 +1790,21 @@ async function lancerScenario(scenario, options = {}) {
         hero: { name: m.nomHeros || m.heros },
         identity: m.identite ? { hero: m.identite } : null,
     }));
+
+    // Les sets modulaires : la regle du livret si la boite en a une (MojoMania), sinon ceux du fichier de scenario.
+    const { modules, cle: cleModules } = await modulesDeCampagne(scenario, joueurs.length, duCatalogue.rawJson.modular_sets || []);
+
+    // Meme verification qu'au lancement normal (prepare/app.js) : un deck
+    // invalide ne doit jamais partir en silence, meme depuis une campagne.
+    const verif = validate({
+        playerCount: joueurs.length,
+        players: joueurs,
+        scenario: duCatalogue,
+        difficulty: { selectedModularSets: modules },
+    });
+    if (!verif.ok) {
+        throw new Error(verif.errors.map((e) => e.message).join(" — "));
+    }
 
     // La partie est rattachee a la campagne AVANT de partir : si le joueur
     // ferme l'onglet en plein scenario, on saura le lui proposer en reprise.
@@ -1690,6 +1822,10 @@ async function lancerScenario(scenario, options = {}) {
             JSON.stringify({ id: etat.campagne.id, scenario: scenario.id }));
     } catch (e) { /* stockage indisponible : le scenario se joue, sans report */ }
 
+    // Plusieurs heros : l'hote ne part PAS directement sur le plateau, il passe
+    // d'abord par l'ecran d'invitation (vueInvitation) pour donner les liens de
+    // siege a son equipe. Seul (1 heros), rien a inviter : comportement inchange.
+    const enLigne = joueurs.length > 1;
     await launch({
         mode: { id: "campaign" },
         scenario: duCatalogue,
@@ -1704,10 +1840,123 @@ async function lancerScenario(scenario, options = {}) {
             skirmish: false,
             heroic: 0,
             // Imposes par le livret : exactement ceux du fichier de scenario.
-            selectedModularSets: duCatalogue.rawJson.modular_sets || [],
+            selectedModularSets: modules,
         },
-        campaignLog: campagne.carnet || {},
+        // Les sets de CE scenario sont poses au carnet entrant : le moteur les releve (et les cumule) en fin de partie.
+        campaignLog: cleModules ? { ...(campagne.carnet || {}), [cleModules]: modules.join(";") } : (campagne.carnet || {}),
+        // Kingsfall multi-tables : « creer » une assemblee ou en « rejoindre » une avec son code (jamais pour les autres scenarios).
+        assemblee: scenario.assemblee && etat.assembleeChoix && etat.assembleeChoix.mode !== "seule" ? { ...etat.assembleeChoix } : null,
+    }, { redirect: !enLigne });
+
+    if (enLigne) {
+        etat.invitation = { joueurs, cles: null, erreur: "", copie: -1 };
+        etat.vue = "invitation";
+        chargerLiensInvitationCampagne();
+    }
+}
+
+/* ------------------------------------------------------- invitation en ligne -- */
+
+/** Les cles de siege pour CETTE partie de campagne, juste lancee (`/new` deja
+ *  envoye par `lancerScenario` ci-dessus) : jamais `get_liens_sieges` (voir son
+ *  avertissement, 07/10/2026), toujours la jumelle `get_liens_sieges_campagne`,
+ *  qui ne marque pas la table comme « ordinaire ». */
+async function chargerLiensInvitationCampagne() {
+    const inv = etat.invitation;
+    if (!inv) return;
+    try {
+        const res = await fetch("get_liens_sieges_campagne?");
+        const brut = await res.json();
+        if (!res.ok || !brut.multi || !Array.isArray(brut.cles)) {
+            throw new Error(brut.error || "indisponible");
+        }
+        inv.cles = brut.cles;
+    } catch (e) {
+        inv.erreur = t("Impossible de récupérer les liens d'invitation.");
+    }
+    rendre();
+}
+
+/** Meme forme de lien que l'assistant de partie ordinaire (`lienDuSiege`,
+ *  public/js/prepare/app.js) : `to=salon` envoie l'invite choisir... rien, en
+ *  campagne — juste confirmer son siege, l'equipe est deja fixee. */
+function lienDeSiegeCampagne(p, cle) {
+    return location.origin + "/claim_seat?p=" + p + "&key=" + encodeURIComponent(cle || "") + "&to=salon";
+}
+
+function ligneInvitationSiege(p, joueur, cle) {
+    const inv = etat.invitation;
+    const url = lienDeSiegeCampagne(p, cle);
+    return el("div", { class: "liens-ligne" },
+        el("span", { class: "liens-qui" }, (joueur.hero && joueur.hero.name) || (t("Joueur") + " " + (p + 1))),
+        el("button", {
+            class: "liens-copier" + (inv.copie === p ? " ok" : ""),
+            title: url,
+            onclick: async () => {
+                try { await navigator.clipboard.writeText(url); inv.copie = p; }
+                catch (e) { inv.copie = -1; window.prompt(t("Copie ce lien :"), url); }
+                rendre();
+            },
+        }, inv.copie === p ? t("Copié") : t("Copier le lien")),
+    );
+}
+
+function vueInvitation() {
+    const inv = etat.invitation;
+    const [hote, ...equipe] = inv.joueurs;
+    return el("div", { class: "cmp-page-invitation" },
+        entete(t("Inviter l'équipe")),
+        el("main", { class: "cmp-corps" },
+            el("div", { class: "cmp-titre-rangee" },
+                el("h1", { class: "cmp-titre mvl" }, t("Inviter l'équipe")),
+            ),
+            el("p", { class: "cmp-note" },
+                t("La partie est lancée. Envoie un lien à chaque coéquipier : son héros est déjà celui fixé par la campagne, il n'a rien à choisir.")),
+            inv.erreur ? el("p", { class: "cmp-erreur" }, inv.erreur) : null,
+            !inv.erreur && !inv.cles ? el("p", {}, t("Préparation des liens…")) : null,
+            inv.cles ? el("div", { class: "liens-invites" },
+                ...equipe.map((joueur, i) => ligneInvitationSiege(i + 1, joueur, inv.cles[i + 1])),
+            ) : null,
+            el("div", { class: "cmp-actions" },
+                el("button", {
+                    class: "btn launch",
+                    onclick: () => { window.location.href = URL_PLATEAU; },
+                }, t("Rejoindre le plateau")),
+            ),
+        ),
+    );
+}
+
+/**
+ * KINGSFALL MULTI-TABLES (22/10/2026) : jouer le combat 4 seul, ou en ASSEMBLEE avec d'autres tables. Decision de l'utilisateur : un CODE d'assemblee partage.
+ * La premiere table en CREE une (elle devient l'organisatrice et recoit le code a donner), les autres en REJOIGNENT une en saisissant ce code.
+ * Le scenario l'annonce par `assemblee: true` dans `data/campagnes/<code>.json`.
+ */
+function blocAssemblee(scenario, enCours) {
+    if (!scenario.assemblee || enCours) return null;
+    const choix = etat.assembleeChoix || (etat.assembleeChoix = { mode: "seule", code: "" });
+    const modes = [
+        ["seule", t("Une seule table")],
+        ["creer", t("Créer une assemblée")],
+        ["rejoindre", t("Rejoindre une assemblée")],
+    ];
+    const champ = el("input", {
+        type: "text", id: "cmp-assemblee-code", class: "cmp-assemblee-code", maxlength: "16", autocomplete: "off", spellcheck: "false",
+        placeholder: "KING-XXXX", value: choix.code || "", "aria-label": t("Code de l'assemblée"),
+        oninput: (e) => { choix.code = e.target.value.toUpperCase(); },
     });
+    return el("div", { class: "cmp-bloc cmp-bloc-assemblee" },
+        el("h2", { class: "cmp-bloc-t" }, t("Combat à plusieurs tables")),
+        el("p", { class: "cmp-bloc-aide" }, t("La Chute du Roi se joue seul, ou en assemblée de 2 à 4 groupes qui s'entraident entre tables.")),
+        el("div", { class: "cmp-segments", role: "group", "aria-label": t("Combat à plusieurs tables") },
+            modes.map(([mode, libelle]) => el("button", {
+                class: "cmp-segment" + (choix.mode === mode ? " sel" : ""), type: "button", "aria-pressed": String(choix.mode === mode),
+                onclick: () => { choix.mode = mode; rendre(); },
+            }, libelle))),
+        choix.mode === "creer" ? el("p", { class: "cmp-bloc-aide" }, t("Tu recevras un code à donner aux autres groupes, dans l'onglet Assemblée du plateau.")) : null,
+        choix.mode === "rejoindre" ? el("label", { class: "cmp-assemblee-saisie", for: "cmp-assemblee-code" },
+            el("span", {}, t("Code de l'assemblée")), champ) : null,
+    );
 }
 
 /* ----------------------------------------------------------------- rendu -- */
@@ -1772,7 +2021,8 @@ installerHistorique((cle) => {
 suivreTel(() => rendre());
 
 function rendre() {
-    if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
+    if (etat.vue === "invitation" && etat.invitation) root.replaceChildren(vueInvitation());
+    else if (etat.vue === "marche" && etat.campagne && etat.definition && etat.definition.marche)
         root.replaceChildren(vueMarche(etat.campagne, etat.definition));
     else if (etat.vue === "zone" && etat.campagne && etat.definition && zoneChoisissable(etat.campagne, etat.definition, false))
         root.replaceChildren(vueChoixDeLaZone(etat.campagne, etat.definition));
@@ -1859,6 +2109,34 @@ function rendre() {
     } else if (brouillon) {
         // Creation abandonnee en route : on ne garde pas un brouillon mort.
         effacerBrouillon();
+    }
+
+    // Retour du parcours de fin de scenario (plateau) : « Commencer » ouvre direct la campagne
+    // (`?campagne=<id>`) et, quand le scenario suivant se lance tel quel (`&lancer=<id>`), le demarre
+    // sans repasser par la liste ni par le bouton « Lancer le scenario ». Rien d'automatique si la
+    // campagne est perdue, si ce scenario est deja termine, ou s'il demande un choix d'assemblee
+    // (le joueur retombe alors sur l'ecran de la campagne, comme avant).
+    const demande = new URLSearchParams(window.location.search);
+    const campagneVoulue = demande.get("campagne");
+    if (campagneVoulue && !etat.campagne) {
+        history.replaceState(null, "", window.location.pathname);
+        try {
+            await ouvrirCampagne(campagneVoulue);
+            const scenarioVoulu = demande.get("lancer");
+            const scenario = scenarioVoulu
+                ? etat.definition.scenarios.find((x) => x.id === scenarioVoulu)
+                : null;
+            const faisable = scenario && !scenario.assemblee && !etat.campagne.perdue
+                && !(etat.campagne.termines || []).includes(scenario.id)
+                && !(etat.campagne.partieEnCours && etat.campagne.partieEnCours.scenario === scenario.id);
+            if (faisable) {
+                rendre();
+                await proteger(() => lancerScenario(scenario));
+                return;
+            }
+        } catch (e) {
+            etat.erreur = t("La campagne n'a pas pu être ouverte :") + " " + e.message;
+        }
     }
 
     rendre();

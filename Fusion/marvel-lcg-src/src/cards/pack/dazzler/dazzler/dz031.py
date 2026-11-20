@@ -7,44 +7,70 @@ from . import *
 #   event in your collection. Tribute becomes a copy of that card, (except for
 #   its cost) but keeps the SONG trait, until it is placed in the discard pile.
 #
-# `Search.Collection` cherche dans TOUTE la base du jeu et FABRIQUE la carte
-# choisie dans la defausse du joueur. Mecanique officielle, portee par Armed to
-# the Teeth (Deadpool 44009), Baron Zemo (50171) et deux cartes Determination.
-# Prouvee en partie reelle avant d'ecrire cette carte : 407 evenements
-# non-identite proposes, 0 fuite d'identity-specific, effet reellement resolu,
-# cout NON paye.
-#
-# « non-identity event » : PAS `card_classes="Any"`, qui ne vaut que les cinq
-# aspects officiels et jetterait les 72 evenements basiques et les 41
-# Determination. On exclut la classe `Hero`, ce qui est le sens litteral.
-#
-# « BECOMES A COPY (except for its cost) » est rendu par « on joue la carte
-# trouvee sans payer son cout » : le resultat en jeu est le meme, et le moteur
-# n'a pas de mecanisme pour changer l'identite d'une carte. La carte fabriquee
-# doit d'abord passer par la MAIN — sortie de la defausse, elle n'est pas
-# jouable (`is_like_in_hand`, ability.py:235).
+# Decision de l'utilisateur (Q4 du backlog 12, 20/10/2026) : VRAIE COPIE,
+# limitee aux evenements jouables tout de suite en Action / Hero Action.
+#   - le joueur choisit EN VOYANT LES CARTES (modele Cameo 58031 : candidats
+#     fabriques dans `world.area_removed`, `AskChooseFace`) un evenement
+#     non-identite ; un evenement a Interrupt / Response n'est pas propose ;
+#   - Tribute DEVIENT cette carte (`DevenirCopie`, dazzler/__init__.py) et en
+#     resout l'effet sans payer son cout en ressources (les couts AVANT la
+#     fleche se paient, comme pour Karaoke Night, Q5) ; elle garde [[SONG]] ;
+#   - aucune carte n'apparait en main ;
+#   - Live Concert la range dans la Setlist EN TANT QUE COPIE (avec son
+#     Showtime! si elle en a un) ; elle redevient Tribute en entrant dans la
+#     defausse (`Card.CheckIfCanDiscard`).
+# Avant le 20/10/2026 : `Search.Collection` fabriquait la carte, la mettait en
+# MAIN et tentait de la jouer ; une Response choisie y RESTAIT.
 
 
 def GetAbilities() -> Sequence['Ability']:
 
-    def non_identite(paper: 'Paper') -> bool:
-        classes = (paper.desc.get("Class") or "").split(";")
-        return "Hero" not in classes
+    def candidats(effect: 'Effect', joueur: 'Player') -> List['CardFace']:
+        from cards.database import CardsDB
+        from game.card.factory import CardFactory
+        world = effect.world
+        vus = set()
+        faces: List['CardFace'] = []
+        for card_id, paper in sorted(CardsDB.papers.items()):
+            if paper.type != "Event" or card_id == effect.this.paper.card_id:
+                continue
+            classes = (paper.desc.get("Class") or "").split(";")
+            if "Hero" in classes or paper.name in vus:
+                continue
+            texte = paper.text or ""
+            if "Action</b>" not in texte:
+                continue
+            carte = CardFactory.GenerateCard(card_id, world.area_removed, world)
+            if carte is None or carte.face is None:
+                continue
+            jeu = CapaciteDeJeu(carte.face)
+            if jeu is None:
+                continue
+            jeu.context.initiator = joueur
+            if not all(cf.HasTargets(jeu) for cf in jeu.cost_func.GetAll()):
+                continue
+            vus.add(paper.name)
+            faces.append(carte.face)
+        return faces
 
     def tribute(effect: 'Effect', message: 'Message.WhenPlayerInTurn') -> None:
         this = effect.this.CastTo(Event)
-        Unused(this)
         joueur = effect.GetInitiator()
         if joueur is None:
             return
-
-        face = Search.Collection(
-            effect, joueur, card_type=Event, check_fn=non_identite)
-        if face is None:
+        this.card.tribute_copie = None
+        faces = candidats(effect, joueur)
+        if not faces:
             return
-
-        Faces.AddToHand([face], joueur, effect)
-        joueur.PlayCardsLikeInTurn([face], effect, ignore_resources_cost=True)
+        choisie = joueur.AskChooseFace(faces, effect)
+        if choisie is None:
+            return
+        copie = DevenirCopie(this, choisie.paper, effect)
+        jeu = CapaciteDeJeu(copie)
+        if jeu is None:
+            return
+        ref = Message.WhenPlayerInTurn(joueur, effect)
+        ResoudreAvecChoix(jeu, copie, joueur, effect, ref, payer_cout=True)
 
     return [
         AbilityFactory.WhenInYourPlayTurn(

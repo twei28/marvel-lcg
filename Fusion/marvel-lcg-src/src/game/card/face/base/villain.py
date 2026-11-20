@@ -18,7 +18,10 @@ class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVi
         # self.stage = 0
         self.encounter_deck: 'Deck'
         self.encounter_discard_pile: 'Deck'
+        # AJOUT (25/10/2026, scenario The Vault) : « Activation Order X » imprime sur chaque vilain (0 = aucun).
+        self.activation_order = 0
         super().__init__(paper)
+        self.RegisterAttribute("ActivationOrder", "activation_order", int)
 
     # @override
     # def SetName(self, paper: 'Paper'):
@@ -76,7 +79,18 @@ class Villain(Enemy, HasStage, HasAccelerationIcon, HasHazard, HasAmplify, HasVi
     def OnBeDefeated(self, would_defeated_message: 'Message.WhenSchemeWouldBeDefeated|Message.WhenUnitWouldBeDefeated', *, as_asset: bool, ignore_when_defeated: bool):
         super().OnBeDefeated(would_defeated_message, as_asset=as_asset, ignore_when_defeated=ignore_when_defeated)
         if self.IsInPlay() or self.card.area.flags.is_victory_display:
+            # Signalement de bug n°133 (16/11/2026, Excessive Force sur Rhino) :
+            # un vilain a plusieurs stades qui perd son dernier PV est VAINCU, puis
+            # le stade suivant reprend la meme carte, MEME NOM, PV remis a fond. Une
+            # carte qui relit `cible.IsDefeated()` apres ses degats ne voyait que le
+            # stade 2 en pleine forme (`IsInPlay` se contente du nom). On marque donc
+            # la face du stade vaincu, que les effets en cours continuent de tenir.
+            self.stade_vaincu = True
             self.Advance(would_defeated_message.by_effect)
+
+    @override
+    def IsDefeated(self) -> bool:
+        return getattr(self, 'stade_vaincu', False) or super().IsDefeated()
 
     @staticmethod
     def GetGuardFaces(effect: 'Effect') -> Sequence['CardFace']:

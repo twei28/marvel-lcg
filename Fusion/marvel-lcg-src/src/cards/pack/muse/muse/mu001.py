@@ -12,13 +12,19 @@ from . import *
 #    par `Players.ForEachPlayer` + `joueur.DiscardDeckTopCards(n, effect)`.
 #  - `as025` Underworld Impact : compter les cartes d'un joueur puis frapper
 #    son identite d'autant.
+#  - `spider_man_rainy/sr009` J. Jonah Jameson : meme probleme (« a picture of
+#    X » est du dessin, le moteur ne le lit pas), meme solution (poser la
+#    question au joueur).
 #
-# ⚠ ARBITRAGE, decision utilisateur du 13/09/2026 (deux questions posees).
-#  1. « l'image de votre identite » = ce que dit le RELEVE des illustrations
-#     (helper `PorteLImageDe`, voir le `__init__.py` du set). Le premier
-#     arbitrage du jour disait « une carte signature » ; l'utilisateur l'a
-#     renverse le meme jour : c'est l'image qui fait foi. L'approximation
-#     signature ne sert plus que pour les images pas encore relevees.
+# ⚠ ARBITRAGE, decision utilisateur du 13/09/2026 puis du 08/11/2026.
+#  1. « l'image de votre identite » ne se devine pas : le RELEVE manuel des
+#     illustrations (`PorteLImageDe`, 5746 images) est reste vide — personne
+#     ne l'a jamais rempli, et Muse n'a donc JAMAIS tourne sur la vraie regle,
+#     seulement sur son repli (« carte signature »), qui n'est pas ce texte
+#     imprime demande. Remplace le 08/11/2026 : on pose la question au joueur,
+#     qui REGARDE les cartes defaussees (visibles dans la defausse) et compte
+#     lui-meme. Une seule question par joueur (un nombre, 0 a 3), pas trois
+#     questions Oui/Non d'affilee (decision utilisateur du 08/11/2026).
 #  2. « chaque PERSONNAGE dont l'image etait sur cette carte » : c'est le
 #     HEROS DONT C'EST LE DECK qui encaisse, quoi que montre la carte. Une
 #     carte signature ne represente pas toujours son heros — Nova Prime montre
@@ -44,7 +50,15 @@ def GetAbilities() -> Sequence['Ability']:
 
         def peindre(joueur: 'Player') -> None:
             defaussees = joueur.DiscardDeckTopCards(3, effect)
-            combien = len(CartesAvecLImageDe(defaussees, joueur))
+            if not defaussees:
+                return
+            noms = ", ".join(f'"{c.name}"' for c in defaussees)
+            combien = joueur.AskChooseOneText(
+                list(range(len(defaussees) + 1)),
+                [str(i) for i in range(len(defaussees) + 1)],
+                f"Art Imitates Death: of the {len(defaussees)} cards just discarded "
+                f"({noms}), how many have a picture of your identity on them?",
+            )
             if combien <= 0:
                 return
             identite = joueur.GetIdentity()

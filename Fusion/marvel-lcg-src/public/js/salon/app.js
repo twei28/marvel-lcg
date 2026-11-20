@@ -9,9 +9,10 @@
 // cookie seat_token_<N>. C'est le cookie qui fait foi côté serveur : l'URL
 // seule ne donne aucun droit.
 "use strict";
-import { catalog } from "/public/js/prepare/catalog.js";
+import { catalog, titreDeVague } from "/public/js/prepare/catalog.js";
 import { cardImageUrlEn, cardImageUrlHd, oublierDecksSauvegardes } from "/public/js/prepare/api.js";
-import { t, boutonLangue } from "/public/js/prepare/langue.js";
+import { titreDeBoite } from "/public/js/prepare/titres-extensions.js";
+import { t, boutonLangue, langueActuelle } from "/public/js/prepare/langue.js";
 import { cards } from "/public/js/prepare/cards.js";
 import { boutonAffichage } from "/public/js/prepare/affichage.js";
 import { poserIcone } from "/public/js/prepare/icones-entete.js";
@@ -61,6 +62,18 @@ function el(tag, attrs = {}, ...enfants) {
     for (const [cle, valeur] of Object.entries(attrs)) {
         if (cle === "class") n.className = valeur;
         else if (cle.startsWith("on")) n[cle] = valeur;
+        // ⚠ UN `style` OBJET S'APPLIQUE PROPRIETE PAR PROPRIETE. Sans cette
+        // branche, `setAttribute("style", {...})` ecrivait « [object Object] »,
+        // que le navigateur ignore : AUCUNE image de heros, aucune scene, aucune
+        // bande de couleur d'aspect ne s'est jamais affichee dans le salon,
+        // quelle que soit l'URL (constate le 28/10/2026 en rejouant le vrai
+        // el() dans Chromium). L'assistant (prepare/app.js) avait cette branche.
+        else if (cle === "style" && valeur && typeof valeur === "object") Object.assign(n.style, valeur);
+        // ⚠ UN BOOLEEN SE LIT PAR SA PRESENCE, PAS PAR SA VALEUR : `selected="false"`
+        // est un attribut PRESENT, donc vrai. Sans cette branche, le menu des vagues
+        // marquait TOUTES ses options « selected » et affichait la derniere (« Vague
+        // 11 ») au lieu de « Toutes les vagues ».
+        else if (typeof valeur === "boolean") { if (valeur) n.setAttribute(cle, ""); }
         else if (valeur != null) n.setAttribute(cle, valeur);
     }
     for (const enfant of enfants.flat()) {
@@ -273,10 +286,32 @@ const ASPECTS = {
 
 const idBase = (heroCardId) => String(heroCardId || "").split(",")[0];
 
+/* ---------------- Images du salon invite (28/10/2026) ----------------
+ * Le salon de l'invite n'est PAS servi par un hote qui tient les scans : ni le
+ * moteur par siege (pN.<domaine>, deploiement/Caddyfile), ni le domaine
+ * principal (<domaine>) ne repondent une image sur /<cardId> -- claim_seat
+ * redirige en RELATIF, donc l'invite reste sur l'hote du lien, quel qu'il
+ * soit. SEUL play.<domaine> sert les scans. On prefixe donc TOUTES les URLs
+ * d'images par play.<domaine>, derive du domaine courant en retirant un
+ * eventuel prefixe de siege / www / play deja present.
+ *
+ * ⚠ Premiere version (regex `^p\d+\.`) ne couvrait que le cas « invite sur un
+ * siege pN » : quand l'hote joue sur le domaine principal, l'invite y reste
+ * aussi, et les tuiles restaient noires (signale le 28/10/2026). En dev
+ * (localhost, IP), on garde le relatif : le serveur local sert les images. */
+function hoteImages() {
+    const h = location.hostname;
+    if (h === "localhost" || /^\d+(\.\d+){3}$/.test(h) || !h.includes(".")) return "";
+    const base = h.replace(/^(p\d+|www|play)\./, "");
+    return `${location.protocol}//play.${base}`;
+}
+const imgEn = (cardId) => { const u = cardImageUrlEn(cardId); return u ? hoteImages() + u : u; };
+const imgHd = (cardId) => { const u = cardImageUrlHd(cardId); return u ? hoteImages() + u : u; };
+
 function portrait(cardId, cls) {
     return el("div", {
         class: "portrait " + (cls || ""),
-        style: cardId ? { backgroundImage: `url(${cardImageUrlEn(cardId)})` } : {},
+        style: cardId ? { backgroundImage: `url(${imgEn(cardId)})` } : {},
     });
 }
 
@@ -302,11 +337,11 @@ function nomHeros(hero) {
 function portraitScenario(sc) {
     const ids = (sc && sc.villainCards) || [];
     if (ids.length < 2) {
-        return el("div", { class: "portrait", style: { backgroundImage: `url("${cardImageUrlEn(sc.tileImage)}")` } });
+        return el("div", { class: "portrait", style: { backgroundImage: `url("${imgEn(sc.tileImage)}")` } });
     }
     const n = Math.min(ids.length, 4);
     return el("div", { class: `portrait portrait-multi n${n}` },
-        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${cardImageUrlEn(id)}")` } })));
+        ...ids.slice(0, 4).map((id) => el("i", { style: { backgroundImage: `url("${imgEn(id)}")` } })));
 }
 
 function barreAspects(deck) {
@@ -361,7 +396,7 @@ function rendreScene(hero, libre = null) {
         // visible à cette taille (même choix que l'assistant).
         hero.lie
             ? el("div", { class: "tb-art" }, portraitHeros(hero))
-            : el("div", { class: "tb-art", style: { backgroundImage: `url("${cardImageUrlHd(idBase(hero.heroCardId))}")` } }),
+            : el("div", { class: "tb-art", style: { backgroundImage: `url("${imgHd(idBase(hero.heroCardId))}")` } }),
         el("div", { class: "tb-trame" }),
         el("div", { class: "tb-nomg" }, el("small", {}, traits || petit), nomHeros(hero)),
     );
@@ -412,21 +447,35 @@ function construireBarre() {
 }
 
 /* ---------------- Les decks du compte de l'invité (13/10/2026) ----------------
-   Décision 3 : l'invité venu par une invitation (il a un compte) retrouve SES
-   decks. Le moteur ne les rend qu'à celui qui tient ce siège, et le site
-   seulement si ce siège a été pris par une invitation acceptée : un invité
-   arrivé par un simple lien n'en a pas, et rien ne change pour lui. */
+   DEUX chemins vers le MEME compte, fusionnés :
+   - par INVITATION acceptée (décision 3) : le site résout siège→compte
+     (`get_decks_invite`). Marche même si l'invité n'est pas connecté ici.
+   - par SESSION du site (28/10/2026) : si l'invité est déjà CONNECTÉ à son
+     compte dans ce navigateur, son cookie `nc_session` (Domain=.<domaine>)
+     arrive jusqu'au moteur par siège, qui le relaie (`get_mes_decks`). Un
+     invité venu par un simple lien copié retrouve ainsi ses decks, à condition
+     d'être connecté. Jamais connecté et sans invitation : rien, comme avant. */
 
 let decksDuCompte = null;     // {invite, decks:[{id, deck}]}, lu une fois
 
 async function lireDecksDuCompte() {
     if (decksDuCompte) return decksDuCompte;
     try {
-        const reponse = await fetch(`get_decks_invite?p=${siege}`, { cache: "no-store" });
-        const brut = reponse.ok ? await reponse.json() : null;
+        const [parSiege, parCompte] = await Promise.all([
+            fetch(`get_decks_invite?p=${siege}`, { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+            fetch("get_mes_decks", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+        ]);
+        // Fusion dédupliquée par identifiant : les deux sources désignent le
+        // même dossier de decks quand c'est le même compte.
+        const parId = new Map();
+        for (const source of [parSiege, parCompte]) {
+            for (const d of (Array.isArray(source && source.decks) ? source.decks : [])) {
+                if (d && d.id != null && !parId.has(String(d.id))) parId.set(String(d.id), d);
+            }
+        }
         decksDuCompte = {
-            invite: String((brut && brut.invite) || ""),
-            decks: Array.isArray(brut && brut.decks) ? brut.decks : [],
+            invite: String((parSiege && parSiege.invite) || (parCompte && parCompte.pseudo) || ""),
+            decks: [...parId.values()],
         };
     } catch (e) {
         // Table muette : on réessaiera au prochain passage sur les decks.
@@ -462,6 +511,65 @@ async function choisirDeckDuCompte(dk) {
     }
     oublierDecksSauvegardes();
     await envoyerChoix({ id: nom, name: dk.name, source: "saved", deck: dk.deck });
+}
+
+/* ---------------- Connexion de l'invité (cas B, 28/10/2026) ----------------
+ * Un invité venu par un simple lien, PAS déjà connecté, n'a aucun deck perso.
+ * On lui offre de se connecter à SON compte depuis le salon : le moteur relaie
+ * au site (post_connexion_invite → /api/connexion) et pose le cookie de
+ * session ; on relit alors ses decks (get_mes_decks). Le mot de passe ne sert
+ * qu'à cet envoi, il n'est ni gardé ni journalisé côté client. */
+let connexionEnCours = false;
+let erreurConnexion = "";
+
+async function soumettreConnexion(pseudo, mdp) {
+    if (!pseudo || !mdp || connexionEnCours) return;
+    connexionEnCours = true;
+    erreurConnexion = "";
+    rendreDecks();
+    let ok = false, msg = "";
+    try {
+        const rep = await fetch("/post_connexion_invite", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ pseudo, mdp }),
+        });
+        const brut = await rep.json().catch(() => ({}));
+        ok = !!brut.ok;
+        msg = brut.erreur || "";
+    } catch (e) {
+        msg = t("Service de connexion indisponible.");
+    }
+    connexionEnCours = false;
+    if (ok) {
+        decksDuCompte = null;          // relire la liste avec la nouvelle session
+        oublierDecksSauvegardes();
+    } else {
+        erreurConnexion = msg || t("Identifiant ou mot de passe incorrect.");
+    }
+    rendreDecks();
+}
+
+function blocConnexion() {
+    const champPseudo = el("input", {
+        class: "salon-connexion-champ", type: "text",
+        placeholder: t("Identifiant"), autocomplete: "username",
+    });
+    const champMdp = el("input", {
+        class: "salon-connexion-champ", type: "password",
+        placeholder: t("Mot de passe"), autocomplete: "current-password",
+    });
+    return el("form", {
+        class: "salon-connexion",
+        onsubmit: (e) => { e.preventDefault(); soumettreConnexion(champPseudo.value.trim(), champMdp.value); },
+    },
+        el("p", { class: "salon-connexion-intro" }, t("Connecte-toi pour retrouver tes decks sauvegardés.")),
+        el("div", { class: "salon-connexion-ligne" },
+            champPseudo, champMdp,
+            el("button", { class: "salon-pret", type: "submit", disabled: connexionEnCours || undefined },
+                connexionEnCours ? t("Connexion…") : t("Se connecter"))),
+        erreurConnexion ? el("p", { class: "salon-connexion-erreur" }, erreurConnexion) : null,
+    );
 }
 
 /* ---------------- Rendu ---------------- */
@@ -502,6 +610,9 @@ async function rendreDecks() {
     };
     // La manche d'avant, pré-cochée : un seul clic pour rejouer pareil.
     const propose = !etat.deckChoisi && etat.propose ? etat.propose : null;
+    // Invité pas encore identifié (ni invitation acceptée, ni session) : on lui
+    // propose de se connecter pour retrouver ses decks sauvegardés.
+    const identifie = !!(decksDuCompte && decksDuCompte.invite);
     // ⚠ `replaceChildren` ECRIT « null » en toutes lettres (vu en essai le
     // 13/10/2026) : le bandeau absent est filtre, pas passe tel quel.
     $("#salon-choix").replaceChildren(...[
@@ -509,33 +620,110 @@ async function rendreDecks() {
         propose ? el("div", { class: "salon-rejouer" },
             el("p", {}, `${t("Comme la partie d’avant")} : ${nomHeros(etat.hero)} — ${propose.name}`),
             el("button", { class: "salon-pret", onclick: () => envoyerChoix(propose) }, t("Je suis prêt"))) : null,
+        identifie ? null : blocConnexion(),
         el("div", { class: "hero-grid tb-roster tb-roster-deck" }, ...decks.map(option)),
         champImport(),
     ].filter(Boolean));
+}
+
+/* ---------------- Filtres de héros (parité avec l'assistant, 28/10/2026) ----
+ * Mêmes filtres que prepare/app.js (recherche nom+traits, vagues, fan-made) :
+ * sans eux, officiels et fan-made sortaient mélangés, sans recherche. Le modèle
+ * héros (catalog.js) porte déjà `recherche`, `vague`, `homebrew` : on ne fait
+ * que les exploiter. Le fan-made est MASQUÉ par défaut et ne s'affiche que seul,
+ * exactement comme dans l'assistant. */
+const filtresHeros = { q: "", vague: "", homebrew: false };
+let _herosSalon = null;
+
+/** Même libellé de vague que l'assistant (nomDeVague, prepare/app.js). */
+function nomDeVagueSalon(vague) {
+    if (vague === 0) return t("Set de base");
+    const titre = vague === 1 ? t("Les premiers paquets") : titreDeBoite(titreDeVague(vague), langueActuelle());
+    return t("Vague") + " " + vague + (titre ? " · " + titre : "");
+}
+
+function herosFiltres() {
+    const q = filtresHeros.q.toLowerCase();
+    return (_herosSalon || []).filter((h) =>
+        (!q || h.recherche.includes(q)) &&
+        (!filtresHeros.vague || String(h.vague) === filtresHeros.vague) &&
+        (!!h.homebrew === filtresHeros.homebrew));
+}
+
+/** Remplit le menu des vagues avec celles qui EXISTENT dans la liste courante
+ *  (et du bon côté officiel/fan-made), comme majMenuVagues de l'assistant. */
+function majVaguesSalon() {
+    const sel = document.querySelector("#salon-filtres .vague-select");
+    if (!sel) return;
+    const vagues = [...new Set((_herosSalon || [])
+        .filter((h) => !!h.homebrew === filtresHeros.homebrew && h.vague != null)
+        .map((h) => h.vague))].sort((a, b) => a - b);
+    sel.replaceChildren(el("option", { value: "" }, t("Toutes les vagues")));
+    vagues.forEach((v) => sel.append(
+        el("option", { value: String(v), selected: filtresHeros.vague === String(v) }, nomDeVagueSalon(v))));
+    sel.hidden = vagues.length === 0;
+}
+
+function tuileHeros(h) {
+    return el("button", {
+        class: "tb-port salon-hero",
+        title: nomHeros(h),
+        "data-hero": h.id,
+        onclick: () => { etat.hero = h; rendreDecks(); },
+        onmouseenter: () => rendreScene(h),
+        onfocus: () => rendreScene(h),
+        onmouseleave: () => rendreScene(etat.hero),
+    },
+        portraitHeros(h),
+        el("span", { class: "tb-port-nom" }, nomHeros(h)),
+    );
+}
+
+function majGrilleHeros() {
+    const grille = document.getElementById("salon-grille");
+    if (!grille) return;
+    const list = herosFiltres();
+    const compte = $("#tb-compte");
+    if (compte) compte.textContent = list.length + " " + t("héros");
+    grille.replaceChildren(...(list.length
+        ? list.map(tuileHeros)
+        : [el("div", { class: "empty-state" }, t("Aucun héros trouvé"))]));
 }
 
 async function rendreHeros() {
     etapeActuelle = 1;
     majEtapes();
     rendreScene(etat.hero);
-    const heroes = await catalog.heroes();
+    _herosSalon = await catalog.heroes();
     if (etapeActuelle !== 1) return;
-    $("#tb-compte").textContent = heroes.length + " " + t("héros");
     $("#salon-choix").replaceChildren(
-        el("div", { class: "hero-grid tb-roster", id: "salon-grille" },
-            ...heroes.map((h) => el("button", {
-                class: "tb-port salon-hero",
-                title: nomHeros(h),
-                "data-hero": h.id,
-                onclick: () => { etat.hero = h; rendreDecks(); },
-                onmouseenter: () => rendreScene(h),
-                onfocus: () => rendreScene(h),
-                onmouseleave: () => rendreScene(etat.hero),
-            },
-                portraitHeros(h),
-                el("span", { class: "tb-port-nom" }, nomHeros(h)),
-            ))),
+        el("div", { class: "tb-filtres", id: "salon-filtres" },
+            el("input", {
+                class: "search tb-search",
+                placeholder: t("Rechercher un héros ou un trait"),
+                value: filtresHeros.q,
+                oninput: (e) => { filtresHeros.q = e.target.value; majGrilleHeros(); },
+            }),
+            el("select", {
+                class: "sel vague-select tampon",
+                onchange: (e) => { filtresHeros.vague = e.target.value; majGrilleHeros(); },
+            }, el("option", { value: "" }, t("Toutes les vagues"))),
+            el("button", {
+                class: "tampon" + (filtresHeros.homebrew ? " on" : ""),
+                title: t("Héros fan-made, hors de toute extension officielle"),
+                onclick: (e) => {
+                    filtresHeros.homebrew = !filtresHeros.homebrew;
+                    e.currentTarget.classList.toggle("on", filtresHeros.homebrew);
+                    filtresHeros.vague = "";
+                    majVaguesSalon();
+                    majGrilleHeros();
+                },
+            }, "Fan-made"),
+        ),
+        el("div", { class: "hero-grid tb-roster", id: "salon-grille" }),
     );
+    majVaguesSalon();
+    majGrilleHeros();
 }
 
 /* ---------------- L'équipe en formation (09/10/2026) ----------------
@@ -545,6 +733,79 @@ async function rendreHeros() {
 
 let equipeAffichee = "";
 let tousLesScenarios = null;
+
+/* ---------------- Échange de siège avant le lancement (06/11/2026) --------
+   Demande utilisateur : avant de démarrer, pouvoir choisir qui est joueur
+   1, 2, 3 ou 4. Une seule proposition à la fois, tenue par le moteur
+   (`demander_echange_siege`/`get_echange_siege`/`repondre_echange_siege`) ;
+   ce fichier ne fait que la proposer, l'afficher, et réagir quand le moteur
+   nous dit que notre cookie de siège a changé. */
+
+let echangeEnAttente = null;   // ma propre demande envoyée : numéro de siège visé, ou null
+let echangeRecu = null;        // une demande reçue : { de } ou null
+
+async function proposerEchangeSiege(pCible) {
+    if (echangeEnAttente != null || echangeRecu) return;
+    try {
+        const reponse = await fetch("/demander_echange_siege", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ p_demande: siege, p_cible: pCible }),
+        });
+        if (!reponse.ok) {
+            const erreur = await reponse.json().catch(() => ({}));
+            statut(erreur.error === "echange deja en cours"
+                ? t("Un échange est déjà en cours.") : t("Échange impossible."), true);
+            return;
+        }
+        echangeEnAttente = pCible;
+        equipeAffichee = "";
+        sonderEquipe();
+    } catch (e) { /* le prochain sondage réessaiera de voir l'état réel */ }
+}
+
+async function repondreEchangeSiege(accepte) {
+    if (!echangeRecu) return;
+    const demande = echangeRecu.de;
+    try {
+        const reponse = await fetch("/repondre_echange_siege", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ accepte }),
+        });
+        if (accepte && reponse.ok) {
+            // Le cookie de CE navigateur vient de changer : l'URL `?p=` ne
+            // correspond plus à rien, direction le bon siège.
+            location.href = `salon.html?p=${demande}`;
+            return;
+        }
+    } catch (e) { /* la demande peut avoir expire cote serveur, le sondage corrige */ }
+    echangeRecu = null;
+    equipeAffichee = "";
+    sonderEquipe();
+}
+
+async function sonderEchangeSiege() {
+    if (document.hidden) return;
+    let brut = {};
+    try {
+        const reponse = await fetch(`get_echange_siege?p=${siege}`, { cache: "no-store" });
+        if (reponse.ok) brut = await reponse.json();
+    } catch (e) { return; }
+    if (brut.resultat === "echange") {
+        // C'est notre propre sondage qui vient de nous faire traverser au
+        // nouveau siège : le cookie est déjà posé, seule l'URL est en retard.
+        location.href = `salon.html?p=${brut.nouveau_siege}`;
+        return;
+    }
+    const nouveauRecu = brut.role === "cible" && brut.proposition ? { de: brut.proposition.de } : null;
+    const nouvelEnvoye = brut.role === "demande" ? echangeEnAttente : null;
+    const changement = JSON.stringify(nouveauRecu) !== JSON.stringify(echangeRecu)
+        || nouvelEnvoye !== echangeEnAttente;
+    echangeRecu = nouveauRecu;
+    echangeEnAttente = brut.role === "demande" ? echangeEnAttente : null;
+    if (changement) { equipeAffichee = ""; sonderEquipe(); }
+}
 
 async function scenarioPar(id) {
     if (!id) return null;
@@ -571,16 +832,34 @@ async function sonderEquipe() {
     for (let p = 0; p < nombre; p++) {
         const id = p === siege ? mien : String((brut.sieges || {})[String(p)] || "");
         const hero = id ? heroes.find((h) => h.heroCardId === id) : null;
-        places.push(el("div", { class: "salon-place" + (hero ? "" : " attend") + (p === siege ? " moi" : "") },
+        const estMoi = p === siege;
+        const enfants = [
             el("div", { class: "tb-siege" }, hero ? portraitHeros(hero) : el("span", { class: "plus" }, "?")),
             el("small", {}, `${t("Joueur")} ${p + 1}`, el("i", {}, hero ? nomHeros(hero) : t("Choisit…"))),
-        ));
+        ];
+        if (!estMoi && !echangeRecu) {
+            const enAttente = echangeEnAttente === p;
+            enfants.push(el("button", {
+                type: "button", class: "salon-echanger" + (enAttente ? " en-attente" : ""),
+                disabled: echangeEnAttente != null || undefined,
+                title: t("Échanger de siège avec ce joueur"),
+                onclick: () => proposerEchangeSiege(p),
+            }, enAttente ? t("Demandé…") : "⇄"));
+        }
+        places.push(el("div", { class: "salon-place" + (hero ? "" : " attend") + (estMoi ? " moi" : "") }, ...enfants));
     }
     places.push(el("span", { class: "salon-contre", "aria-hidden": "true" }, "VS"));
     places.push(el("div", { class: "salon-place mechant" + (scenario ? "" : " attend") },
         el("div", { class: "tb-siege" }, scenario ? portraitScenario(scenario) : el("span", { class: "plus" }, "?")),
         el("small", {}, t("Méchant"), el("i", {}, scenario ? scenario.name : t("Pas encore choisi"))),
     ));
+    if (echangeRecu) {
+        places.push(el("div", { class: "salon-echange-recu" },
+            el("span", {}, t("Joueur") + ` ${echangeRecu.de + 1} ` + t("propose d’échanger de siège avec toi.")),
+            el("button", { type: "button", onclick: () => repondreEchangeSiege(true) }, t("Accepter")),
+            el("button", { type: "button", onclick: () => repondreEchangeSiege(false) }, t("Refuser")),
+        ));
+    }
     equipeAffichee = empreinte;
     $("#salon-equipe").replaceChildren(...places);
 }
@@ -1086,14 +1365,19 @@ async function demarrer() {
 
     statut(t("Choisis ton héros, puis ton deck. L’hôte lancera quand tout le monde aura choisi."));
 
+    // RESET AU LOBBY (28/10/2026, demande utilisateur) : on ne REPROPOSE PLUS
+    // le heros+deck de la manche d'avant. Revenir au lobby doit toujours
+    // repartir d'un choix VIERGE (grille de heros), jamais recoller l'ancien
+    // perso. On garde seulement `reprendreChoixExistant`, qui ne reprend que le
+    // choix DEJA ENVOYE pour la partie EN COURS (il se vide a chaque /new).
     await reprendreChoixExistant();
-    if (!etat.deckChoisi) await reprendreDernierChoix();
     if (!etat.deckChoisi) bandeauAttente(false);
     if (etat.hero) await rendreDecks();
     else await rendreHeros();
 
     surveillerLeLancement();
     setInterval(sonderEquipe, 2000);
+    setInterval(sonderEchangeSiege, 2000);
     boucleRoue();
 }
 

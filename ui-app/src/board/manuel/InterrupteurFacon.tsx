@@ -22,6 +22,14 @@ export type InterrupteurFaconProps = {
   commenceEnManuel: boolean
   /** Spectateur : on voit l'état, on ne le change pas. */
   lectureSeule?: boolean
+  /**
+   * Le moteur attend une réponse du joueur local à une question ouverte
+   * (mulligan, etc.) : voir `moteurAttendUneReponse`. Passer en manuel
+   * PENDANT cette attente est le défaut connu du 21/10/2026 (la reprise
+   * peut reposer la question sans que l'écran suive) — on bloque le bouton
+   * en amont plutôt que de corriger l'affichage après coup.
+   */
+  questionOuverte?: boolean
   /** Passe la table en manuel. Rend faux si le moteur a refusé. */
   onManuel: () => Promise<boolean>
   /** Reprend à la question du moteur (partie commencée en auto). Rend faux si refusé. */
@@ -40,6 +48,7 @@ export function InterrupteurFacon({
   manuel,
   commenceEnManuel,
   lectureSeule = false,
+  questionOuverte = false,
   onManuel,
   onReprendre,
   onReprendreA,
@@ -72,6 +81,10 @@ export function InterrupteurFacon({
   // Avant la fin de la mise en place d'une partie commencée en manuel, le moteur
   // n'est pas encore tu : rien à basculer, on grise « Manuel ».
   const miseEnPlace = commenceEnManuel && !manuel
+  // Le moteur attend une réponse (mulligan, etc.) : passer en manuel maintenant
+  // reproduirait le défaut du 21/10/2026 (geste manuel jamais publié à l'écran
+  // après la reprise). On grise « Manuel » tant que la question n'est pas répondue.
+  const questionBloque = !manuel && questionOuverte
 
   return (
     <span className="bh-facon" role="group" aria-label={t('Façon de jouer')}>
@@ -91,8 +104,12 @@ export function InterrupteurFacon({
         className={`bh-facon-choix${manuel ? ' est-actif' : ''}`}
         aria-pressed={manuel}
         aria-label={t('Mode manuel')}
-        disabled={lectureSeule || miseEnPlace}
-        title={t('Le moteur se tait : tu joues à la main, comme sur OCTGN')}
+        disabled={lectureSeule || miseEnPlace || questionBloque}
+        title={
+          questionBloque
+            ? t('Réponds d’abord à la question en cours (mulligan…)')
+            : t('Le moteur se tait : tu joues à la main, comme sur OCTGN')
+        }
         onClick={() => { if (!manuel) void passerManuel() }}
       >
         {t('Manuel')}

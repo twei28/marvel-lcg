@@ -83,11 +83,13 @@ export function deckDeLaVersion(hero, versionId) {
  */
 export function optionsDuHeros(hero, contexte) {
     const ctx = contexte || {};
-    const versions = versionsDe(hero);
     const identites = (hero && hero.variants) || [];
     const arts = ctx.arts || [];
     const options = {
-        versions: versions.length > 1 ? versions : [],
+        // Les DECKS multiples d'un heros (Aggression/Protection/Justice...) ne sont PLUS une option de cette modale
+        // (04/11/2026, demande utilisateur) : la modale ne sert qu'aux ARTS (et identites). Les decks de depart se
+        // choisissent a l'etape DECKS, ou `decksForHero` les liste tous. Voir la memoire versions-decks-selection.
+        versions: [],
         identites: identites.length > 1 ? identites : [],
         arts: arts.length ? arts : [],
         ressources: false,

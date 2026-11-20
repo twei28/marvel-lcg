@@ -65,3 +65,20 @@
   (« Cloak Leonardo, tough sur Usagi »), les distinguer par `perso.IsName(...)`.
 - Cas : `[ub] ub019` (jouable avec les deux, injouable avec un seul, des deux cotes), `tools/cas/tmnt_aspect_basic.py`.
 
+
+
+## Second selecteur lu une seule fois (25/10/2026, wn009 Hey you!)
+
+- `effect.targets2` (l'ennemi choisi apres les deux personnages du Team-Up) ne se lit qu'UNE fois :
+  une seconde lecture leve `AssertionError` (`initialized_targets`), AVALEE par le moteur. « Stun and
+  confuse an enemy » posait le Sonne puis s'arretait. Garder `ennemis = list(effect.targets2)`.
+- Team-Up dont un nom est porte par PLUSIEURS cartes (« Spider-Man », « Hulk ») : `desc.TeamUp` compare
+  les noms, toute identite ou alliee de ce nom ouvre la carte (wn011 : allie 13019 Spider-Man).
+
+## Pieges vus au portage de Smasher (Power Couple sz015, 26/10/2026)
+
+- **Team-Up + immunite temporaire** : `SetTarget("TeamUp")` donne les DEUX cibles dans `effect.targets`. Pour « they cannot take damage until the end of the round »,
+  `RegisterTemp(UnitCannotTakeDamageWhile(Temp0, Unit2, conditions=[lambda e, m: m.trigger in cibles]), unregister_after_exec=False, until_round_end=True)` ;
+  sans la condition tout personnage serait protege. Cas `[sz] sz015` (contre-cas Black Cat, temoin sans la carte).
+- Le Team-Up se remplit par NOM (`desc.TeamUp = "Cannonball;Smasher"`) : un allie officiel de meme nom (gs108 Smasher) suffit aussi.
+- Le nom d'une carte Basic peut exister deja (« Power Couple » jj022) : ne jamais les designer par leur nom.

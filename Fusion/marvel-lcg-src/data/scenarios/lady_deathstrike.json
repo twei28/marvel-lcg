@@ -1,0 +1,42 @@
+{
+  "version": "0.5.8",
+  "name": "Lady Deathstrike",
+  "villain": [
+    "ld001",
+    "ld002"
+  ],
+  "expert": false,
+  "schemes": [
+    "ld004a,ld004b"
+  ],
+  "set_aside": [
+    "ld005",
+    "ld005",
+    "ld005",
+    "ld005"
+  ],
+  "encounters": [
+    "ld006",
+    "ld006",
+    "ld007",
+    "ld008",
+    "ld009",
+    "ld009",
+    "ld009",
+    "ld010",
+    "ld011",
+    "ld011",
+    "ld012",
+    "ld013",
+    "ld013",
+    "ld014",
+    "ld014"
+  ],
+  "encounter_sets": [
+    "reavers",
+    "standard"
+  ],
+  "modular_sets": [
+    "military_grade"
+  ]
+}

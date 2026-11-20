@@ -1,0 +1,12 @@
+/* La carte qu'on tient, et celle sur laquelle on la lacherait (ordre-glisser.ts). */
+.est-permutable {
+  cursor: grab;
+}
+.est-permutable.est-glisse {
+  opacity: 0.45;
+}
+.est-permutable.est-depot {
+  outline: 3px dashed var(--rouge-marvel, #e23636);
+  outline-offset: 3px;
+  border-radius: 10px;
+}

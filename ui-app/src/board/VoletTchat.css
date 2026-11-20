@@ -1,0 +1,593 @@
+/* Le volet du tchat et sa languette (VoletTchat.tsx) — jumeau de
+   VoletJournal.css pour la disposition (languette, glisser, detacher), mais
+   habille aux couleurs du site (bleu de la teinte « normal », coins coupes)
+   plutot qu'au gris neutre des volets utilitaires : signale « moche, ne
+   ressemble pas au reste du site » (06/11/2026). Hors couche, meme raison que
+   VoletJournal.css : l'ordre des @layer n'est pas garanti en production.
+
+   ⚠ BLEU, PAS ROUGE (06/11/2026) : --agir vaut #3f86e0 sur le site EN
+   PRODUCTION (verifie par getComputedStyle, teinte « normal »), pas le rouge
+   Marvel #e62429 du commentaire de refonte du 7/9/2026 dans prepare.css —
+   ce commentaire decrit une teinte abandonnee. Voir la memoire
+   « style-site-bleu-pas-rouge » avant de changer cette couleur.
+
+   A DROITE (depuis le 09/11/2026), avec les autres languettes (Aide, Feuillets, Journal), sous les
+   fenetres modales (900), au-dessus du cartouche du mechant (540). */
+
+.volet-tchat {
+  --volet-largeur: min(400px, 92vw);
+  --tchat-bleu: #3f86e0;
+  --tchat-bleu-vif: #6fa8ec;
+  --tchat-encre: #0b0d13;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 620;
+  width: var(--volet-largeur);
+  height: min(64dvh, 560px);
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(165deg, rgba(18, 20, 28, 0.98), rgba(12, 14, 20, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-right: none;
+  border-bottom: none;
+  border-top: 3px solid var(--tchat-bleu);
+  border-radius: 10px 0 0 0;
+  clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.6);
+  color: #eef0f4;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  animation: volet-tchat-entre 180ms ease-out;
+}
+
+/* ⚠ `left`/`top` DOIVENT AVOIR UNE VRAIE VALEUR ICI, PAS `auto` (06/11/2026,
+   bug remonte par l'utilisateur : « on devait pouvoir bouger la fenetre
+   partout, et en fait je ne peux pas »). `VoletTchat.tsx` passe au volet
+   detache un style de base `{ position: 'fixed' }`, SANS `left`/`top` :
+   `styleAvecDecalage` (useGlisserPanneau.ts) n'AJOUTE le decalage du glisser
+   que par-dessus un `left`/`top` deja present dans le style — s'il est
+   absent (donc `undefined`, jamais `auto`), la fonction le laisse absent
+   MEME APRES avoir glisse la fenetre : rien ne bougeait jamais a l'ecran,
+   et sans valeur de depart la fenetre atterrissait hors de l'ecran (position
+   statique dans le flux, mesuree au bas du plateau). Ces deux valeurs sont
+   donc la position de depart ET le point d'ancrage de tout glisser ulterieur. */
+.volet-tchat.est-detache {
+  left: 24px;
+  top: 96px;
+  right: auto;
+  bottom: auto;
+  border-radius: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  animation: none;
+  resize: none;
+  min-width: 280px;
+  min-height: 280px;
+}
+
+@keyframes volet-tchat-entre {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.volet-tchat-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(63, 134, 224, 0.22), transparent 70%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.volet-tchat.est-detache .volet-tchat-tete {
+  cursor: grab;
+  touch-action: none;
+}
+
+.volet-tchat-tete h2 {
+  margin: 0;
+  margin-right: auto;
+  font-size: 1.05rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-style: italic;
+  color: #fff;
+  text-shadow: 2px 2px 0 var(--tchat-bleu);
+}
+
+.volet-tchat-detacher {
+  font-size: 1rem;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* De PETITS ONGLETS, soulignes (06/11/2026, demande de l'utilisateur : « pourquoi
+   tu fais pas juste des onglets, comme sur le chat de World of Warcraft ? » puis
+   « je veux quand meme qu'il y ait des petits onglets »). Chaque nom a sa propre
+   petite forme, posee sur le filet du bas, sans majuscules ni grosse boite. */
+/* ⚠ `display: flex` EST ECRIT ICI, EN TOUTES LETTRES, PAS LAISSE A
+   `.volet-onglets` (VoletJournal.css, qui pose `display:flex; flex-wrap:wrap`
+   sur la meme classe partagee). Compter dessus rendait ce fichier incomplet
+   tout seul : Général, Table et la rangee des conversations privees
+   s'empilaient l'un SOUS l'autre des que VoletJournal.css n'etait pas charge
+   a cote (signale par l'utilisateur sur l'apercu HTML independant, 06/11/2026 :
+   « pourquoi tu mets les onglets l'un au-dessus de l'autre ? »). Et
+   `flex-wrap: nowrap` est repete en specificite renforcee
+   (`.volet-tchat .volet-tchat-onglets`) parce que `.volet-onglets` pose
+   `wrap` a la MEME specificite qu'un simple `.volet-tchat-onglets` -- lequel
+   des deux fichiers gagnerait alors dependait de l'ordre de chargement du
+   bundle, jamais garanti (voir l'en-tete de ce fichier). */
+.volet-tchat-onglets {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.volet-tchat .volet-tchat-onglets {
+  flex-wrap: nowrap;
+}
+
+/* Général/Table ne doivent JAMAIS defiler ni retrecir : ce sont les deux
+   fils toujours disponibles, quel que soit le nombre de conversations
+   privees (06/11/2026, inquietude de l'utilisateur : « si on a 40 000 [...]
+   on va plus voir la barre de chat »). */
+.volet-tchat-onglets > button {
+  flex: none;
+}
+
+/* La rangee des conversations privees, elle, defile HORIZONTALEMENT dans une
+   largeur bornee : son nombre ne fait jamais grandir le volet ni pousser le
+   fil de messages vers le bas, qu'il y ait zero ou cinquante conversations. */
+.volet-tchat-onglets-mp {
+  display: flex;
+  flex-wrap: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(63, 134, 224, 0.5) transparent;
+}
+
+.volet-tchat-onglets-mp::-webkit-scrollbar {
+  height: 5px;
+}
+
+.volet-tchat-onglets-mp::-webkit-scrollbar-thumb {
+  background: rgba(63, 134, 224, 0.5);
+  border-radius: 4px;
+}
+
+.volet-tchat-onglets button {
+  min-height: 28px;
+  padding: 5px 10px 6px;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #9aa3b2;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  transition: background 120ms ease-out, color 120ms ease-out, border-color 120ms ease-out;
+}
+
+.volet-tchat-onglets button:hover {
+  color: #e8ebf0;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.volet-tchat-onglets button.est-actif {
+  color: #fff;
+  font-weight: 700;
+  background: rgba(63, 134, 224, 0.18);
+  border-color: rgba(63, 134, 224, 0.45);
+  box-shadow: inset 0 -2px 0 var(--tchat-bleu);
+}
+
+/* Le couple nom+croix forme UN SEUL petit onglet : la croix vit dedans,
+   pas dans une forme a part. */
+.volet-tchat-onglet-mp {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  transition: background 120ms ease-out, border-color 120ms ease-out;
+}
+
+.volet-tchat-onglet-mp:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.volet-tchat-onglet-mp:has(button.est-actif) {
+  background: rgba(63, 134, 224, 0.18);
+  border-color: rgba(63, 134, 224, 0.45);
+  box-shadow: inset 0 -2px 0 var(--tchat-bleu);
+}
+
+.volet-tchat-onglet-mp button {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding-right: 4px;
+}
+
+.volet-tchat-onglet-fermer {
+  min-height: 28px;
+  min-width: 16px;
+  padding: 5px 8px 6px 2px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  color: #6b7383;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.volet-tchat-onglet-fermer:hover,
+.volet-tchat-onglet-fermer:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+.volet-tchat-contenu {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
+}
+
+.volet-tchat-fil {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.volet-tchat-message {
+  margin: 0;
+  padding: 7px 9px;
+  border-radius: 4px 10px 10px 10px;
+  background: rgba(255, 255, 255, 0.045);
+  border-left: 3px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.86rem;
+}
+
+.volet-tchat-message.est-moi {
+  background: rgba(63, 134, 224, 0.12);
+  border-left-color: var(--tchat-bleu);
+}
+
+.volet-tchat-heure {
+  opacity: 0.6;
+  font-size: 0.74rem;
+}
+
+.volet-tchat-drapeaux {
+  font-size: 0.86rem;
+}
+
+.volet-tchat-saisie {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  position: relative;
+}
+
+.volet-tchat-saisie input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #eef0f4;
+  padding: 0 10px;
+}
+
+.volet-tchat-saisie input:focus-visible {
+  outline: none;
+  border-color: var(--tchat-bleu);
+}
+
+.volet-tchat-saisie button[type='submit'] {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: var(--tchat-bleu);
+  border: 1px solid var(--tchat-bleu);
+  border-radius: 6px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.volet-tchat-saisie button[type='submit']:hover {
+  background: var(--tchat-bleu-vif);
+  border-color: var(--tchat-bleu-vif);
+}
+
+.volet-tchat-langues {
+  position: relative;
+}
+
+.volet-tchat-langues-bouton {
+  min-width: 2.2em;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.volet-tchat-langues-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #17181f;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
+}
+
+.volet-tchat-langues-menu label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.volet-tchat-muet {
+  opacity: 0.8;
+}
+
+.volet-tchat-pseudo {
+  background: transparent;
+  border: none;
+  color: var(--tchat-bleu-vif);
+  font-weight: 900;
+  padding: 0;
+  cursor: pointer;
+}
+
+.volet-tchat-message.est-moi .volet-tchat-pseudo {
+  color: #fff;
+}
+
+.volet-tchat-pseudo:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.volet-tchat-pseudo:disabled {
+  cursor: default;
+}
+
+.volet-tchat-creer-table {
+  margin-bottom: 8px;
+}
+
+.volet-tchat-creer-table-bouton {
+  width: 100%;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #eef0f4;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.volet-tchat-creer-table-bouton:hover {
+  border-color: var(--tchat-bleu);
+  color: #fff;
+}
+
+.volet-tchat-creer-table-aide {
+  margin: 0 0 6px;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.volet-tchat-connectes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.volet-tchat-connectes button.est-choisi {
+  background: var(--tchat-bleu);
+  border-color: var(--tchat-bleu);
+  color: #fff;
+}
+
+.volet-tchat-creer-table-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* Le pseudo demande sur Play (06/11/2026) : un petit formulaire DANS le
+   volet, pas `window.prompt()` -- la vraie boite native du navigateur,
+   jamais stylable, jugee « hyper moche » par l'utilisateur en apercu. */
+.volet-tchat-pseudo-play {
+  margin-top: 4px;
+}
+
+.volet-tchat-pseudo-play-aide {
+  margin: 0 0 10px;
+  font-size: 0.86rem;
+  color: #cfd3db;
+}
+
+.volet-tchat-pseudo-play-champ {
+  display: flex;
+  gap: 6px;
+}
+
+.volet-tchat-pseudo-play-champ input {
+  flex: 1;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  color: #eef0f4;
+  padding: 0 10px;
+  min-height: 34px;
+}
+
+.volet-tchat-pseudo-play-champ input:focus-visible {
+  outline: none;
+  border-color: var(--tchat-bleu);
+}
+
+.volet-tchat-pseudo-play-champ button {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #fff;
+  background: var(--tchat-bleu);
+  border: 1px solid var(--tchat-bleu);
+  border-radius: 6px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.volet-tchat-pseudo-play-champ button:hover:not(:disabled) {
+  background: var(--tchat-bleu-vif);
+  border-color: var(--tchat-bleu-vif);
+}
+
+.volet-tchat-pseudo-play-champ button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.volet-tchat-poignee-taille {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.volet-tchat-poignee-taille::after {
+  content: '';
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.volet-tchat-languette {
+  position: fixed;
+  right: 0;
+  top: 336px;
+  z-index: 615;
+  padding: 12px 6px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-style: italic;
+  color: #f2f3f6;
+  background: linear-gradient(165deg, rgba(20, 26, 38, 0.95), rgba(14, 16, 22, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-right: none;
+  border-left: 2px solid var(--tchat-bleu, #3f86e0);
+  border-radius: 8px 0 0 8px;
+  cursor: pointer;
+  touch-action: none;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.volet-tchat-languette:hover,
+.volet-tchat-languette:focus-visible {
+  background: linear-gradient(165deg, rgba(30, 44, 68, 0.98), rgba(20, 24, 32, 0.98));
+  color: #fff;
+  outline: none;
+}
+
+/* Volet ouvert : la languette s'efface (09/11/2026, « pourquoi on voit l'onglet chat quand le chat est ouvert ? »). Elle faisait
+   doublon avec la croix du panneau et Echap. Les autres languettes (Aide, Feuillets, Journal) gardent, elles, leur poignee. */
+.volet-tchat-languette.est-ouvert {
+  display: none;
+}
+
+.volet-tchat-pastille {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #6fa8ec;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  writing-mode: horizontal-tb;
+  /* La languette est retournee (lecture de bas en haut, comme les autres) : la pastille se remet a l'endroit et se pose
+     du cote du bord libre. */
+  top: auto;
+  bottom: -6px;
+  transform: rotate(180deg);
+}
+
+.volet-onglets .volet-tchat-pastille {
+  position: static;
+  margin-left: 4px;
+}
+
+@media (max-width: 760px), (max-height: 520px) {
+  .volet-tchat {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    clip-path: none;
+    border-radius: 0;
+  }
+
+  .volet-tchat-languette.est-ouvert {
+    display: none;
+  }
+
+  .volet-tchat button {
+    min-height: 44px;
+  }
+}

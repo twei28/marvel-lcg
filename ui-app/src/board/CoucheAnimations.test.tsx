@@ -9,8 +9,10 @@
 
 import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { CoucheAnimations, dureeDe, inclinaisonDe } from './CoucheAnimations'
+import { CoucheAnimations, dureeDe, inclinaisonDe, regrouper } from './CoucheAnimations'
 import * as sons from './sons'
+
+type Groupable = Parameters<typeof regrouper<{ groupe: number; src: string; depart: { x: number; y: number; w: number; h: number }; arrivee: { x: number; y: number; w: number; h: number }; nombre?: number }>>[0][number]
 
 /**
  * La couche ne diffe qu'UNE fois par render_id et garde sa memoire au niveau
@@ -99,6 +101,17 @@ describe('CoucheAnimations : une carte sans scan vole quand meme', () => {
   })
 
 
+  it('la carte du dessus du deck, deja a l\'ecran, vole elle aussi quand on la pioche', () => {
+    // Elle change de zone au lieu d'apparaitre : sans ce cas, la premiere carte
+    // d'une pioche ne volait pas (douze piochees = onze dans la pile groupee).
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    const dessus = document.querySelector('.zone-piles-joueur [data-card-id="deck"]')!
+    main.append(dessus)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    expect(container.querySelectorAll('.vol-carte')).toHaveLength(1)
+  })
+
   it('anime la defausse d\'une carte sans image', () => {
     const { main } = poserScene()
     const jouee = carte('9')
@@ -173,45 +186,21 @@ describe('la duree suit la distance, et l inclinaison le sens du trajet', () => 
 })
 
 /**
- * LE FILET QUI PROTEGE LES AUTRES JOUEURS.
+ * LE VOL GROUPE, DEVENU LE SEUL COMPORTEMENT (21/10/2026, backlog item 7).
  *
- * Le poids, le geste et le « clac » sont des ESSAIS reserves a un seul compte
- * (board/essais.ts). ⚠ Sans le drapeau, le rendu doit etre celui d'AVANT, a
- * l'identique : 250 ms fixes, aucune inclinaison, aucun depassement. Si cette
- * garde lachait, tous les joueurs recevraient un essai non valide sans que
- * personne l'ait decide.
+ * Valide a l'usage : la garde d'essai (board/essais.ts) et l'ancien repli a
+ * 250 ms fixes ont disparu. La couche porte desormais toujours sa classe, et
+ * la duree suit toujours la distance.
  */
-describe('sans le drapeau d essai, le rendu est celui d avant', () => {
+describe('la couche porte toujours sa classe, la duree suit la distance', () => {
   const volDe = (container: HTMLElement) =>
     container.querySelector<HTMLElement>('.vol-carte')
 
-  it('la duree redevient fixe et l inclinaison nulle', () => {
+  it('la classe est posee et la duree suit la distance', () => {
     const { main } = poserScene()
     const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
-    main.append(carte('20', 'https://exemple.test/scan.png'))
-    rerender(<CoucheAnimations renderId={rendu()} actif />)
-
-    const vol = volDe(container)
-    expect(vol?.style.transitionDuration).toBe('250ms')
-    const geste = container.querySelector<HTMLElement>('.vol-carte-geste')
-    expect(geste?.style.getPropertyValue('--angle')).toBe('0deg')
-  })
-
-  it('la couche ne porte pas la classe des essais', () => {
-    const { main } = poserScene()
-    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
-    main.append(carte('21'))
-    rerender(<CoucheAnimations renderId={rendu()} actif />)
-    expect(container.querySelector('.couche-animations.est-essai')).toBeNull()
-  })
-
-  it('avec le drapeau, la couche la porte et la duree suit la distance', () => {
-    // Meme structure exacte que le cas « duree fixe » ci-dessus, drapeau en plus :
-    // seule la presence de `essais` doit faire la difference.
-    const { main } = poserScene()
-    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif essais />)
     main.append(carte('22', 'https://exemple.test/scan.png'))
-    rerender(<CoucheAnimations renderId={rendu()} actif essais />)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
     expect(volDe(container), 'aucun vol produit').not.toBeNull()
     expect(container.querySelector('.couche-animations.est-essai')).not.toBeNull()
     expect(volDe(container)?.style.transitionDuration).not.toBe('250ms')
@@ -295,5 +284,63 @@ describe('le son de la carte qui vole (refonte des sons, 07/10/2026)', () => {
     })
     expect(espion).not.toHaveBeenCalled()
     espion.mockRestore()
+  })
+})
+
+/**
+ * AU-DELA DE DIX CARTES : un vol groupe, pas le silence (20/10/2026).
+ * Fiche 2026-09-14-animations-molles, point 5.
+ */
+describe('au-dela de dix mouvements, un vol groupe par groupe', () => {
+  it('douze cartes piochees d un coup font UNE pile fantome avec leur nombre', () => {
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    const cartes = Array.from({ length: 12 }, (_, i) => carte(`g${i}`, 'https://exemple.test/scan.png'))
+    main.append(...cartes)
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+
+    const fantomes = container.querySelectorAll('.vol-carte')
+    expect(fantomes).toHaveLength(1)
+    expect(fantomes[0]!.classList.contains('est-pile')).toBe(true)
+    expect(fantomes[0]!.querySelector('.vol-carte-nombre')?.textContent).toBe('12')
+    // Toutes les vraies cartes sont masquees pendant le vol, pas seulement la premiere.
+    for (const c of cartes) expect(c.style.visibility).toBe('hidden')
+    // Et elles reapparaissent une fois le vol fini.
+    act(() => {
+      vi.advanceTimersByTime(5000)
+    })
+    for (const c of cartes) expect(c.style.visibility).toBe('')
+    expect(container.querySelector('.vol-carte')).toBeNull()
+  })
+
+  it('dix cartes ou moins gardent un vol par carte, sans pastille', () => {
+    const { main } = poserScene()
+    const { container, rerender } = render(<CoucheAnimations renderId={rendu()} actif />)
+    main.append(...Array.from({ length: 10 }, (_, i) => carte(`d${i}`, 'https://exemple.test/scan.png')))
+    rerender(<CoucheAnimations renderId={rendu()} actif />)
+    expect(container.querySelectorAll('.vol-carte')).toHaveLength(10)
+    expect(container.querySelector('.vol-carte-nombre')).toBeNull()
+  })
+
+  it('regrouper : un groupe d une seule carte reste un vol ordinaire', () => {
+    const b = { x: 0, y: 0, w: 100, h: 140 }
+    const sortie = regrouper<Groupable>([
+      { groupe: 1, src: 'a', depart: b, arrivee: b },
+      { groupe: 2, src: 'b', depart: b, arrivee: b },
+    ])
+    expect(sortie).toHaveLength(2)
+    expect(sortie.every((x) => x.nombre === undefined)).toBe(true)
+  })
+
+  it('regrouper : le depart et l arrivee sont les centres du groupe', () => {
+    const boite = (x: number) => ({ x, y: 0, w: 100, h: 140 })
+    const sortie = regrouper<Groupable>([
+      { groupe: 1, src: 'a', depart: boite(0), arrivee: boite(0) },
+      { groupe: 1, src: 'b', depart: boite(0), arrivee: boite(400) },
+    ])
+    expect(sortie).toHaveLength(1)
+    expect(sortie[0]!.nombre).toBe(2)
+    expect(sortie[0]!.depart.x).toBe(0)
+    expect(sortie[0]!.arrivee.x).toBe(200)
   })
 })

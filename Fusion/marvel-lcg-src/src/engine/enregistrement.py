@@ -168,6 +168,14 @@ class Enregistrement:
     def _archiver_si_finie(cls, avant: Optional[Dict[str, Any]], monde: Dict[str, Any]) -> None:
         if not monde.get("game_over") or (avant or {}).get("game_over"):
             return
+        # La partie est finie : le bandeau « Continuer la partie » ne la propose plus (src/engine/en_cours.py).
+        try:
+            from engine import Engine
+            from engine import en_cours
+            graine = Engine.game.scene.GetMetadataInt("seed")
+            en_cours.supprimer(cls.partie, graine)
+        except Exception:
+            pass
         dossier = cls.DossierDeLHote()
         if dossier:
             threading.Thread(target=cls._ranger_chez, args=(dossier,), daemon=True).start()

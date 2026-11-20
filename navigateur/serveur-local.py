@@ -56,6 +56,13 @@ class H(http.server.SimpleHTTPRequestHandler):
                 data = servir_scan(f)
                 self.send_response(200); self.send_header("Content-Type", mimetypes.guess_type(f)[0] or "image/jpeg")
                 self.send_header("Content-Length", str(len(data))); self.end_headers(); self.wfile.write(data); return
+        if not os.path.exists(local) and chemin.lower().endswith((".wav", ".mp3")):
+            # les sons du plateau sont demandes a la racine (/survol.wav) ; le moteur les sert depuis assets/sounds (comme le Caddyfile.exemple)
+            son = os.path.join(ASSETS, "sounds", os.path.basename(chemin))
+            if os.path.isfile(son):
+                data = open(son, "rb").read()
+                self.send_response(200); self.send_header("Content-Type", mimetypes.guess_type(son)[0] or "audio/wav")
+                self.send_header("Content-Length", str(len(data))); self.end_headers(); self.wfile.write(data); return
         return super().do_GET()
     extensions_map = {**http.server.SimpleHTTPRequestHandler.extensions_map, ".mjs": "text/javascript", ".wasm": "application/wasm", ".js": "text/javascript", ".json": "application/json", ".webp": "image/webp"}
 

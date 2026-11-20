@@ -10,6 +10,11 @@ from . import *
 # phase. On enregistre donc une capacite temporaire SUR L'ALLIE, pas sur
 # l'evenement — celui-ci part dans la Setlist ou a la defausse aussitot, et une
 # capacite accrochee a lui ne survivrait pas.
+#
+# « a FRIENDLY character » : `SetTarget(Friend)`, tout personnage du cote des
+# joueurs (modele 01080 First Aid). Jusqu'au 20/10/2026 la cible etait
+# `"YouControlUnit"`, qui excluait les personnages des AUTRES joueurs : ecart
+# invisible en solo, corrige au backlog 12 (cas a deux joueurs).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -55,5 +60,5 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             la_belle_et_la_bete,
         ).SetPlay().SetLabel(),
-        Showtime(showtime).SetTarget("YouControlUnit", range=(0, 1)),
+        Showtime(showtime).SetTarget(Friend, range=(0, 1)),
     ]

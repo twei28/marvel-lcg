@@ -1,0 +1,31 @@
+{
+    "version": "0.5.8",
+    "name": "Punishment: One Last Kill (Jigsaw) (Expert)",
+    "villain": [
+        "pu086b",
+        "pu087b"
+    ],
+    "expert": true,
+    "schemes": [
+        "pu088a,pu088b",
+        "pu089a,pu089b"
+    ],
+    "set_aside": [
+        "pu091a,pu091b",
+        "pu090a,pu090b",
+        "pu092",
+        "pu056b"
+    ],
+    "encounters": [
+        "pu144"
+    ],
+    "encounter_sets": [
+        "punishment",
+        "jigsaw",
+        "standard",
+        "expert"
+    ],
+    "modular_sets": [
+        "punishers_armory"
+    ]
+}

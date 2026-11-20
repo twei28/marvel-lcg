@@ -3,7 +3,7 @@
 // nom de capacité imprimé sur la carte doit rester en anglais.
 import { afterEach, describe, expect, it } from 'vitest'
 import { tonaliteAction } from './action-style'
-import { traduireMoteur } from './vocabulaire-moteur'
+import { sansIndexDeCapacite, traduireMoteur, traduireQuestionImage } from './vocabulaire-moteur'
 
 const enFrancais = () => window.localStorage.setItem('marvel-langue', 'fr')
 const enAnglais = () => window.localStorage.setItem('marvel-langue', 'en')
@@ -27,6 +27,35 @@ describe('traduireMoteur', () => {
   it('traduit le choix de Robbie Robertson 60156 (meme defaut que Ben Urich)', () => {
     enFrancais()
     expect(traduireMoteur('Discard it and deal another')).toBe('La défausser et en distribuer une autre')
+  })
+
+  it('traduit les boutons de choix du pack Blade (signalement mobile 05/11/2026)', () => {
+    enFrancais()
+    expect(traduireMoteur('Heal 2 damage from Blade')).toBe('Soigner 2 dégâts de Blade')
+    expect(traduireMoteur('Place 1 blood counter on Blade')).toBe('Placer 1 jeton Sang sur Blade')
+    expect(traduireMoteur('Exhaust a WEAPON upgrade you control to stun that enemy'))
+      .toBe('Incliner une amélioration ARME que vous contrôlez pour sonner cet ennemi')
+  })
+
+  it('traduit les choix des pactes et des cartes de rencontre de Mephisto', () => {
+    enFrancais()
+    expect(traduireMoteur('Attach this card to your identity')).toBe('Attacher cette carte à ton identité')
+    expect(traduireMoteur('Discard this card and Mephisto activates against you'))
+      .toBe('Défausser cette carte et Mephisto s’active contre toi')
+    expect(traduireMoteur('Combine ATK and DEF (7)')).toBe('Combiner ATQ et DEF (7)')
+    expect(traduireMoteur('Combine THW and DEF (4)')).toBe('Combiner CTR et DEF (4)')
+    enAnglais()
+    expect(traduireMoteur('Combine ATK and DEF (7)')).toBe('Combine ATK and DEF (7)')
+  })
+
+  it('traduit la question d une recherche sans résultat (Carquois de Hawkeye)', () => {
+    enFrancais()
+    expect(traduireMoteur('Continue Without Looking')).toBe('Continuer sans regarder')
+    expect(traduireMoteur('Look At The Cards')).toBe('Regarder les cartes')
+    expect(traduireMoteur('Cards Searched')).toBe('Cartes parcourues')
+    expect(traduireQuestionImage('No Matching Card Found')).toBe('Aucune carte ne correspond')
+    enAnglais()
+    expect(traduireMoteur('Look At The Cards')).toBe('Look At The Cards')
   })
 
   it('traduit le choix du mot-clé Starting (signalement Yarro n°70)', () => {
@@ -112,11 +141,14 @@ describe('traduireMoteur', () => {
     expect(traduireMoteur('Attack')).toBe('Attack')
   })
 
-  it('traduit la capacité dupliquée en la numérotant pour un humain', () => {
+  it('ne numérote jamais une capacité dupliquée (demande du 22/10/2026 : plus de « Action 1 / Action 2 »)', () => {
     enFrancais()
-    // Le moteur écrit `Attack_1` pour la SECONDE occurrence (effect.py) ;
-    // `nomLisible` l'a déjà transformée en « Attack 1 ».
-    expect(traduireMoteur('Attack 1')).toBe('Attaquer (2)')
+    // Le moteur écrit `Attack_1` pour la SECONDE occurrence (effect.py) ; l'index interne n'a aucun sens
+    // pour un joueur. Les actions d'une même carte se distinguent par leur paragraphe (`nomActionParlant`).
+    expect(traduireMoteur('Attack 1')).toBe('Attaquer')
+    expect(sansIndexDeCapacite('Hero Action 1')).toBe('Hero Action')
+    expect(sansIndexDeCapacite('Action 2')).toBe('Action')
+    expect(sansIndexDeCapacite('Spend 1 resource')).toBe('Spend 1 resource')
   })
 
   it('ne numérote pas ce qu’il ne connaît pas', () => {
@@ -184,5 +216,122 @@ describe('tonaliteAction — les couleurs survivent à la traduction', () => {
 
   it('retombe sur la tonalité neutre pour un nom de carte', () => {
     expect(tonaliteAction('Mystic Blast')).toBe('general')
+  })
+})
+
+describe('Build Support (rapport BL-Stark du 23/10/2026)', () => {
+  it('le choix de recherche d un soutien est en francais', () => {
+    expect(traduireMoteur('Search their deck and discard pile for a support with a cost of 3 or less and put it into play')).toBe(
+      'Chercher un soutien de coût 3 ou moins dans ton deck ou ta défausse et le mettre en jeu'
+    )
+  })
+})
+
+describe('changer vers une forme nommee', () => {
+  it('Ant-Man : le trait distinctif devient « forme Géant / Minuscule » ; un nom de forme reste tel quel', () => {
+    expect(traduireMoteur('Change To GIANT')).toBe('Passer en forme Géant')
+    expect(traduireMoteur('Change To TINY')).toBe('Passer en forme Minuscule')
+    expect(traduireMoteur('Change To Spider-Man')).toBe('Passer en Spider-Man')
+  })
+})
+
+describe('New Ultimate Winter Soldier (uw, 25/10/2026) : les choix des cartes de defausse au hasard', () => {
+  it('traduit les boutons de Wild Slash, Berserker Fury, Mission Objective, Live with the Burden, Desperate Regenerate, Phoenix Specimen', () => {
+    enFrancais()
+    expect(traduireMoteur('Take 1 damage → deal 3 damage to an enemy')).toBe('Subir 1 dégât → infliger 3 dégâts à un ennemi')
+    expect(traduireMoteur('Take 2 damage → repeat this ability')).toBe('Subir 2 dégâts → répéter cette capacité')
+    expect(traduireMoteur('Take 1 damage → attach this card to another minion')).toBe('Subir 1 dégât → attacher cette carte à un autre sbire')
+    expect(traduireMoteur('Exhaust your identity → prevent 2 of that damage')).toBe('Incliner ton identité → prévenir 2 de ces dégâts')
+    expect(traduireMoteur('Discard each stunned and confused status card from your identity')).toBe(
+      'Défausser chaque carte d’état Sonné et Désorienté de ton identité'
+    )
+    expect(traduireMoteur('Place 3 threat on a scheme')).toBe('Placer 3 menaces sur une manigance')
+    enAnglais()
+    expect(traduireMoteur('Place 3 threat on a scheme')).toBe('Place 3 threat on a scheme')
+  })
+})
+
+describe('traduireMoteur : choix du pack Mantis', () => {
+  it('traduit les consignes, garde le nom de capacité imprimé', () => {
+    enFrancais()
+    expect(traduireMoteur('Empathetic Advantage : discard a confused status card')).toBe('Empathetic Advantage : défausser une carte d’état Désorienté')
+    expect(traduireMoteur('Confuse a character you control to draw 1 card')).toBe('Rendre désorienté un personnage que tu contrôles pour piocher 1 carte')
+    expect(traduireMoteur('Heal 1 damage from a friendly character')).toBe('Soigner 1 dégât d’un personnage allié')
+    expect(traduireMoteur('Take 1 damage to shuffle this card into your deck')).toBe('Subir 1 dégât pour mélanger cette carte dans ton deck')
+    enAnglais()
+    expect(traduireMoteur('Heal 1 damage from a friendly character')).toBe('Heal 1 damage from a friendly character')
+  })
+})
+
+describe('traduireMoteur : choix du scénario Cassandra Nova (Hellfire Hunt, hf)', () => {
+  it('traduit les trois branches de Cassandra Domination, les pénalités des complots et Wild Sentinel', () => {
+    enFrancais()
+    expect(traduireMoteur('Place 2 threat on each scheme')).toBe('Placer 2 menaces sur chaque manigance')
+    expect(traduireMoteur('Stun and confuse your identity')).toBe('Rendre ton identité sonnée et désorientée')
+    expect(traduireMoteur('Deal 3 indirect damage to another friendly character')).toBe('Infliger 3 dégâts indirects à un autre personnage ami')
+    expect(traduireMoteur('Place 1 threat here')).toBe('Placer 1 menace ici')
+    expect(traduireMoteur('Take 2 damage')).toBe('Subir 2 dégâts')
+    expect(traduireMoteur('Deal yourself 1 facedown encounter card')).toBe('Te distribuer 1 carte rencontre face cachée')
+    expect(traduireMoteur('Discard 1 card from your hand')).toBe('Défausser 1 carte de ta main')
+    expect(traduireMoteur('Place this card on the bottom of the encounter deck instead of the discard pile')).toBe(
+      'Placer cette carte sous le deck rencontre au lieu de la défausse'
+    )
+    enAnglais()
+    expect(traduireMoteur('Place 2 threat on each scheme')).toBe('Place 2 threat on each scheme')
+  })
+})
+
+// Rapport de bug du 08/11/2026 (J. Jonah Jameson, sr009) : question construite
+// par `AskChooseOneText`, pas de carte-modele a imiter par le moteur.
+describe('traduireQuestionImage', () => {
+  it('traduit la question, en gardant le nom de la carte tiree tel quel', () => {
+    enFrancais()
+    expect(traduireQuestionImage('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')).toBe(
+      'J. Jonah Jameson : la carte « Web Strike » montre-t-elle une image de Spider-Man ?'
+    )
+  })
+
+  it('un texte qui n a pas cette forme sort inchange', () => {
+    enFrancais()
+    expect(traduireQuestionImage('Quelque chose d’autre')).toBe('Quelque chose d’autre')
+  })
+
+  // Muse (mu003, mu004, 08/11/2026) : « your identity » est un PRONOM, pas un
+  // nom propre comme « Spider-Man » — sans ce cas, la phrase melangeait les
+  // deux langues (« une image de your identity »).
+  it('traduit « your identity » (pas un nom propre) en « ton identité »', () => {
+    enFrancais()
+    expect(traduireQuestionImage('Muse: does "Backflip" have a picture of your identity on it?')).toBe(
+      'Muse : la carte « Backflip » montre-t-elle une image de ton identité ?'
+    )
+  })
+
+  it('en anglais, rien n est traduit', () => {
+    enAnglais()
+    expect(traduireQuestionImage('J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?')).toBe(
+      'J. Jonah Jameson: does "Web Strike" have a picture of Spider-Man on it?'
+    )
+  })
+})
+
+// Muse (mu001 Art Imitates Death, mu006 Obsession, 08/11/2026) : un NOMBRE au
+// lieu d'un Oui/Non par carte.
+describe('traduireQuestionImage : les deux formes « combien »', () => {
+  it('Art Imitates Death : combien, parmi les cartes defaussees', () => {
+    enFrancais()
+    expect(
+      traduireQuestionImage(
+        'Art Imitates Death: of the 3 cards just discarded ("Enhanced Spider-Sense", "Backflip", "Black Cat"), how many have a picture of your identity on them?'
+      )
+    ).toBe(
+      'Art Imitates Death : parmi les 3 cartes qui viennent d’être défaussées ("Enhanced Spider-Sense", "Backflip", "Black Cat"), combien montrent une image de ton identité ?'
+    )
+  })
+
+  it('Obsession : combien, parmi les cartes en main', () => {
+    enFrancais()
+    expect(
+      traduireQuestionImage('Obsession: how many cards in your hand (2 card(s)) have a picture of your identity on them?')
+    ).toBe('Obsession : parmi les 2 cartes de ta main, combien montrent une image de ton identité ?')
   })
 })

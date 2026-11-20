@@ -370,6 +370,33 @@
     }
   }
 
+  /* Carte utilisable pour PAYER un cout (main ou en jeu, defausse en
+     ressource ou capacite de generation type Redirect Chi) : contour bleu
+     cyan, en pulsation CONTINUE (contrairement au flash dore d'une seconde
+     de `.is-target-pulse` ci-dessus) tant que l'etape de paiement dure — un
+     joueur doit pouvoir reperer ces cartes sans se depecher. Demande du
+     07/11/2026. */
+  .scan-card.is-payment-pulse .scan-frame {
+    outline: 2px solid rgba(86, 214, 235, 0.95);
+    outline-offset: 5px;
+    animation: paiement-contour 2s ease-in-out infinite;
+  }
+
+  @keyframes paiement-contour {
+    0%, 100% {
+      outline-color: rgba(86, 214, 235, 0.45);
+    }
+    50% {
+      outline-color: rgba(86, 214, 235, 0.95);
+    }
+  }
+
+  body.plateau-sans-animations .scan-card.is-payment-pulse .scan-frame,
+  html[data-affichage='sobre'] .scan-card.is-payment-pulse .scan-frame {
+    animation: none;
+    outline-color: rgba(86, 214, 235, 0.95);
+  }
+
   /* Posee face cachee sur la table mais visible par nous : le cadre en
      pointilles le dit, sans rien poser sur le scan. */
   .scan-card.is-peeking .scan-frame {
@@ -539,6 +566,67 @@
     background: linear-gradient(180deg, #6bf7a8, #17b45f);
     border-radius: 6px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(140, 155, 60, 0.45);
+  }
+
+  /* Personnage A UNE PLANETE (pack maison Silver Surfer « Power Cosmic ») :
+     badge au survol/focus, meme gabarit que les autres pastilles du bandeau,
+     bulle au-dessus avec le nom ET l'image de la carte PLANET (decision
+     utilisateur du 04/11/2026 -- pas de jeton, une infobulle). Modele
+     `.pastille-errata`/`.pastille-errata-bulle` (errata.css), dupliquee ici
+     plutot que partagee : la bulle a une IMAGE en plus du texte. */
+  .pastille-planete {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 7px;
+    min-height: 22px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: #eafcff;
+    background: linear-gradient(180deg, #5fb8e8, #1c4f8c);
+    border-radius: 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35), 0 0 10px rgba(95, 184, 232, 0.45);
+    cursor: help;
+    outline: none;
+  }
+  .pastille-planete:focus-visible {
+    box-shadow: 0 0 0 2px #fff, 0 3px 10px rgba(0, 0, 0, 0.35);
+  }
+  .pastille-planete-bulle {
+    display: none;
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    box-sizing: border-box;
+    padding: 6px;
+    border-radius: 8px;
+    background: rgba(14, 14, 18, 0.96);
+    border: 1px solid #5fb8e8;
+    color: #f2f2f2;
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  }
+  .pastille-planete:hover .pastille-planete-bulle,
+  .pastille-planete:focus .pastille-planete-bulle,
+  .pastille-planete:focus-within .pastille-planete-bulle {
+    display: block;
+  }
+  .pastille-planete-bulle img {
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 4px;
+  }
+  .pastille-planete-bulle b {
+    display: block;
+    color: #bfe3ff;
   }
 
   /* Ennemi MORDU : pastille texte en bas a gauche du scan, tant qu'aucune

@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « ⛔ PRIORITÉ ABSOLUE… à re-vérifier » »). Preuve : La même fiche, à 22 h le 14/09 : « les six défauts sont traités et vérifiés en jeu », table de preuves (`phase-sur-table.spec.ts`, `annonce-attend-le-clic.spec.ts`, `phase-detaille-defense.spec.ts`, `ou-va-la-question.test.ts`, `DeroulePhase.test.tsx`, `marvelcdb-francais.spec.ts`) ; les fichiers de test existent dans … (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°14).
+
 # ⛔ PRIORITÉ ABSOLUE — six défauts signalés EN PARTIE, tous à RE-VÉRIFIER EN JEU
 
 **À lire en premier, avant tout autre sujet du backlog.**

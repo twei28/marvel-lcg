@@ -299,6 +299,8 @@ class CanHealth(HasHealth):
 
                     units.remove(unit)
 
+                    # AJOUT (22/10/2026, Screwball pu015) : l'exces de CE coup, lu par `WhenUnitWouldBeDefeated.excess_damage`.
+                    unit.exces_en_cours = excess_damage if unit is self else 0
                     if unit.health <= 0 and \
                         unit.Death(source, by_effect, would_attack_unit_message):
                         if would_attack_unit_message:
@@ -373,6 +375,13 @@ class CanHealth(HasHealth):
         this = self
 
         if this.IsDefeated():
+            return None
+
+        # BRIQUE 2 (20/10/2026) : aucun degat d'une carte joueur sur une face
+        # insensible aux cartes joueur, exces d'un coup overkill compris (le
+        # `by_effect` de l'exces est celui de l'attaque qui l'a produit).
+        from game.operate.immunity import PlayerCardImmunity
+        if PlayerCardImmunity.Refuses(this, by_effect):
             return None
 
         if isinstance(property, int):
@@ -518,7 +527,8 @@ class CanHealth(HasHealth):
         if self.base_health != value:
             diff = value - self.base_health
             self.base_health = value
-            self.UpdateMaxHealth(diff, by_effect)
+            # GainOnlyMaxHealth passe deja par UpdateMaxHealth : l'appeler aussi ici comptait le maximum en double
+            # (Drone d'Ultron : 1 PV de base affiche « 1 / 2 », 24/10/2026).
             self.GainOnlyMaxHealth(diff, by_effect)
             self.GainOnlyHealth(diff, by_effect)
 

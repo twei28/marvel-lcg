@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Raza Longknife",
+    "metadata": {
+        "url": "",
+        "author": "Phenexian and Mysteltainn",
+        "note": "Pack « Raza Longknife » (Starjammers, Phenexian et Mysteltainn). Pas de decklist imprimee (le zip ne contient que le visuel de boite « Hero Pack » et des compteurs de PV) : player_deck vide (PROCESSUS-HEROS etape 3). Pas de regle de deck particuliere imprimee sur l'identite (contrairement a Corsair) : aucune entree dans regles.js."
+    },
+    "hero": [
+        "rl001a,rl001b"
+    ],
+    "hero_deck": [
+        "rl002",
+        "rl003",
+        "rl003",
+        "rl003",
+        "rl004",
+        "rl004",
+        "rl004",
+        "rl005",
+        "rl005",
+        "rl006",
+        "rl007",
+        "rl008",
+        "rl009",
+        "rl010",
+        "rl011"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "rl012"
+    ],
+    "nemesis_set": [
+        "rl013",
+        "rl014",
+        "rl015",
+        "rl016",
+        "rl017"
+    ],
+    "player_deck": []
+}

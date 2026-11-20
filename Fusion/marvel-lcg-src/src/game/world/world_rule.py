@@ -85,18 +85,27 @@ class WorldRule:
         # conservee dans la sauvegarde — on saura toujours si une
         # victoire comptait.
         self.mode_sandbox                   = VariableBool(self, False, "mode_sandbox")
+        # Createur de puzzle (24/10/2026) : le plateau s'ouvre en mode editeur (bac a sable + table manuelle), et le bouton
+        # « Enregistrer le puzzle » capture l'etat (`/puzzle_capture`). Pose par les regles du mode « Puzzle » de la preparation.
+        self.mode_createur_puzzle           = VariableBool(self, False, "mode_createur_puzzle")
         # Mode manuel : apres la mise en place, le moteur ne conduit plus et ne
         # declenche plus rien, il tient l'etat (spec du 18/09/2026). Pose par
         # la liste `rules` du descripteur, donc conserve dans la sauvegarde :
         # on saura toujours qu'une partie n'a pas ete jouee par les regles.
         self.mode_manuel                    = VariableBool(self, False, "mode_manuel")
         self.mode_heroic                    : int = 0
+        self.assemblee                      : 'tuple[str, str] | None' = None   # (code, table) : Kingsfall multi-tables, voir SetRule
         # te201 Intense Combatants (TMNT), environnement OPTIONNEL (decision de
         # l'utilisateur du 16/10/2026) : une case de l'ecran de preparation,
         # decochee par defaut. Pose par la liste `rules`, donc conserve dans la
         # sauvegarde. Ignoree hors des sets TMNT Standard / Expert : voir
         # `World.CartesSetupOptionnelles`.
         self.tmnt_intense_combatants        = VariableBool(self, False, "tmnt_intense_combatants")
+        # Tirage « au hasard » fait PAR LE JOUEUR (14/11/2026, rapport 131) : au lieu de laisser le moteur
+        # tirer, les cartes cachees (main, paquet, zone de cote) se presentent face cachee, melangees, et le
+        # joueur en designe une. PAR DEFAUT A FAUX : une question de plus decalerait la liste des operations
+        # rejouees d'une sauvegarde ancienne (controle CRC). Posee par la case de l'ecran de preparation.
+        self.tirage_manuel                  = VariableBool(self, False, "tirage_manuel")
 
     def SetRule(self, rules: List[str], is_puzzle: bool, seed: int):
         for var in self.vars_bool:
@@ -111,7 +120,15 @@ class WorldRule:
         if is_puzzle:
             self.disable_setup_draw_cards = True
             self.disable_resolve_mulligans = True
+            # Mode automatique FORCE (E3) : les regles sont appliquees par le moteur, jamais en partie manuelle.
+            self.mode_manuel.Set(False)
 
+        # ASSEMBLEE (Kingsfall multi-tables, 22/10/2026) : la regle `assemblee_<CODE>_<TABLE>` (ex. `assemblee_KING-7F3A_p2`) porte le code de
+        # l'assemblee et le nom de cette table. Absente = partie ordinaire, rien d'autre ne change.
+        for rule in rules:
+            if rule.startswith("assemblee_") and rule.count("_") >= 2:
+                _, code, table = rule.split("_", 2)
+                self.assemblee = (code, table)
         for rule in rules:
             if rule.startswith("mode_heroic_"):
                 self.mode_heroic = int(rule.lstrip("mode_heroic_"))

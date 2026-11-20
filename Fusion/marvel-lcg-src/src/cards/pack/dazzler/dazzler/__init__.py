@@ -115,12 +115,31 @@ def Concert(effect: 'Effect', joueur: 'Player|None'=None) -> 'CardFace|None':
     """
     if joueur is None:
         joueur = effect.GetInitiator()
+    # ⚠ CORRECTIF DU 20/10/2026 (backlog 12) : le filtre etait passe en
+    # `check_effect_fn` a `Worlds.FindCardOnField`, qui ne transmet pas l'effet
+    # au `CardFinder` : le filtre n'etait JAMAIS appele (« Only call when has
+    # effect », card_finder/checker.py) et la fonction rendait la Live Concert
+    # de n'importe quel joueur. On filtre donc ici, a la main.
     for nom in (NOM_CONCERT, NOM_SHOWTIME):
-        face = Worlds.FindCardOnField(
-            effect, name=nom,
-            check_effect_fn=lambda eff, f: f.GetControlByPlayer() == joueur)
-        if face is not None:
-            return face
+        for face in Worlds.FindCardsOnField(effect, name=nom):
+            if face is not None and face.GetControlByPlayer() == joueur:
+                return face
+    return None
+
+
+def JoueurDeDazzler(effect: 'Effect') -> 'Player|None':
+    """Le joueur dont l'identite est Dazzler (l'une ou l'autre forme).
+
+    Pour les cartes qui NOMMENT la Setlist de Dazzler (« Dazzler's Setlist »,
+    Stealing Sound dz022) : la carte peut etre revelee par un autre joueur.
+    """
+    for joueur in effect.world.players:
+        identite = joueur.GetIdentity()
+        if identite is None:
+            continue
+        heros = identite.GetHeroFace() if hasattr(identite, "GetHeroFace") else identite
+        if heros is not None and heros.IsName(NOM_HEROS):
+            return joueur
     return None
 
 
@@ -227,10 +246,16 @@ def AngoisseEnJeu(effect: 'Effect') -> bool:
     joueur = effect.GetInitiator()
     if joueur is None:
         return False
-    face = Worlds.FindCardOnField(
-        effect, name=NOM_ANGOISSE,
-        check_effect_fn=lambda eff, f: f.GetControlByOrOwner() == joueur)
-    return face is not None
+    # Filtre a la main : `check_effect_fn` n'est pas appele par
+    # `FindCardOnField` (voir `Concert`, correctif du 20/10/2026).
+    # Une obligation « donnee » vit dans la zone d'obligations du joueur, mais
+    # son PROPRIETAIRE reste le scenario : on la reconnait donc a sa zone, pas
+    # a `GetControlByOrOwner()` (qui la faisait rater, cas dz019).
+    zone = getattr(joueur, "obligations_area", None)
+    dans_sa_zone = list(zone.Get()) if zone is not None else []
+    return any(f is not None and (f in dans_sa_zone or f.GetControlByOrOwner() == joueur)
+               for f in Worlds.FindCardsOnField(effect, name=NOM_ANGOISSE)
+               + [g for g in dans_sa_zone if g is not None and g.IsName(NOM_ANGOISSE)])
 
 
 def SongsDansLaDefausseBornee(effect: 'Effect', maximum: int = 4) -> int:
@@ -269,14 +294,99 @@ def RetirerUnStatut(face: 'CardFace', effect: 'Effect') -> bool:
     avec `rule=1` pour n'en enlever qu'une (can_status.py:98, modele Uncanny
     Resilience 07045 et The Thing th007).
 
-    Ordre : les deux statuts SUBIS d'abord, le benefique en dernier. Les deux
-    cartes visent des PERSONNAGES ALLIES : personne n'y retire son propre
-    « tough » alors qu'il est aussi etourdi.
+    CORRECTIF DU 20/10/2026 (backlog 12) : « a status card » vise TOUTES les
+    cartes d'etat du moteur (`CardFace.STATUS` : Stunned, Confused, Tough,
+    Exposed, Cloaked, Dazed, Intensified), et quand le personnage en porte
+    plusieurs, c'est le JOUEUR qui choisit laquelle part (RECETTES-MOTEUR §2,
+    modele `RetirerUneCarteDeStatut` du pack donatello). L'ancienne version ne
+    connaissait que Stunned / Confused / Tough et retirait d'office dans cet
+    ordre. Le retrait passe par `LoseState`, le chemin commun des `Discard<X>`.
     """
-    for nom, methode in (("Stunned", face.DiscardStunned),
-                         ("Confused", face.DiscardConfused),
-                         ("Tough", face.DiscardTough)):
-        if face.HasStatus(nom):
-            methode(effect, rule=1)
-            return True
-    return False
+    presents = [nom for nom in STATUTS_RETIRABLES if face.HasStatus(nom)]
+    if not presents:
+        return False
+    unite = face.CastTo(CanStatus)
+
+    def retirer(nom: str) -> None:
+        unite.LoseState(nom, effect, 1)
+
+    if len(presents) == 1:
+        retirer(presents[0])
+        return True
+    joueur = effect.GetInitiator()
+    if joueur is None:
+        return False
+    joueur.ChooseAbilities(
+        effect,
+        *[AbilityFactory.ForChoiceAbility(
+            "Discard a %s status card" % nom,
+            lambda cibles, nom=nom: retirer(nom))
+          for nom in presents])
+    return True
+
+
+STATUTS_RETIRABLES = ("Stunned", "Confused", "Tough", "Exposed", "Cloaked",
+                      "Dazed", "Intensified")
+
+
+# ---------------------------------------------------------------------------
+# Tribute (dz031) : une carte qui DEVIENT la copie d'une autre
+# ---------------------------------------------------------------------------
+# Decision de l'utilisateur (Q4 du backlog 12, 20/10/2026) : vraie copie,
+# limitee aux evenements jouables tout de suite en Action / Hero Action. Le
+# moteur sait deja faire porter a une carte une face qui n'est pas la sienne
+# (`Card.SwapCardFace`, chemin de `Faces.TreatAsAlly`) et la remet sur sa face
+# imprimee des qu'elle part a la defausse (`Card.CheckIfCanDiscard` :
+# `IsAsOtherCard()` -> `ResetToPrintedCard()`). C'est exactement « until it is
+# placed in the discard pile » : aucune modification du moteur commun.
+
+TYPES_JOUABLES_TOUT_DE_SUITE = ("Action", "HeroAction")
+
+
+def CapaciteDeJeu(face: 'CardFace') -> 'Effect|None':
+    """L'effet « Play » d'un evenement, s'il se joue en Action / Hero Action."""
+    for trouve in face.effect.Find(when=Message.WhenPlayerInTurn):
+        if not trouve.ability.is_play:
+            continue
+        if any(trouve.ability.type == getattr(AbilityType, t)
+               for t in TYPES_JOUABLES_TOUT_DE_SUITE):
+            return trouve
+    return None
+
+
+def DevenirCopie(face: 'CardFace', paper: 'Paper', effect: 'Effect') -> 'CardFace':
+    """`face` (sa CARTE) porte desormais la face de `paper`, plus le trait SONG.
+
+    La face d'origine revient toute seule a l'entree en defausse
+    (`CheckIfCanDiscard`)."""
+    from game.card.factory import CardFactory
+    copie = CardFactory.CreateFace(paper, effect.world)
+    face.card.SwapCardFace(copie, effect)
+    CardFactory.FaceRegisterEffects(copie)
+    copie.traits_internal[TRAIT_SONG] = [copie]
+    face.card.tribute_copie = paper
+    return copie
+
+
+def ResoudreAvecChoix(trouve: 'Effect', face: 'CardFace', joueur: 'Player',
+                      effect: 'Effect', ref: 'Message2', *, payer_cout: bool) -> None:
+    """Resout `trouve` (capacite de `face`) en laissant le JOUEUR choisir une
+    cible unique, et en payant ou non les couts avant la fleche.
+
+    `CardFace.ResolveAbility` prend les premieres cibles legales sans rien
+    demander : meme correctif que Karaoke Night (dz035)."""
+    from game.effect.effect_invoke import EffectInvoker
+    trouve.context.initiator = face.GetControlByOrOwner()
+    trouve.checker.UpdateLegalTargets()
+    legales = [f for f in (trouve.context.all_legal_targets or []) if f is not None]
+    fourchette = tuple(trouve.context.target_range)
+    if len(legales) >= 2 and fourchette == (1, 1):
+        choisie = joueur.AskChooseOneText(legales)
+        if choisie is None or choisie not in legales:
+            choisie = legales[0]
+        trouve.context.targets_internal = [choisie]
+    else:
+        trouve.context.targets_internal = legales[:fourchette[0]]
+    trouve.context.initiator = face.GetControlByOrOwner()
+    EffectInvoker.ResolveSelfInternal(trouve, None, joueur, effect, ref,
+                                      skip_cost=not payer_cout)

@@ -100,8 +100,9 @@ class ModelOnEvent(ModelBase):
         # Fix "27131", "16062b"
         return this.DefaultDealDamageTo(this, units, damage, by_effect)
 
-    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect') -> int|None:
+    def OnRemoveSchemeThreat(self, schemes: List['Scheme2'], value: int, by_effect: 'Effect', *, thwart_in_event: bool=False) -> int|None:
         # assert False, f"You need to override this function, {self=}"
+        Unused(thwart_in_event)
         this = self.GetThis()
         return this.DefaultRemoveSchemeThreat(this, schemes, value, by_effect)
 

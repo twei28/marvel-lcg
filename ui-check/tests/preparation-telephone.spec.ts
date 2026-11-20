@@ -86,26 +86,24 @@ test('la grille des heros tient sur trois colonnes', async ({ page }) => {
   expect(g.hauteur).toBeLessThan(6000);
 });
 
-// ⚠ L'AUTRE DEFAUT DU 13/09/2026. Le bloc de la menace est borne a 190 px avec
-// un defilement interne, pense pour un grand ecran ou la colonne de droite est
-// figee. Son contenu en fait 202 sur telephone : la puce du set modulaire
-// recommande etait coupee en deux, sans que rien ne suggere qu'on puisse
-// defiler dedans.
-test('le bloc de la menace ne coupe aucune puce', async ({ page }) => {
+// ⚠ L'AUTRE DEFAUT DU 13/09/2026 : le bloc de la menace, borne a 190 px, coupait une puce. Depuis le 30/10/2026 le
+// niveau a sa page (onglet « Niveau » sur telephone, sans hauteur bornee) : on verifie que rien n'y deborde.
+test('l etape Difficulte ne coupe aucun bouton de niveau', async ({ page }) => {
   await jusquA(page, 'mechant');
   await page.locator('#scn-grid .tb-port').first().click();
   await page.locator('.ts-btn.jaune').click();
   await page.waitForTimeout(900);
+  await page.getByRole('button', { name: /continuer/i }).click();
+  await page.locator('.dp-onglets .tampon').nth(1).click();
   const g = await page.evaluate(() => {
-    const bloc = document.querySelector('#tb-menace') as HTMLElement;
-    const cadre = bloc.getBoundingClientRect();
-    const dedans = [...bloc.querySelectorAll('button, .mod-chip, #modular-box > *')] as HTMLElement[];
-    const deborde = dedans.filter((e) => e.getBoundingClientRect().bottom > cadre.bottom + 1);
-    return { combien: dedans.length, coupees: deborde.map((e) => e.textContent?.trim().slice(0, 18)) };
+    const bloc = document.querySelector('#tb-niveau') as HTMLElement;
+    const largeur = document.documentElement.clientWidth;
+    const boutons = [...bloc.querySelectorAll('button')] as HTMLElement[];
+    const debordent = boutons.filter((e) => e.getBoundingClientRect().right > largeur + 1);
+    return { combien: boutons.length, debordent: debordent.map((e) => e.textContent?.trim().slice(0, 18)) };
   });
-  console.log('MENACE ' + JSON.stringify(g));
   expect(g.combien).toBeGreaterThan(3);
-  expect(g.coupees, `puces coupees : ${g.coupees.join(', ')}`).toEqual([]);
+  expect(g.debordent, `boutons coupes : ${g.debordent.join(', ')}`).toEqual([]);
 });
 
 // ⚠ LE TROISIEME DEFAUT DU 13/09/2026. Sous 900 px, `.face-a-face` passe en
@@ -118,6 +116,7 @@ test('l ecran final remplit l ecran, et ses cartes sont lisibles', async ({ page
   await page.locator('.ts-btn.jaune').click();
   await page.waitForTimeout(800);
   await page.getByRole('button', { name: /continuer/i }).click();
+  await page.getByRole('button', { name: /continuer/i }).click(); // Mechant -> Difficulte -> Final (30/10/2026)
   await page.waitForSelector('.faceoff', { timeout: 20000 });
   const g = await page.evaluate(() => {
     const f = document.querySelector('.faceoff') as HTMLElement;

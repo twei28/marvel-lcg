@@ -1,0 +1,40 @@
+{
+    "version": "0.5.8",
+    "name": "Buffy",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Buffy » (Drive partage + cartes envoyees en images, RyCoran). Deck de heros = les 15 numeros « n/15 ». Obligation Normal Again (bf025) et set nemesis Buffy Nemesis (bf020-bf024). Cartes HELLMOUTH (bf027-bf032) et cartes liees (Faith allie, Scythe, Angel, Chosen One, Prophecy Girl, The Gentlemen) creees mises de cote par l'alter-ego (BeginGameWithSetAside) ou par leur carte hote (desc.Linked). Pas de decklist imprimee : player_deck vide."
+    },
+    "hero": [
+        "bf001a,bf001b"
+    ],
+    "hero_deck": [
+        "bf002",
+        "bf003",
+        "bf003",
+        "bf004",
+        "bf004",
+        "bf005",
+        "bf005",
+        "bf008",
+        "bf008",
+        "bf009",
+        "bf010",
+        "bf011",
+        "bf012",
+        "bf013",
+        "bf014"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "bf025"
+    ],
+    "nemesis_set": [
+        "bf020",
+        "bf021",
+        "bf022",
+        "bf023",
+        "bf024"
+    ],
+    "player_deck": []
+}

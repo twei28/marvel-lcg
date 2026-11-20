@@ -11,8 +11,26 @@ class WorldStat:
         self.once_per_round_player_effects: Dict['Player', List['Effect']] = {}
         self.once_per_phase_player_effects: Dict['Player', List['Effect']] = {}
         self.once_per_phase_effects: List['Effect'] = []
+        # CORRECTIF (25/10/2026, pack uw) : les cartes defaussees AU HASARD de la main, par joueur, pour le round
+        # en cours (« for each card you discarded from your hand at random this round »). Remis a zero en fin de round.
+        self.random_discards_this_round: Dict['Player', List['CardFace']] = {}
+        # CORRECTIF (25/10/2026, pack sq Spider-Punisher) : compteurs PAR JOUEUR et PAR ROUND (« Limit 3 times per round »),
+        # remis a zero en fin de round. Cle libre (nom de la capacite).
+        self.round_counters: Dict[Tuple['Player', str], int] = {}
+        # CORRECTIF (25/10/2026, pack hp Wasp Hank Pym) : « the number of times you have changed form this turn »,
+        # par joueur, remis a zero au debut et a la fin de chaque tour (comme `this_turn_made_attack`).
+        self.form_changes_this_turn: Dict['Player', int] = {}
+        # CORRECTIF (26/10/2026, pack custom roz, rz003 Thor Odinson « limit once per TURN ») : un numero qui change a chaque
+        # debut ET a chaque fin de tour de joueur. Une limite « once per turn » (RR « Limit ») se pose en notant ce numero sur la
+        # carte ; deux tours differents (meme du meme joueur) n'ont jamais le meme numero, et la phase du vilain a le sien.
+        self.turn_serial: int = 0
         self.this_turn_made_attack: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         self.this_turn_made_thwart: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
+        # Les attaques de TOUTE la phase (22/10/2026, Iron Fist 64014 et Colleen Wing 64021 :
+        # « an enemy who has been attacked by a hero THIS PHASE »). `this_turn_made_attack` est
+        # remise a zero a chaque tour de joueur, donc muette sur l'attaque d'un autre heros en
+        # multijoueur. Meme forme : (attaquant, effet, cibles attaquees).
+        self.this_phase_made_attack: List[Tuple[CardFace, 'Effect', Sequence['CardFace']]] = []
         # self.played_cards_this_turn: List[Tuple['Player', 'CardFace']] = []
 
         # --- Journal de la phase du mechant (ajout local, lu par ui-app) ------
@@ -73,6 +91,11 @@ class WorldStat:
         # laisserait le cartouche sur « va attaquer » jusqu'a la fin de la phase.
         self.faits_mechant: List[Dict[str, Any]] = []
         self._faits_mechant_round: int = -1
+        # Les « choisis l'un ou l'autre » dont UNE SEULE option etait possible : le moteur les applique sans rien demander et l'interface
+        # le DIT au joueur (rapport BL-Stark n°99 : « Robert Kelly n'a rien subi », il avait perdu 1 PV sans que rien ne s'affiche).
+        # Forme : {id, carte_id, carte_code, carte, option, joueur}. `id` numerote sans jamais reculer, c'est lui que l'interface compare.
+        self.choix_uniques: List[Dict[str, Any]] = []
+        self._choix_unique_suivant: int = 1
         # Le compteur des activations du round. Il numerote, il ne compte pas :
         # sa seule fonction est de lier l'intention a sa resolution. Reparti de
         # zero a chaque round, comme le journal lui-meme.
@@ -85,22 +108,49 @@ class WorldStat:
         self.sbire_en_cours: 'Dict[str, int]|None' = None
 
     def OnTurnBegin(self):
+        self.turn_serial += 1
         self.this_turn_made_attack = []
         self.this_turn_made_thwart = []
+        self.form_changes_this_turn = {}
         # self.played_cards_this_turn = []
 
     def OnTurnEnd(self):
+        self.turn_serial += 1
         self.this_turn_made_attack = []
         self.this_turn_made_thwart = []
+        self.form_changes_this_turn = {}
+
+    def AddFormChange(self, player: 'Player') -> int:
+        self.form_changes_this_turn[player] = self.form_changes_this_turn.get(player, 0) + 1
+        return self.form_changes_this_turn[player]
+
+    def CountFormChanges(self, player: 'Player') -> int:
+        return self.form_changes_this_turn.get(player, 0)
         # self.played_cards_this_turn = []
 
     def OnRoundEnd(self):
         self.once_per_round_effects = []
         self.once_per_round_player_effects = {}
+        self.random_discards_this_round = {}
+        self.round_counters = {}
+
+    def AddRoundCounter(self, player: 'Player', key: str, n: int=1) -> int:
+        self.round_counters[(player, key)] = self.round_counters.get((player, key), 0) + n
+        return self.round_counters[(player, key)]
+
+    def GetRoundCounter(self, player: 'Player', key: str) -> int:
+        return self.round_counters.get((player, key), 0)
+
+    def RecordRandomDiscard(self, player: 'Player', faces: 'Sequence[CardFace]') -> None:
+        self.random_discards_this_round.setdefault(player, []).extend(faces)
+
+    def CountRandomDiscards(self, player: 'Player') -> int:
+        return len(self.random_discards_this_round.get(player, []))
 
     def OnPhaseEnd(self):
         self.once_per_phase_effects = []
         self.once_per_phase_player_effects = {}
+        self.this_phase_made_attack = []
 
     ################################################################################
     #
@@ -176,6 +226,18 @@ class WorldStat:
         # descripteur envoye a chaque rendu.
         if len(self.faits_mechant) > 200:
             del self.faits_mechant[:-200]
+
+    def RecordChoixUnique(self, carte_id: int, carte_code: str, carte: str, option: str, joueur: int, texte: str = "") -> None:
+        """Inscrit un choix resolu d'office faute d'alternative (voir `choix_uniques`). Garde les 20 derniers.
+
+        `texte` (26/10/2026, Safe House #30) : un AVIS libre, en anglais, que le plateau affiche tel quel (traduit) au lieu de la phrase
+        « une seule option possible » : une recherche sans resultat dont la suite (« Then ») n'est pas resolue, par exemple."""
+        self.choix_uniques.append({
+            'id': self._choix_unique_suivant, 'carte_id': carte_id, 'carte_code': carte_code, 'carte': carte, 'option': option,
+            'joueur': joueur, 'texte': texte,
+        })
+        self._choix_unique_suivant += 1
+        del self.choix_uniques[:-20]
 
     def _DemarrerLeRound(self, round_id: int) -> None:
         """Vide le journal au premier fait d'un round different du dernier vu.
@@ -326,6 +388,7 @@ class WorldStat:
 
     def RecordAttack(self, end_message: 'Message.AfterUnitAttackEnd'):
         self.this_turn_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))
+        self.this_phase_made_attack.append((end_message.attacker, end_message.by_effect, end_message.attacked_targets))
 
     def RecordThwart(self, end_message: 'Message.AfterUnitThwartEnd'):
         self.this_turn_made_thwart.append((end_message.trigger, end_message.by_effect, end_message.schemes))

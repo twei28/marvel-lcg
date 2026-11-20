@@ -35,3 +35,7 @@ Defeated? ». Autre exemple : `60024` * De-escalation (Cops, Victory 0).
   `victoire` de `pileFondue` côté plateau : « Pile de victoire »).
 
 **Variantes maison** : aucune.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf381`, 01/11/2026)
+
+`hf381` Mutant Extinction Agenda (« Victory 1 ... cannot be defeated while a SENTINEL minion is in play ») : `desc.Victory = "1"` natif + `SchemeCannotLeavlPlayWhile` ; le moteur n'a pas de verification d'etat : une capacite `AfterCardLeavePlay` sur les SENTINEL vainc la manigance restee a 0 menace quand la derniere part (cas `hf381 : la DERNIERE SENTINEL part ...`).
