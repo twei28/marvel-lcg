@@ -39,30 +39,29 @@ test('telephone : la question « Futuriste » ne recouvre pas les cartes regarde
   await page.waitForTimeout(2500)
   await page.screenshot({ path: '../captures/futurist_telephone/2-menu.png' })
   console.log('BTNS', JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('button')].map((b) => (b.textContent ?? '').trim()).filter(Boolean).slice(0, 20))))
-  const act = page.getByRole('button', { name: /^Futurist$/i }).first()
+  const act = page.getByRole('button', { name: /^Futuriste?$/i }).first()
   if (await act.count()) { await act.click().catch(() => undefined); await page.waitForTimeout(3000) }
   await page.screenshot({ path: '../captures/futurist_telephone/3-regard.png' })
-  // 1. La feuille des cartes regardees s'arrete AU-DESSUS de la question (rapport n°142 : « je les vois en partie, je peux juste annuler »).
-  const boites = await page.evaluate(() => {
+  // Depuis le 18/11/2026 (rapport #152), une SEULE feuille « Choisis une carte » s'ouvre sur les 3 cartes regardees.
+  const mesure = await page.evaluate(() => {
     const r = (s: string) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return { top: Math.round(b.top), bottom: Math.round(b.bottom) } }
-    return { regardees: r('.plateau-regardees'), question: r('.demande-centrale') }
+    return { entete: r('.plateau-selecteur.est-fenetre .plateau-selecteur-entete'), cartes: r('.plateau-selecteur.est-fenetre .plateau-selecteur-cartes'), boutons: r('.plateau-selecteur.est-fenetre .plateau-selecteur-boutons'), nb: document.querySelectorAll('.plateau-selecteur.est-fenetre .scan-card').length }
   })
-  console.log('BOITES', JSON.stringify(boites))
-  expect(boites.regardees, 'fenetre des cartes regardees').not.toBeNull()
-  expect(boites.question, 'question').not.toBeNull()
-  expect(boites.regardees!.bottom, 'les cartes regardees ne passent pas sous la question').toBeLessThanOrEqual(boites.question!.top + 1)
-  // 2. Le dernier groupe de cartes reste atteignable en faisant defiler.
-  await page.evaluate(() => { const c = document.querySelector('.plateau-regardees-corps') as HTMLElement | null; if (c) c.scrollTop = c.scrollHeight })
+  console.log('MESURE', JSON.stringify(mesure))
+  expect(mesure.nb, 'les 3 cartes regardees').toBe(3)
+  // 1. L'en-tete n'est pas recouvert par les cartes (revérification du 19/11/2026 : l'étiquette « ÉVÉNEMENT » cachait « FUTURISTE »).
+  expect(mesure.entete!.bottom - mesure.entete!.top, 'en-tete visible').toBeGreaterThan(20)
+  expect(mesure.cartes!.top, 'les cartes commencent sous l en-tete').toBeGreaterThanOrEqual(mesure.entete!.bottom - 1)
+  // 2. La derniere carte s'atteint en faisant defiler, au-dessus des boutons.
+  await page.evaluate(() => { const c = document.querySelector('.plateau-selecteur.est-fenetre .plateau-selecteur-cartes') as HTMLElement | null; if (c) c.scrollTop = c.scrollHeight })
   await page.waitForTimeout(500)
-  const dernier = await page.evaluate(() => { const cartes = [...document.querySelectorAll('.plateau-regardees .scan-card')]; const c = cartes[cartes.length - 1]?.getBoundingClientRect(); const q = document.querySelector('.demande-centrale')?.getBoundingClientRect(); return c && q ? { bas: Math.round(c.bottom), hautQuestion: Math.round(q.top) } : null })
+  const dernier = await page.evaluate(() => { const cartes = [...document.querySelectorAll('.plateau-selecteur.est-fenetre .scan-card')]; const c = cartes[cartes.length - 1]?.getBoundingClientRect(); const b = document.querySelector('.plateau-selecteur.est-fenetre .plateau-selecteur-boutons')?.getBoundingClientRect(); return c && b ? { bas: Math.round(c.bottom), hautBoutons: Math.round(b.top) } : null })
   expect(dernier, 'la derniere carte').not.toBeNull()
-  expect(dernier!.bas, 'la derniere carte se voit en entier au-dessus de la question').toBeLessThanOrEqual(dernier!.hautQuestion + 1)
-  // 3. En francais : l'entete, le texte de la capacite et le bouton.
-  const texte = await page.evaluate(() => document.body.innerText)
-  expect(texte).toMatch(/\d cartes/)
-  expect(texte).not.toMatch(/\d cards/)
-  expect(texte).not.toMatch(/YOUR DECK/i)
-  expect(texte).toMatch(/regardez les 3 cartes/)
-  expect(texte).not.toMatch(/Look at the top 3/)
-  expect((await page.locator('.demande-centrale').innerText()).toLowerCase()).toContain('futuriste')
+  expect(dernier!.bas, 'la derniere carte se voit en entier au-dessus des boutons').toBeLessThanOrEqual(dernier!.hautBoutons + 1)
+  // 3. En francais.
+  const texte = await page.locator('.plateau-selecteur.est-fenetre').innerText()
+  expect(texte.toLowerCase()).toContain('futuriste')
+  expect(texte).not.toMatch(/Futurist\b(?!e)/)
+  expect(texte).toMatch(/Choisis une carte/i)
+  await page.screenshot({ path: '../captures/futurist_telephone/4-fin.png' })
 })

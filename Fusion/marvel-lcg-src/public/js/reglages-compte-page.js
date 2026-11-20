@@ -22,6 +22,7 @@ import { cookieLangue } from "/public/js/prepare/langue-resolution.js";
 export const REGLAGES_DU_COMPTE = [
     "marvel-board-action-mode", "marvel-board-animations", "marvel-board-annuler-explique",
     "marvel-board-auto-cible", "marvel-board-avance-auto", "marvel-board-curseurs",
+    "marvel-board-defausse-fin-tour",
     "marvel-board-delai-pas-a-pas", "marvel-board-dos-cartes", "marvel-board-facon-de-jouer",
     "marvel-board-fin-tour-auto", "marvel-board-meteo", "marvel-board-mode-phase-mechant",
     "marvel-board-musique", "marvel-board-paiement-auto", "marvel-board-phase-auto", "marvel-board-phase-rapide",

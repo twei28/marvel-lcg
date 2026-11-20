@@ -1156,6 +1156,11 @@ html[data-epure] .demande-centrale .dc-boutons .af-action {
   min-height: 56px;
 }
 
+/* Beaucoup de choix (grille de 3 colonnes, boutons-bd.css `est-nombreux`, 18/11/2026) : boutons plus bas pour tout voir. */
+html[data-epure] .demande-centrale .dc-boutons.est-nombreux .af-action {
+  min-height: 44px;
+}
+
 /* --- 19. La « Phase dynamique » en Épuré (16/10/2026) ------------------------
    Le panneau à droite (cartouche-dynamique.css) prend la palette sombre : en-tête
    gris soutenu, filet jaune dessous, titre blanc ; le reste suit les jetons. */

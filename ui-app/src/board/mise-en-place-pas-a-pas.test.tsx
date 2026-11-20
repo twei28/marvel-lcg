@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest'
-import { cleanup, fireEvent, render, renderHook } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, fireEvent, render, renderHook } from '@testing-library/react'
 import {
   attenteSurTable,
   avecFacesDAvant,
@@ -9,7 +9,7 @@ import {
   panneauAvantLaFile,
   type MemoireMiseEnPlace,
 } from './mise-en-place-pas-a-pas'
-import { CoucheMiseEnPlace, PlacesEnAttente, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
+import { CoucheMiseEnPlace, DELAI_MISE_EN_PLACE_MS, PlacesEnAttente, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
 import type { World, WorldCard } from './world'
 
 function carte(id: number, card_type: string, extra: Partial<WorldCard> = {}): WorldCard {
@@ -211,6 +211,37 @@ describe('CoucheMiseEnPlace', () => {
     expect(appels).toBe(1)
     fireEvent.keyDown(window, { key: ' ' })
     expect(appels).toBe(2)
+  })
+
+  // Inventaire des fenêtres du 19/11/2026 (nicodede62, « trop de pop-ups ») : plus de clic obligatoire par carte.
+  it('passe seule à la carte suivante après le délai, sans clic', () => {
+    vi.useFakeTimers()
+    try {
+      let appels = 0
+      render(<CoucheMiseEnPlace etape={etape} restantes={2} suivant={() => appels++} animations={false} />)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS - 100))
+      expect(appels).toBe(0)
+      act(() => vi.advanceTimersByTime(200))
+      expect(appels).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('le survol garde la carte affichée', () => {
+    vi.useFakeTimers()
+    try {
+      let appels = 0
+      const vue = render(<CoucheMiseEnPlace etape={etape} restantes={2} suivant={() => appels++} animations={false} />)
+      fireEvent.mouseEnter(vue.container.querySelector('.mep-contenu')!)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS * 3))
+      expect(appels).toBe(0)
+      fireEvent.mouseLeave(vue.container.querySelector('.mep-contenu')!)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS + 50))
+      expect(appels).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('ne rend rien sans étape', () => {

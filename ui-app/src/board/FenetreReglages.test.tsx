@@ -330,14 +330,14 @@ describe('« Durée d’affichage de la carte révélée » et le cartouche', ()
   })
 })
 
-// « Avance toute seule après » (23/10/2026) : Non / 2 s / 5 s, pour les modes qui ont un cartouche ; sans objet en « Accéléré ».
-describe('« Avance toute seule après »', () => {
+// « Défilement automatique » (23/10/2026) : Non / 2 s / 5 s, pour les modes qui ont un cartouche ; sans objet en « Accéléré ».
+describe('« Défilement automatique »', () => {
   beforeEach(() => window.localStorage.clear())
 
   it('présente Non / 2 s / 5 s en « Étape par étape » et « Plateau animé »', () => {
     for (const modePhase of ['detaille', 'sur-table'] as const) {
       const { unmount } = render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase })} />)
-      const rangee = within(ligne('Avance toute seule après'))
+      const rangee = within(ligne('Défilement automatique'))
       expect(rangee.getByText('Non')).toBeInTheDocument()
       expect(rangee.getByText('2 s')).toBeInTheDocument()
       expect(rangee.getByText('5 s')).toBeInTheDocument()
@@ -347,12 +347,12 @@ describe('« Avance toute seule après »', () => {
 
   it('absente en « Accéléré » : rien n’y attend de clic', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'instantane' })} />)
-    expect(screen.queryByText('Avance toute seule après')).toBeNull()
+    expect(screen.queryByText('Défilement automatique')).toBeNull()
   })
 
   it('choisir 2 s l’enregistre (réglage personnel), Non le coupe', () => {
     render(<ContenuOnglet onglet="jeu" p={proprietes({ modePhase: 'detaille' })} />)
-    const rangee = within(ligne('Avance toute seule après'))
+    const rangee = within(ligne('Défilement automatique'))
     fireEvent.click(rangee.getByText('2 s'))
     expect(window.localStorage.getItem('marvel-board-phase-auto')).toBe('2000')
     fireEvent.click(rangee.getByText('Non'))

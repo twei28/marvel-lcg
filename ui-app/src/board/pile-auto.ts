@@ -17,11 +17,16 @@ export type EntreePileAuto = {
   piles: ReadonlyMap<number, string>
   /** La pile deja ouverte, s'il y en a une. */
   pileOuverte: number | undefined
+  /**
+   * Toutes les cartes cherchees ont DEJA ete regardees (« Futuriste » de Tony Stark, 18/11/2026) : il n'y a rien a chercher,
+   * seulement a choisir. La pile s'ouvre alors d'office AUSSI sur PC (choix-parmi-regardees.ts).
+   */
+  dejaRegardees?: boolean
 }
 
 /** La pile a ouvrir d'office, ou `undefined` quand il faut laisser le joueur la choisir. */
-export function pileAOuvrirSeule({ telephone, rechercheEnCours, piles, pileOuverte }: EntreePileAuto): number | undefined {
-  if (!telephone || !rechercheEnCours || pileOuverte !== undefined) return undefined
+export function pileAOuvrirSeule({ telephone, rechercheEnCours, piles, pileOuverte, dejaRegardees }: EntreePileAuto): number | undefined {
+  if ((!telephone && !dejaRegardees) || !rechercheEnCours || pileOuverte !== undefined) return undefined
   if (piles.size !== 1) return undefined
   return piles.keys().next().value
 }

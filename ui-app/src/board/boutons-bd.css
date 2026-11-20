@@ -135,3 +135,18 @@ body.mode-plateau-portrait .demande-centrale .dc-pass.est-defense {
   padding: 12px 26px;
   font-size: 1.5rem;
 }
+
+/* BEAUCOUP DE CHOIX (18/11/2026, rapport nicodede62 #149) : « nommez un type de carte » (Cosmo) en propose 17. En une
+   colonne, la liste debordait de l'ecran et cachait « Heros », « Alter ego », « Allie » sans que rien n'indique qu'il
+   fallait la faire defiler. Au-dela de 8 choix : une grille de 3 colonnes (2 sur telephone), boutons plus bas. */
+.demande-centrale .dc-boutons.est-nombreux {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.demande-centrale .dc-boutons.est-nombreux .af-action {
+  min-width: 0;
+}
+body.mode-plateau-portrait .demande-centrale .dc-boutons.est-nombreux {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}

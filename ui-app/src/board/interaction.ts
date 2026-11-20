@@ -113,6 +113,12 @@ export type RoleCarte =
 
 export type EtatInteractif = {
   role: RoleCarte
+  /**
+   * La carte peut AUSSI payer le coût en cours (posé par la boucle des payeurs). Une identité CIBLE de la carte jouée garde
+   * son rôle de cible (on voit où va l'amélioration ou l'allié), mais doit montrer le halo bleu de paiement : rapport
+   * nicodede62 #147 (18/11/2026), Mantis jouant Bug, son « Avantage empathique » payait mais rien ne le montrait.
+   */
+  payeur?: boolean
   /** Deja choisie : cible retenue, ou ressource depensee. */
   choisie: boolean
   /** Combien de fois cette carte a ete choisie ou depensee. */
@@ -971,8 +977,10 @@ export function useInteraction(
           : []
         const disponibles = [...disponiblesGenerales, ...disponiblesSource]
         const ouvreHub = estHubIdentite && (optionsGenerales.length > 0 || demande.show_cancel)
+        // Une carte qui ne sait faire qu'UNE chose la fait au premier clic, dans les DEUX aides. L'aide « Courte » ouvrait un menu
+        // avec un seul bouton « JOUER » (inventaire des fenêtres du 19/11/2026, demande nicodede62 « trop de pop-ups »).
         const actionUnique =
-          modeActions === 'detailed' && !ouvreHub && disponibles.length === 1
+          !ouvreHub && disponibles.length === 1
             ? disponibles[0]
             : undefined
         const focalisee = carteFocus === bindId
@@ -1137,6 +1145,7 @@ export function useInteraction(
           // Une carte qui est aussi la cible garde son role : le joueur doit
           // continuer a voir OU part son amelioration.
           role: dejaPose?.role ?? 'ressource',
+          payeur: true,
           choisie: (dejaPose?.choisie ?? false) || selectionnee,
           fois,
           pulse: (etape === 'payment' || surpaiementRecompense) && !selectionnee,

@@ -108,7 +108,9 @@ class PlayerAsk:
         return select
 
     # def NameCardType(self) -> Type[Ally|Attachment|Environment|Event|Identity|Minion|Obligation|Resource|MainScheme|SideScheme|Support|Treachery|Upgrade|Villain]:
-    def DeclareCardType(self) -> Type['Ally|Hero|AlterEgo|Minion|Villain|MainScheme|EncounterSideScheme|PlayerSideScheme|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|Evidence']:
+    def DeclareCardType(self, titre: str = "") -> Type['Ally|Hero|AlterEgo|Minion|Villain|MainScheme|EncounterSideScheme|PlayerSideScheme|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|Evidence']:
+        """`titre` (18/11/2026, additif) : le titre de la question cote client. Sans lui, l'ecran ne nomme que la carte qui porte
+        la question (l'identite du joueur) : « Mantis — choisis une option » pour le Cosmo de Mantis (rapport nicodede62 #149)."""
         from game.card.face.card_type import Ally
         from game.card.face.card_type import Hero
         from game.card.face.card_type import AlterEgo
@@ -133,7 +135,7 @@ class PlayerAsk:
         text_list: List[str] = []
         for item in item_list:
             text_list.append(item.__name__)
-        return self.AskChooseOneText(item_list, text_list)
+        return self.AskChooseOneText(item_list, text_list, titre=titre)
 
     # [min, max]
     def DeclareNumber(self, min: int, max: int) -> int:

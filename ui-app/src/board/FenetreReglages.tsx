@@ -23,6 +23,7 @@
 // ⚠ AUCUN REGLAGE N'EST AJOUTE, SUPPRIME NI RENOMME. C'est un rangement, pas
 // une refonte : chaque interrupteur continue d'appeler exactement la meme
 // fonction qu'avant.
+import { ecrireProposerDefausseFinTour, lireProposerDefausseFinTour } from './defausse-fin-tour'
 import { ecrireEtiquettesTable, lireEtiquettesTable } from './etiquettes-table'
 import { ecrireBarreAvantage, lireBarreAvantage } from './barre-avantage-reglage'
 import { ecrireInversionPiles, lireInversionPiles } from './inversion-piles'
@@ -372,13 +373,13 @@ function LignePhaseMechant({ p }: { p: ProprietesReglages }) {
   )
 }
 
-/** « Avance toute seule après : Non / 2 s / 5 s » (23/10/2026, renomme le 05/11/2026). Sans objet en « Accéléré » : rien n'y attend de clic. */
+/** « Défilement automatique : Non / 2 s / 5 s » (23/10/2026, renomme le 05/11/2026, puis le 18/11/2026 : « Avance toute seule après » faisait peur à un testeur). Sans objet en « Accéléré » : rien n'y attend de clic. */
 function LigneDelaiAutoPhase() {
   const [delai, setDelai] = useState<DelaiAutoPhase>(lireDelaiAutoPhase)
   useEffect(() => suivreDelaiAutoPhase(setDelai), [])
   return (
     <LigneChoix<DelaiAutoPhase>
-      libelle={t('Avance toute seule après')}
+      libelle={t('Défilement automatique')}
       valeur={delai}
       choix={[
         { valeur: 0, libelle: t('Non') },
@@ -533,6 +534,22 @@ function LigneZoomApercu() {
         }}
       />
     </div>
+  )
+}
+
+/** Défausse facultative de fin de tour (inventaire des fenêtres, 19/11/2026) : autonome, le plateau la relit à chaque question. */
+function LigneDefausseFinTour() {
+  const [actif, setActif] = useState(lireProposerDefausseFinTour)
+  return (
+    <LigneBascule
+      libelle={t('Proposer de défausser en fin de tour')}
+      detail={t('Sinon le tour se termine sans défausser')}
+      actif={actif}
+      onBascule={() => {
+        ecrireProposerDefausseFinTour(!actif)
+        setActif(!actif)
+      }}
+    />
   )
 }
 
@@ -949,6 +966,7 @@ export function ContenuOnglet({
           actif={p.finTourAuto}
           onBascule={p.basculerFinTourAuto}
         />
+        <LigneDefausseFinTour />
         <TitreSection>{t('Cartes et plateau')}</TitreSection>
         <LigneCoteAmeliorations />
         <LigneChevauchementAmeliorations />

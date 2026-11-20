@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-20",
+        genre: "correction",
+        fr: "Moins de fenêtres inutiles et des choix qui s'ouvrent tout de suite : le pouvoir de Captain America, le « Futuriste » de Tony, le choix des Sentinelles de Magneto, Cosmo (type de carte puis deck nommé) et le pouvoir de Mantis (halo de paiement) fonctionnent comme prévu, en français comme en anglais.",
+        en: "Fewer pointless pop-ups and choices that open straight away: Captain America's power, Tony's “Futurist”, Magneto's Sentinel pick, Cosmo (card type, then named deck) and Mantis's power (payment halo) now work as intended, in French and in English.",
+    },
+    {
+        date: "2026-11-20",
+        genre: "jeu",
+        fr: "Fin de tour, étapes vides du méchant, mise en place et bilan : la partie n'ouvre plus de fenêtre quand il n'y a rien à décider (défausse facultative de fin de tour retirée, une seule action se joue dès le premier clic).",
+        en: "End of turn, empty villain steps, setup and recap: the game no longer opens a window when there is nothing to decide (optional end-of-turn discard removed, a single action plays on the first click).",
+    },
+    {
         date: "2026-11-18",
         genre: "correction",
         fr: "« Continuer la partie » reprend maintenant ta partie exactement là où tu l'as quittée : elle est rangée dès le début de la partie, au retour au menu et à la fermeture de la page, et plus seulement au changement de phase.",

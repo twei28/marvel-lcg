@@ -114,6 +114,6 @@ describe('les réglages', () => {
     expect(screen.queryByText('Accéléré')).toBeNull()
     expect(screen.getByText(/Guidée sur téléphone/)).toBeTruthy()
     // le délai automatique des étapes reste proposé : il vaut pour la Guidée
-    expect(screen.getByText('Avance toute seule après')).toBeTruthy()
+    expect(screen.getByText('Défilement automatique')).toBeTruthy()
   })
 })

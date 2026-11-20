@@ -129,6 +129,9 @@ function marquer(carteId: number, animations: boolean) {
 
 export const DUREE_VOL = 400
 
+/** Le temps qu'une carte de la mise en place reste en grand avant d'aller se poser seule. */
+export const DELAI_MISE_EN_PLACE_MS = 2200
+
 /** Une copie de `depart` vole vers la carte de la table ; `fini` à l'arrivée (tout de suite si rien ne vole). */
 export function glisser(depart: HTMLElement | null, carteId: number, fini?: () => void) {
   const cible = document.querySelector<HTMLElement>(`.scan-card[data-card-id="${carteId}"]`)
@@ -233,6 +236,16 @@ export function CoucheMiseEnPlace({
     } else glisser(cadre.current, etape.carteId, poser)
   }, [etape, paire, enVol, animations, suivant])
 
+  // DÉFILEMENT TOUT SEUL (inventaire des fenêtres du 19/11/2026, demande nicodede62 « trop de pop-ups ») : chaque carte
+  // reste en grand `DELAI_MISE_EN_PLACE_MS` puis va se poser sans clic. « Continuer », Espace ou un clic accélèrent ; le
+  // survol de la carte la garde affichée, le temps de la lire.
+  const [survol, setSurvol] = useState(false)
+  useEffect(() => {
+    if (!etape || enVol || survol) return
+    const minuteur = window.setTimeout(continuer, DELAI_MISE_EN_PLACE_MS)
+    return () => window.clearTimeout(minuteur)
+  }, [etape, enVol, survol, continuer])
+
   useEffect(() => {
     if (!etape) return
     const touche = (ev: KeyboardEvent) => {
@@ -256,7 +269,7 @@ export function CoucheMiseEnPlace({
 
   return (
     <div className={`mep-couche${animations ? ' est-anime' : ''}${enVol ? ' est-en-vol' : ''}`} role="dialog" aria-modal="true" aria-label={t('Mise en place')}>
-      <div className="mep-contenu" key={etape.cle}>
+      <div className="mep-contenu" key={etape.cle} onMouseEnter={() => setSurvol(true)} onMouseLeave={() => setSurvol(false)}>
         <p className="mep-titre">{t('Mise en place')}</p>
         {paire ? (
           <div className="mep-paire">

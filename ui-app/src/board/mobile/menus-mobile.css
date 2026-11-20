@@ -131,6 +131,13 @@
     grid-template-rows: auto auto minmax(0, 1fr) auto;
   }
 
+  /* La fenetre de choix porte AVANT son en-tete la rangee de la croix (`.plateau-selecteur-fermer-colle`) : les rangees
+     ci-dessus etaient decalees d'un cran, l'en-tete tombait dans la rangee extensible (0 px de haut) et l'etiquette
+     « EVENEMENT » de la 1re carte recouvrait le titre (« Futuriste » de Tony Stark, revérification du 19/11/2026). */
+  body.mode-plateau-portrait .plateau-selecteur:has(> .plateau-selecteur-fermer-colle) {
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  }
+
   /* Une QUESTION ouverte en meme temps (« Futurist : choisis 1 des 3 cartes ») occupe le bas de l'ecran : la liste des cartes s'arrete
      au-dessus d'elle au lieu de passer dessous (rapport n°142). `--feuille-demande-h` est publiee par DemandeCentrale. */
   body.mode-plateau-portrait .plateau-selecteur,

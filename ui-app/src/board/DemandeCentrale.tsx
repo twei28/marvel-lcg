@@ -1,3 +1,4 @@
+import { estDefausseFinDePhase } from './defausse-fin-tour'
 import { QuestionSurTable, type ChoixSurTable } from './TableSansModale'
 import { ligneDefense } from './ligne-attaque'
 import { useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react'
@@ -109,7 +110,8 @@ function promptDemande(demande: Demande): string {
   // Rapport de bug du 08/11/2026 (J. Jonah Jameson) : une question construite
   // par `AskChooseOneText` (pas de carte-modele a imiter par le moteur) reste
   // sinon en anglais, la seule des deux formes a ne pas matcher.
-  return traduireQuestionImage(traduireTitreRepetition(nettoye))
+  // `traduireMoteur` en dernier : un titre posé par le moteur (`AskChooseOneText(titre=...)`, ex. « Cosmo: name a card type »).
+  return traduireMoteur(traduireQuestionImage(traduireTitreRepetition(nettoye)))
 }
 
 export function texteDemande(demande: Demande): string {
@@ -240,6 +242,13 @@ function nomSourceParId(
  */
 export function nomDeCapacite(option: Option, texteCapacite: string | undefined): string {
   const nom = nomLisible(option)
+  // La défausse de fin de phase (« End Phase », de 0 à toute la main) n'est la capacité d'aucune carte : sans ce garde, le
+  // bouton prenait le nom imprimé de l'identité (« SCIENTIFIQUE » de Peter Parker, inventaire des fenêtres du 19/11/2026).
+  if (estDefausseFinDePhase(option)) return t('Défausser et piocher')
+  // Un CHOIX PAR NOM (« Hero », « Ally »... de Cosmo) n'est pas une capacité de la carte qui porte la question : sans ce
+  // garde, « Hero » passait pour un nom propre et prenait celui de l'identité (« Empathetic Advantage », rapport #149).
+  // Seulement les choix SANS carte cible : « Futuriste » (choisir une des 3 cartes regardées) garde le nom imprimé.
+  if (option.is_text_choice && option.all_legal_targets.length === 0) return nom
   if (!texteCapacite) return nom
   const entete = texteCapacite.match(/^[«"]?\s*([^«»"—]{2,60}?)\s*[»"]?\s+—\s/)
   if (!entete) return nom
@@ -791,7 +800,7 @@ export function DemandeCentrale({
           })()
         : null}
 
-      <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
+      <div className={`af-boutons dc-boutons${choixUnique ? ' est-choix-unique' : ''}${options.length > 8 ? ' est-nombreux' : ''}`} onMouseOver={survolerZone} onMouseLeave={quitterZone}>
         {/*
           ⚠ UNE SEULE VIGNETTE PAR IMAGE, ET PAS UNE PAR BOUTON.
           Signale en jeu le 15/09/2026, capture a l'appui : « pourquoi il montre

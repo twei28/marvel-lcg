@@ -541,6 +541,11 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
   // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
   // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
+  // 17020 Cosmo (18/11/2026, rapports nicodede62 #148/#149) : le type est nommé d'abord, puis le paquet se choisit par son nom.
+  [/^(.+): name a card type$/, (m) => `${m[1]} : nommez un type de carte`],
+  [/^(.+): discard the top card of which deck\?$/, (m) => `${m[1]} : défausser le dessus de quel deck ?`],
+  [/^Player deck \((.+)\)$/, (m) => `Deck joueur (${m[1]})`],
+  [/^Encounter deck$/, () => 'Deck rencontre'],
   [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
   [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],
   [/^Heal (\d+) damage from a friendly character$/, (m) => `Soigner ${degats(m[1]!)} d’un personnage allié`],

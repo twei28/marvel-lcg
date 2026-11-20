@@ -4,6 +4,8 @@ import { ScanCard, kindLabel, type ScanCardProps } from '../components/ScanCard'
 import { nombreDeRessources, paiementCourant, type Option } from './ask'
 import { classeTonaliteAction } from './action-style'
 import { nomLisible, nomLisibleParlant } from './BarreAction'
+import { nomDeCapacite } from './DemandeCentrale'
+import { extraireCapacite } from './texte-capacite'
 import { avecIcones, marquerRessources } from './icones-ressources'
 import type { Catalogue } from './catalogue'
 import { t } from './langue'
@@ -553,7 +555,16 @@ export function MenuActionsCarte({
         .map((option, ordre) => {
           const source = option.bind_id ? cartesParId.get(option.bind_id) : undefined
           // Deux actions du meme type sur une carte : chacune porte le resume de son paragraphe, jamais « Action » / « Action 1 ».
-          const nom = nomLisibleParlant(option, texteDeCarte?.((source ?? carteMonde)?.card_id))
+          const texteCarte = texteDeCarte?.((source ?? carteMonde)?.card_id)
+          // Une capacité NOMMÉE prend son nom imprimé dans la langue du plateau : « I Can Do This All Day! » restait en anglais
+          // dans le menu de Captain America (rapport nicodede62 #158, 19/11/2026). Même règle que la question centrale.
+          // Seulement pour une capacité que la carte NOMME vraiment (son nom anglais figure dans son texte anglais) : sans ce garde,
+          // « Changer de forme » de Tony Stark prenait le nom de son paragraphe, « Futuriste ».
+          const cardId = (source ?? carteMonde)?.card_id
+          const anglais = cardId ? catalogue.texte?.(cardId) : undefined
+          const nommee = Boolean(anglais?.toLowerCase().includes(nomLisible(option).toLowerCase()))
+          const imprime = nommee ? nomDeCapacite(option, extraireCapacite(texteCarte, option.name)) : undefined
+          const nom = imprime && imprime !== nomLisible(option) ? imprime : nomLisibleParlant(option, texteCarte)
           const cartePourStat = mode === 'target' ? source : carteMonde
           return {
             option,

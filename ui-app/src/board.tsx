@@ -92,6 +92,7 @@ import { catalogueVide, chargerCatalogue, type Catalogue } from './board/catalog
 import { extraireBoost, extraireCapacite, extraireEffetRevele } from './board/texte-capacite'
 import type { InfoRevelee } from './board/vue-cartouche'
 import { sauverEnCours, sauverEnPartant } from './board/en-cours'
+import { ciblesDejaRegardees, optionACiblesSeule, optionParmiRegardees } from './board/choix-parmi-regardees'
 import { fusionnerDistribution, retenirCartesDistribuees, type DistribueesRetenues } from './board/frise-phase'
 import { avecTableauDistribution } from './board/etapes-essai'
 import { quitterPleinEcran } from './board/mobile/plein-ecran'
@@ -105,7 +106,7 @@ import {
   type Site,
 } from './board/quitter-la-table'
 import { adresseApresPartie, estInviteDeTable, useRetourAuSalon } from './board/retour-salon'
-import { estFenetreDeReaction, texteDemande } from './board/DemandeCentrale'
+import { estFenetreDeReaction, nomDeCapacite, texteDemande } from './board/DemandeCentrale'
 import { SelecteurChoixTexte } from './board/SelecteurChoixTexte'
 import { SelecteurTirageCache } from './board/SelecteurTirageCache'
 import { estTirageCache } from './board/tirage-cache'
@@ -136,6 +137,7 @@ import { ToastsEffetsCartes, type ToastEffet } from './board/ToastEffetCarte'
 import { useBandeauAnnulation, useRestauration } from './board/annulation'
 import { BandeauAnnulation } from './board/BandeauAnnulation'
 import { traduireMoteur } from './board/vocabulaire-moteur'
+import { lireProposerDefausseFinTour, reponseDefausseFacultative } from './board/defausse-fin-tour'
 import {
   afficherFinDePartie,
   coupFatalLocal,
@@ -2193,6 +2195,7 @@ export function PagePartie({
     () => (etat.monde ? cartesRegardees(etat.monde, joueurActif, catalogue) : []),
     [etat.monde, joueurActif, catalogue]
   )
+  const idsRegardesNum = useMemo(() => new Set(idsRegardes(groupesRegardes).map(Number)), [groupesRegardes])
   // La memoire de la fenetre « Cartes regardees » vit ICI et non dans la fenetre : celle-ci est demontee a chaque fenetre
   // de choix, et perdait ce qu'on venait de fermer (Gambit, 29/10/2026). Remise a zero quand plus rien n'est regarde.
   const [cartesRegardeesVues, setCartesRegardeesVues] = useState<ReadonlySet<string>>(() => new Set())
@@ -2251,6 +2254,8 @@ export function PagePartie({
     (option: Option) => {
       const nommee = carteDeLOption(option)
       if (nommee) return nommee
+      // Choix par nom sans carte nommée (« Ally » de Cosmo) : montrer l'identité qui porte la question tromperait.
+      if (option.is_text_choice && option.all_legal_targets.length === 0) return undefined
       const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
       if (!porteuse) return undefined
       return toScanCard(
@@ -2291,6 +2296,8 @@ export function PagePartie({
   }, [francaisCompletUtile, textesFrComplets])
   const texteCapaciteDeLOption = useCallback(
     (option: Option): string | undefined => {
+      // Un choix par nom (« nommez un type de carte ») n'a pas de texte : celui de la carte porteuse serait une autre capacité.
+      if (option.is_text_choice && option.all_legal_targets.length === 0) return undefined
       const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
       if (!porteuse) return undefined
       const cardId = porteuse.card_id
@@ -2316,9 +2323,13 @@ export function PagePartie({
   const nomActionDe = useCallback(
     (option: Option): string => {
       const porteuse = option.bind_id !== 0 ? cartesMondeParId.get(option.bind_id) : undefined
+      // Une capacité NOMMÉE (« Futurist » de Tony Stark) prend son nom imprimé dans la langue du plateau (« Futuriste »),
+      // comme les boutons de la question centrale (`nomDeCapacite`). Rapport nicodede62 du 18/11/2026 : titre resté en anglais.
+      const imprime = nomDeCapacite(option, texteCapaciteDeLOption(option))
+      if (imprime !== nomLisible(option)) return imprime
       return nomLisibleParlant(option, texteImprimeDeLaCarte(porteuse?.card_id))
     },
-    [cartesMondeParId, texteImprimeDeLaCarte]
+    [cartesMondeParId, texteImprimeDeLaCarte, texteCapaciteDeLOption]
   )
   // Fermer ou abandonner une action avant de la valider ne disait rien (26/10/2026) : le message le dit, quelques secondes.
   const { message: actionAnnulee, noterReponse } = useActionAnnulee(
@@ -2548,6 +2559,50 @@ export function PagePartie({
     },
     [interaction, plateau]
   )
+
+  // CHOISIR PARMI DES CARTES DEJA REGARDEES (18/11/2026, « Futuriste » de Tony Stark, nicodede62) : une seule option, dont
+  // toutes les cibles sont des cartes qu'on vient de regarder -> elle se lance d'office (plus de bouton « FUTURIST » posé
+  // sur les cartes), une fois par question pour qu'« Annuler » reste possible. Voir choix-parmi-regardees.ts.
+  const optionDOffice =
+    etat.aNous && etat.demande && !interaction.option && !leMoteurSeTait(etat.monde)
+      ? optionParmiRegardees(interaction.options, idsRegardesNum) ?? optionACiblesSeule(interaction.options)
+      : undefined
+  const optionDOfficeLancee = useRef<string | undefined>(undefined)
+  const optionEnCours = Boolean(interaction.option)
+  useEffect(() => {
+    // La question partie, le repère s'efface : la MÊME question peut revenir plus tard (même texte, mêmes cartes). Mais PAS
+    // pendant que l'option lancée est ouverte, ni après « Annuler » (la même question est encore là) : sinon « Annuler »
+    // relançait aussitôt le sélecteur, et on ne pouvait plus en sortir.
+    if (!optionDOffice) {
+      if (!optionEnCours) optionDOfficeLancee.current = undefined
+      return
+    }
+    const cle = `${etat.demande?.prompt_text ?? ''}|${optionDOffice.id}|${optionDOffice.all_legal_targets.join(',')}`
+    if (optionDOfficeLancee.current === cle) return
+    optionDOfficeLancee.current = cle
+    choisirOptionDepuisMenu(optionDOffice)
+  }, [optionDOffice, optionEnCours, etat.demande?.prompt_text, choisirOptionDepuisMenu])
+
+  // DÉFAUSSE FACULTATIVE DE FIN DE TOUR (inventaire des fenêtres, 19/11/2026) : répondue d'office par « aucune carte », sauf
+  // si le réglage « Proposer de défausser en fin de tour » est allumé. Obligatoire (main trop grande) : la question reste.
+  // Une fois par question, comme ci-dessus. Voir board/defausse-fin-tour.ts.
+  const defausseDOffice = etat.aNous && !leMoteurSeTait(etat.monde) ? reponseDefausseFacultative(etat.demande, lireProposerDefausseFinTour()) : undefined
+  const defausseDOfficeEnvoyee = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    // ⚠ La question partie, le repère s'efface. Sans cela, un round où l'on ne joue rien redonnait EXACTEMENT la même
+    // question (même texte, même main) au round suivant : elle n'était plus répondue et la partie restait bloquée
+    // (constaté le 19/11/2026 en reproduisant le rapport #153).
+    if (!defausseDOffice || !etat.demande) {
+      if (!defausseDOffice) defausseDOfficeEnvoyee.current = undefined
+      return
+    }
+    const option = etat.demande.options.find((o) => o.id === defausseDOffice.id)
+    if (!option) return
+    const cle = `${etat.demande.prompt_text}|${option.id}|${option.all_legal_targets.join(',')}`
+    if (defausseDOfficeEnvoyee.current === cle) return
+    defausseDOfficeEnvoyee.current = cle
+    repondreSuivi(defausseDOffice, option.bind_player_id)
+  }, [defausseDOffice, etat.demande, repondreSuivi])
 
   // Superpose, PAR-DESSUS les interactions normales, un halo pulsant + un
   // clic direct sur les vraies cartes de main que `choixTexteParCarteId`
@@ -4579,6 +4634,7 @@ export function PagePartie({
     rechercheEnCours: rechercheEnCours && !selecteurReduit,
     piles: pilesARechercher,
     pileOuverte: pileFouillee,
+    dejaRegardees: ciblesDejaRegardees(interaction.ciblesHorsTable.map((c) => Number(c.props.id)), idsRegardesNum),
   })
   useEffect(() => {
     if (pileOuverteDOffice !== undefined) setPileFouillee(pileOuverteDOffice)

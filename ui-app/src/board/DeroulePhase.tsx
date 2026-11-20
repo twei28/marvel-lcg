@@ -834,11 +834,11 @@ export function DeroulePhase({
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
-  // Les TEMPS VIDES ont leur etape courte (« Aucune menace posée »), avec son
-  // « Suivant » (decision du 03/10/2026) : `avecTempsVides`, frise-phase.ts.
-  const etapesConnues = phaseRaconteeEnCours
-    ? avecTempsVides(etapesDeLaPhase, false)
-    : avecBilan(avecTempsVides(etapesDeLaPhase, true), pvMaxParNom)
+  // Les TEMPS VIDES (« Aucun sbire engagé ») n'ont PLUS d'etape pendant la phase : choix de l'utilisateur, inventaire des
+  // fenetres du 19/11/2026 (nicodede62, « trop de pop-ups »), qui remplace la decision du 03/10/2026. Il fallait cliquer
+  // « Étape suivante » sur une etape ou rien ne se passe. Le temps saute tout seul ; son onglet reste visible, grise
+  // (`est-vide` ci-dessous). La relecture depuis le journal (`RelectureJournal`, `RevuePhase`) les dit toujours.
+  const etapesConnues = phaseRaconteeEnCours ? etapesDeLaPhase : avecBilan(etapesDeLaPhase, pvMaxParNom)
   const etapesAffichees = arreterSurDefaite(etapesConnues, herosLocauxIds)
   // La coupe a-t-elle vraiment emporte quelque chose ? C'est ce qui distingue
   // « la liste a change d'ordre » de « un heros vient de tomber », et le repli
@@ -1705,7 +1705,12 @@ export function DeroulePhase({
   // fin de phase (le joueur reprend la main, il doit le voir) et la chute
   // d'un heros (le moment le plus important d'une partie ne defile pas). Le
   // bilan se reconnait a son temps : `avecBilan` est le seul a le produire.
-  const etapeAttendUnClic = etape?.temps === 'bilan' || Boolean(etape?.defaite)
+  // ⚠ 19/11/2026 (inventaire des fenetres, nicodede62 « trop de pop-ups ») : avec le DEFILEMENT AUTOMATIQUE allume, le bilan
+  // se ferme seul apres le delai choisi (choix de l'utilisateur). Sans defilement, il attend toujours « Terminer ». La chute
+  // d'un heros attend toujours le clic.
+  const [delaiAuto, setDelaiAuto] = useState(lireDelaiAutoPhase)
+  useEffect(() => suivreDelaiAutoPhase(setDelaiAuto), [])
+  const etapeAttendUnClic = (etape?.temps === 'bilan' && delaiAuto <= 0) || Boolean(etape?.defaite)
 
   // Le delai avant que l'etape courante ne se valide seule, ou `undefined`
   // quand elle attend un clic.
@@ -1717,10 +1722,13 @@ export function DeroulePhase({
   // « Phase du mechant automatique » (reglage des options, 23/10/2026) : chaque etape se valide seule apres 2 s ou 5 s, pour les deux
   // presentations a cartouche (le mode « Accelere » n'en a pas). Le delai ne court qu'une fois la lecture des cartes finie
   // (`avantResultat`) : on ne passe pas une attaque dont les boosts sont encore en train d'arriver.
-  const [delaiAuto, setDelaiAuto] = useState(lireDelaiAutoPhase)
-  useEffect(() => suivreDelaiAutoPhase(setDelaiAuto), [])
+  // ⚠ 18/11/2026 (nicodede62 : « pendant le tour du méchant, il attend toujours que je valide avec espace ») : en Guidé, les
+  // boosts d'une attaque ou d'une manigance se retournent UN PAR UN, au clic (« Révéler le boost suivant »). Le minuteur était
+  // coupé tant qu'il en restait (`avantResultat`) : personne ne les retournait et l'étape attendait Espace pour toujours. En
+  // défilement automatique, il retourne donc aussi le boost suivant après le délai (le temps de le lire), comme Espace.
+  const boostsARetourner = Boolean(essai && etape && !relecture && boostsMontres < etape.boosts.length)
   const delaiAvant =
-    delaiAuto > 0 && !avantResultat
+    delaiAuto > 0 && (!avantResultat || (boostsARetourner && !lectureEnCours && !enVolDeJeton))
       ? delaiAuto
       : surTable && viseUnAutreJoueur
         ? DELAI_ETAPE_D_UN_AUTRE_MS
@@ -1755,12 +1763,21 @@ export function DeroulePhase({
     if (delaiAvant === undefined) return
     if (!visible || suspendu || enAttente || questionAuJoueur || etapeEstAnnonce) return
     if (etapeAttendUnClic) return
-    const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvant)
+    // Comme Espace : tourner la page du cartouche s'il en reste une (le boost suivant), sinon valider l'étape.
+    const minuteur = window.setTimeout(() => {
+      const page = nouvelleScene ? boutonPageSuivante(document.querySelector('.deroule-phase.est-scene')) : undefined
+      if (page) page.click()
+      else avancerRef.current()
+    }, delaiAvant)
     return () => window.clearTimeout(minuteur)
   }, [
     delaiAvant,
     etape?.cle,
     etape?.etat,
+    // Réarmé à chaque page tournée : chaque boost retourné, la carte rencontre retournée (« Révéler la carte »), puis un
+    // dernier pour valider l'étape. Sans ça, le minuteur qui venait de tourner la page ne repartait jamais.
+    boostsMontres,
+    cartesRetournees,
     visible,
     suspendu,
     enAttente,

@@ -1222,3 +1222,29 @@ describe('useInteraction, carte a cout X (surpaiement recompense)', () => {
     expect(result.current.coutAffiche).toBe('')
   })
 })
+
+// Inventaire des fenêtres du 19/11/2026 (nicodede62, « trop de pop-ups ») : dans l'aide « Courte » (par défaut), une carte
+// de la main à UNE seule action ouvrait un menu avec un seul bouton « JOUER ». Elle se joue maintenant au premier clic.
+describe('useInteraction, action unique au premier clic', () => {
+  function jouerLaCarteEnMain(): Option {
+    return { ...optionTroisCibles(), id: 40, bind_id: RESSOURCE, all_legal_targets: [HEROS], target_num_range: [1, 1], target_payment: {} }
+  }
+  it('aide Courte : le clic lance l’action, sans menu', () => {
+    const { result } = monter(jouerLaCarteEnMain())
+    act(() => result.current.cartes.get(RESSOURCE)?.agir?.())
+    expect(result.current.option?.id).toBe(40)
+    expect(result.current.carteFocus).toBeUndefined()
+  })
+  it('deux actions : le menu s’ouvre', () => {
+    const demande: Demande = {
+      options: [jouerLaCarteEnMain(), { ...jouerLaCarteEnMain(), id: 41, name: 'Action' }],
+      refus: [], prompt_text: '', event_name: 'test', show_cancel: true, ability_type: '',
+    }
+    const { result } = renderHook(() =>
+      useInteraction(MONDE, demande, vi.fn(), new Set([HEROS, RESSOURCE, ...CIBLES]), 0, CATALOGUE, 'simple')
+    )
+    act(() => result.current.cartes.get(RESSOURCE)?.agir?.())
+    expect(result.current.option).toBeUndefined()
+    expect(result.current.carteFocus).toBe(RESSOURCE)
+  })
+})

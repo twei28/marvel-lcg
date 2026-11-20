@@ -20,6 +20,7 @@ export const REGLAGES_DU_COMPTE: readonly string[] = [
   'marvel-board-auto-cible',
   'marvel-board-avance-auto',
   'marvel-board-curseurs',
+  'marvel-board-defausse-fin-tour',
   'marvel-board-delai-pas-a-pas',
   'marvel-board-dos-cartes',
   'marvel-board-facon-de-jouer',

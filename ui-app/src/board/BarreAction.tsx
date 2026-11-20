@@ -9,6 +9,7 @@ import type { Interaction } from './interaction'
 import { t } from './langue'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
 import { nomActionParlant } from './texte-capacite'
+import { libelleTypeDeCarte } from './types-de-carte'
 import { sansIndexDeCapacite, traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
 
 /**
@@ -23,8 +24,33 @@ import { sansIndexDeCapacite, traduireEffets, traduireMoteur, traduireTitreRepet
  */
 export function nomLisible(option: Option): string {
   const brut = option.name.startsWith('p_') ? option.name.slice(2) : option.name
+  // « Nommez un type de carte » (Cosmo, DeclareCardType) : le moteur envoie le nom de CLASSE (« MainScheme »).
+  const type = option.is_text_choice ? libelleTypeDeCarte(brut) : undefined
+  if (type) return type
+  // « Pay_cost_Discard » (cost_func.py, `prompt=f"Pay cost {self}"`) : choisir CE QUI PAIE le coût d'une capacité. Restait
+  // en anglais brut, « PAY COST DISCARD » (rapport nicodede62 #158, pouvoir de Captain America, 19/11/2026).
+  const cout = /^Pay_cost_(\w+)$/.exec(brut)
+  if (cout) return libellePaiementCout(cout[1]!)
   const lisible = sansIndexDeCapacite(brut.replaceAll('_', ' ').trim())
   return lisible ? traduireMoteur(lisible) : t('Action')
+}
+
+// Le verbe de chaque coût choisi par le joueur (classes de `cost_func.py`). Un coût absent de la liste garde « Payer le coût ».
+const VERBES_DE_COUT: Record<string, string> = {
+  Discard: 'Défausser pour payer',
+  Exhaust: 'Incliner pour payer',
+  Ready: 'Redresser pour payer',
+  Spend: 'Dépenser pour payer',
+  ReturnToHand: 'Renvoyer en main pour payer',
+  RemoveFromGame: 'Retirer de la partie pour payer',
+  PutIntoPlay: 'Mettre en jeu pour payer',
+  DealDamage: 'Infliger des dégâts pour payer',
+  TakeDamage: 'Subir des dégâts pour payer',
+  Heal: 'Soigner pour payer',
+}
+
+export function libellePaiementCout(cout: string): string {
+  return t(VERBES_DE_COUT[cout] ?? 'Payer le coût')
 }
 
 /**
