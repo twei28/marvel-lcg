@@ -73,6 +73,14 @@ export const SCANS_FR_FANMADE: ReadonlySet<string> = new Set([
   // Les cartes bonus mk017-mk024 n'ont pas de scan FR : elles gardent le voile.
   'mk001a', 'mk001b', 'mk001c', 'mk001d', 'mk001e', 'mk002', 'mk003', 'mk004', 'mk005', 'mk006', 'mk007', 'mk008',
   'mk009', 'mk010', 'mk011', 'mk012', 'mk013', 'mk014', 'mk015', 'mk016',
+  // Spider-Man de Rainy, Mantis et Yondu (22/11/2026) : `fr_sr*`, `fr_mt*`, `fr_yd*.jpg` deposes a la main dans assets/pics-fr
+  // (une image par carte ; les exemplaires multiples du zip partagent le meme fichier). Pack complet de chacun.
+  'sr001a', 'sr001b', 'sr002', 'sr003', 'sr004', 'sr005', 'sr006', 'sr007', 'sr008', 'sr009', 'sr010', 'sr011',
+  'sr012', 'sr013', 'sr014', 'sr015', 'sr016', 'sr017',
+  'mt001a', 'mt001b', 'mt002', 'mt003', 'mt004', 'mt005', 'mt006', 'mt007', 'mt008', 'mt009', 'mt010', 'mt011',
+  'mt012', 'mt013', 'mt014', 'mt015', 'mt016',
+  'yd001a', 'yd001b', 'yd002', 'yd003', 'yd004', 'yd005', 'yd006', 'yd007', 'yd008', 'yd009', 'yd010', 'yd011',
+  'yd012', 'yd013', 'yd014', 'yd015', 'yd016', 'yd017', 'yd018',
   // La ville ne dort jamais (campagne MC×DC 2026, Punisher) : scans FR de l'equipe (zip du 13/11/2026), `fr_pu*.jpg` poses par
   // .planning/mcdc-punisher/poser-scans-fr.py. 155 cartes, cartes de campagne (pu140-pu151) et de defi (pu279-pu282) comprises ; les seconds
   // exemplaires partagent le scan de l'original. The City (pu005) et Never Sleeps (pu006) ont leurs illustrations recollees
@@ -109,7 +117,7 @@ export function scanDejaFrancais(code: string): boolean {
 
 /** Qui a TRADUIT les scans francais d'un pack fan-made (prefixe du card_id -> nom). Blade, Dazzler et Moon Knight : Nicodede62
     (demande du 14/11/2026 : le dire sous la carte agrandie quand on joue en francais). */
-const TRADUCTEURS_SCANS_FR: Readonly<Record<string, string>> = { bl: 'Nicodede62', dz: 'Nicodede62', mk: 'Nicodede62' }
+const TRADUCTEURS_SCANS_FR: Readonly<Record<string, string>> = { bl: 'Nicodede62', dz: 'Nicodede62', mk: 'Nicodede62', sr: 'Nicodede62', mt: 'Nicodede62', yd: 'Nicodede62' }
 
 /** Le traducteur a crediter pour ce scan, lu sur l'URL REELLEMENT affichee : seulement quand c'est le scan francais (`fr_<id>`) d'une
     carte de SCANS_FR_FANMADE. En anglais, ou pour une carte bonus restee en « scan anglais + voile », rien. */

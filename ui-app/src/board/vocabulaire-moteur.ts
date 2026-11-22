@@ -77,6 +77,29 @@ export const MOTEUR_FR: Record<string, string> = {
   'No Matching Card Found': 'Aucune carte ne correspond',
   'Continue Without Looking': 'Continuer sans regarder',
   'Look At The Cards': 'Regarder les cartes',
+  // Audit du 22/11/2026 (« tout ce qui existe en anglais existe en français ») : les choix par nom des scripts de cartes
+  // (`AskChooseOneText`) qui restaient en anglais.
+  ATK: 'ATQ', // Scarlet Spider (Grim Resolve) : même abréviation que les autres choix (ATQ / CTR / DÉF)
+  THW: 'CTR',
+  DEF: 'DÉF',
+  increase: 'Augmenter', // Scarlet Witch 15009
+  decrease: 'Diminuer',
+  Stunned: 'Sonné', // Iron Patriot ip024, dt084
+  Confused: 'Désorienté',
+  Tough: 'Tenace',
+  Top: 'Dessus', // 39019
+  Bottom: 'Dessous',
+  Acceleration: 'Accélération', // dt078
+  Ready: 'Redresser', // dt019
+  Draw: 'Piocher',
+  'Do not remove more threat': 'Ne pas retirer plus de menace', // Iron Lad il010
+  'Discard 5 cards from your deck to remove the same amount from a different scheme':
+    'Défausser 5 cartes de ton deck pour retirer autant de menace d’une autre manigance',
+  'Discard 5 cards from your deck to deal 6 damage instead': 'Défausser 5 cartes de ton deck pour infliger 6 dégâts à la place', // il004, il005
+  'Status card to replace': 'Carte d’état à remplacer', // sj015
+  'Choose a team trait': 'Choisis un trait d’équipe', // mm024
+  'Choose a player': 'Choisis un joueur', // mm008, mm009
+  'Choose a card at random': 'Choisis une carte au hasard', // player_ask.py (tirage au hasard)
   'Cards Searched': 'Cartes parcourues',
   // Scénario Mephisto (Neptune) : les choix des cartes de rencontre et des pactes BARGAIN (mephisto/__init__.py et mp0xx.py).
   'Attach this card to your identity': 'Attacher cette carte à ton identité',
@@ -542,9 +565,15 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
   // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
   // 17020 Cosmo (18/11/2026, rapports nicodede62 #148/#149) : le type est nommé d'abord, puis le paquet se choisit par son nom.
+  [/^Deal (\d+) damage$/, (m) => `Infliger ${degats(m[1]!)}`], // Iron Lad il004, il005
+  [/^Move (\d+) threat$/, (m) => `Déplacer ${m[1]} menace${Number(m[1]) > 1 ? 's' : ''}`], // Spot sp006
+  [/^(.+): name an encounter card type$/, (m) => `${m[1]} : nommez un type de carte rencontre`], // Nervous Jitters sl046
   [/^(.+): name a card type$/, (m) => `${m[1]} : nommez un type de carte`],
   [/^(.+): discard the top card of which deck\?$/, (m) => `${m[1]} : défausser le dessus de quel deck ?`],
   [/^Player deck \((.+)\)$/, (m) => `Deck joueur (${m[1]})`],
+  // 04031b Jessica Drew (22/11/2026, rapport #162) : « regardez le dessus de N'IMPORTE QUEL deck », le deck se choisit par son nom.
+  [/^(.+): look at the top card of which deck\?$/, (m) => `${m[1]} : regarder le dessus de quel deck ?`],
+  [/^Additional deck \((.+)\)$/, (m) => `Deck supplémentaire (${m[1]})`],
   [/^Encounter deck$/, () => 'Deck rencontre'],
   [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
   [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],

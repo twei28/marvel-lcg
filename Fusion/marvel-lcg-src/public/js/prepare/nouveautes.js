@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-22",
+        genre: "heros",
+        fr: "Spider-Man (Rainy), Mantis et Yondu : leurs 54 cartes s'affichent avec leurs scans français quand vous jouez en français. Les feuillets de règles de Spider-Man et de Mantis sont dans l'onglet « Feuillets ».",
+        en: "Spider-Man (Rainy), Mantis and Yondu: their 54 cards now show their French scans when you play in French. The Spider-Man and Mantis rules inserts are in the “Inserts” tab.",
+    },
+    {
+        date: "2026-11-22",
+        genre: "correction",
+        fr: "Jessica Drew (Spider-Woman) : son action « regardez la carte du dessus de n'importe quel deck » te fait d'abord choisir le deck par son nom, puis te montre seulement sa carte du dessus, au lieu de montrer celle des deux decks avant le choix.",
+        en: "Jessica Drew (Spider-Woman): her action “look at the top card of any deck” now asks you to pick the deck by name first, then shows only its top card, instead of showing the top card of both decks before you choose.",
+    },
+    {
         date: "2026-11-20",
         genre: "correction",
         fr: "Le jeu ne décide plus à ta place : il ne choisit plus tout seul le défenseur, ne lance plus une interruption comme « In the Wings » et un simple clic sur une capacité en jeu (Web-Shooters...) ne la déclenche plus, elle s'ouvre dans son petit menu.",

@@ -68,4 +68,10 @@ describe('narrationEnFrancais — les restes anglais du journal', () => {
       expect(narrationEnFrancais(ligne)).toBe(ligne)
     }
   })
+
+  it('les questions posées par un script se lisent en français au journal (Cosmo, Jessica Drew)', () => {
+    expect(narrationEnFrancais('Jessica Drew: look at the top card of which deck?')).toBe('Jessica Drew : regarder le dessus de quel deck ?')
+    expect(narrationEnFrancais('Cosmo: name a card type')).toBe('Cosmo : nommez un type de carte')
+    expect(narrationEnFrancais('Cosmo: discard the top card of which deck?')).toBe('Cosmo : défausser le dessus de quel deck ?')
+  })
 })

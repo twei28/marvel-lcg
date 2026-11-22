@@ -9,7 +9,7 @@
 //   - les NOMS D'ÉVÉNEMENTS du moteur (« "WhenEffectWouldResolve" ») et les types d'effet entre parenthèses.
 // Le texte arrive déjà en français pour tout le reste (data/translate_fr.json) : on ne touche qu'à ces restes, mot pour mot,
 // et seulement quand la partie est en français.
-import { MOTEUR_FR } from './vocabulaire-moteur'
+import { MOTEUR_FR, traduireMoteur } from './vocabulaire-moteur'
 
 /** Les titres d'étape que le moteur écrit entre « --- » : le texte EXACT, sans les tirets. */
 const ETAPES: Readonly<Record<string, string>> = {
@@ -91,5 +91,12 @@ export function narrationEnFrancais(texte: string): string {
 
   // 5. Le type d'effet cité entre parenthèses : « (Main Scheme Phase Place Threat) », « (Game Rule) », « (rule) ».
   sortie = sortie.replace(/\(([A-Za-z ]+)\)/g, (tout, effet: string) => (EFFETS[effet] ? `(${EFFETS[effet]})` : tout))
+
+  // 6. Les questions posées par un script (`AskChooseOneText(titre=...)`), reprises telles quelles au journal : « Cosmo: name a
+  //    card type », « Jessica Drew: look at the top card of which deck? ». Même traduction que la fenêtre de la question.
+  sortie = sortie.replace(
+    /^([ \t]*)(.+?: (?:name a card type|name an encounter card type|discard the top card of which deck\?|look at the top card of which deck\?))[ \t]*$/gm,
+    (_, avant: string, titre: string) => `${avant}${traduireMoteur(titre)}`
+  )
   return sortie
 }

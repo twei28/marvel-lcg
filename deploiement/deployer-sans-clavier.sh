@@ -44,18 +44,20 @@ if [ -n "$(git status --porcelain)" ]; then echo "Arbre non propre apres rangeme
 echo "[$(date +%T)] deploiement de $COURT, annonce $ANNONCE min" | tee "$JOURNAL"
 # Le script pose ses questions sur sa sortie ; on y repond au fil de l'eau.
 coproc DEP { bash deploiement/deployer-linux.sh --oui --commit "$COURT" --annonce "$ANNONCE" 2>&1; }
+# Descripteurs et PID gardes dans des variables : le coproc les efface (« variable sans liaison ») quand il se termine.
+LECTURE=${DEP[0]}; ECRITURE=${DEP[1]}; PIDDEP=$DEP_PID
 traiter() {
   local ligne="$1"
   printf '%s\n' "$ligne" | tee -a "$JOURNAL"
   case "$ligne" in
-    *"Tapez « oui »"*) printf 'oui\n' >&"${DEP[1]}" ;;
-    *"tapez exactement : Je deploie"*) printf 'Je deploie %s\n' "$COURT" >&"${DEP[1]}" ;;
+    *"Tapez « oui »"*) printf 'oui\n' >&"$ECRITURE" ;;
+    *"tapez exactement : Je deploie"*) printf 'Je deploie %s\n' "$COURT" >&"$ECRITURE" ;;
   esac
 }
 # Lecture caractere par caractere : la question « oui » n'a pas de fin de ligne, une lecture par ligne l'attendrait pour toujours.
 tampon=""
 while :; do
-  if IFS= read -r -N1 -t 3 c <&"${DEP[0]}"; then
+  if IFS= read -r -N1 -t 3 c <&"$LECTURE"; then
     if [ "$c" = $'\n' ]; then traiter "$tampon"; tampon=""; else tampon+="$c"; fi
   else
     rc=$?
@@ -65,7 +67,7 @@ while :; do
   fi
 done
 [ -n "$tampon" ] && traiter "$tampon"
-wait "$DEP_PID"; CODE=$?
+wait "$PIDDEP"; CODE=$?
 echo "[$(date +%T)] deployer-linux.sh termine, code $CODE" | tee -a "$JOURNAL"
 if [ "$CODE" -eq 0 ]; then
   ssh -i deploiement/cle_narwhal -o ConnectTimeout=30 root@178.105.177.39 \

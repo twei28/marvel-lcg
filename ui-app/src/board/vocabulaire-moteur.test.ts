@@ -334,4 +334,24 @@ describe('traduireQuestionImage : les deux formes « combien »', () => {
       traduireQuestionImage('Obsession: how many cards in your hand (2 card(s)) have a picture of your identity on them?')
     ).toBe('Obsession : parmi les 2 cartes de ta main, combien montrent une image de ton identité ?')
   })
+
+  it('Jessica Drew (rapport #162) : le deck se choisit par son nom, en français', () => {
+    enFrancais()
+    expect(traduireMoteur('Jessica Drew: look at the top card of which deck?')).toBe('Jessica Drew : regarder le dessus de quel deck ?')
+    expect(traduireMoteur('Additional deck (Jessica Drew)')).toBe('Deck supplémentaire (Jessica Drew)')
+    expect(traduireMoteur('Encounter deck')).toBe('Deck rencontre')
+  })
+
+  it('audit du 22/11/2026 : les choix par nom des scripts de cartes se lisent en français', () => {
+    enFrancais()
+    const attendu: Record<string, string> = {
+      ATK: 'ATQ', THW: 'CTR', DEF: 'DÉF', increase: 'Augmenter', decrease: 'Diminuer', Stunned: 'Sonné', Confused: 'Désorienté',
+      Tough: 'Tenace', Top: 'Dessus', Bottom: 'Dessous', Acceleration: 'Accélération', Ready: 'Redresser', Draw: 'Piocher',
+      'Deal 2 damage': 'Infliger 2 dégâts', 'Move 3 threat': 'Déplacer 3 menaces', 'Move 1 threat': 'Déplacer 1 menace',
+      'Choose a player': 'Choisis un joueur', 'Choose a team trait': 'Choisis un trait d’équipe',
+      'Choose a card at random': 'Choisis une carte au hasard', 'Status card to replace': 'Carte d’état à remplacer',
+      'Nervous Jitters: name an encounter card type': 'Nervous Jitters : nommez un type de carte rencontre',
+    }
+    for (const [en, fr] of Object.entries(attendu)) expect(traduireMoteur(en), en).toBe(fr)
+  })
 })

@@ -131,6 +131,7 @@ describe('traducteurDuScanFr', () => {
     expect(traducteurDuScanFr('/scan/fr_bl005')).toBe('Nicodede62')
     expect(traducteurDuScanFr('/scan/fr_dz017a')).toBe('Nicodede62')
     expect(traducteurDuScanFr('/vignette/fr_mk001e')).toBe('Nicodede62')
+    for (const id of ['sr003', 'mt004', 'yd007']) expect(traducteurDuScanFr('/scan/fr_' + id)).toBe('Nicodede62')
     // En anglais (scan sans prefixe), carte bonus sans scan FR, autre pack fan-made, carte officielle : rien.
     expect(traducteurDuScanFr('/scan/bl005')).toBeUndefined()
     expect(traducteurDuScanFr('/scan/fr_dz018')).toBeUndefined()
@@ -143,7 +144,7 @@ describe('traducteurDuScanFr', () => {
 describe('SCANS_FR_FANMADE', () => {
   it('les 17 cartes de Destiny (275 avec les 18 de Beast, les 23 de Mystique, les 17 de Blade, les 24 de Dazzler les 20 de Moon Knight et les 155 de La ville ne dort jamais) ont un scan francais, donc pas de voile', async () => {
     const { aScanFr, picIdFr, SCANS_FR_FANMADE } = await import('./scans-fr')
-    expect(SCANS_FR_FANMADE.size).toBe(275)
+    expect(SCANS_FR_FANMADE.size).toBe(329)
     expect(aScanFr('dy001a')).toBe(true)
     expect(aScanFr('dy016')).toBe(true)
     expect(aScanFr('dy017')).toBe(false)
@@ -180,6 +181,22 @@ describe('SCANS_FR_FANMADE (Dazzler de Lord Havok)', () => {
     expect(aScanFr('dz038')).toBe(false)
     window.localStorage.setItem('marvel-board-scans-fr', 'on')
     expect(picIdFr('dz009')).toBe('fr_dz009')
+  })
+})
+
+describe('SCANS_FR_FANMADE (Spider-Man de Rainy, Mantis, Yondu)', () => {
+  it('les packs complets ont un scan francais, donc pas de voile', async () => {
+    const { aScanFr, picIdFr } = await import('./scans-fr')
+    const ids = [
+      ...['sr001a', 'sr001b', ...Array.from({ length: 16 }, (_, i) => `sr${String(i + 2).padStart(3, '0')}`)],
+      ...['mt001a', 'mt001b', ...Array.from({ length: 15 }, (_, i) => `mt${String(i + 2).padStart(3, '0')}`)],
+      ...['yd001a', 'yd001b', ...Array.from({ length: 17 }, (_, i) => `yd${String(i + 2).padStart(3, '0')}`)],
+    ]
+    expect(ids).toHaveLength(54)
+    for (const id of ids) expect(aScanFr(id)).toBe(true)
+    expect(aScanFr('sr018')).toBe(false)
+    window.localStorage.setItem('marvel-board-scans-fr', 'on')
+    expect(picIdFr('yd007')).toBe('fr_yd007')
   })
 })
 
