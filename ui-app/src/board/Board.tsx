@@ -251,9 +251,8 @@ export function avecInteraction(
     // attaquant — sinon les cartes payeuses (main et capacites comme
     // Redirect Chi) se fondaient dans tout le reste et passaient inapercues
     // (demande utilisateur du 07/11/2026).
-    // Une carte à la fois CIBLE et PAYEUSE (l'identité de Mantis qui reçoit Bug et le paie, rapport #147) : halo de paiement.
-    targetPulse: etat.role === 'ressource' || etat.payeur ? false : etat.pulse,
-    paymentPulse: etat.role === 'ressource' || etat.payeur ? etat.pulse : false,
+    targetPulse: etat.role === 'ressource' ? false : etat.pulse,
+    paymentPulse: etat.role === 'ressource' ? etat.pulse : false,
     effectDelta: effets.get(Number(props.id)),
   }
 }

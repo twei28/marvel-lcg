@@ -91,8 +91,8 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-20",
         genre: "correction",
-        fr: "Moins de fenêtres inutiles et des choix qui s'ouvrent tout de suite : le pouvoir de Captain America, le « Futuriste » de Tony, le choix des Sentinelles de Magneto, Cosmo (type de carte puis deck nommé) et le pouvoir de Mantis (halo de paiement) fonctionnent comme prévu, en français comme en anglais.",
-        en: "Fewer pointless pop-ups and choices that open straight away: Captain America's power, Tony's “Futurist”, Magneto's Sentinel pick, Cosmo (card type, then named deck) and Mantis's power (payment halo) now work as intended, in French and in English.",
+        fr: "Moins de fenêtres inutiles et des choix qui s'ouvrent tout de suite : le pouvoir de Captain America, le « Futuriste » de Tony, le choix des Sentinelles de Magneto, Cosmo (type de carte puis deck nommé) fonctionnent comme prévu, en français comme en anglais.",
+        en: "Fewer pointless pop-ups and choices that open straight away: Captain America's power, Tony's “Futurist”, Magneto's Sentinel pick, Cosmo (card type, then named deck) now work as intended, in French and in English.",
     },
     {
         date: "2026-11-20",
