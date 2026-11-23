@@ -871,6 +871,9 @@
   gap: 8px;
   width: min(320px, 86vw);
   color: #fff;
+  /* La bande de jauge (PV / menace) deborde SOUS la grande carte (ScanCard.css, --jauge-debord) : sans ce retrait, elle
+     recouvrait la premiere ligne de stats (« REC 3 » d'un alter ego), rapport #165 du 23/11/2026. */
+  margin-top: calc(var(--jauge-debord, 18px) + 4px);
 }
 .feuille-barre {
   position: relative;
