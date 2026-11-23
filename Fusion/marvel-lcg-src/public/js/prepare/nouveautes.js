@@ -49,6 +49,12 @@ export const NOUVEAUTES = [
     {
         date: "2026-11-23",
         genre: "correction",
+        fr: "435 cartes fan-made (Galactic Storm, Dazzler, Skrull Menace, Gorr, Spot, Kate Bishop, Red Guardian, Wolverine X-23 et d'autres) ont maintenant leur texte en français. Les noms des arts alternatifs, à l'étape Decks, sont aussi traduits.",
+        en: "435 fan-made cards (Galactic Storm, Dazzler, Skrull Menace, Gorr, Spot, Kate Bishop, Red Guardian, Wolverine X-23 and more) now have their text in French. Alternate art names on the Decks step are translated too.",
+    },
+    {
+        date: "2026-11-23",
+        genre: "correction",
         fr: "Yondu : déplacer la Flèche Yaka avec « Sifflez en Travaillant » n'ouvre plus de choix inutile quand elle achève un sbire. Sur téléphone, la barre de PV ne cache plus la ligne « REC » sous la grande carte, et les tuiles de méchants ne tremblent plus au survol.",
         en: "Yondu: moving the Yaka Arrow with “Whistle While You Work” no longer opens a needless choice when it finishes off a minion. On phones, the HP bar no longer hides the “REC” line under the enlarged card, and the villain tiles no longer shake on hover.",
     },
