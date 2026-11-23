@@ -47,6 +47,18 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-23",
+        genre: "correction",
+        fr: "Yondu : déplacer la Flèche Yaka avec « Sifflez en Travaillant » n'ouvre plus de choix inutile quand elle achève un sbire. Sur téléphone, la barre de PV ne cache plus la ligne « REC » sous la grande carte, et les tuiles de méchants ne tremblent plus au survol.",
+        en: "Yondu: moving the Yaka Arrow with “Whistle While You Work” no longer opens a needless choice when it finishes off a minion. On phones, the HP bar no longer hides the “REC” line under the enlarged card, and the villain tiles no longer shake on hover.",
+    },
+    {
+        date: "2026-11-23",
+        genre: "heros",
+        fr: "Les héros traduits par Nicodede62 (Blade, Dazzler, Moon Knight, Spider-Man, Mantis, Yondu) affichent leurs noms de cartes et de capacités en français, et les choix de la Flèche Yaka sont traduits. Les capacités des héros officiels reprennent aussi leur nom français.",
+        en: "Heroes translated by Nicodede62 (Blade, Dazzler, Moon Knight, Spider-Man, Mantis, Yondu) now show their card and ability names in French, and the Yaka Arrow choices are translated. Official heroes' abilities also show their French name again.",
+    },
+    {
         date: "2026-11-22",
         genre: "correction",
         fr: "Les decks cachés d'un scénario portent maintenant leur nom sur la table : « Deck Armes Expérimentales » contre Crossbones, « Deck Imposteurs » (Secret Invasion), « Deck Planètes » (Skrull Empire), « Deck Superpouvoirs » (Super-Skrull) et « Deck Horde » (The Hunger Core).",
