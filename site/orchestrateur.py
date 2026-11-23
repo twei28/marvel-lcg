@@ -162,6 +162,11 @@ DOSSIER_ASSETS = os.environ.get(
     "DOSSIER_ASSETS", os.path.join(os.path.dirname(RACINE_SITE), "Fusion", "marvel-lcg-src", "assets"))
 
 
+# Les images d'ARKHAM (scans des cartes, campagnes maison...), meme principe :
+# un .tar fabrique a la volee pour l'administrateur (/admin/images-arkham).
+DOSSIER_IMAGES_ARKHAM = os.environ.get("DOSSIER_IMAGES_ARKHAM", "/opt/arkham/web/img/arkham")
+
+
 # Les PROJETS DU CREATEUR DE CARTES (fichiers JSON, un dossier par compte).
 # HORS de site/ : le deploiement vide ce dossier (sauf base et rapports).
 DOSSIER_CREATEUR = os.environ.get(
@@ -7325,22 +7330,27 @@ class Handler(BaseHTTPRequestHandler):
                 "<p><a href='/admin/images'>Toutes les images (scans, vignettes, HD, sons, documents), environ 2,5 Go</a>"
                 " : un fichier .tar fabriqué à l'instant depuis le serveur. Après une restauration, l'extraire dans "
                 "<code>Fusion/marvel-lcg-src/</code> (il contient le dossier <code>assets/</code>).</p>"
+                "<h2>Images d'Arkham</h2>"
+                "<p><a href='/admin/images-arkham'>Toutes les images d'Arkham (scans des cartes, campagnes maison), environ 1,8 Go</a>"
+                " : un fichier .tar fabriqué à l'instant depuis le serveur (dossier <code>arkham/</code>, à placer dans "
+                "<code>frontend/public/img/</code> du projet Arkham).</p>"
                 "<style>a{color:#5a9bf0}</style></body>" % corps).encode("utf-8")
 
-    def _servir_images(self) -> None:
+    def _servir_images(self, dossier: str = "", arcname: str = "assets", prefixe: str = "images") -> None:
         import tarfile
-        if not os.path.isdir(DOSSIER_ASSETS):
+        dossier = dossier or DOSSIER_ASSETS
+        if not os.path.isdir(dossier):
             self._repondre(404, b"Dossier des images introuvable.", "text/plain; charset=utf-8")
             return
         self.send_response(200)
         self.send_header("Content-Type", "application/x-tar")
         self.send_header("Content-Disposition",
-                         'attachment; filename="images-%s.tar"' % time.strftime("%Y%m%d"))
+                         'attachment; filename="%s-%s.tar"' % (prefixe, time.strftime("%Y%m%d")))
         self.send_header("Connection", "close")
         self.end_headers()
         try:
             with tarfile.open(fileobj=self.wfile, mode="w|") as archive:
-                archive.add(DOSSIER_ASSETS, arcname="assets")
+                archive.add(dossier, arcname=arcname)
         except (BrokenPipeError, ConnectionResetError):
             pass  # telechargement interrompu par le navigateur
         self.close_connection = True
@@ -8162,6 +8172,12 @@ class Handler(BaseHTTPRequestHandler):
                 self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
                 return
             self._servir_images()
+        elif self.chemin == "/admin/images-arkham":
+            # Les scans d'Arkham, meme principe que /admin/images.
+            if pseudo != ADMIN:
+                self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
+                return
+            self._servir_images(DOSSIER_IMAGES_ARKHAM, "arkham", "images-arkham")
         elif self.chemin == "/admin/partie-joueur":
             if pseudo != ADMIN:
                 self._repondre(403, "Réservé à l'administrateur.".encode("utf-8"), "text/plain; charset=utf-8")
