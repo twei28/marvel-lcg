@@ -250,7 +250,7 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
   // Seulement les choix SANS carte cible : « Futuriste » (choisir une des 3 cartes regardées) garde le nom imprimé.
   if (option.is_text_choice && option.all_legal_targets.length === 0) return nom
   if (!texteCapacite) return nom
-  const entete = texteCapacite.match(/^[«"]?\s*([^«»"—]{2,60}?)\s*[»"]?\s+—\s/)
+  const entete = texteCapacite.match(/^[«"]?\s*([^«»"—–]{2,60}?)\s*[»"]?\s+(?:[—–]\s*|-\s)/)
   if (!entete) return nom
   // Seulement si le moteur nomme lui aussi une capacite, jamais pour un simple
   // « Interrupt » ni pour un nom technique (« Generate_Energy »). Les noms SANS
@@ -262,7 +262,7 @@ export function nomDeCapacite(option: Option, texteCapacite: string | undefined)
   // option ne porte que le TYPE (« Hero Interrupt »), mais le texte de la carte lui donne un
   // nom imprimé (« Garde du Corps — Interruption de héros : … »). Choix de l'utilisateur :
   // le bouton dit ce nom. Seulement si l'en-tête est suivi d'un vrai type de capacité.
-  const nomImprime = /—\s*(interrupt|interruption|response|réponse|action)/i.test(texteCapacite)
+  const nomImprime = /(?:[—–]\s*|\s-\s)(interrupt|interruption|response|réponse|ressource|resource|action)/i.test(texteCapacite)
   return moteurNomme || nomImprime ? entete[1]!.trim() : nom
 }
 

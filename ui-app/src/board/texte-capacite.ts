@@ -53,6 +53,7 @@ const TRADUCTIONS: Readonly<Record<string, string>> = {
   forced: 'forcée',
   interrupt: 'interruption',
   response: 'réponse',
+  resource: 'ressource',
   hero: 'de héros',
   'alter-ego': "d'alter-ego",
   alterego: "d'alter-ego",
@@ -99,11 +100,22 @@ export function extraireCapacite(
   const type = normaliser(typeDemande ?? '')
   if (type) {
     const debuts = [type, ...traductionsDuType(type)]
-    const parType = paras.find((p) => {
-      const debut = normaliser(p.replace(/^.*?—\s*/, ''))
-      return debuts.some((d) => debut.startsWith(d))
-    })
+    // L'en-tete se separe du type par un tiret long (« "Objection !" — Interruption ») OU, dans le francais
+    // officiel de certains heros (Venom, Vision, Magneto...), par un tiret simple (« Lien Symbiotique - Ressource »).
+    const debutsDuParagraphe = (p: string): string[] => [
+      normaliser(p.replace(/^.*?(?:\s[—–]\s*|[—–]\s*|\s-\s)/, '')),
+      normaliser(p),
+    ]
+    const parType = paras.find((p) => debutsDuParagraphe(p).some((debut) => debuts.some((d) => debut.startsWith(d))))
     if (parType) return parType
+    // Le francais officiel n'ecrit pas toujours « de héros » (« Action : ... » pour une « Hero Action ») :
+    // sans ce mot, un seul paragraphe doit convenir, sinon on ne devine pas.
+    const sansPrefixe = type.replace(/^((forced|hero|alter-?ego) )+/, '')
+    if (sansPrefixe !== type) {
+      const debutsNus = [sansPrefixe, ...traductionsDuType(sansPrefixe)]
+      const candidats = paras.filter((p) => debutsDuParagraphe(p).some((debut) => debutsNus.some((d) => debut.startsWith(d))))
+      if (candidats.length === 1) return candidats[0]
+    }
   }
   return paras.join(' ')
 }

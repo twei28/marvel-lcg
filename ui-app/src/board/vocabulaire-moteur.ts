@@ -103,6 +103,12 @@ export const MOTEUR_FR: Record<string, string> = {
   'Cards Searched': 'Cartes parcourues',
   // Scénario Mephisto (Neptune) : les choix des cartes de rencontre et des pactes BARGAIN (mephisto/__init__.py et mp0xx.py).
   'Attach this card to your identity': 'Attacher cette carte à ton identité',
+  // Yondu (yd006, yd009, yd011, yd012, yd013) : les choix de la flèche et de l'obligation Banni, noms du scan FR (« Flèche Yaka », « Banni »).
+  'Attach Yaka Arrow to an enemy': 'Attacher la Flèche Yaka à un ennemi',
+  'Attach Yaka Arrow to your identity': 'Attacher la Flèche Yaka à ton identité',
+  'Add Yaka Arrow to your hand': 'Ajouter la Flèche Yaka à ta main',
+  'Exhaust your alter-ego → remove Banished from the game': 'Incliner ton alter ego → retirer Banni de la partie',
+  'Discard the Yaka Arrow and exhaust Tahlei. Discard this obligation': 'Défausser la Flèche Yaka et incliner Tahlei, puis défausser cette obligation',
   'Discard this card and Mephisto activates against you': 'Défausser cette carte et Mephisto s’active contre toi',
   'This card gains surge': 'Cette carte gagne Renfort',
   'Mephisto attacks you': 'Mephisto t’attaque',

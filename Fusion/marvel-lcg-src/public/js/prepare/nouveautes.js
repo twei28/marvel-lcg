@@ -48,6 +48,12 @@ export const GENRES = {
 export const NOUVEAUTES = [
     {
         date: "2026-11-22",
+        genre: "correction",
+        fr: "Les decks cachés d'un scénario portent maintenant leur nom sur la table : « Deck Armes Expérimentales » contre Crossbones, « Deck Imposteurs » (Secret Invasion), « Deck Planètes » (Skrull Empire), « Deck Superpouvoirs » (Super-Skrull) et « Deck Horde » (The Hunger Core).",
+        en: "A scenario's face-down decks now carry their name on the table: “Experimental Weapons deck” against Crossbones, “Impostor deck” (Secret Invasion), “Planet deck” (Skrull Empire), “Superpower deck” (Super-Skrull) and “Horde deck” (The Hunger Core).",
+    },
+    {
+        date: "2026-11-22",
         genre: "heros",
         fr: "Spider-Man (Rainy), Mantis et Yondu : leurs 54 cartes s'affichent avec leurs scans français quand vous jouez en français. Les feuillets de règles de Spider-Man et de Mantis sont dans l'onglet « Feuillets ».",
         en: "Spider-Man (Rainy), Mantis and Yondu: their 54 cards now show their French scans when you play in French. The Spider-Man and Mantis rules inserts are in the “Inserts” tab.",

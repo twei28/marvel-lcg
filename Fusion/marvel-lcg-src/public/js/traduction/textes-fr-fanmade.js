@@ -549,9 +549,9 @@ export const TEXTES_FR_FANMADE = {
     // cloak_dagger — Opposites Attack (Treachery)
     'cd018': "<b>Une fois révélée</b> : passez chaque héros sous forme d'alter ego. Puis, placez 1 menace sur la manigance principale par héros retourné de cette façon.",
     // spider_man_rainy — Spider-Man (Hero)
-    'sr001a': "Comme des mouches — <b>Interruption</b> : quand un sbire s'engage avec vous, entoilez-le. (Limite de deux fois par round.)\n<b>Réponse</b> : après qu'un ennemi entoilé a été mis K.O., retirez 1 menace d'une manigance.",
+    'sr001a': "Comme des Mouches — <b>Interruption</b> : quand un sbire s'engage avec vous, entoilez-le. (Limite de deux fois par round.)\n<b>Réponse</b> : après qu'un ennemi entoilé a été mis K.O., retirez 1 menace d'une manigance.",
     // spider_man_rainy — Peter Parker (AlterEgo)
-    'sr001b': "La sagesse d'oncle Ben — <b>Action</b> : défaussez 1 carte de votre main → cherchez une ressource Great Power ou Great Responsibility dans votre deck et votre pile de défausse, et ajoutez-la à votre main. Mélangez votre deck. (Limite de deux fois par round.)",
+    'sr001b': "Sagesse de l'Oncle Ben — <b>Action</b> : défaussez 1 carte de votre main → cherchez une ressource Un Grand Pouvoir ou De Grandes Responsabilités dans votre deck et votre pile de défausse, et ajoutez-la à votre main. Mélangez votre deck. (Limite de deux fois par round.)",
     // spider_man_rainy — Spider-Man (Ally)
     'sr002': "[star] <b>Interruption</b> : quand cet allié utilise un pouvoir de base, entoilez un ennemi (maximum 3 compteurs de toile par ennemi).",
     // spider_man_rainy — Thwip! (Event)
@@ -571,7 +571,7 @@ export const TEXTES_FR_FANMADE = {
     // spider_man_rainy — Spider-Sense (Upgrade)
     'sr010': "<b>Interruption de héros</b> : quand le méchant ou un sbire ayant vilenie initie une attaque contre vous, piochez 1 carte.\n<b>Interruption de héros</b> : quand une carte de boost est retournée face visible pendant une attaque contre vous, défaussez 1 carte de votre main → annulez la capacité de boost de cette carte.",
     // spider_man_rainy — Web-Shooters (Upgrade)
-    'sr011': "Votre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : inclinez Web-Shooters → générez une ressource [wild] pour une carte WEB.\n<b>Action de héros</b> : inclinez Web-Shooters → entoilez un ennemi.",
+    'sr011': "Votre héros gagne le trait [[AERIAL]].\n<b>Ressource de héros</b> : inclinez Lance-Toiles → générez une ressource [wild] pour une carte WEB.\n<b>Action de héros</b> : inclinez Lance-Toiles → entoilez un ennemi.",
     // spider_man_rainy — Impact Webbing (Upgrade)
     'sr012': "Permanent. Mise en place.\n<b>Interruption forcée</b> : quand un ennemi entoilé s'active, retirez tous les compteurs de toile de cet ennemi → cet ennemi subit -1 MNG et -1 ATQ par compteur de toile retiré de cette façon, pour cette activation.",
     // spider_man_rainy — Bad Publicity (Obligation)
@@ -743,15 +743,15 @@ export const TEXTES_FR_FANMADE = {
     // squirrel_girl — Ratatoskr's Whispers (Attachment)
     'sg022': "Attachez-la à votre carte d'identité.\nVous ne pouvez pas dépenser d'alliés [[SQUIRREL]].\n<b>Action d'alter ego</b> : inclinez Doreen Green et défaussez de votre main une carte ayant une ressource [mental] imprimée → défaussez Ratatoskr's Whispers.\n[star] <b>Boost</b> : défaussez 1 allié [[SQUIRREL]] que vous contrôlez. Si vous ne pouvez pas, cette activation gagne +1 ATQ et +1 MNG.",
     // moon_knight — Moon Knight (Hero)
-    'mk001a': "<i>La meilleure défense, c'est l'attaque</i> — Réduisez de 1 le coût des cartes Agressivité <i>(rouges)</i> que vous jouez.",
+    'mk001a': "<i>La Meilleure Attaque</i> — Réduisez de 1 le coût des cartes Agressivité <i>(rouges)</i> que vous jouez.",
     // moon_knight — Marc Spector (AlterEgo)
-    'mk001b': "Mise en place. Marc Spector commence la partie avec une pile d'IDENTITÉS. <i>(Voir l'encart.)</i>\n<i>Coups bas</i> — Utilisez tous les aspects au lieu d'un seul pendant la construction du deck. Vous ne pouvez pas inclure de cartes au coût imprimé de 3 ou plus, et devez inclure au moins 4 cartes de chaque aspect.",
+    'mk001b': "Mise en place. Marc Spector commence la partie avec une pile d'IDENTITÉS. <i>(Voir l'encart.)</i>\n<i>Coup Bas</i> — Utilisez tous les aspects au lieu d'un seul pendant la construction du deck. Vous ne pouvez pas inclure de cartes au coût imprimé de 3 ou plus, et devez inclure au moins 4 cartes de chaque aspect.",
     // moon_knight — Mr. Knight (Hero)
-    'mk001c': "<i>La meilleure attaque, c'est la défense</i> — Réduisez de 1 le coût des cartes Protection <i>(vertes)</i> que vous jouez.",
+    'mk001c': "<i>La Meilleure Défense</i> — Réduisez de 1 le coût des cartes Protection <i>(vertes)</i> que vous jouez.",
     // moon_knight — Steven Grant (AlterEgo)
     'mk001d': "<i>PDG</i> — Réduisez de 1 le coût des cartes Leadership <i>(bleues)</i> que vous jouez.",
     // moon_knight — Jake Lockley (AlterEgo)
-    'mk001e': "<i>Juste parce que</i> — Réduisez de 1 le coût des cartes Justice <i>(jaunes)</i> que vous jouez.",
+    'mk001e': "<i>Juste Cause</i> — Réduisez de 1 le coût des cartes Justice <i>(jaunes)</i> que vous jouez.",
     // moon_knight — Echo (Ally)
     'mk002': "[star] Echo a un CTR et une ATQ égaux au CTR et à l'ATQ de votre héros actif. Si vous êtes sous forme d'alter ego, Echo ne peut ni attaquer ni contrer.",
     // moon_knight — Khonshu (Support)
@@ -759,9 +759,9 @@ export const TEXTES_FR_FANMADE = {
     // moon_knight — Frenchie (Support)
     'mk004': "<b>Interruption</b> : quand de la menace devrait être placée sur la manigance principale, quelle qu'en soit la quantité, défaussez Frenchie → prévenez toute cette menace.",
     // moon_knight — Different Folks (Upgrade)
-    'mk005': "Après avoir changé de forme, placez un compteur de folie ici.\n<b>Action de héros</b> : retirez 6 compteurs de folie de Different Folks → sonnez un ennemi.",
+    'mk005': "Après avoir changé de forme, placez un compteur de folie ici.\n<b>Action de héros</b> : retirez 6 compteurs de folie de Différentes Personnes → sonnez un ennemi.",
     // moon_knight — Different Strokes (Upgrade)
-    'mk006': "<b>Interruption</b> : quand vous jouez une carte d'aspect, placez un compteur de folie ici. <i>(Limite d'une fois par round pour chaque aspect.)</i>\n<b>Action</b> : retirez 3 compteurs de folie de Different Strokes → redressez votre identité ou changez de forme.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, retirez tous les compteurs de folie de Different Strokes.",
+    'mk006': "<b>Interruption</b> : quand vous jouez une carte d'aspect, placez un compteur de folie ici. <i>(Limite d'une fois par round pour chaque aspect.)</i>\n<b>Action</b> : retirez 3 compteurs de folie de Différents Talents → redressez votre identité ou changez de forme.\n<b>Interruption forcée</b> : quand la phase des joueurs se termine, retirez tous les compteurs de folie de Différents Talents.",
     // moon_knight — Deck and Cover (Event)
     'mk007': "<b>Action de héros</b> <i>(attaque)</i> : infligez 3 dégâts à un ennemi. Si cet ennemi est mis K.O., changez de forme.\n<i>(Cette carte est à la fois une carte Moon Knight et une carte Agressivité.)</i>",
     // moon_knight — Fight or Foil (Event)
@@ -773,7 +773,7 @@ export const TEXTES_FR_FANMADE = {
     // moon_knight — Versatility (Event)
     'mk011': "Considérez cette carte comme appartenant à l'aspect de votre choix.\n<b>Action de héros</b> : si l'aspect de la carte du dessus de votre pile de défausse est :\n• Agressivité - Infligez 4 dégâts à un ennemi.\n• Justice - Retirez 3 menaces d'une manigance.\n• Leadership - Désorientez un ennemi.\n• Protection - Sonnez un ennemi.",
     // moon_knight — Seek Help (Obligation)
-    'mk012': "<b><i>Donnez-la au joueur Marc Spector.</i></b>\nVous pouvez passer à Marc Spector. Choisissez :\n• Inclinez Marc Spector → retirez Seek Help de la partie.\n• Subissez 2 dégâts indirects → défaussez cette obligation.",
+    'mk012': "<b><i>Donnez-la au joueur Marc Spector.</i></b>\nVous pouvez passer à Marc Spector. Choisissez :\n• Inclinez Marc Spector → retirez Chercher de l'Aide de la partie.\n• Subissez 2 dégâts indirects → défaussez cette obligation.",
     // moon_knight — Bushman (Minion)
     'mk013': "<b>Interruption forcée</b> : quand Bushman devrait être mis K.O., s'il n'y a aucun compteur de folie ici, soignez plutôt tous ses dégâts et placez un compteur de folie sur lui.\n[star] Bushman gagne +2 ATQ s'il y a un compteur de folie ici.",
     // moon_knight — Mano a Mano (SideScheme)
@@ -1899,39 +1899,39 @@ export const TEXTES_FR_FANMADE = {
     // night_thrasher_nemesis — Cosmic Ax (Attachment)
     'nt016': "Attachez-le à Terrax the Tamer. Si vous ne le pouvez pas, défaussez les 8 premières cartes du deck de rencontre. Si Terrax the Tamer a été défaussé de cette façon, révélez-le et attachez-lui Cosmic Ax.\n<hr />[star] <b>Boost</b> : si Terrax the Tamer est en jeu, révélez cette carte.",
     // yondu — Yondu (Hero) [set 154, BLUEHG + DESIGNHACKER]
-    'yd001a': "<i>D'ast Whistlin'</i> — <b>Interruption</b> : quand l'amélioration Yaka Arrow est attachée à un ennemi OU en est retirée, infligez 1 dégât à CET ennemi. Quand elle est attachée à votre identité, soignez 1 dégât de Yondu.",
+    'yd001a': "<i>Sacré Sifflement</i> — <b>Interruption</b> : quand l'amélioration Flèche Yaka est attachée à un ennemi OU en est retirée, infligez 1 dégât à CET ennemi. Quand elle est attachée à votre identité, soignez 1 dégât de Yondu.",
     // yondu — Yondu Udonta (AlterEgo)
-    'yd001b': "<i>Crew Cut</i> — <b>Action</b> : convoquez l'amélioration Tahlei et ajoutez-la à votre main. <i>(Limite d'une fois par round.)</i>\n<i>Whistlin'</i> — <b>Action</b> : inclinez Yondu Udonta → convoquez l'amélioration Yaka Arrow et ajoutez-la à votre main.\n<i>(« Convoquer » = fouiller votre deck ET votre défausse pour la carte nommée.)</i>",
+    'yd001b': "<i>Coupe d'Équipage</i> — <b>Action</b> : convoquez l'amélioration Tahlei et ajoutez-la à votre main. <i>(Limite d'une fois par round.)</i>\n<i>Sifflement</i> — <b>Action</b> : inclinez Yondu Udonta → convoquez l'amélioration Flèche Yaka et ajoutez-la à votre main.\n<i>(« Convoquer » = fouiller votre deck ET votre défausse pour la carte nommée.)</i>",
     // yondu — Cheap Shot (Event)
-    'yd002': "<b>Action de héros</b> <i>(attaque)</i> : sonnez un ennemi. PUIS, si CET ennemi a l'amélioration Yaka Arrow attachée, infligez-lui 6 dégâts.",
+    'yd002': "<b>Action de héros</b> <i>(attaque)</i> : sonnez un ennemi. PUIS, si CET ennemi a l'amélioration Flèche Yaka attachée, infligez-lui 6 dégâts.",
     // yondu — Fight Dirty (Event)
-    'yd003': "<b>Action de héros</b> <i>(attaque)</i> : désorientez un ennemi. PUIS, si CET ennemi a l'amélioration Yaka Arrow attachée, infligez-lui 6 dégâts.",
+    'yd003': "<b>Action de héros</b> <i>(attaque)</i> : désorientez un ennemi. PUIS, si CET ennemi a l'amélioration Flèche Yaka attachée, infligez-lui 6 dégâts.",
     // yondu — Whistle While You Work (Event, x2)
-    'yd004': "<b>Action de héros</b> : attachez l'amélioration Yaka Arrow à Yondu → redressez Yondu ET l'amélioration Tahlei. Si l'amélioration Yaka Arrow n'est PAS en jeu, convoquez-la et ajoutez-la à votre main À LA PLACE.",
+    'yd004': "<b>Action de héros</b> : attachez l'amélioration Flèche Yaka à Yondu → redressez Yondu ET l'amélioration Tahlei. Si l'amélioration Flèche Yaka n'est PAS en jeu, convoquez-la et ajoutez-la à votre main À LA PLACE.",
     // yondu — Tough Motherlover (Event)
-    'yd005': "<b>Action</b> : donnez une carte de statut Tenace à votre identité. PUIS, si vous avez l'amélioration Yaka Arrow EN MAIN, piochez une carte.",
+    'yd005': "<b>Action</b> : donnez une carte de statut Tenace à votre identité. PUIS, si vous avez l'amélioration Flèche Yaka EN MAIN, piochez une carte.",
     // yondu — Twirlin' and Whirlin' (Event, x4)
-    'yd006': "Vous pouvez répéter cette capacité pour chaque ressource surpayée pour cette carte.\n<b>Action de héros</b> : attachez l'amélioration Yaka Arrow à un ennemi ou à votre identité.",
+    'yd006': "Vous pouvez répéter cette capacité pour chaque ressource surpayée pour cette carte.\n<b>Action de héros</b> : attachez l'amélioration Flèche Yaka à un ennemi ou à votre identité.",
     // yondu — Jackpot! (Resource)
     'yd007': "<b>Réponse</b> : après avoir dépensé cette carte, traitez la PROCHAINE carte que vous dépensez comme si elle avait le DOUBLE de ressources.",
     // yondu — Ravager Redshirts (Support)
-    'yd008': "<b>Interruption de héros</b> : quand vous devriez subir des dégâts, quels qu'ils soient, d'un ennemi ayant l'amélioration Yaka Arrow attachée, inclinez Ravager Redshirts → prévenez jusqu'à 2 de ces dégâts.",
+    'yd008': "<b>Interruption de héros</b> : quand vous devriez subir des dégâts, quels qu'ils soient, d'un ennemi ayant l'amélioration Flèche Yaka attachée, inclinez Ravageurs Sacrifiables → prévenez jusqu'à 2 de ces dégâts.",
     // yondu — Invest (Upgrade)
-    'yd009': "<b>Action de héros</b> : inclinez Invest et dépensez 2 ressources ou plus de votre main → si le nombre de ressources dépensées de cette façon était de :\n• 2 — attachez l'amélioration Yaka Arrow à un ennemi ou à votre identité.\n• 3 — redressez Yondu et l'amélioration Tahlei.\n• 4 ou plus — piochez 5 cartes.",
+    'yd009': "<b>Action de héros</b> : inclinez Investissement et dépensez 2 ressources ou plus de votre main → si le nombre de ressources dépensées de cette façon était de :\n• 2 — attachez l'amélioration Flèche Yaka à un ennemi ou à votre identité.\n• 3 — redressez Yondu et l'amélioration Tahlei.\n• 4 ou plus — piochez 5 cartes.",
     // yondu — Ravage (Upgrade)
-    'yd010': "Les sbires portant un pion blessure gagnent le mot-clé Fragile. <i>(Les attaques contre un personnage fragile gagnent Déferlement.)</i>\n<b>Réponse de héros</b> : après que l'amélioration Yaka Arrow a été attachée à un SBIRE, inclinez Ravage → placez un pion blessure sur CE sbire.",
+    'yd010': "Les sbires portant un pion blessure gagnent le mot-clé Fragile. <i>(Les attaques contre un personnage fragile gagnent Déferlement.)</i>\n<b>Réponse de héros</b> : après que l'amélioration Flèche Yaka a été attachée à un SBIRE, inclinez Ravage → placez un pion blessure sur CE sbire.",
     // yondu — Tahlei (Upgrade)
-    'yd011': "<b>Action de héros</b> : inclinez Tahlei → si l'amélioration Yaka Arrow est EN JEU, attachez-la à un ennemi, à votre identité, ou ajoutez-la à votre main.",
+    'yd011': "<b>Action de héros</b> : inclinez Tahlei → si l'amélioration Flèche Yaka est EN JEU, attachez-la à un ennemi, à votre identité, ou ajoutez-la à votre main.",
     // yondu — Yaka Arrow (Upgrade)
-    'yd012': "La Yaka Arrow ne peut être attachée à une carte que si elle est EN JEU. Tant qu'elle est attachée à Yondu, il gagne +1 CTR et +1 ATQ.\n<b>Interruption forcée</b> : quand l'ennemi auquel elle est attachée devrait être vaincu, attachez la Yaka Arrow à un ennemi, à votre identité, ou ajoutez-la à votre main.",
+    'yd012': "La Flèche Yaka ne peut être attachée à une carte que si elle est EN JEU. Tant qu'elle est attachée à Yondu, il gagne +1 CTR et +1 ATQ.\n<b>Interruption forcée</b> : quand l'ennemi auquel elle est attachée devrait être vaincu, attachez la Flèche Yaka à un ennemi, à votre identité, ou ajoutez-la à votre main.",
     // yondu — Banished (Obligation)
-    'yd013': "<b><i>Donnez-la au joueur Yondu Udonta.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Banished de la partie.\n• Défaussez l'amélioration Yaka Arrow ET inclinez l'amélioration Tahlei. Défaussez cette obligation.",
+    'yd013': "<b><i>Donnez-la au joueur Yondu Udonta.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Banni de la partie.\n• Défaussez l'amélioration Flèche Yaka ET inclinez l'amélioration Tahlei. Défaussez cette obligation.",
     // yondu_nemesis — Price on Your Head (SideScheme)
     'yd014': "<b>Réponse forcée</b> : après qu'un personnage AMICAL a été vaincu, soignez 1 dégât de Sav'rkk. Si Sav'rkk n'est PAS en jeu, soignez 1 dégât du méchant À LA PLACE.",
     // yondu_nemesis — Sav'rkk (Minion)
-    'yd015': "Les améliorations ne peuvent PAS être retirées de Sav'rkk.\n<b>Une fois révélé</b> : convoquez l'attachement Sword-Gun-Arm et attachez-le à Sav'rkk.\n<i>(Sbire némésis de Yondu.)</i>",
+    'yd015': "Les améliorations ne peuvent PAS être retirées de Sav'rkk.\n<b>Une fois révélé</b> : convoquez l'attachement Bras-Épée-Fusil et attachez-le à Sav'rkk.\n<i>(Sbire némésis de Yondu.)</i>",
     // yondu_nemesis — Sword-Gun-Arm (Attachment)
-    'yd016': "Attachez-le à Sav'rkk. Si vous ne le pouvez pas, attachez-le au sbire ayant la plus forte ATQ. Si vous ne le pouvez pas, cette carte gagne Déchaînement.\n[star] Les attaques du personnage auquel il est attaché gagnent Déferlement.\n<b>Réponse forcée</b> : quand le personnage auquel il est attaché a 2 points de vie restants ou moins, défaussez Sword-Gun-Arm.",
+    'yd016': "Attachez-le à Sav'rkk. Si vous ne le pouvez pas, attachez-le au sbire ayant la plus forte ATQ. Si vous ne le pouvez pas, cette carte gagne Déchaînement.\n[star] Les attaques du personnage auquel il est attaché gagnent Déferlement.\n<b>Réponse forcée</b> : quand le personnage auquel il est attaché a 2 points de vie restants ou moins, défaussez Bras-Épée-Fusil.",
     // yondu_nemesis — Hard to Kill (Treachery)
     'yd017': "<b>Une fois révélée</b> : si Sav'rkk est en jeu, il soigne 2 dégâts. SINON, convoquez Sav'rkk et révélez-le.\n<hr />[star] <b>Boost</b> : le MÉCHANT soigne 2 dégâts.",
     // yondu_nemesis — Savage Destruction (Treachery)
@@ -2248,9 +2248,9 @@ export const TEXTES_FR_FANMADE = {
     // ares — Lead the Charge (Treachery némésis, x2)
     'ar014': "<b>Une fois révélée</b> : chaque sbire engagé avec un joueur s'active contre lui. Chaque joueur contre qui aucun sbire ne s'est activé de cette façon cherche un sbire dans le deck rencontre et sa défausse et le met en jeu engagé avec lui. Donnez une carte de boost face cachée à chaque sbire.",
     // blade — * Blade (Hero)
-    'bl001a': "[star] <i>Ruée sanguine</i> — <b>Réponse</b> : après que Blade utilise un pouvoir de base, retirez-lui 1 pion de sang → redressez Blade. <i>(Limite d'une fois par phase.)</i>",
+    'bl001a': "[star] <i>Afflux de Sang</i> — <b>Réponse</b> : après que Blade utilise un pouvoir de base, retirez-lui 1 pion de sang → redressez Blade. <i>(Limite d'une fois par phase.)</i>",
     // blade — * Eric Brooks (AlterEgo)
-    'bl001b': "<i>Tueur</i> — <b>Mise en place</b> : mélangez chaque carte de votre set némésis autre que Dracula dans le deck rencontre.\n<i>Injection de sérum</i> — <b>Action</b> : dépensez une ressource [physical] → placez 2 pions de sang sur Eric Brooks. <i>(Limite d'une fois par round.)</i>",
+    'bl001b': "<i>Tueur</i> — <b>Mise en place</b> : mélangez chaque carte de votre set némésis autre que Dracula dans le deck rencontre.\n<i>Injection de Sérum</i> — <b>Action</b> : dépensez une ressource [physical] → placez 2 pions de sang sur Eric Brooks. <i>(Limite d'une fois par round.)</i>",
     // blade — Gear Up (Event, x2)
     'bl002': "Réduisez de 1 le coût pour jouer cette carte si vous êtes sous forme d'alter ego.\n<b>Action</b> : cherchez une carte [[ATTACK]], [[ITEM]], [[TACTIC]] ou [[WEAPON]] dans votre deck et votre défausse et ajoutez-la à votre main.",
     // blade — Go for the Heart (Event, x3)
@@ -2266,7 +2266,7 @@ export const TEXTES_FR_FANMADE = {
     // blade — * Blade's Sword (Upgrade)
     'bl008': "Restreinte.\n<b>Interruption de héros</b> : quand Blade effectue une attaque avec <b><i>Perçant</i></b>, augmentez de 1 le montant des dégâts que cette attaque inflige.",
     // blade — Daywalker (Upgrade)
-    'bl009': "Vous avez +3 points de vie et vos attaques Vampire Bite gagnent <b><i>Perçant</i></b>.\n<b>Interruption de héros</b> : quand vous devriez déclencher la capacité <i>Ruée sanguine</i> de Blade, subissez 2 dégâts → résolvez cette capacité sans payer son coût à la place.",
+    'bl009': "Vous avez +3 points de vie et vos attaques Vampire Bite gagnent <b><i>Perçant</i></b>.\n<b>Interruption de héros</b> : quand vous devriez déclencher la capacité <i>Afflux de Sang</i> de Blade, subissez 2 dégâts → résolvez cette capacité sans payer son coût à la place.",
     // blade — Predatory Instincts (Upgrade)
     'bl010': "Blade a +1 DEF.\n<b>Réponse de héros</b> : après qu'un ennemi entre en jeu, inclinez Instincts de prédateur → cherchez un exemplaire de Vampire Bite dans votre deck et votre défausse et ajoutez-le à votre main.",
     // blade — The Thirst (Obligation)
@@ -6888,18 +6888,18 @@ export const TEXTES_FR_FANMADE = {
     'rc017': "Jouez-la sous le contrôle de n'importe quel joueur.\nMax. 1 par joueur.\nVous pouvez contrôler 1 amélioration [[WEAPON]] supplémentaire qui a le mot-clé Restreint.",
     // robocop — fin du bloc
     // mantis — début du bloc (Mantis, BlueHG)
-    'mt001a': "<i>Avantage empathique</i> — <b>Ressource</b> : défaussez une carte d'état Désorienté d'un ennemi ou d'un personnage que vous contrôlez → générez une ressource [mental]. <i>(Générez à la place des ressources [wild][mental] si vous avez défaussé une carte d'état Désorienté d'un ennemi. Limite d'une fois par round.)</i>\n<i>« Le savoir est un pouvoir. Et tu as beaucoup à apprendre. »</i>",
-    'mt001b': "[star] <i>Nivellement empathique</i> — <b>Réponse</b> : après que vous utilisez votre REC, désorientez un personnage que vous contrôlez.\n<i>« Celle-ci vit pour éclairer. »</i>",
+    'mt001a': "<i>Avantage Empathique</i> — <b>Ressource</b> : défaussez une carte d'état Désorienté d'un ennemi ou d'un personnage que vous contrôlez → générez une ressource [mental]. <i>(Générez à la place des ressources [wild][mental] si vous avez défaussé une carte d'état Désorienté d'un ennemi. Limite d'une fois par round.)</i>\n<i>« Le savoir est un pouvoir. Et tu as beaucoup à apprendre. »</i>",
+    'mt001b': "[star] <i>Équilibre Empathique</i> — <b>Réponse</b> : après que vous utilisez votre REC, désorientez un personnage que vous contrôlez.\n<i>« Celle-ci vit pour éclairer. »</i>",
     'mt002': "Drax ne peut pas attaquer les sbires.\nTant que Drax est désorienté, ajoutez son CTR à son ATQ.\n[star] L'attaque de base de Drax gagne Perçant et ignore le mot-clé Garde.",
     'mt003': "<b>Action de héros</b> <i>(contre)</i> : retirez 2 menaces d'une manigance. Cherchez parmi les 3 cartes du dessus de votre deck une carte et ajoutez-la à votre main. Si c'est une carte Mantis, retirez 1 menace d'une manigance. Mélangez votre deck.",
     'mt004': "<b>Action de héros</b> <i>(attaque)</i> : infligez 4 dégâts à un ennemi. Si cet ennemi est désorienté, vous pouvez soit lui infliger 1 dégât supplémentaire, soit défausser une carte d'état Désorienté de cet ennemi pour piocher 1 carte.",
     'mt005': "<b>Action de héros</b> : désorientez un personnage que vous contrôlez. Ensuite, désorientez un ennemi.\n<i>« Non ! Sors de ma tête ! »</i>\n<i>« Celle-ci est la Madone Céleste. Je vais où je veux. »</i>",
     'mt006': "<b>Réponse</b> : après que vous dépensez cette carte, soignez 1 dégât d'un personnage allié. Vous pouvez désorienter un personnage que vous contrôlez pour piocher 1 carte.\n<i>« Elle peut faire ça ? Et elle nous le dit maintenant ? »</i> —Bug",
-    'mt007': "<b>Action d'alter ego</b> : inclinez Meditation Atrium → cherchez parmi les 3 cartes du dessus de votre deck une carte et ajoutez-la à votre main. Si c'est une carte Mantis, soignez 1 dégât d'un personnage allié. Mélangez votre deck.",
-    'mt008': "Forme héros uniquement. Attachez-la à un allié. Limite 1 par allié.\n<b>Interruption forcée</b> : quand l'allié attaché devrait subir des dégâts consécutifs, défaussez Fortified Mind à la place. Ensuite, désorientez cet allié.",
-    'mt009': "<b>Réponse de héros</b> <i>(attaque)</i> : après qu'un sbire entre en jeu, défaussez Psionic Mindlock → infligez 2 dégâts à ce sbire et désorientez-le.",
-    'mt010': "<b>Interruption de héros</b> : quand vous résolvez la capacité « <i>Avantage empathique</i> » de Mantis, inclinez The Celestial Madonna → cet emploi ne compte pas dans la limite de cette capacité.\n<i>« Elle a été formée dès la naissance par des prêtres d'un autre monde pour représenter toute l'humanité. »</i> —Thor",
-    'mt011': "<b><i>Donnez cette carte au joueur de Mantis.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Psychic Tremor de la partie.\n• Défaussez 1 carte de votre main pour chaque personnage désorienté que vous contrôlez et chaque ennemi désorienté. Si aucune carte n'a été défaussée ainsi, cette carte gagne Renfort. Défaussez cette obligation.",
+    'mt007': "<b>Action d'alter ego</b> : inclinez Atrium de Méditation → cherchez parmi les 3 cartes du dessus de votre deck une carte et ajoutez-la à votre main. Si c'est une carte Mantis, soignez 1 dégât d'un personnage allié. Mélangez votre deck.",
+    'mt008': "Forme héros uniquement. Attachez-la à un allié. Limite 1 par allié.\n<b>Interruption forcée</b> : quand l'allié attaché devrait subir des dégâts consécutifs, défaussez Esprit Renforcé à la place. Ensuite, désorientez cet allié.",
+    'mt009': "<b>Réponse de héros</b> <i>(attaque)</i> : après qu'un sbire entre en jeu, défaussez Blocage Mental Psionique → infligez 2 dégâts à ce sbire et désorientez-le.",
+    'mt010': "<b>Interruption de héros</b> : quand vous résolvez la capacité « <i>Avantage Empathique</i> » de Mantis, inclinez La Madone Céleste → cet emploi ne compte pas dans la limite de cette capacité.\n<i>« Elle a été formée dès la naissance par des prêtres d'un autre monde pour représenter toute l'humanité. »</i> —Thor",
+    'mt011': "<b><i>Donnez cette carte au joueur de Mantis.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n• Inclinez votre alter ego → retirez Secousse Psychique de la partie.\n• Défaussez 1 carte de votre main pour chaque personnage désorienté que vous contrôlez et chaque ennemi désorienté. Si aucune carte n'a été défaussée ainsi, cette carte gagne Renfort. Défaussez cette obligation.",
     'mt012': "<i>L'Épéiste tente de dominer la planète pour les Cotati. Il renforcera les Cotati dans leur mission d'éradiquer toute vie non végétale.</i>\nIncitation 1.\nLes ennemis ne peuvent pas être désorientés.",
     'mt013': "Coup Rapide. Robuste.\n[star] Les attaques de Swordsman gagnent Perçant.\n<i>(Sbire némésis de Mantis.)</i>\n<i>Son cœur bondit au nom de « Jacques » — l'Épéiste qui est mort en se jetant entre elle et la rancune d'un tyran, puis qui sombre en revivant le moment où le Cotati Suprême a réanimé son cadavre pour porter un visage qu'elle ne pouvait s'empêcher d'aimer.</i>",
     'mt014': "Robuste. Ténacité.\n[star] <b>Interruption forcée</b> : quand Plantman attaque, ses attaques gagnent Déferlement.\n<b>Interruption forcée</b> : quand Plantman est vaincu, donnez au méchant une carte d'état Tenace.",

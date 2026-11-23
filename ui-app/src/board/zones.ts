@@ -695,6 +695,32 @@ function nomDeckSpecial(liste: readonly unknown[] | undefined): string | undefin
   return mot.charAt(0) + mot.slice(1).toLowerCase()
 }
 
+/**
+ * Nom lisible d'un deck supplementaire CACHE (rapport du 22/11/2026 : le deck Armes Experimentales de Crossbones s'affichait
+ * « Deck supplementaire 1 », sans dire ce que c'etait). Reconnu au trait commun de toutes ses cartes ; a defaut, « Deck
+ * supplementaire N ». Une entree de plus ici suffit pour nommer un autre deck de scenario.
+ */
+const DECKS_SUPPLEMENTAIRES_NOMMES: ReadonlyArray<{ trait?: string; prefixeNom?: string; nom: string }> = [
+  { trait: 'T_EXPERIMENTAL', nom: 'Deck Armes Expérimentales' }, // Crossbones
+  { trait: 'T_IMPOSTOR', nom: 'Deck Imposteurs' }, // Secret Invasion
+  { trait: 'T_SUPERPOWER', nom: 'Deck Superpouvoirs' }, // Super-Skrull
+  { trait: 'T_PLANET', nom: 'Deck Planètes' }, // Skrull Empire
+  { prefixeNom: 'Zombie ', nom: 'Deck Horde' }, // The Hunger Core
+]
+function nomDeckSupplementaire(liste: readonly unknown[] | undefined, index: number): string {
+  const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
+  const connu =
+    cartesDeck.length > 0 &&
+    DECKS_SUPPLEMENTAIRES_NOMMES.find(({ trait, prefixeNom }) =>
+      cartesDeck.every((carte) =>
+        trait
+          ? Object.keys(carte.traits ?? {}).some((cle) => cle.toUpperCase() === trait)
+          : String(carte.name ?? '').replace(/^\* /, '').startsWith(prefixeNom ?? '\0')
+      )
+    )
+  return connu ? t(connu.nom) : `${t('Deck supplémentaire')} ${index + 1}`
+}
+
 /** Un deck (ou une defausse) supplementaire dont TOUTES les cartes portent le trait TRAP : le paquet de pieges (Shadow Labyrinth, Kraven). Cle du moteur : `t_TRAP`, sans le « ! » du trait imprime. */
 function sontDesPieges(liste: readonly unknown[] | undefined): boolean {
   const cartesDeck = (Array.isArray(liste) ? liste : []).filter(estUneCarte)
@@ -1264,12 +1290,17 @@ export function construirePlateau(world: World, options: Options): Plateau {
           { cle: 'mise-de-cote', cartes: notre?.set_aside_deck, titre: t('Deck mis de côté') },
           ...autresDecks.map((pile, index) => ({
             ...pile,
-            titre: `${t('Deck supplémentaire')} ${index + 1}`,
+            titre: nomDeckSupplementaire(pile.cartes, index),
           })),
         ],
         rendu,
         false
-      ),
+      ).map((unite) => {
+        // Etiquette posee sur la table : sans elle, un deck cache (Armes Experimentales...) ne se distingue pas d'un deck ordinaire.
+        const titres = (unite.pileGroupes ?? []).map((groupe) => groupe.titre)
+        if (titres.length > 0) unite.etiquette = titres.join('\n')
+        return unite
+      }),
       // AJOUT (pack mephisto) : la Damnation, UNE pile par joueur (decision du
       // 09/11), face cachee pour tous : le clic dit combien il y en a, jamais
       // lesquelles. Dans les annexes (zone commune) et non dans la zone du

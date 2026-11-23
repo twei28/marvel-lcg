@@ -1586,6 +1586,11 @@ export const DICO_EN_BASE: Record<string, string> = {
   'Cartes cachées': 'Face-down cards',
   'Deck mis de côté': 'Set-aside deck',
   'Deck supplémentaire': 'Additional deck',
+  'Deck Armes Expérimentales': 'Experimental Weapons deck',
+  'Deck Imposteurs': 'Impostor deck',
+  'Deck Superpouvoirs': 'Superpower deck',
+  'Deck Planètes': 'Planet deck',
+  'Deck Horde': 'Horde deck',
   'Défausse supplémentaire': 'Additional discard pile',
   'Set némésis': 'Nemesis set',
 
