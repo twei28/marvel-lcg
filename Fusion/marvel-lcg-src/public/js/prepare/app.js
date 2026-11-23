@@ -3,6 +3,7 @@
 import { cardImageUrl, cardImageUrlEn, cardImageUrlHd, extensionImageUrl, oublierDecksSauvegardes } from "/public/js/prepare/api.js?v=564d4a13";
 import { REPLIQUES, choisirReplique, classeTaille } from "./repliques-heros.js";
 import { cards } from "/public/js/prepare/cards.js";
+import { NOMS_FR } from "/public/js/prepare/noms-fr.js";
 import { catalog, titleize, nomSetRencontre, titreDeVague } from "/public/js/prepare/catalog.js";
 import { nomExtension, numeroDExtension, titreDeBoite } from "/public/js/prepare/titres-extensions.js";
 import { construirePageDifficulte } from "/public/js/prepare/page-difficulte.js";
@@ -5263,6 +5264,14 @@ function rendreZoneArts() {
     poser(zone, (!p || !p.hero || enRecap()) ? null : panneauArts(p, i));
 }
 
+/** Nom d'une carte pour l'AFFICHAGE : le nom français officiel en langue française (même règle que
+ *  l'éditeur de deck), sinon le nom du moteur. Jamais pour une comparaison : `c.name` reste la clé. */
+function nomCarteFr(c, id) {
+    const brut = c ? c.name : id;
+    if (langueActuelle() !== "fr" || !c) return brut;
+    return NOMS_FR[c.card_id] || NOMS_FR[c.full_link_id] || brut;
+}
+
 /** Le panneau « Arts alternatifs » de l'étape Decks (29/10/2026) : jusque-là
  *  on ne découvrait les arts qu'en choisissant un deck, dans une fenêtre qui ne
  *  revient jamais. Ici ils sont toujours visibles : une pastille « 🖼 n » sur
@@ -5281,12 +5290,12 @@ function panneauArts(p, i) {
         el("span", { class: "art-nom" }, nom));
     const cartes = ids.map((id) => {
         const c = cards.get(id);
-        const nom = c ? c.name : id;
+        const nom = nomCarteFr(c, id);
         return vignette(cardImageUrl(picIdDeCarte(id, heros)), nom, artsDe(id).length + 1, () => {
             proposerArtsCartes({
                 deck: p.deck, heros, el, t, ouvrirModale, fermerModale, seulement: id,
                 imageUrl: (pic) => cardImageUrl(pic),
-                nomCarte: (cid) => { const k = cards.get(cid); return k ? k.name : cid; },
+                nomCarte: (cid) => nomCarteFr(cards.get(cid), cid),
                 apresChoix: () => rendreOutilsDeck(),
             });
         }, t("Choisir un art alternatif"));

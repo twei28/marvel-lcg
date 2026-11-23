@@ -7430,4 +7430,874 @@ export const TEXTES_FR_FANMADE = {
     "mp161": "Renfort.\n<b>Une fois révélée</b> : inclinez votre carte Identité.",
     "mp162": "<b>Une fois révélée</b> : placez 4 menaces sur chaque manigance annexe. S'il n'y a pas de manigance annexe en jeu, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'une manigance annexe soit défaussée. Révélez cette manigance annexe.",
     "mp163": "Renfort.\n<b>Une fois révélée</b> : révélez la carte du dessus du deck Rencontre.\n<i>« Voilà qui est mieux. »</i> —Mephisto",
+    // galactic_storm — Kree Sentry (Villain)
+    'gs076': "[star] <b>Réponse forcée</b> : après que Kree Sentry a attaqué et infligé des dégâts à un personnage, attachez une copie mise de côté de Sentry's Grasp à ce personnage. Si vous ne pouvez pas, placez 1 menace sur la manigance principale.\n<i>« Je suis la Sentinelle intergalactique n° 372, réactivée pour la première fois depuis mon affectation sur cette planète primitive il y a quelque 250 siècles. »</i>",
+    // galactic_storm — Kree Sentry (Villain)
+    'gs077': "<b>Une fois révélée</b> : attachez une copie mise de côté de Sentry's Grasp à Rick Jones.\n[star] <b>Réponse forcée</b> : après que Kree Sentry a attaqué et infligé des dégâts à un personnage, attachez une copie mise de côté de Sentry's Grasp à ce personnage. Si vous ne pouvez pas, placez 2 menaces sur la manigance principale.\n<i>« Je suis la Sentinelle intergalactique n° 372, réactivée pour la première fois depuis mon affectation sur cette planète primitive il y a quelque 250 siècles. »</i>",
+    // galactic_storm — Kree Sentry (Villain)
+    'gs078': "<b>Une fois révélée</b> : attachez chaque copie mise de côté de Sentry's Grasp à Rick Jones.\n[star] <b>Réponse forcée</b> : après que Kree Sentry a attaqué et infligé des dégâts à un personnage, attachez une copie mise de côté de Sentry's Grasp à ce personnage. Si vous ne pouvez pas, placez 3 menaces sur la manigance principale.",
+    // galactic_storm — Sentry Awakens (MainScheme)
+    'gs079a': "<b>Contenu</b> : Kree Sentry (I) et Kree Sentry (II) <i>(Kree Sentry (II) et Kree Sentry (III) à la place en mode expert)</i>. Sets de rencontre Kree Sentry et Standard. Un set de rencontre modulaire <i>(Imperial Guard)</i>.\n<b>Mise en place</b> : mettez Rick Jones en jeu sous le contrôle du premier joueur. Mettez 1 copie de Sentry's Grasp de côté et attachez l'autre à Rick Jones.",
+    // galactic_storm — Sentry Awakens (MainScheme)
+    'gs079b': "<i>Enfoui au fond d'un avant-poste kree abandonné, le Psyche Magnitron est resté en sommeil jusqu'à ce que la chambre forte soit forcée. À présent, Sentry #372 s'est éveillé, programmé pour éliminer tous les intrus et protéger à tout prix son ancien fardeau.</i>\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, infligez 1 dégât à chaque personnage pour chaque copie de Sentry's Grasp qui lui est attachée.",
+    // galactic_storm — Self-Destruct Sequence (MainScheme)
+    'gs080a': "<i>Réalisant la valeur du Psyche Magnitron, le Kree Sentry a redirigé toute son énergie vers sa séquence d'autodestruction.</i>\n<b>Une fois révélée</b> : si la manigance annexe Outpost Collapse Protocol est en jeu, placez 2[per_hero] menaces et 1 pion Accélération dessus. Sinon, cherchez la manigance annexe Outpost Collapse Protocol dans le deck de rencontre et la défausse, puis révélez-la.",
+    // galactic_storm — Self-Destruct Sequence (MainScheme)
+    'gs080b': "[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, infligez 1 dégât à chaque personnage pour chaque copie de Sentry's Grasp qui lui est attachée.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // galactic_storm — * Rick Jones (Ally)
+    'gs081': "Le premier joueur contrôle Rick Jones. Il ne compte pas dans votre limite d'alliés.\n<b>Interruption forcée</b> : quand Kree Sentry vous attaque, il attaque Rick Jones à la place.\n<b>Si Rick Jones quitte le jeu, les joueurs perdent la partie.</b>",
+    // galactic_storm — Sentry's Grasp (Attachment)
+    'gs082': "Le personnage attaché ne peut ni contrer ni manigancer, et ne peut attaquer que Kree Sentry ou cette carte.\nTout joueur peut attaquer cette carte comme s'il s'agissait d'un sbire. S'il y a 3 dégâts ou plus ici, mettez Sentry's Grasp de côté.\n<b>Interruption forcée</b> : quand cette carte devrait quitter le jeu, mettez-la de côté à la place.",
+    // galactic_storm — Optic Blast Cannon (Attachment)
+    'gs083': "Attachez-la à Kree Sentry.\n[star] Les attaques de Kree Sentry gagnent Perçant et À Distance.\n<b>Action de héros</b> : dépensez [physical][physical] ressources → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant et À Distance.",
+    // galactic_storm — Repulsor Blast Unit (Attachment)
+    'gs084': "Attachez-la à Kree Sentry.\n[star] Les attaques de Kree Sentry gagnent Déferlement et À Distance.\n<b>Interruption forcée</b> : quand Sentry's Grasp devrait être mise de côté, s'il y a 5 dégâts ou plus dessus, défaussez Repulsor Blast Unit.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Déferlement.",
+    // galactic_storm — Death Grip (SideScheme)
+    'gs085': "<i>Déterminé à tenir la ligne, son étreinte se resserre, mortelle. Chacun de vos gestes ne fait qu'approcher sa main massive, prête à mettre fin au combat en un instant.</i>\nSentry's Grasp est mise de côté quand il y a 5 dégâts ou plus dessus, au lieu de 3.",
+    // galactic_storm — Locking on Target (SideScheme)
+    'gs086': "<i>« Une sentinelle ne se rend jamais. Une sentinelle doit rester fidèle à sa programmation. » — Kree Sentry</i>\nEntrave 1[per_hero].",
+    // galactic_storm — Outpost Collapse Protocol (SideScheme)
+    'gs087': "<i>Alors que la bataille fait rage, l'avant-poste commence à s'effondrer et des débris menacent tous ceux qui s'y trouvent.</i>\nEntrave 2[per_hero].\n<b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, le premier joueur inflige 1 dégât à chaque personnage qu'il contrôle.",
+    // galactic_storm — "Gotcha!" (Treachery)
+    'gs088': "<b>Une fois révélée</b> : attachez une copie mise de côté de Sentry's Grasp à Rick Jones. Si vous ne pouvez pas, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : attachez une copie mise de côté de Sentry's Grasp à Rick Jones.\n<i>« La sentinelle est programmée pour te détruire — et je te détruirai ! » — Kree Sentry</i>",
+    // galactic_storm — Caught in Its Sights (Treachery)
+    'gs089': "<b>Une fois révélée</b> : vous pouvez dépenser 2 ressources de n'importe quel type. Si vous ne le faites pas, Kree Sentry attaque Rick Jones.\n<i>« Priorisation de la matrice de menaces... Cibles acquises. Exécution de la procédure principale. » — Kree Sentry</i>",
+    // galactic_storm — Intruder Elimination (Treachery)
+    'gs090': "<b>Une fois révélée</b> : choisissez un personnage non-[[KREE]]. Kree Sentry attaque ce personnage <i>(même s'il est sous forme d'alter ego)</i>. Si un ennemi a été attaqué de cette façon, cette carte gagne Renfort.\n<i>« Tous les intrus doivent être détruits ! » — Kree Sentry</i>",
+    // galactic_storm — Disciplined Training (Environment)
+    'gs091': "Mise en place.\nChaque sbire [[IMPERIAL GUARD]] gagne Ténacité.\n<b>Spécial</b> : infligez 1 dégât à votre identité.\n<b>Une fois révélée</b> : défaussez chaque autre environnement [[SETTING]] en jeu.",
+    // galactic_storm — Loyal Devotion (Environment)
+    'gs092': "Mise en place.\nChaque sbire [[IMPERIAL GUARD]] gagne Travail d'équipe ([[IMPERIAL GUARD]]).\n<b>Spécial</b> : placez 1 menace sur la manigance principale.\n<b>Une fois révélée</b> : défaussez chaque autre environnement [[SETTING]] en jeu.",
+    // galactic_storm — Noble Bearing (Environment)
+    'gs093': "Mise en place.\nChaque sbire [[IMPERIAL GUARD]] gagne Garde et le trait [[ELITE]].\n<b>Spécial</b> : défaussez les 3 premières cartes du deck de rencontre.\n<b>Une fois révélée</b> : défaussez chaque autre environnement [[SETTING]] en jeu.",
+    // galactic_storm — * Astra (Minion)
+    'gs094': "<b>Une fois révélée</b> : défaussez une carte spécifique à votre identité que vous contrôlez. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Tu ne causeras plus d'ennuis, mutant, une fois que je t'aurai traversé de manière intangible, puis matérialisé mon bras juste assez pour ébranler ton organisme jusqu'en ses fondations ! »</i>",
+    // galactic_storm — * Earthquake (Minion)
+    'gs095': "<b>Une fois révélée</b> : inclinez votre identité. Si elle était déjà inclinée, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« On m'appelle Earthquake, mammifères... contemplez pourquoi ! »</i>",
+    // galactic_storm — * Electron (Minion)
+    'gs096': "<b>Une fois révélée</b> : défaussez une ressource [energy] de votre main. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Les projectiles métalliques sont inutiles contre Electron, crétins... un homme qui contrôle la force magnétique ! »</i>",
+    // galactic_storm — * Fang (Minion)
+    'gs097': "<b>Une fois révélée</b> : défaussez une carte que vous contrôlez ayant une ressource [wild] imprimée. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Dans notre culture, le titre guerrier de Fang se gagne dans un combat quasi mortel. »</i>",
+    // galactic_storm — * Gladiator (Minion)
+    'gs098': "Victoire 0.\n<b>Une fois révélée</b> : vainquez un allié que vous contrôlez qui n'est pas spécifique au scénario. Si aucun allié n'a été vaincu de cette façon, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Je sacrifierais volontiers toute votre galaxie pour sauver la vie d'un seul Shi'ar ! »</i>",
+    // galactic_storm — * Hobgoblin (Minion)
+    'gs099': "<b>Une fois révélée</b> : résolvez une capacité \"<b>Une fois révélée</b>\" d'un autre sbire [[IMPERIAL GUARD]] en jeu. Si aucune capacité n'a été résolue de cette façon, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« J'ai une amère leçon pour toi, mon prétorien : les choses ne sont pas toujours ce qu'elles semblent être. »</i>",
+    // galactic_storm — * Hussar (Minion)
+    'gs100': "<b>Une fois révélée</b> : défaussez une amélioration que vous contrôlez. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Ah ! Un autre Terrien à humilier ! J'ai oublié ton nom, mais cela n'a guère d'importance. »</i>",
+    // galactic_storm — * Magique (Minion)
+    'gs101': "<b>Une fois révélée</b> : donnez une carte d'état Tenace au méchant. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Mes sortilèges m'empêcheront d'être pris au piège... »</i>",
+    // galactic_storm — * Manta (Minion)
+    'gs102': "<b>Une fois révélée</b> : vous êtes sonné. Si vous l'étiez déjà, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Vous serez détenu jusqu'à ce qu'un procès en bonne et due forme soit fixé pour vous. »</i>",
+    // galactic_storm — * Mentor (Minion)
+    'gs103': "<b>Une fois révélée</b> : défaussez une manigance annexe de joueur en jeu. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« La Garde impériale ne laissera pas cette mascarade aller plus loin. »</i>",
+    // galactic_storm — * Neutron (Minion)
+    'gs104': "<b>Une fois révélée</b> : défaussez un soutien que vous contrôlez. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« J'ai une amère leçon pour toi, mon prétorien : les choses ne sont pas toujours ce qu'elles semblent être. »</i>",
+    // galactic_storm — * Nightside (Minion)
+    'gs105': "<b>Une fois révélée</b> : défaussez une ressource [mental] de votre main. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Mon nom, dans votre langue primitive, serait... Nightside. Cela vous donne-t-il une idée de mon pouvoir spécial ? »</i>",
+    // galactic_storm — * Oracle (Minion)
+    'gs106': "<b>Une fois révélée</b> : vous êtes désorienté. Si vous l'étiez déjà, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Si je ne peux pas lire sur tes lèvres, jeune homme... je lirai alors dans ton esprit ! »</i>",
+    // galactic_storm — * Pulsar (Minion)
+    'gs107': "<b>Une fois révélée</b> : défaussez une ressource [physical] de votre main. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Je te tuerai extrêmement lentement pour ton insolence ! »</i>",
+    // galactic_storm — * Smasher (Minion)
+    'gs108': "<b>Une fois révélée</b> : défaussez un événement de votre main. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Je te rappelle à ton service, Superguardian. » — Gladiator</i>",
+    // galactic_storm — * Starbolt (Minion)
+    'gs109': "<b>Une fois révélée</b> : retirez 1 compteur polyvalent d'une carte que vous contrôlez. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Mon corps a été converti en énergie. Ses faiblesses physiques, ses... attributs... n'existent plus. »</i>",
+    // galactic_storm — * Titan (Minion)
+    'gs110': "<b>Une fois révélée</b> : défaussez une carte ressource de votre main. Si vous ne pouvez pas, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Voyons si tu survis à un coup de pied, petit mammifère ! »</i>",
+    // galactic_storm — * Warstar (Minion)
+    'gs111': "<b>Une fois révélée</b> : défaussez la première carte du deck de rencontre. Si cette carte est un sbire [[IMPERIAL GUARD]], révélez-la. Sinon, résolvez la capacité \"<b>Spécial</b>\" de l'environnement [[SETTING]].\n<i>« Ne te débats pas, Terrien. Cela nous force seulement à resserrer notre étreinte. »</i>",
+    // galactic_storm — Guard Assembles (Treachery)
+    'gs112': "<b>Une fois révélée</b> : défaussez des cartes du deck de rencontre jusqu'à ce que vous défaussiez un sbire [[IMPERIAL GUARD]], puis révélez-le.\n<i>« Je te rappelle à ton service, Superguardian. Prépare ta famille et rejoins le vaisseau amiral, Lilandra. Je t'y attendrai. » — Gladiator</i>",
+    // galactic_storm — Imperial Formation (Treachery)
+    'gs113': "<b>Une fois révélée</b> : résolvez la capacité \"<b>Une fois révélée</b>\" de chaque sbire [[IMPERIAL GUARD]] en jeu. Si vous ne pouvez pas, cherchez un sbire [[IMPERIAL GUARD]] dans le deck de rencontre et la défausse, puis révélez-le.\n<i>« Vous êtes ici pour répondre de vos crimes. » — Gladiator</i>",
+    // galactic_storm — * Deathbird (Villain)
+    'gs114': "[star] <b>Interruption forcée</b> : quand Deathbird lance une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place avec +1 ATQ.",
+    // galactic_storm — * Deathbird (Villain)
+    'gs115': "Deathbird ne peut pas être vaincue si les joueurs ne contrôlent pas Lilandra et le soutien Shi'ar Throne.\n[star] <b>Interruption forcée</b> : quand Deathbird lance une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place avec +1 ATQ.",
+    // galactic_storm — * Deathbird (Villain)
+    'gs116': "Deathbird ne peut pas être vaincue si les joueurs ne contrôlent pas Lilandra et le soutien Shi'ar Throne.\n[star] <b>Interruption forcée</b> : quand Deathbird lance une attaque contre vous, si vous contrôlez un allié [[STARJAMMER]], elle attaque cet allié à la place. Donnez-lui 1 carte de boost supplémentaire pour cette activation.",
+    // galactic_storm — Earn the People's Favor (MainScheme)
+    'gs117a': "<b>Contenu</b> : Deathbird (I) et Deathbird (II) <i>(Deathbird (II) et Deathbird (III) à la place en mode expert)</i>. Majestrix's Verdict, et sets de rencontre Standard. Un set de rencontre modulaire <i>(Imperial Guard)</i>.\n<b>Mise en place</b> : mettez la manigance annexe Shi'ar Throne de côté. Mettez la manigance annexe Imprisoned on Chandilar en jeu et glissez chaque allié [[STARJAMMER]] dessous.",
+    // galactic_storm — Earn the People's Favor (MainScheme)
+    'gs117b': "<b>Une fois révélée</b> : placez 1[per_hero] menace sur Imprisoned on Chandilar.\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, placez 2 menaces sur Imprisoned on Chandilar pour chaque joueur sous forme d'alter ego.",
+    // galactic_storm — Majestrix's Verdict (MainScheme)
+    'gs118a': "<b>Une fois révélée</b> : les joueurs choisissent collectivement 1 allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar et le retirent de la partie <i>(2 alliés [[STARJAMMER]] à la place en mode expert)</i>. Sinon, les joueurs choisissent collectivement 1 allié [[STARJAMMER]] en jeu et le retirent de la partie. Passez au stade 2B.",
+    // galactic_storm — Majestrix's Verdict (MainScheme)
+    'gs118b': "<b>Une fois révélée</b> : placez 1[per_hero] menace sur Imprisoned on Chandilar.\n<b>Interruption forcée</b> : quand ce stade devrait être achevé, retournez cette carte et révélez-la à la place.\n[star] <b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, placez 2 menaces sur Imprisoned on Chandilar pour chaque joueur sous forme d'alter ego.",
+    // galactic_storm — Imprisoned on Chandilar (SideScheme)
+    'gs119': "Assaut. Permanent.\n<b>Réponse forcée</b> : après qu'un allié [[STARJAMMER]] a quitté le jeu, glissez-le ici dessous.\n<b>Interruption forcée</b> : quand la dernière menace est retirée d'ici, les joueurs choisissent collectivement un allié [[STARJAMMER]] glissé ici dessous, le mettent en jeu sous le contrôle du joueur de leur choix et placent 6 menaces ici.",
+    // galactic_storm — Shi'ar Throne (SideScheme)
+    'gs120a': "<b>Une fois vaincue</b> : le joueur qui l'a vaincue retourne cette carte et en prend le contrôle.",
+    // galactic_storm — * Shi'ar Throne (Support)
+    'gs120b': "<b>Ressource</b> : inclinez Shi'ar Throne → générez une ressource [mental] pour n'importe quel joueur.\n<b>Réponse forcée</b> : après que Shi'ar Throne ou Lilandra a quitté le jeu, retournez cette carte et révélez-la.",
+    // galactic_storm — * Lilandra (Ally)
+    'gs121': "Ne compte pas dans votre limite d'alliés.\n<b>Réponse forcée</b> : après que Lilandra est entrée en jeu, révélez la manigance annexe Shi'ar Throne mise de côté.\n<b>Si Lilandra est retirée de la partie, les joueurs perdent la partie.</b>",
+    // galactic_storm — * Ch'od (Ally)
+    'gs122': "Riposte 2.",
+    // galactic_storm — * Corsair (Ally)
+    'gs123': "[star] Les attaques de Corsair gagnent À Distance.",
+    // galactic_storm — * Hepzibah (Ally)
+    'gs124': "[star] Les attaques de Hepzibah gagnent Perçant.",
+    // galactic_storm — * Korvus (Ally)
+    'gs125': "[star] Les attaques de Korvus gagnent Déferlement.",
+    // galactic_storm — * Raza (Ally)
+    'gs126': "Ténacité.",
+    // galactic_storm — Royal Cape of the Shi'ar (Attachment)
+    'gs127': "Attachez-la à Deathbird.\nLe personnage attaché gagne +2 points de vie et Riposte 1.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [energy] → attachez cette carte à Lilandra.",
+    // galactic_storm — Shi'ar Crest (Attachment)
+    'gs128': "Attachez-la à Deathbird.\nLe personnage attaché gagne Solide.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [mental] → attachez cette carte à Lilandra.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à l'ennemi qui s'active.",
+    // galactic_storm — Shi'ar Javelin (Attachment)
+    'gs129': "Attachez-la à Deathbird.\n[star] Les attaques du personnage attaché gagnent Perçant et Déferlement.\n<b>Réponse</b> : après que Lilandra a attaqué Deathbird, dépensez une ressource [physical] → attachez cette carte à Lilandra.\n<hr />\n[star] <b>Boost</b> : si cette activation est une attaque, elle gagne Perçant et Déferlement.",
+    // galactic_storm — * Araki (Minion)
+    'gs130': "Patrouille. Vulnérable.\n<b>Une fois vaincu</b> : placez 2 menaces sur chaque manigance en jeu.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur chaque manigance en jeu.",
+    // galactic_storm — Jailor of Chandilar (Minion)
+    'gs131': "Riposte 1.\n<b>Une fois vaincu</b> : retirez 2 menaces de Imprisoned on Chandilar.\n<hr />\n[star] <b>Boost</b> : placez 1 menace sur Imprisoned on Chandilar.",
+    // galactic_storm — Private Audience (SideScheme)
+    'gs132': "Les alliés ne peuvent pas attaquer le méchant ni contrer la manigance principale.",
+    // galactic_storm — Tapping the M'kraan Force (SideScheme)
+    'gs133': "Entrave 2[per_hero].\n<b>Une fois vaincue</b> : soignez 1 dégât de chaque allié [[STARJAMMER]] en jeu.",
+    // galactic_storm — Tortured Prisoners (SideScheme)
+    'gs134': "<b>Une fois révélée</b> : placez ici 1 menace supplémentaire pour chaque allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar.",
+    // galactic_storm — Birthright to the Throne (Treachery)
+    'gs135': "<b>Une fois révélée</b> : si le soutien Shi'ar Throne est en jeu, Deathbird attaque le joueur qui le contrôle <i>(même si ce joueur est sous forme d'alter ego)</i>. Sinon, Deathbird manigance.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à Deathbird.",
+    // galactic_storm — Exemplar Punishment (Treachery)
+    'gs136': "<b>Une fois révélée</b> : pour chaque allié [[STARJAMMER]] glissé sous Imprisoned on Chandilar, choisissez soit de subir 1 dégât indirect, soit de placer 1 menace sur la manigance principale. S'il n'y a aucun allié glissé sous Imprisoned on Chandilar, placez 2 menaces dessus.",
+    // galactic_storm — Sister's Deception (Treachery)
+    'gs137': "<b>Une fois révélée</b> : si Lilandra est en jeu, elle vous attaque <i>(résolvez son ATQ contre vous sans l'incliner, mais en subissant les dégâts consécutifs)</i>. Sinon, placez 3 menaces sur Imprisoned on Chandilar.",
+    // galactic_storm — Kree Leader (Villain)
+    'gs138a': "Le méchant ne peut pas être affecté par les cartes de joueur. Les attachements attachés au méchant ne peuvent pas être défaussés.\n[star] <b>Interruption forcée</b> : quand le méchant devrait vous attaquer, attribuez-vous à la place une carte rencontre face cachée.\n<i>« Caché sur Hala, le chef kree s'arme pour affronter les héros. »</i>",
+    // galactic_storm — Tanalth (Villain)
+    'gs138b': "[star] <b>Réponse forcée</b> : après que Tanalth a attaqué et vaincu un personnage, donnez-lui une carte d'état Tenace. Si elle a déjà une carte d'état Tenace, donnez-lui une carte de boost face cachée.\n<i>« J'ai une proie, alors je la chasse, et je la tue ou la capture. Car je suis Tanalth, Grande Poursuivante des Kree. »</i>",
+    // galactic_storm — Kree Leader (Villain)
+    'gs139a': "Le méchant ne peut pas être affecté par les cartes de joueur. Les attachements attachés au méchant ne peuvent pas être défaussés.\n[star] <b>Interruption forcée</b> : quand le méchant devrait vous attaquer, attribuez-vous à la place une carte rencontre face cachée.\n<i>« Caché sur Hala, le chef kree s'arme pour affronter les héros. »</i>",
+    // galactic_storm — Tanalth (Villain)
+    'gs139b': "[star] <b>Réponse forcée</b> : après que Tanalth a attaqué et vaincu un personnage, donnez-lui une carte d'état Tenace. Si elle a déjà une carte d'état Tenace, donnez-lui une carte de boost face cachée.\n<i>« Dans une révélation stupéfiante, la chef kree Tanalth s'est avérée n'être autre que l'impératrice skrull R'KIII. »</i>",
+    // galactic_storm — Kree Leader (Villain)
+    'gs140a': "Le méchant ne peut pas être affecté par les cartes de joueur. Les attachements attachés au méchant ne peuvent pas être défaussés.\n[star] <b>Interruption forcée</b> : quand le méchant devrait vous attaquer, attribuez-vous à la place une carte rencontre face cachée.\n<i>« Caché sur Hala, le chef kree s'arme pour affronter les héros. »</i>",
+    // galactic_storm — Tanalth (Villain)
+    'gs140b': "Solide.\n<b>Une fois révélée</b> : cherchez Grand-High Pursuer dans le deck de rencontre et la défausse et attachez-le à Tanalth.\n[star] <b>Réponse forcée</b> : après que Tanalth a attaqué et vaincu un personnage, donnez-lui une carte d'état Tenace et une carte de boost face cachée.",
+    // galactic_storm — Hidden Might of Hala (MainScheme)
+    'gs141a': "<b>Contenu</b> : Kree Leader (I) et Kree Leader (II) <i>(Kree Leader (II) et Kree Leader (III) à la place en mode expert)</i>. Sets de rencontre Hala Ultimatum et Standard. Un set de rencontre modulaire <i>(Accuser Corps)</i>.\n<b>Mise en place</b> : mettez l'environnement Hala en jeu. Chaque joueur cherche un sbire KREE dans le deck de rencontre et le révèle.",
+    // galactic_storm — Hidden Might of Hala (MainScheme)
+    'gs141b': "<i>Les héros se sont rendus sur le monde natal des Kree pour stopper leur conquête et leur expansion.</i>\n<b>Interruption forcée</b> : quand un sbire est vaincu, retirez 1 jeton repaire de Hala.\n<b>Réponse forcée</b> : après que le dernier jeton repaire a été retiré de Hala, passez au stade 2A.\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+    // galactic_storm — Reckoning Begins (MainScheme)
+    'gs142a': "<i>Des profondeurs de Hala jusqu'aux lignes de front, Tanalth et ses légions kree d'élite avancent, annonçant le courroux de l'Empire.</i>\n<b>Une fois révélée</b> : retournez le méchant sur sa face DISCOVERED et mettez l'environnement Hala de côté. Chaque joueur pioche 1 carte.",
+    // galactic_storm — Reckoning Begins (MainScheme)
+    'gs142b': "<i>L'air tremble lorsque Tanalth apparaît, sa voix portant des ordres qui poussent l'armée kree à l'action sans relâche.</i>\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+    // galactic_storm — * Hala (Environment)
+    'gs143': "Entre en jeu avec 2 jetons repaire, plus 2[per_hero] jetons repaire supplémentaires.\n<i>Fouiller la planète</i> — <b>Action</b> : cherchez un sbire KREE dans le deck de rencontre et la défausse et révélez-le → piochez 1 carte. <i>(Limite d'une fois par round et par joueur.)</i>",
+    // galactic_storm — * Grand-High Pursuer (Attachment)
+    'gs144': "Attachez-la au méchant.\nLe méchant attaché gagne Riposte 1.\n<b>Action de héros</b> : dépensez [energy][mental][physical] ressources → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : si l'ennemi qui s'active a une carte d'état Tenace, donnez-lui une carte de boost supplémentaire.",
+    // galactic_storm — Kree Plasma Rifle (Attachment)
+    'gs145': "Attachez-la au méchant.\n[star] Les attaques du méchant attaché gagnent Perçant et À Distance.\n<b>Action de héros</b> : dépensez [energy][mental][physical] ressources → défaussez cette carte.\n<i>« Je vous aurais donné à tous une mort rapide. Aussi indolore que possible ! Plus maintenant... » — Tanalth</i>",
+    // galactic_storm — Kree Resilience (Attachment)
+    'gs146': "Attachez-la au méchant.\nLe méchant attaché peut avoir 1 carte d'état Tenace supplémentaire.\n<b>Action de héros</b> : dépensez [physical][physical] ressources → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : donnez une carte d'état Tenace à l'ennemi qui s'active.\n<i>« Jusqu'au dernier Kree ! » — Tanalth</i>",
+    // galactic_storm — Kree Assassin (Minion)
+    'gs147': "Riposte 1.\n<hr />\n[star] <b>Boost</b> : si l'ennemi qui s'active a une carte d'état Tenace, inclinez votre identité.\n<i>« Il ne nous reste plus qu'à attendre notre cible. » — Sals-Bek</i>",
+    // galactic_storm — Kree Pursuer (Minion)
+    'gs148': "Patrouille. Coup Rapide.\n<b>Une fois vaincu</b> : si le méchant a une carte d'état Tenace, mélangez Kree Pursuer dans le deck de rencontre.\n<i>« Écartez-vous ! »</i>",
+    // galactic_storm — Kree Soldier (Minion)
+    'gs149': "Garde.\n<hr />\n[star] <b>Boost</b> : si l'ennemi qui s'active a une carte d'état Tenace, mettez Kree Soldier en jeu engagé avec vous.\n<i>« L'armée kree protège les siens... »</i>",
+    // galactic_storm — House of Fiyero (SideScheme)
+    'gs150': "<i>Une puissante guilde kree, usant de sa richesse et de son influence pour servir ses ambitions.</i>\nEntrave 1[per_hero].\n<b>Une fois vaincue</b> : retirez 1 jeton repaire de Hala. Si vous ne pouvez pas, le joueur qui l'a vaincue peut défausser un attachement portant le texte \"Action de héros\" d'un ennemi.",
+    // galactic_storm — Mobilizing the Empire (SideScheme)
+    'gs151': "<i>Les Kree sont une race extrêmement militariste et disciplinée, élevée pour la guerre, la conquête et une loyauté absolue envers leur empire.</i>\nEntrave 1[per_hero].\n<b>Une fois vaincue</b> : retirez 1 jeton repaire de Hala. Si vous ne pouvez pas, le joueur qui l'a vaincue peut piocher 1 carte.",
+    // galactic_storm — Secrets of Detention Core (SideScheme)
+    'gs152': "<i>Chaque prisonnier de Hala sert l'Empire kree d'une façon ou d'une autre.</i>\nEntrave 1[per_hero].\n<b>Une fois vaincue</b> : retirez 1 jeton repaire de Hala. Si vous ne pouvez pas, le joueur qui l'a vaincue peut redresser un personnage qu'il contrôle.",
+    // galactic_storm — Advanced Arsenal (Treachery)
+    'gs153': "<b>Une fois révélée</b> : donnez une carte d'état Tenace au méchant. Si le méchant a déjà une carte d'état Tenace, défaussez des cartes du deck de rencontre jusqu'à ce que vous défaussiez un attachement ou un sbire, puis révélez-le.",
+    // galactic_storm — Battle Cry (Treachery)
+    'gs154': "<b>Une fois révélée</b> : donnez une carte d'état Tenace au méchant. Si le méchant a déjà une carte d'état Tenace, donnez-lui une carte de boost face cachée.\n<hr />\n[star] <b>Boost</b> : si l'ennemi qui s'active a une carte d'état Tenace, cette carte gagne +2 icônes de boost pour cette activation.",
+    // galactic_storm — Bloodthirst of Hala (Treachery)
+    'gs155': "<b>Une fois révélée</b> : donnez une carte d'état Tenace au méchant. Si le méchant a déjà une carte d'état Tenace, le méchant s'active contre vous.\n<i>« Pas de quartier ! Souvenez-vous que vous êtes Kree ! » — Ronan</i>",
+    // galactic_storm — * The Accused (Attachment)
+    'gs156': "Attachez-la à votre identité.\n<b>Interruption forcée</b> : quand un ennemi lance une attaque contre l'identité attachée, cet ennemi gagne +1 ATQ pour cette attaque.\n<b>Réponse forcée</b> : après qu'un ennemi ACCUSER CORPS a été vaincu, défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : attachez-la à votre identité.",
+    // galactic_storm — Universal Weapon (Attachment)
+    'gs157': "Attachez-la au méchant.\nLe personnage attaché gagne Solide et le trait ACCUSER CORPS.\n<b>Action de héros</b> : subissez 2 dégâts et attribuez-vous 1 carte rencontre face cachée → mélangez cette carte dans le deck de rencontre.\n<hr />\n[star] <b>Boost</b> : attachez-la à un ennemi.",
+    // galactic_storm — Unwavering (Attachment)
+    'gs158': "Attachez-la à un ennemi.\n[star] <b>Réponse forcée</b> : après que l'ennemi attaché a attaqué et infligé des dégâts à un personnage, défaussez cette carte.\n[star] <b>Boost</b> : attachez-la à un ennemi.\n<i>« J'ai rendu mon jugement, ni plus, ni moins. C'est la justice... qui a été rendue. » — Ronan</i>",
+    // galactic_storm — Kree Accuser (Minion)
+    'gs159': "Ténacité. Vilenie.\n<i>« Aurez-vous besoin que j'emploie la force physique ? » — Lauri-Ell</i>",
+    // galactic_storm — Judgement Day (Treachery)
+    'gs160': "<b>Une fois révélé</b> : chaque ennemi ACCUSER CORPS s'active contre vous. Si aucun ennemi ne s'est activé de cette façon, cherchez un Kree Accuser dans le deck rencontre et la défausse, puis révélez-le.\n<i>« Accusateurs... maîtrisez les prisonniers ! » — Ronan</i>",
+    // galactic_storm — Earthfall (MainScheme)
+    'gs161a': "<b>Contenu</b> : Earth Under Siege, Annihilus, Attuma, Destroyer, Doctor Minerva, Mole Man, Veranke et sets de rencontre Standard. Un set de rencontre modulaire <i>(Imperial Guard)</i>.\n<b>Mise en place</b> : mettez de côté les sets de rencontre Annihilus, Attuma, Destroyer, Doctor Minerva, Mole Man et Veranke. Créez le deck de vilains <i>(voir l'encart)</i>. Révélez la carte du dessus du deck de vilains et mélangez le reste de son set de rencontre dans le deck rencontre. Révélez la manigance annexe Enemies at Large. Placez 6 jetons de sécurité ici.",
+    // galactic_storm — Earthfall (MainScheme)
+    'gs161b': "<b>Réponse forcée</b> : après la fin de la phase du méchant, retirez 1 jeton de sécurité d'ici. S'il y a moins de jetons de sécurité ici que de cartes dans le deck de vilains, révélez la carte du dessus du deck de vilains et mélangez le reste de son set de rencontre dans le deck rencontre.\n<b>Si cette manigance est accomplie, les joueurs perdent la partie.</b>",
+    // galactic_storm — Enemies at Large (SideScheme)
+    'gs162a': "<b>Mode standard uniquement.</b>\nPermanent.\n<b>Réponse forcée</b> : après que la dernière menace a été retirée d'ici, placez 1 jeton de sécurité sur la manigance principale et 4 menaces ici.\n<b>Interruption forcée</b> : quand le dernier vilain est vaincu, révélez la carte du dessus du deck de vilains et mélangez le reste de son set de rencontre dans le deck rencontre. Sinon, les joueurs gagnent la partie.",
+    // galactic_storm — Enemies at Large (SideScheme)
+    'gs162b': "<b>Mode expert uniquement.</b>\nPermanent.\n<b>Réponse forcée</b> : après que la dernière menace a été retirée d'ici, placez 1 jeton de sécurité sur la manigance principale et 5 menaces ici.\n<b>Interruption forcée</b> : quand le dernier vilain est vaincu, révélez la carte du dessus du deck de vilains et mélangez le reste de son set de rencontre dans le deck rencontre. Sinon, les joueurs gagnent la partie.",
+    // galactic_storm — Main Concern (Attachment)
+    'gs163': "Attachez-la au vilain qui a le plus de points de vie restants. S'il n'y a qu'un seul vilain en jeu, cette carte gagne Renfort.\nLes joueurs ne peuvent pas infliger de dégâts aux autres vilains.\n<hr />\n[star] <b>Boost</b> : attachez-la au vilain qui a le plus de points de vie restants.",
+    // galactic_storm — Observe the Perimeter (Obligation)
+    'gs164': "Vous ne pouvez pas attaquer.\n<b>Action d'alter ego</b> : inclinez votre identité &rarr; regardez la carte du dessus du deck de vilains et défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : après cette activation, mélangez cette carte dans le deck rencontre.",
+    // galactic_storm — Threat on the Horizon (Treachery)
+    'gs165': "<b>Une fois révélée</b> : choisissez soit de dépenser 2 ressources de n'importe quel type, soit de retirer 1 jeton de sécurité de la manigance principale.",
+    // galactic_storm — Annihilus (Villain)
+    'gs166': "[star] <b>Réponse forcée</b> : après qu'Annihilus s'active contre vous, défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une carte spécifique à une identité.",
+    // galactic_storm — Annihilus (Villain)
+    'gs167': "Ténacité.\n[star] <b>Réponse forcée</b> : après qu'Annihilus s'active contre vous, défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une carte spécifique à une identité.",
+    // galactic_storm — Portal to the Negative Zone (SideScheme)
+    'gs168': "Entrave 1.\n<b>Une fois déjouée</b> : chaque joueur peut mélanger 1 carte spécifique à une identité de sa défausse dans son deck.",
+    // galactic_storm — Annihilation Wave (Treachery)
+    'gs169': "<b>Une fois révélée</b> : défaussez des cartes du dessus de votre deck jusqu'à ce que vous défaussiez une carte spécifique à une identité. Subissez 1 dégât indirect (maximum 3) pour chaque carte défaussée de cette façon.",
+    // galactic_storm — Attuma (Villain)
+    'gs170': "[star] Tant qu'une autre carte ATLANTIS est en jeu, Attuma gagne +1 MNG et +1 ATQ.",
+    // galactic_storm — Attuma (Villain)
+    'gs171': "Ténacité.\n[star] Tant qu'une autre carte ATLANTIS est en jeu, Attuma gagne +1 MNG et +1 ATQ.",
+    // galactic_storm — Atlantean Amulet (Attachment)
+    'gs172': "Attachez-la à un ennemi ATLANTIS. Sinon, attachez-la au vilain.\nLe personnage attaché gagne +5 points de vie.\n<b>Action de héros</b> : dépensez des ressources [energy][physical] &rarr; défaussez cette carte.",
+    // galactic_storm — Atlantean Battle Gear (Attachment)
+    'gs173': "Attachez-la à un ennemi ATLANTIS. Sinon, attachez-la au vilain.\nRéduisez de 1 les dégâts que l'ennemi attaché subit de chaque attaque.\n<b>Action de héros</b> : dépensez des ressources [physical][physical] &rarr; défaussez cette carte.",
+    // galactic_storm — Andromeda (Minion)
+    'gs174': "[star] Tant qu'une autre carte ATLANTIS est en jeu, Andromeda gagne riposte 2.",
+    // galactic_storm — Rising Sea Levels (SideScheme)
+    'gs175': "Entrave 1.\n<b>Une fois révélée</b> : placez 1 menace sur la manigance principale pour chaque carte ATLANTIS en jeu.",
+    // galactic_storm — Destroyer (Villain)
+    'gs176': "[star] Les dégâts excédentaires infligés par les attaques de Destroyer sont placés en menace sur la manigance principale.",
+    // galactic_storm — Destroyer (Villain)
+    'gs177': "Ténacité.\n[star] Les dégâts excédentaires infligés par les attaques de Destroyer sont placés en menace sur la manigance principale.",
+    // galactic_storm — Uru Armor Plating (Attachment)
+    'gs178': "CONDITION.\nAttachez-la à Destroyer. Sinon, attachez-la à l'ennemi qui a le moins de points de vie restants.\nUtilisations (3 jetons de plaque).\n<b>Interruption forcée</b> : quand l'ennemi attaché est censé subir une quantité de dégâts quelconque, prévenez 2 de ces dégâts et retirez 1 jeton de plaque d'ici.",
+    // galactic_storm — Programmed to Obliterate (SideScheme)
+    'gs179': "<i>Loki a lâché Destroyer sur la Terre pour réaliser son plan visant à détruire Thor et ses alliés.</i>\nEntrave 1.\n[star] <b>Boost</b> : si cette attaque inflige des dégâts excédentaires, placez-les en menace sur la manigance principale.",
+    // galactic_storm — Pure Destruction (Treachery)
+    'gs180': "<b>Une fois révélée</b> : infligez 3 dégâts à un personnage que vous contrôlez. Si ce personnage a subi des dégâts excédentaires de cette façon, placez-les en menace sur la manigance principale.\n<hr />\n[star] <b>Boost</b> : si cette attaque inflige des dégâts excédentaires, placez-les en menace sur la manigance principale.",
+    // galactic_storm — Doctor Minerva (Villain)
+    'gs181': "[star] <b>Réponse forcée</b> : après que Doctor Minerva a machiné contre vous, attribuez-vous une carte rencontre face cachée.",
+    // galactic_storm — Doctor Minerva (Villain)
+    'gs182': "Ténacité.\n[star] <b>Réponse forcée</b> : après que Doctor Minerva a machiné contre vous, attribuez-vous une carte rencontre face cachée.",
+    // galactic_storm — Induced Mutation (Attachment)
+    'gs183': "CONDITION.\nAttachez-la au vilain et donnez-lui une carte d'état Tenace.\nUtilisations (3 jetons de durée).\n[star] <b>Interruption forcée</b> : quand le vilain s'active, donnez-lui 1 carte de boost supplémentaire pour cette activation et retirez 1 jeton de durée d'ici.",
+    // galactic_storm — Captain Atlas (Minion)
+    'gs184': "[star] <b>Réponse forcée</b> : après que Captain Atlas vous a attaqué, attribuez-vous une carte rencontre face cachée.",
+    // galactic_storm — Kree Secret Laboratory (SideScheme)
+    'gs185': "<i>Owl Robotics, une société-écran sur Terre que Doctor Minerva emploie pour dissimuler ses expériences.</i>\nEntrave 1.\n[star] <b>Boost</b> : si cette activation est une manigance, révélez cette carte.",
+    // galactic_storm — Mole Man (Villain)
+    'gs186': "[star] <b>Réponse forcée</b> : après que Mole Man vous a attaqué, mélangez un sbire SUBTERRANEAN de la défausse rencontre dans le deck rencontre.",
+    // galactic_storm — Mole Man (Villain)
+    'gs187': "Ténacité.\n[star] <b>Réponse forcée</b> : après que Mole Man vous a attaqué, mélangez un sbire SUBTERRANEAN de la défausse rencontre dans le deck rencontre.",
+    // galactic_storm — Moloid (Minion)
+    'gs188': "Garde.\n<b>Réponse forcée</b> : après que Moloid entre en jeu, cherchez un sbire SUBTERRANEAN dans le deck rencontre et mettez-le en jeu engagé avec vous.",
+    // galactic_storm — Underground Tremor (Treachery)
+    'gs189': "<b>Une fois révélée</b> : infligez 1 dégât à chaque personnage que vous contrôlez qui n'est pas AERIAL. Si aucun dégât n'a été infligé de cette façon, cette carte gagne Renfort. Si aucun ennemi SUBTERRANEAN n'est en jeu, mélangez cette carte dans le deck rencontre.",
+    // galactic_storm — Veranke (Villain)
+    'gs190': "[star] Les joueurs ne peuvent pas se défendre contre les attaques de Veranke.",
+    // galactic_storm — Veranke (Villain)
+    'gs191': "Ténacité.\n[star] Les joueurs ne peuvent pas se défendre contre les attaques de Veranke.",
+    // galactic_storm — Arch-Enemy's Face (Attachment)
+    'gs192': "CONDITION.\nLe sbire attaché gagne le trait SKRULL.\n<b>Une fois révélée</b> : si votre sbire nemesis est en jeu, attachez cette carte à celui-ci. Il s'active alors contre vous. Sinon, trouvez votre sbire nemesis, révélez-le et attachez cette carte à celui-ci.",
+    // galactic_storm — Replaced (Attachment)
+    'gs193': "CONDITION.\nConsidérez l'allié attaché comme un sbire SKRULL dont la boîte de texte est vierge. La MNG du sbire attaché est égale à son CTR imprimé et il ne subit pas de dégâts consécutifs.\n<b>Une fois révélée</b> : attachez-la à un allié que vous contrôlez sans Replaced attachée. L'allié attaché s'engage avec son contrôleur. Sinon, cette carte gagne Renfort.",
+    // galactic_storm — Secret Invasion (SideScheme)
+    'gs194': "<i>Ils changent de forme. Extraterrestres ou non, quoi qu'ils soient, ils sont entrés. Ils sont entrés au S.H.I.E.L.D. et chez les Avengers.</i>\nEntrave 1.\n<b>Interruption forcée</b> : quand un allié quitte le jeu, placez 1 pion Accélération ici.",
+    // galactic_storm — * Supreme Intelligence (Villain)
+    'gs195': "<b>Réponse forcée</b> : après qu'un sbire [[KREE]] est vaincu, soignez 1 dégât du vilain. Si ce sbire a le trait [[ELITE]], donnez au vilain une carte de boost face cachée.\n<i>« ...Je suis l'incarnation vivante de la puissance... car je suis la Supreme Intelligence de la majestueuse race des Kree ! »</i>",
+    // galactic_storm — * Supreme Intelligence (Villain)
+    'gs196': "Ténacité.\n<b>Réponse forcée</b> : après qu'un sbire [[KREE]] est vaincu, soignez 1 dégât du vilain. Si ce sbire a le trait [[ELITE]], donnez au vilain une carte de boost face cachée.\n<i>« ...Je suis l'incarnation vivante de la puissance... car je suis la Supreme Intelligence de la majestueuse race des Kree ! »</i>",
+    // galactic_storm — * Supreme Intelligence (Villain)
+    'gs197': "Ténacité.\n<b>Réponse forcée</b> : après qu'un sbire [[KREE]] est vaincu, soignez 1 dégât du vilain et donnez-lui une carte de boost face cachée.\n<i>« ...Je suis l'incarnation vivante de la puissance... car je suis la Supreme Intelligence de la majestueuse race des Kree ! »</i>",
+    // galactic_storm — Protectors of the Kree Empire (MainScheme)
+    'gs198a': "<b>Contenu</b> : Supreme Intelligence (I) et (II) <i>(Supreme Intelligence (II) et (III) à la place en mode expert)</i>. Sets Supreme Intelligence, Starforce et Standard. Un set de rencontre modulaire <i>(Seeds of Corruption)</i>.\n<b>Mise en place</b> : mettez de côté chaque sbire [[STARFORCE]] et mettez-en 1 au hasard en jeu engagé avec le premier joueur. Attachez Holding Tank au vilain.",
+    // galactic_storm — Protectors of the Kree Empire (MainScheme)
+    'gs198b': "La valeur de menace cible de cette manigance ne peut pas être modifiée.\n[star] <b>Interruption forcée</b> : quand cette manigance est censée être accomplie, retirez plutôt toutes les menaces d'ici et mettez en jeu un sbire [[STARFORCE]] mis de côté au hasard, engagé avec le premier joueur. Ensuite, s'il y a 5 sbires [[STARFORCE]] mis de côté ou moins, passez à l'étape 2A.",
+    // galactic_storm — The Endless Mind (MainScheme)
+    'gs199a': "<i>« La Supreme Intelligence. Elle a tué tous ceux qu'elle admirait ou qui s'opposaient à elle, et a ajouté leurs esprits, morts et hurlants, au sien. » — Carol Danvers</i>\n<b>Une fois révélée</b> : mélangez chaque sbire [[STARFORCE]] mis de côté dans le deck rencontre.",
+    // galactic_storm — The Endless Mind (MainScheme)
+    'gs199b': "<i>La Supreme Intelligence est le collectif des plus grands esprits kree de l'histoire, prélevés à leur mort et assimilés par le superordinateur lors d'un processus appelé « Supremorisation ».</i>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // galactic_storm — Holding Tank (Attachment)
+    'gs200': "Utilisations (7[per_hero] jetons d'intégrité). Victoire 0.\nRéduisez de 2 les dégâts que le vilain subit de chaque attaque.\n<b>Réponse forcée</b> : après qu'un ennemi subit une quantité de dégâts quelconque, retirez 1 jeton d'intégrité d'ici.",
+    // galactic_storm — Genetic Augmentation (Attachment)
+    'gs201': "Attachez-la au sbire [[KREE]] qui a le plus de points de vie restants. Sinon, cette carte gagne Renfort.\nLe sbire attaché gagne +2 points de vie et le trait [[ELITE]].\n<i>« J'ai utilisé le pouvoir du cristal sur mes sujets kree... accomplissant d'innombrables millénaires d'évolution en un instant. » — Supreme Intelligence</i>",
+    // galactic_storm — Kree Infantry (Minion)
+    'gs202': "Garde. Patrouille.\n<b>Une fois vaincu</b> : placez 2 menaces sur la manigance principale.\n<i>« L'ascension kree est maintenant et ceux qui se dressent sur son chemin tomberont. » — Minister Marvel</i>",
+    // galactic_storm — * Ren-Varr (Minion)
+    'gs203': "Vulnérable.\n<b>Une fois vaincu</b> : donnez au vilain une carte d'état Tenace.\n<i>« J'ai le pouvoir d'annuler l'annihilation de la race kree ! »</i>",
+    // galactic_storm — Supremor (Minion)
+    'gs204': "Vilenie.\n[star] Supremor gagne +1 point de vie pour chaque sbire [[KREE]] dans la zone de victoire.\n<i>« Les Kree effaceront votre race mal conçue de l'existence ! »</i>",
+    // galactic_storm — Loyalty to Supremor (SideScheme)
+    'gs205': "<i>« La vengeance. Oui ! Ça, un Kree peut le comprendre ! » — Doctor Minerva</i>\nChaque sbire gagne Garde.",
+    // galactic_storm — Selective Breeding (SideScheme)
+    'gs206': "<b>Une fois révélée</b> : mélangez chaque sbire [[KREE]] de la défausse rencontre dans le deck rencontre.",
+    // galactic_storm — Supremor Seed (SideScheme)
+    'gs207': "<b>Une fois déjouée</b> : le joueur qui l'a déjouée peut placer 1 sbire [[KREE]] de la zone de victoire dans la défausse rencontre.",
+    // galactic_storm — Summon Reinforcements (Treachery)
+    'gs208': "<b>Une fois révélée</b> : s'il y a au moins 1 sbire [[STARFORCE]] mis de côté, le vilain machine. Sinon, défaussez des cartes du dessus du deck rencontre jusqu'à ce qu'un sbire soit défaussé, puis révélez-le.\n<i>« La Supreme Intelligence des Kree vous appelle. Je sais qui vous êtes. » — Supreme Intelligence</i>",
+    // galactic_storm — * Cadmi-M the Pursuer (Minion)
+    'gs209': "Riposte 1. Vilenie. Victoire 1.\nTant que Cadmi-M the Pursuer est dans la zone de victoire, le vilain gagne riposte 1.\n<i>« Eh bien... l'improvisation marche aussi. »</i>",
+    // galactic_storm — * Doctor Minerva (Minion)
+    'gs210': "Vilenie. Victoire 1.\nTant que Doctor Minerva est dans la zone de victoire, le vilain gagne +1 MNG.\n<i>« Ne vous abîmez pas votre cerveau primitif d'humain. Laissez-moi faire. »</i>",
+    // galactic_storm — * Inndig-O the Accuser (Minion)
+    'gs211': "Vilenie. Victoire 1.\nTant qu'Inndig-O the Accuser est dans la zone de victoire, le vilain gagne +1 ATQ.\n<i>« ...Je reconnais une accusation quand j'en entends une ! »</i>",
+    // galactic_storm — * Korath the Pursuer (Minion)
+    'gs212': "Riposte 1. Vilenie. Victoire 1.\nTant que Korath the Pursuer est dans la zone de victoire, le vilain gagne riposte 1.\n<i>« Un seul contact de mon bêta-bâton effacera votre sourire de toute existence... »</i>",
+    // galactic_storm — * Protector (Minion)
+    'gs213': "Solide. Vilenie. Victoire 1.\nTant que Protector est dans la zone de victoire, le vilain gagne Solide.\n<i>« Chacun de nous, dans cette unité, a un rôle. »</i>",
+    // galactic_storm — * Ronan the Accuser (Minion)
+    'gs214': "Vilenie. Victoire 1.\nTant que Ronan the Accuser est dans la zone de victoire, le vilain gagne +1 ATQ.\n<i>« ...c'est le plus grand crime de tous, être non-Kree... »</i>",
+    // galactic_storm — * Shatterax (Minion)
+    'gs215': "Vilenie. Victoire 1.\n[star] Les attaques de Shatterax gagnent perçant.\nTant que Shatterax est dans la zone de victoire, les attaques du vilain gagnent perçant.\n<i>« Agent Shatterax au Commandement de Hala. Action contre une intrusion extraterrestre sur l'avant-poste SIK/SIGMA en cours. »</i>",
+    // galactic_storm — * Ultimus (Minion)
+    'gs216': "Vilenie. Victoire 1.\n[star] Les attaques d'Ultimus gagnent déferlement.\nTant qu'Ultimus est dans la zone de victoire, les attaques du vilain gagnent déferlement.\n<i>« Un tel imbécile mérite la mort ! »</i>",
+    // galactic_storm — Starformation (Treachery)
+    'gs217': "<b>Une fois révélée</b> : donnez à chaque sbire [[STARFORCE]] une carte d'état Tenace et une carte de boost face cachée. Sinon, donnez au vilain une carte d'état Tenace et une carte de boost face cachée.\n<i>« Nous avons été rassemblés par la Supreme Intelligence pour une raison, car c'est un tournant dans notre histoire, et on a besoin de nous ! » — Ultimus</i>",
+    // galactic_storm — Manipulated Memories (Attachment)
+    'gs218': "Attachez-la à votre identité.\nChaque carte événement dans votre main gagne exigence ([mental]).\n<b>Action de héros</b> : dépensez 2 ressources du même type &rarr; défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : si cette activation est une manigance, vous êtes désorienté. Sinon, vous êtes sonné.",
+    // galactic_storm — Psychic Shackles (SideScheme)
+    'gs219': "<i>« Maintenant que vous êtes véritablement impuissant, j'assimilerai votre intellect, conquérant votre esprit comme votre corps ! » — Supreme Intelligence</i>\nEntrave 1[per_hero].\nLes joueurs ne peuvent pas jouer de cartes avec une ressource [mental] imprimée.",
+    // galactic_storm — Mental Torture (Treachery)
+    'gs220': "<b>Une fois révélée</b> : défaussez 1 carte au hasard de votre main. Si une ressource [mental] a été défaussée de cette façon, sonnez votre identité.\n<i>« Pendant que vous vous tordez dans une impuissance abjecte, j'ai sondé vos cerveaux primitifs ! Et maintenant... j'ai fini ! » — Supreme Intelligence</i>",
+    // galactic_storm — Whisper in the Mind (Treachery)
+    'gs221': "<b>Une fois révélée</b> : trouvez un exemplaire de votre obligation et révélez-le. Si votre obligation n'a pas été révélée de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : si votre obligation est dans la zone de victoire ou a été retirée de la partie, mélangez-la dans le deck rencontre.",
+    // galactic_storm — Nega-Bomb (SideScheme)
+    'gs222a': "<i>« La Nega-Bomb est le dispositif le plus abominable que le peuple shi'ar ait jamais créé. »</i>\nMise en place. Victoire 0.\nEntre en jeu avec 4 jetons de temps dessus.\n<b>Réponse forcée</b> : après avoir résolu la première étape de la phase du méchant, retirez 1 jeton de temps d'ici. S'il n'y a plus de jeton de temps ici, retournez cette carte et révélez Detonation.",
+    // galactic_storm — Detonation (Environment)
+    'gs222b': "<b>Une fois révélée</b> : infligez X dégâts à chaque personnage allié et sbire en jeu en ignorant toute carte d'état Tenace, où X est égal à la quantité de menace ici divisée par le nombre total de personnages alliés et de sbires en jeu (arrondi au supérieur). Retirez cette carte de la partie.",
+    // galactic_storm — Green Interference (Treachery)
+    'gs223': "<b>Une fois révélée</b> : retirez 1 jeton polyvalent de chaque carte en jeu. Si aucun jeton n'a été retiré de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : retirez 1 jeton polyvalent d'une carte en jeu.",
+    // galactic_storm — * Rick Jones (Ally)
+    'gs224': "Honoraire.\n<b>Interruption forcée</b> : quand le vilain vous attaque, il attaque plutôt Rick Jones.\n<i>« Je suppose que je ne serai jamais un super-héros. »</i>",
+    // galactic_storm — * Gladiator (Ally)
+    'gs225': "Honoraire.\n<b>Réponse</b> : après avoir joué Gladiator depuis votre main, vainquez un sbire.\n<i>« Gladiator revendique la victoire ! »</i>",
+    // galactic_storm — * Lauri-Ell (Ally)
+    'gs226': "Honoraire. Ténacité.\n[star] <b>Réponse</b> : après que Lauri-Ell a attaqué et blessé un ennemi, défaussez chaque carte de boost sur cet ennemi.\n<i>« Je veillerai à ce que tout le monde soit évacué en sécurité hors de la planète. Vous avez ma parole. »</i>",
+    // galactic_storm — * Binary (Ally)
+    'gs227': "Honoraire.\nX est le nombre de ressources [energy] dans votre main.\n<i>« Pour sauver une étoile, il faut quelqu'un qui a le pouvoir d'une étoile, et ce quelqu'un, c'est moi. »</i>",
+    // galactic_storm — * Captain Marvel (Ally)
+    'gs228': "Honoraire.\n<b>Ressource</b> : défaussez Captain Marvel &rarr; générez [energy][energy] ressources.\n<i>« Tu as genre quinze noms de code différents, de toute façon, Monica-Photon-Pulsar-Captain-Marvel-Rambeau ! »</i> — Carol Danvers",
+    // galactic_storm — * Crystal (Ally)
+    'gs229': "Honoraire. Exigence ([energy][mental][physical]).\n<b>Une fois vaincu</b> : dépensez 3 ressources de n'importe quel type &rarr; mettez Crystal en jeu sous votre contrôle.\n<i>« Les éléments, c'est ma spécialité. »</i>",
+    // galactic_storm — * Doctor Pym (Ally)
+    'gs230': "Honoraire.\n<b>Action d'alter ego</b> : inclinez Doctor Pym &rarr; votre identité gagne +1 à chacune de ses capacités de base jusqu'à la fin du round.\n<i>« Je sais maintenant ce que j'ai fait de travers. Je sais ce que je dois faire. »</i>",
+    // galactic_storm — * Goliath (Ally)
+    'gs231': "Honoraire.\n<b>Réponse</b> : après que Goliath utilise une capacité de base, défaussez la carte du dessus de votre deck. Si une ressource [physical] a été défaussée de cette façon, infligez 1 dégât à chaque ennemi.",
+    // galactic_storm — * Her (Ally)
+    'gs232': "Honoraire.\n[star] <b>Réponse</b> : après que Her entre en jeu, redressez une amélioration que vous contrôlez.\n<i>« Pour la grande ingéniosité dont vous avez fait preuve dans nos échanges, vous avez gagné le privilège... d'être l'un de mes compagnons ! »</i>",
+    // galactic_storm — * Living Lightning (Ally)
+    'gs233': "Honoraire.\n<b>Réponse</b> : après que Living Lightning quitte le jeu, défaussez les 2 cartes du dessus de votre deck. Pour chaque ressource [energy] imprimée défaussée de cette façon, redressez une carte que vous contrôlez.",
+    // galactic_storm — * Sersi (Ally)
+    'gs234': "Honoraire.\n<b>Action</b> : inclinez Sersi, infligez-lui 1 dégât et dépensez une ressource [mental] &rarr; choisissez une carte d'état en jeu. Remplacez cette carte d'état par une carte d'état différente.",
+    // galactic_storm — * Spider-Woman (Ally)
+    'gs235': "Honoraire.\n<b>Réponse</b> : après que Spider-Woman est défaussée du dessus de votre deck, sonnez jusqu'à 2 ennemis.\n<i>« Je vais vous faire gagner du temps avec mes psi-toiles ! »</i>",
+    // galactic_storm — * Thor (Ally)
+    'gs236': "Honoraire.\n<b>Réponse</b> : après avoir joué Thor depuis votre main, infligez 1 dégât à chaque sbire engagé avec vous pour chaque ressource [energy] utilisée pour le payer.\n<i>« C'est l'heure de tabasser sérieusement des fesses ! »</i>",
+    // galactic_storm — Assault (Treachery)
+    'gsr01': "<b>Une fois révélée (alter ego)</b> : cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : le vilain vous attaque.\n<i>« Ceux qui ne m'obéissent pas ressentiront la douleur. Ceux qui obéissent en ressentiront moins ! »</i> — Attuma",
+    // galactic_storm — Assault (Treachery)
+    'gsr02': "<b>Une fois révélée (alter ego)</b> : cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : le vilain vous attaque.\n<i>« Ceux qui ne m'obéissent pas ressentiront la douleur. Ceux qui obéissent en ressentiront moins ! »</i> — Attuma",
+    // galactic_storm — Shadow of the Past (Treachery)
+    'gsr03': "<b>Une fois révélée</b> : révélez votre sbire nemesis mis de côté et mettez-le en jeu engagé avec vous. Révélez votre manigance annexe nemesis mise de côté et mettez-la en jeu. Mélangez le reste de votre set de rencontre nemesis mis de côté dans le deck rencontre. Si votre sbire nemesis n'entre pas en jeu de cette façon, cette carte gagne Renfort.",
+    // galactic_storm — Exhaustion (Treachery)
+    'gsr04': "Renfort.\n<b>Une fois révélée</b> : inclinez votre carte d'identité.",
+    // galactic_storm — Advance (Treachery)
+    'gsr05': "<b>Une fois révélée</b> : le vilain machine.\n<i>« Il ne faudra plus longtemps avant que je sois sur Terre... prête à accomplir ma mission ! »</i> — Doctor Minerva",
+    // galactic_storm — Caught Off Guard (Treachery)
+    'gsr06': "<b>Une fois révélée</b> : défaussez une amélioration ou un soutien que vous contrôlez. Si aucune carte n'a été défaussée de cette façon, cette carte gagne Renfort.\n<i>« C'est l'heure d'affronter ton passé, Jessica. »</i> — Veranke",
+    // galactic_storm — Masterplan (Treachery)
+    'gsr07': "<b>Une fois révélée</b> : placez 4 menaces sur chaque manigance annexe. S'il n'y a aucune manigance annexe en jeu, défaussez des cartes du dessus du deck rencontre jusqu'à ce qu'une manigance annexe soit défaussée. Révélez cette manigance annexe.",
+    // galactic_storm — Advance (Treachery)
+    'gsr08': "<b>Une fois révélée</b> : le vilain machine.\n<i>« Il ne faudra plus longtemps avant que je sois sur Terre... prête à accomplir ma mission ! »</i> — Doctor Minerva",
+    // galactic_storm — Gang-Up (Treachery)
+    'gsr09': "<b>Une fois révélée (alter ego)</b> : cette carte gagne Renfort.\n<b>Une fois révélée (héros)</b> : le vilain et chaque sbire engagé avec vous vous attaquent.",
+    // galactic_storm — Under Fire (Treachery)
+    'gsr10': "Renfort.\n<b>Une fois révélée</b> : révélez la carte du dessus du deck rencontre.\n<i>« Une créature face à la mort fera n'importe quoi pour préserver sa misérable existence. »</i> — Annihilus",
+    // spot — Heightened Threat (MainScheme)
+    'sp001a': "<b>Contenu</b> : The Spot I et II <i>(The Spot III et IV pour le mode expert)</i>, sets de rencontre The Spot et Standard. Un set de rencontre modulaire <i>(recommandé : Sinister Syndicate)</i>.\n<b>Mise en place</b> : trouvez l'environnement What Goes Around... et mettez sa face A en jeu <i>(face B à la place pour le mode expert)</i>. Le premier joueur cherche une carte Spot avec le mot-clé Niveau de menace et la révèle. Mélangez.",
+    // spot — Heightened Threat (MainScheme)
+    'sp001b': "<b>Interruption forcée</b> : quand vous devriez retirer de la menace d'ici ou d'une manigance annexe Spot, déplacez plutôt cette menace sur la carte ayant le Niveau de menace le plus élevé. <i>(Le Niveau de menace est le nombre dans l'icône rouge. Si la manigance annexe dont vous avez retiré de la menace a le Niveau de menace le plus élevé en jeu, retirez cette menace.)</i>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // spot — * The Spot (Villain)
+    'sp002': "[star] Niveau de menace 1. Les personnages peuvent contrer The Spot.\nEntrave 1[per_hero]. The Spot gagne riposte 1 pour chaque tranche de 5[per_hero] menaces ici, jusqu'à un maximum de riposte 3.",
+    // spot — * The Spot (Villain)
+    'sp003': "[star] Niveau de menace 1. Les personnages peuvent contrer The Spot.\nEntrave 3[per_hero]. Solide. The Spot gagne riposte 1 pour chaque tranche de 5[per_hero] menaces ici, jusqu'à un maximum de riposte 3.",
+    // spot — * The Spot (Villain)
+    'sp004': "[star] Niveau de menace 1. Les personnages peuvent contrer The Spot.\nEntrave 3[per_hero]. The Spot gagne riposte 1 pour chaque tranche de 5[per_hero] menaces ici, jusqu'à un maximum de riposte 4.",
+    // spot — * The Spot (Villain)
+    'sp005': "[star] Niveau de menace 1. Les personnages peuvent contrer The Spot.\nEntrave 5[per_hero]. Robuste. The Spot gagne riposte 1 pour chaque tranche de 5[per_hero] menaces ici, jusqu'à un maximum de riposte 4.",
+    // spot — What Goes Around... (Environment)
+    'sp006a': "<i>Mode standard uniquement.</i>\n<b>Interruption forcée</b> : quand une carte appartenant au set de rencontre The Spot <i>(c.-à-d. une « carte Spot »)</i> est révélée, placez 1 menace sur la manigance principale.\n<b>Action de héros</b> : défaussez une carte de votre main → déplacez jusqu'à 3 menaces d'une carte Spot ayant le mot-clé Niveau de menace vers une autre carte Spot ayant le mot-clé Niveau de menace.",
+    // spot — What Goes Around... (Environment)
+    'sp006b': "<i>Mode expert uniquement.</i>\n<b>Interruption forcée</b> : quand une carte Spot est révélée ou retournée face visible comme carte de boost, placez 1 menace sur la manigance principale <i>(limite de 1 menace par carte Spot et par phase)</i>.\n<b>Action de héros</b> : défaussez une carte de votre main → déplacez jusqu'à 3 menaces d'une carte Spot ayant le mot-clé Niveau de menace vers une autre carte Spot ayant le mot-clé Niveau de menace.",
+    // spot — * Rocket Racer (Minion)
+    'sp007': "Niveau de menace 2. Rocket Racer gagne patrouille et garde tant qu'il a 2[per_hero] menaces ou plus sur lui.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — * Puma (Minion)
+    'sp008': "Niveau de menace 3. Puma gagne +1 ATQ pour chaque tranche de 2[per_hero] menaces sur lui.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — Anywhere & Everywhere (SideScheme)
+    'sp009': "Niveau de menace 4.\n<b>Réponse forcée</b> : quand la phase du méchant se termine, s'il y a 3[per_hero] menaces ou plus ici, placez 1[per_hero] menace sur chaque carte en jeu ayant le mot-clé Niveau de menace.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — * Chameleon (Minion)
+    'sp010': "Niveau de menace 5. Chameleon gagne +1 MNG pour chaque tranche de 2[per_hero] menaces sur lui.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — Penchant for Pilfery (SideScheme)
+    'sp011': "Niveau de menace 6.\n<b>Réponse forcée</b> : quand la phase du méchant se termine, s'il y a 4[per_hero] menaces ou plus ici, chaque joueur choisit soit de défausser une carte qu'il contrôle, soit de subir 2 dégâts.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — * Living Laser (Minion)
+    'sp012': "Niveau de menace 7. Living Laser gagne riposte 1 pour chaque tranche de 2[per_hero] menaces sur lui (jusqu'à un maximum de riposte 4).\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — Spotty Pasts (SideScheme)
+    'sp013': "Niveau de menace 8.\n<b>Réponse forcée</b> : quand la phase du méchant se termine, s'il y a 5[per_hero] menaces ou plus ici, le premier joueur trouve un sbire Spot et le révèle.\n[star] <b>Boost</b> : révélez cette carte.",
+    // spot — Warp Hole (Environment)
+    'sp014': "Niveau de menace 9. Entrave 5. Tant qu'il y a 3 menaces ou plus ici, cette carte gagne [[acceleration]] [[hazard]].\n<b>Réponse de héros</b> : après qu'une attaque a infligé 3 dégâts ou plus à The Spot, retirez 2 menaces d'ici. Si la dernière menace est retirée d'ici ainsi, défaussez Warp Hole.",
+    // spot — * The Hypernova (Attachment)
+    'sp015': "Attachez-la à l'ennemi Spot ayant le Niveau de menace le plus élevé.\nNiveau de menace 10.\n<b>Réponse forcée</b> : après que l'ennemi attaché s'est activé, défaussez X cartes du dessus du deck Rencontre, où X est le nombre de menaces ici. Si un pion Accélération a été placé ainsi, défaussez cette carte.",
+    // spot — ...Comes Around! (Treachery)
+    'sp016': "<b>Une fois révélée</b> : défaussez les 2 cartes du dessus du deck Rencontre. Pour chaque carte Spot défaussée ainsi, choisissez soit de placer 2 menaces sur la manigance principale, soit de la révéler. Si aucune carte Spot n'a été défaussée ainsi, cette carte gagne renfort.\n[star] <b>Boost</b> : défaussez les 2 cartes du dessus du deck Rencontre.",
+    // spot — Distributed Presence (Treachery)
+    'sp017': "<b>Une fois révélée</b> : placez un total de 5[per_hero] menaces parmi les cartes Spot en jeu ayant le mot-clé Niveau de menace, aussi équitablement que possible, en commençant par le Niveau de menace le plus bas. Si vous avez placé 5 menaces sur The Spot ainsi, vous pouvez redresser une carte que vous contrôlez.",
+    // spot — Oddballs (Treachery)
+    'sp018': "<b>Une fois révélée</b> : placez 1 menace sur chaque carte Spot dont le Niveau de menace est impair. Si 2 menaces ou moins ont été placées ainsi, défaussez une carte de votre main dont le coût imprimé est impair.\n[star] <b>Boost</b> : placez 2 menaces sur The Spot.",
+    // spot — Target Spotted (Treachery)
+    'sp019': "<b>Une fois révélée</b> : cherchez The Hypernova parmi les 8 cartes du dessus du deck Rencontre et révélez-la. Si elle n'a pas été révélée ainsi, cherchez une carte Spot ayant le mot-clé Niveau de menace et révélez-la.",
+    // dazzler — * Dazzler (Hero)
+    'dz001a': "<i>Répétition</i> — <b>Action de héros</b> : placez 1 compteur de son sur un [[SONG]] de la Setlist n'ayant pas de compteur de son → résolvez l'effet « Showtime! » de ce [[SONG]]. <i>(Limite d'une fois par phase.)</i>",
+    // dazzler — * Alison Blaire (AlterEgo)
+    'dz001b': "<b>Mise en place</b> : trouvez Live Concert et mettez-la en jeu sous votre contrôle.\n<i>Auteure-compositrice</i> — <b>Action</b> : cherchez un événement [[SONG]] parmi les 5 cartes du dessus de votre deck et mettez-le dans votre main. <i>(Limite d'une fois par round.)</i>",
+    // dazzler — * Longshot (Ally)
+    'dz002': "Longshot arrive en jeu avec 2 compteurs de couteau.\n<b>Interruption</b> : quand Longshot attaque un ennemi, retirez 1 compteur de couteau de lui → choisissez : infligez 2 dégâts à un ennemi ou sonnez un sbire.",
+    // dazzler — "A Little Girl's Dream" (Event)
+    'dz003': "<b>Action de héros</b> : réduisez de 3 le coût en ressources du prochain allié ou événement que vous jouez ce round.\n<b>Showtime!</b> : désorientez un ennemi non [[ELITE]].",
+    // dazzler — "Beautiful Dreamer" (Event)
+    'dz004': "<b>Action de héros</b> <i>(contre)</i> : retirez 3 menaces d'une manigance. Si cela retire la dernière menace de cette manigance, vous pouvez retirer 2 menaces d'une autre manigance.\n<b>Showtime!</b> : retirez 2 menaces d'une manigance.",
+    // dazzler — "Beauty and the Beast" (Event)
+    'dz005': "<b>Action de héros</b> : cherchez un allié dans votre deck et mettez-le en jeu. Si cet allié est toujours en jeu à la fin de la phase, ajoutez-le à votre main.\n<b>Showtime!</b> : donnez à un personnage allié +2 CTR jusqu'à la fin de la phase.",
+    // dazzler — "Doll" (Event)
+    'dz006': "<b>Interruption de héros</b> : quand le méchant devrait s'activer contre vous, annulez cette activation.\n<b>Showtime!</b> : donnez une carte d'état Tenace à votre identité.",
+    // dazzler — "Hush Now Baby" (Event)
+    'dz007': "<b>Action de héros</b> : sonnez et désorientez un ennemi.\n<b>Showtime!</b> : chaque joueur pioche 1 carte.",
+    // dazzler — "In the Darkest Light" (Event)
+    'dz008': "<b>Action de héros</b> : infligez 2 dégâts à chaque ennemi.\n<b>Showtime!</b> : sonnez un ennemi non [[ELITE]].",
+    // dazzler — "Out and Proud" (Event)
+    'dz009': "<b>Action de héros</b> : vainquez un sbire non [[ELITE]].\n<b>Showtime!</b> : soignez 1 dégât de chaque allié en jeu.",
+    // dazzler — "Rich Angel" (Event)
+    'dz010': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous devriez subir des dégâts d'une attaque, quel qu'en soit le nombre, prévenez tous ces dégâts.\n<b>Showtime!</b> : soignez 2 dégâts d'une identité.",
+    // dazzler — "The Serpent is Coming" (Event)
+    'dz011': "<b>Action de héros</b> <i>(attaque)</i> : infligez 6 dégâts à un ennemi. Cette attaque gagne à distance.\n<b>Showtime!</b> : infligez 2 dégâts à un ennemi.",
+    // dazzler — "Too Good to be True" (Event)
+    'dz012': "<b>Action de héros</b> : piochez 3 cartes. Choisissez et défaussez 1 carte de votre main.\n<b>Showtime!</b> : mélangez 3 cartes de votre pile de défausse dans votre deck.",
+    // dazzler — "Velvet Sky" (Event)
+    'dz013': "<b>Interruption de héros</b> : quand une perfidie est révélée du deck Rencontre, annulez tous ses effets et défaussez-la.\n<b>Showtime!</b> : retirez une carte d'état d'un personnage allié.",
+    // dazzler — * Lightbringr (Support)
+    'dz014': "Les événements attachés à Lightbringr peuvent être joués comme s'ils étaient dans votre main. Réduisez de 1 le coût en ressources des cartes jouées ainsi.\n<b>Action d'alter ego</b> : inclinez Lightbringr → attachez-lui 1 événement [[SONG]] de votre main face cachée <i>(jusqu'à un maximum de 3)</i>.",
+    // dazzler — Dazzler's Rollerskates (Upgrade)
+    'dz015': "<b>Action de héros</b> : inclinez Dazzler's Rollerskates → redressez Dazzler.",
+    // dazzler — Sound Collector Suit (Upgrade)
+    'dz016': "Dazzler gagne +1 DEF.\n<b>Ressource</b> : inclinez Sound Collector Suit → générez une ressource [energy] pour un [[SONG]] ou retirez 1 compteur de son d'un [[SONG]] de la Setlist.",
+    // dazzler — Live Concert (Upgrade)
+    'dz017a': "Permanent. Mise en place.\n<b>Réponse</b> : après avoir résolu un événement [[SONG]], attachez-le ici, placé dans une rangée sur le côté de cette carte <i>(jusqu'à un maximum de 4)</i>. Une fois placé ici, il ne peut pas être échangé contre une nouvelle carte. Ceci est la Setlist.\n<b>Action de héros</b> : retournez cette carte sur sa face Showtime! et révélez-la.",
+    // dazzler — Showtime! (Upgrade)
+    'dz017b': "Permanent.\n<b>Une fois révélée</b> : résolvez la capacité « Showtime! » de chaque carte de la Setlist, dans l'ordre de votre choix. Puis défaussez toutes les cartes de la Setlist. Si 4 cartes ont été défaussées ainsi, vous pouvez soit infliger 4 dégâts à un ennemi, soit retirer 4 menaces d'une manigance. Retournez cette carte.",
+    // dazzler — Sound Absorption (Resource)
+    'dz018': "<b>Réponse</b> : après avoir dépensé cette carte, placez 2 compteurs de son sur votre identité.",
+    // dazzler — Performance Anxiety (Obligation)
+    'dz019': "<b><i>À donner au joueur Alison Blaire.</i></b>\nVous pouvez passer sous forme d'alter ego.\nVous ne pouvez pas utiliser votre capacité <i>Auteure-compositrice</i> ni l'« Action de héros » de Live Concert.\n<b>Action</b> : inclinez votre identité et défaussez un soutien ou une amélioration que vous contrôlez → retirez cette obligation de la partie.",
+    // dazzler — * Klaw (Minion)
+    'dz020': "Vilenie.\n<b>Réponse forcée</b> : après que Klaw a attaqué et blessé un personnage, sonnez ce personnage.",
+    // dazzler — Solid Sound Body (SideScheme)
+    'dz021': "Entrave 1[per_hero].\nKlaw gagne +10 points de vie. <i>(Quand cette manigance est vaincue, Klaw perd ces points de vie.)</i>\n<b>Une fois déjouée</b> : donnez à Klaw une carte de boost face cachée.",
+    // dazzler — Stealing Sound (Treachery)
+    'dz022': "<b>Une fois révélée</b> : défaussez tous les événements [[SONG]] de la Setlist de Dazzler. Si aucune carte n'a été défaussée ainsi, cette carte gagne renfort.",
+    // dazzler — Taunting Light (Treachery)
+    'dz023': "<b>Une fois révélée</b> : si vous êtes Dazzler, le méchant vous attaque. Si aucune attaque n'a eu lieu ainsi, donnez au méchant une carte de boost face cachée et mélangez cette carte dans le deck Rencontre.",
+    // dazzler — Song of Aggression (Event)
+    'dz024': "2 max par deck.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 1 dégât à un ennemi pour chaque carte [[SONG]] dans votre pile de défausse <i>(jusqu'à un maximum de 4)</i>.",
+    // dazzler — Song of Justice (Event)
+    'dz025': "2 max par deck.\n<b>Action de héros</b> <i>(contre)</i> : retirez 1 menace d'une manigance pour chaque carte [[SONG]] dans votre pile de défausse <i>(jusqu'à un maximum de 4)</i>.",
+    // dazzler — Song of Leadership (Event)
+    'dz026': "2 max par deck.\n<b>Action de héros</b> : inclinez un allié → soignez de cet allié un nombre de dégâts égal au nombre de cartes [[SONG]] dans votre pile de défausse <i>(jusqu'à un maximum de 4)</i>.",
+    // dazzler — Song of Protection (Event)
+    'dz027': "2 max par deck.\n<b>Interruption de héros</b> <i>(défense)</i> : quand un personnage allié devrait subir des dégâts, quel qu'en soit le nombre, réduisez ces dégâts de 1 pour chaque carte [[SONG]] dans votre pile de défausse <i>(jusqu'à un maximum de 4)</i>.",
+    // dazzler — "Doom and Gloom" (Event)
+    'dz028': "<b>Action de héros</b> : choisissez :\n• Redressez un personnage allié.\n• Retirez une carte d'état de 2 personnages alliés au maximum.",
+    // dazzler — Love Song (Event)
+    'dz029': "<b>Action de héros</b> : choisissez :\n• Retirez 1+X menaces de la manigance principale.\n• Soignez 1+X dégâts d'un personnage allié.\nOù X est le nombre d'ennemis en jeu ayant une carte d'état.",
+    // dazzler — Power Ballad (Event)
+    'dz030': "Réduisez de 2 le coût pour jouer Power Ballad si votre identité est Dazzler, Jem, Lila Cheney, Luna Snow ou Virgo.\n<b>Action de héros</b> : choisissez :\n• Retirez 2 menaces d'une manigance.\n• Infligez 2 dégâts à un ennemi.",
+    // dazzler — Tribute (Event)
+    'dz031': "1 max par deck.\n<b>Action de héros</b> : après avoir joué Tribute depuis votre main, choisissez 1 événement hors identité de votre collection. Tribute devient une copie de cette carte <i>(sauf pour son coût)</i> mais garde le trait [[SONG]], jusqu'à ce qu'elle soit placée dans la pile de défausse.",
+    // dazzler — Captivating Performance (Event)
+    'dz032': "<b>Action de héros</b> : si la prochaine carte que vous jouez ce tour est un événement [[SONG]], sonnez un ennemi.",
+    // dazzler — Duet (Event)
+    'dz033': "2 max par deck.\n<b>Réponse</b> : après avoir joué une carte [[SONG]], redressez votre héros et un autre personnage allié.",
+    // dazzler — Encore (Event)
+    'dz034': "2 max par deck.\n<b>Action de héros</b> : cherchez une carte [[SONG]] dans votre pile de défausse et ajoutez-la à votre main.",
+    // dazzler — * Karaoke Night (Support)
+    'dz035': "<b>Action</b> : inclinez Karaoke Night et choisissez un [[SONG]] de la Setlist → résolvez l'« Action de héros » de cette carte. Défaussez cette carte.",
+    // dazzler — * DJ (Ally)
+    'dz036': "<b>Réponse forcée</b> : après que DJ est entré en jeu, effectuez ce qui suit pour chaque carte [[SONG]] utilisée pour le payer :\n• retirez 2 menaces d'une manigance.\n• donnez-lui une carte d'état Tenace.\n• infligez 1 dégât à un ennemi.",
+    // dazzler — Coolest Team-Up Ever! (Event)
+    'dz037': "En Équipe <i>(Dazzler et Jubilee)</i>. 1 max par deck.\n<b>Interruption de héros</b> : quand une carte perfidie est révélée du deck Rencontre, annulez ses effets « Une fois révélée », puis choisissez soit de désorienter, soit de sonner jusqu'à 2 ennemis en jeu.",
+    // dazzler — Love from Beyond the Stars (Event)
+    'dz038': "En Équipe <i>(Dazzler et Longshot)</i>. 1 max par deck.\n<b>Action de héros</b> : choisissez :\n• Désorientez un ennemi.\n• Sonnez un ennemi.\nPuis donnez un compteur de son à Dazzler et un compteur de couteau à Longshot.",
+    // gorr — * Gorr the God Butcher (Villain)
+    'gb001': "<b>Réponse forcée</b> : après que le deck d'un joueur est à court de cartes, Gorr the God Butcher s'active contre lui.\n<i>\"Next you will learn how it feels to be butchered.\"</i>",
+    // gorr — * Gorr the God Butcher (Villain)
+    'gb002': "<b>Une fois révélée</b> : distribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Réponse forcée</b> : après que le deck d'un joueur est à court de cartes, Gorr the God Butcher s'active contre lui.\n<i>\"Next you will learn how it feels to be butchered.\"</i>",
+    // gorr — * Gorr the God Butcher (Villain)
+    'gb003': "<b>Une fois révélée</b> : avancez la manigance principale au stade 3A. Défaussez les 5 cartes du dessus du deck de chaque joueur.\n<b>Réponse forcée</b> : après que le deck d'un joueur est à court de cartes, Gorr the God Butcher s'active contre lui.",
+    // gorr — Deicide (MainScheme)
+    'gb004a': "<b>Contenu</b> : Gorr the God Butcher (I) et Gorr the God Butcher (II). <i>(Gorr the God Butcher (II) et Gorr the God Butcher (III) à la place pour le mode expert.)</i> Sets de rencontre Gorr the God Butcher, Necroverse et Standard. Un set de rencontre modulaire supplémentaire <i>(recommandé : Intergalactic Hazards)</i>.\n<b>Mise en place</b> : mettez de côté, hors jeu, le set de rencontre modulaire Necroverse, le sbire Necro-Raven Gestalt, l'environnement recto verso Godbomb et toutes les copies de Heroes' Labor et de Stalking Berserker. Avancez au stade 1B.",
+    // gorr — Deicide (MainScheme)
+    'gb004b': "<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, si le numéro de stade du méchant est 2 ou 3, placez 1 compteur de plan ici. Puis, s'il y a 3 compteurs de plan ou plus ici, avancez au stade 2A.\n<b>Réponse forcée</b> : après que Gorr the God Butcher a vaincu un allié, placez 1 menace sur cette manigance.",
+    // gorr — Make Ready the Bomb (MainScheme)
+    'gb005a': "<i>Le plan de Gorr est révélé. Il a contraint un dieu des bombes à construire une bombe massive et, grâce au pouvoir volé des dieux du temps, il compte la faire exploser. À travers l'espace, à travers tous les temps, tous les dieux mourront.</i>\n<b>Une fois révélée</b> : mettez en jeu l'environnement Godbomb mis de côté. Mélangez 1 copie de la perfidie Heroes' Labor dans le deck de chaque joueur. Avancez au stade 2B.",
+    // gorr — Make Ready the Bomb (MainScheme)
+    'gb005b': "<b>Réponse forcée</b> : après l'étape 1 de la phase du méchant, placez 1 [per_hero] compteurs de minuterie sur l'environnement Godbomb.\n<b>Réponse forcée</b> : après qu'un ennemi attaque et vainc un allié, placez 1 compteur de minuterie sur l'environnement Godbomb.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // gorr — Welcome to Darkness (MainScheme)
+    'gb006a': "<i>Le dieu qui n'est pas un dieu s'est entièrement livré à l'All-Black Necroblade.</i>\n<b>Une fois révélée</b> : si l'environnement Godbomb est en jeu, retirez-en tous les compteurs de minuterie et retournez-le sur sa face All-Black Necroverse. Sinon, mettez en jeu l'environnement All-Black Necroverse mis de côté. Mélangez le set de rencontre modulaire Necroverse mis de côté dans le deck Rencontre. Mélangez 1 copie du sbire Stalking Berserker dans le deck de chaque joueur.",
+    // gorr — Welcome to Darkness (MainScheme)
+    'gb006b': "<b>Réponse forcée</b> : après que le deck d'un joueur est à court de cartes, placez 4 compteurs de necro sur l'environnement All-Black Necroverse.\n<b>Action de héros</b> : défaussez 1 carte de votre main au hasard → retirez 1 compteur de necro d'All-Black Necroverse.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // gorr — Godbomb (Environment)
+    'gb007a': "S'il y a 12 [per_hero] compteurs de minuterie ou plus ici, les joueurs perdent la partie.\n<b>Action de héros</b> : défaussez un allié que vous contrôlez → retirez 1 compteur de minuterie d'ici.\n<i>\"Bleed for my blessed bomb.\"</i>",
+    // gorr — All-Black Necroverse (Environment)
+    'gb007b': "Tant qu'All-Black Necroverse a le nombre de compteurs de necro suivant :\n• 3 [per_hero] : les attaques de Gorr the God Butcher gagnent déferlement.\n• 6 [per_hero] : tous les ennemis NECROVERSE gagnent +1 ATQ.\n• 9 [per_hero] : tous les ennemis NECROVERSE gagnent +1 MNG.\n• 12 [per_hero] : les joueurs perdent la partie.",
+    // gorr — * Necro-Raven Gestalt (Minion)
+    'gb008': "Garde. Patrouille.\n<b>Interruption forcée</b> : quand Necro-Raven Gestalt devrait être vaincu, au lieu de le défausser, mettez-le plutôt de côté, hors jeu.",
+    // gorr — Black Berserker (Minion)
+    'gb009': "Patrouille.\n[star] Black Berserker gagne +X points de vie, où X est le nombre d'attachements NECROVERSE en jeu (jusqu'à un maximum de 4).\n<i>\"This is not my killer. This is his guard dog. His very strong guard dog.\"</i>",
+    // gorr — Necro-Raven (Minion)
+    'gb010': "Incitation 1. Renfort.\n<b>Réponse forcée</b> : après que Necro-Raven entre en jeu, défaussez la carte du dessus de votre deck. Puis, s'il y a 3 copies de Necro-Raven en jeu, défaussez-les, invoquez le sbire Necro-Raven Gestalt et mettez-le en jeu engagé avec vous.\n<hr />\n[star] <b>Boost</b> : mettez Necro-Raven en jeu engagé avec vous.",
+    // gorr — Blighted Chains (Attachment)
+    'gb011': "Attachez-la à votre identité.\nComme coût supplémentaire pour utiliser le pouvoir de base d'un héros, vous devez défausser 1 carte au hasard de votre main.\n<b>Action d'alter ego</b> : défaussez les 2 cartes du dessus de votre deck → défaussez cette carte.",
+    // gorr — Mind-Hewn Blade (Attachment)
+    'gb012': "Attachez-la à Gorr the God Butcher.\n[star] <b>Interruption forcée</b> : quand Gorr the God Butcher vous attaque, défaussez les 2 cartes du dessus de votre deck. Cette attaque gagne perçant.\n<b>Action de héros</b> : subissez 2 dégâts indirects et défaussez les 2 cartes du dessus de votre deck → défaussez cette carte.",
+    // gorr — Umbral Wings (Attachment)
+    'gb013': "Attachez-la à Gorr the God Butcher.\n<b>Interruption forcée</b> : quand Gorr the God Butcher subit des dégâts, réduisez ces dégâts de 1.\n<b>Action de héros</b> : défaussez 2 cartes de votre main et les 2 cartes du dessus de votre deck → défaussez cette carte.",
+    // gorr — Vicious Tendrils (Attachment)
+    'gb014': "Attachez-la à Gorr the God Butcher.\nGorr the God Butcher gagne riposte 1.\n[star] Les attaques de Gorr the God Butcher gagnent à distance.\n<b>Action de héros</b> : défaussez 1 carte au hasard de votre main et les 4 cartes du dessus de votre deck → défaussez cette carte.",
+    // gorr — Anti-Dogma (Treachery)
+    'gb015': "<b>Une fois révélée</b> : Gorr the God Butcher manigance. Placez 2 menaces sur la manigance principale ou défaussez les 2 cartes du dessus de votre deck.\n<hr />\n[star] <b>Boost</b> : placez 2 menaces sur la manigance principale ou défaussez les 2 cartes du dessus de votre deck.",
+    // gorr — Brutal Cunning (Treachery)
+    'gb016': "Péril.\n<b>Une fois révélée</b> : choisissez une option :\n• Défaussez des cartes du dessus du deck Rencontre jusqu'à défausser un attachement NECROVERSE. Révélez cette carte.\n• Mélangez l'attachement NECROVERSE le plus bas de la pile de défausse Rencontre dans le deck Rencontre. Cette carte gagne renfort.",
+    // gorr — Gleeful Savagery (Treachery)
+    'gb017': "<b>Une fois révélée (Alter ego)</b> : subissez 1 dégât indirect. Cette carte gagne renfort.\n<b>Une fois révélée (Héros)</b> : Gorr the God Butcher vous attaque. Subissez 2 dégâts indirects ou défaussez les 2 cartes du dessus de votre deck.\n<hr />\n[star] <b>Boost</b> : subissez 2 dégâts indirects ou défaussez les 2 cartes du dessus de votre deck.",
+    // gorr — Heroes' Labor (Treachery)
+    'gb021': "Incitation 1.\n<b>Réponse forcée</b> : après avoir pioché Heroes' Labor ou l'avoir défaussée du dessus de votre deck, révélez-la.\n<b>Une fois révélée</b> : placez 1 compteur de minuterie sur l'environnement Godbomb, si possible. Sinon, placez 1 compteur de necro sur l'environnement All-Black Necroverse. Mettez cette carte dans votre pile de défausse <i>(au lieu de la défausser dans la pile de défausse Rencontre)</i>.",
+    // gorr — Forgotten Gods (SideScheme)
+    'gb018': "<i>Partout où vous allez, vous trouvez la trace des cadavres de divinités que Gorr a laissés derrière lui.</i>\n<b>Réponse forcée</b> : quand la phase du méchant se termine, infligez 1 dégât indirect à chaque joueur.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.",
+    // gorr — Nihilistic Vision (SideScheme)
+    'gb019': "<i>Sur une planète reculée, un jeune extraterrestre lève les yeux vers le ciel du matin et voit le soleil noircir.</i>\n<b>Une fois révélée</b> : défaussez des cartes du dessus du deck Rencontre jusqu'à défausser un attachement. Révélez cette carte.\nTous les ennemis NECROVERSE (y compris Gorr the God Butcher) gagnent +1 ATQ.",
+    // gorr — You Are My God (SideScheme)
+    'gb020': "<i>Même si Gorr tue tous les dieux de la création, il restera encore un dieu debout.</i>\nEntrave 1[per_hero].\n<b>Réponse forcée</b> : après que Gorr the God Butcher a attaqué, il attaque de nouveau. Ne lui donnez aucune carte de boost pour cette attaque. <i>(Limite d'une fois par joueur et par phase.)</i>",
+    // gorr — Stalking Berserker (Minion)
+    'gb022': "<b>Réponse forcée</b> : après avoir pioché Stalking Berserker ou l'avoir défaussé du dessus de votre deck, révélez-le.\n<b>Réponse forcée</b> : après la fin de votre tour, défaussez les 2 cartes du dessus de votre deck et placez 1 compteur de necro sur l'environnement All-Black Necroverse.\n<b>Une fois vaincu</b> : mettez cette carte dans la pile de défausse du joueur engagé.",
+    // skrull_menace — * Crusader (Ally)
+    'sk263': "<b>Réponse</b> : après que Crusader entre en jeu, choisissez un joueur → infligez 1 dégât au méchant et à chaque sbire engagé avec ce joueur. Piochez 1 carte pour chaque ennemi vaincu ainsi.",
+    // skrull_menace — * Jazinda (Ally)
+    'sk264': "Jazinda ne compte pas dans votre limite d'alliés.\nTant que Jazinda est inclinée, votre héros gagne +1 CTR.",
+    // skrull_menace — * Paibok (Ally)
+    'sk265': "Ténacité.\n[star] Paibok gagne +1 CTR et +1 ATQ pour chaque carte perfidie attachée à lui.\n<b>Réponse</b> : après qu'une carte perfidie est défaussée, subissez 1 dégât → attachez-la ici face cachée (jusqu'à un maximum de 2).",
+    // skrull_menace — * Skymax (Ally)
+    'sk266': "<b>Réponse</b> : quand Skymax entre en jeu, mélangez tous les alliés de votre pile de défausse dans votre deck.",
+    // skrull_menace — * Super-Skrull (Ally)
+    'sk267': "[star] Super-Skrull gagne +1 CTR et +1 ATQ pour chaque carte [[SUPERPOWER]] différente attachée à lui.\n<b>Réponse</b> : après qu'une carte [[SUPERPOWER]] est placée dans une pile de défausse, attachez-la ici face cachée (jusqu'à un maximum de 4).",
+    // skrull_menace — * Chilly McHotpants (Ally)
+    'sk268': "<i>*Traitez cet allié comme un sbire engagé avec vous.</i>\n[star] <b>Réponse</b> : après que « Chilly McHotpants » vous a attaqué, piochez 1 carte. Si vous ne subissez aucun dégât de cette attaque, piochez 1 carte.",
+    // skrull_menace — * Xavin (Ally)
+    'sk269': "<b>Interruption</b> : quand Xavin entre en jeu, défaussez des cartes de votre deck jusqu'à défausser un événement ayant une capacité « <b>Action de héros</b> ». Vous pouvez résoudre la capacité « <b>Action de héros</b> » de cet événement.",
+    // skrull_menace — * Buddy Training Program (PlayerSideScheme)
+    'sk270': "Victoire 0.\nX est égal au numéro de stade du méchant.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut donner une carte d'état Tenace à jusqu'à X personnages alliés.",
+    // skrull_menace — * Cloning Faux Pas (PlayerSideScheme)
+    'sk271': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut infliger jusqu'à 3 dégâts à chaque sbire [[SKRULL]] engagé avec lui.",
+    // skrull_menace — * Fickle Alliance (PlayerSideScheme)
+    'sk272': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans le deck Rencontre un sbire non [[ELITE]] et le mettre en jeu sous son contrôle. <i>(Mélangez.)</i> Traitez ce sbire comme un allié à la zone de texte vierge <i>(à l'exception de ses</i> [[TRAITS]]<i>)</i>. Son CTR est égal à son MNG imprimé et il subit 1 dégât consécutif après avoir contré ou attaqué.",
+    // skrull_menace — * Newbie Training (PlayerSideScheme)
+    'sk273': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut vaincre un sbire [[SKRULL]] non [[ELITE]] et piocher 1 carte.",
+    // skrull_menace — * Searching for Powers (PlayerSideScheme)
+    'sk274': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans son deck et sa pile de défausse une carte ayant le trait [[SUPERPOWER]] et la jouer en ignorant son coût en ressources. <i>(Mélangez.)</i>",
+    // skrull_menace — * Skrull Military Training (PlayerSideScheme)
+    'sk275': "Victoire 0.\nOn ne peut retirer de menace de cette manigance que si elle est contrée par un allié [[SKRULL]].\nTant que cette carte est dans la zone de victoire, le héros de son propriétaire gagne +1 CTR, +1 ATQ et +1 DEF.",
+    // skrull_menace — * Stealing For Good (PlayerSideScheme)
+    'sk276': "Victoire 0.\n<b>Une fois déjouée</b> : le joueur qui a déjoué cette manigance peut chercher dans son deck et sa pile de défausse une amélioration et l'ajouter à sa main. <i>(Mélangez.)</i> Puis il retire d'une manigance un nombre de menaces égal au coût imprimé de cette amélioration.",
+    // skrull_menace — * Antalya (Support)
+    'sk277': "<b>Action</b> : inclinez Antalya → soignez 1 dégât d'un personnage allié.",
+    // skrull_menace — * Cadre K (Support)
+    'sk278': "<b>Action</b> : inclinez Cadre K → retirez 1 menace d'une manigance.",
+    // skrull_menace — * Pool-O-Vision (Support)
+    'sk279': "<b>Réponse de héros</b> : après qu'un sbire [[SKRULL]] est vaincu, inclinez Pool-O-Vision → piochez 1 carte (jusqu'à un maximum de 3) pour chaque [crisis], [acceleration], [amplify] et [hazard] en jeu.",
+    // skrull_menace — * Princess Anelle (Support)
+    'sk280': "Alliance.\nX est égal au nombre total de joueurs et d'ennemis [[SKRULL]] en jeu.\n<b>Réponse</b> : après la fin de la phase des joueurs, retirez Princess Anelle de la partie → sautez la phase du méchant.",
+    // skrull_menace — Skrull Battleship (Support)
+    'sk281': "À jouer uniquement si vous contrôlez un allié [[SKRULL]].\n<b>Ressource de héros</b> : inclinez Skrull Battleship → générez une ressource [wild] pour n'importe quel joueur.",
+    // skrull_menace — * Skrull Kill Krew (Support)
+    'sk282': "<b>Action de héros</b> : inclinez Skrull Kill Krew → infligez 1 dégât à un sbire [[SKRULL]]. Si ce sbire est vaincu ainsi, redressez Skrull Kill Krew.",
+    // skrull_menace — * 3-D Man's Goggles (Upgrade)
+    'sk283': "Attachez-la à un allié non [[SKRULL]].\n<b>Interruption</b> : quand l'allié attaché attaque un ennemi [[SKRULL]], cet allié ne subit pas de dégâts consécutifs.",
+    // skrull_menace — * Inhibitor Mask (Upgrade)
+    'sk284': "Attachez-la à un ennemi [[SKRULL]].\nTemporaire.\nTraitez la zone de texte imprimée de l'ennemi attaché comme si elle était vierge.",
+    // skrull_menace — * Ultimate Nullifier (Upgrade)
+    'sk285': "Attachez-la à un ennemi [[SKRULL]].\nTemporaire.\nL'ennemi attaché ne peut pas s'activer.\nTant que Nullifier est attaché au méchant, il gagne 1[per_hero] icône d'aléa ([hazard]).",
+    // skrull_menace — Reverting Device (Upgrade)
+    'sk286': "À jouer sous le contrôle de n'importe quel joueur.\nChaque sbire [[SKRULL]] engagé avec vous gagne -1 MNG.",
+    // skrull_menace — Skrull Shapeshifter (Upgrade)
+    'sk287': "À jouer sous le contrôle de n'importe quel joueur.\nVotre identité gagne le trait [[SKRULL]].\n<b>Interruption</b> : quand vous êtes censé être vaincu, fixez plutôt votre compteur de points de vie à 1. Puis défaussez cette carte.",
+    // skrull_menace — * Sy-Torak Gem (Upgrade)
+    'sk288': "À jouer sous le contrôle de n'importe quel joueur.\nVous gagnez +3 points de vie.\nVotre héros gagne +1 ATQ.\n<b>Interruption forcée</b> : quand votre deck se vide, dépensez une ressource [energy]. Si vous ne le pouvez pas, défaussez Sy-Torak Gem.",
+    // skrull_menace — Cooperation Progress Reminder (Insert)
+    'sk289a': "<i>Mode campagne uniquement.</i>\n<b>Interruption</b> : quand un joueur vainc un sbire ou une manigance annexe, ce joueur peut défausser la carte du dessus de son deck pour placer ce sbire ou cette manigance annexe dans la zone de victoire plutôt que dans la pile de défausse Rencontre.",
+    // skrull_menace — Cooperation Progress Reminder (Insert)
+    'sk289b': "<b><i>Ne retournez pas cette carte, sauf si vous comptez instaurer une coopération.</i></b>",
+    // skrull_menace — Chilly McHotpants Minion (Minion)
+    'skrull_war_minion': "[star] <b>Réponse</b> : après que « Chilly McHotpants » vous a attaqué, piochez 1 carte. Si vous ne subissez aucun dégât de cette attaque, piochez 1 carte.",
+    // fne — * Damaged Spine (Attachment)
+    '60068b': "Permanent.\n[star] <b>Réponse forcée</b> : après que Bullseye manigance, retirez 3 dégâts d'ici. Ensuite, s'il n'y a plus de dégâts ici, retournez cette carte.",
+    // fne — * Bloody Mary (Villain)
+    '60110b': "<b>Interruption forcée</b> : quand Bloody Mary est censée être vaincue, placez plutôt 1 jeton de dégâts sur Disturbed Psyche et remettez ses points de vie à 10[per_hero].",
+    // fne — * Bloody Mary (Villain)
+    '60111b': "<b>Une fois révélée</b> : infligez 1 dégât à chaque identité.\n<b>Interruption forcée</b> : quand Bloody Mary est censée être vaincue, placez plutôt 1 jeton de dégâts sur Disturbed Psyche et remettez ses points de vie à 13[per_hero].",
+    // fne — * Mary Walker (Attachment)
+    '60113b': "Attachez-la au méchant. Permanent.\n[star] Le méchant attaché ne peut pas s'activer.\n<b>Réponse forcée</b> : après que le méchant subit des dégâts ou que le round se termine, attribuez à chaque joueur 1 carte rencontre face cachée et retournez cette carte.",
+    // fne — Art Museum Heist (MainScheme)
+    '60121b': "[star] X est égal au nombre d'attachements [[Art]] sur le méchant, plus 1.\n<b>Réponse forcée</b> : après qu'un ennemi effectue une attaque non défendue contre une identité, attachez au méchant 1 attachement [[Art]] présent sur cette identité.\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+    // fne — The Getaway (MainScheme)
+    '60128b': "<b>Interruption forcée</b> : quand le round se termine, s'il y a de la menace ici, faites chacune des actions suivantes :\n1. Placez 1 pion Accélération ici.\n2. Si Alongside est en jeu, retournez-la sur Out Front. Sinon, placez ici 1 pion Accélération supplémentaire.\nSi ce stade est achevé, les joueurs perdent la partie.",
+    // fne — Alongside (Attachment)
+    '60129b': "Permanent.\n<b>Une fois révélée</b> : chaque joueur subit 1 dégât indirect. Le méchant subit 2[per_hero] dégâts.",
+    // fne — Battle in the Bodega (MainScheme)
+    '60134b': "<b>Réponse forcée</b> : après qu'un personnage dans cette zone de jeu est attaqué, infligez 1 dégât à l'attaquant et placez 1 menace ici. <i>(Limite d'une fois par phase en mode standard.)</i>\nSi une manigance principale est accomplie ou si un joueur est éliminé, les joueurs perdent la partie.",
+    // fne — Bull in a China Shop (MainScheme)
+    '60135b': "<b>Interruption forcée</b> : quand des dégâts excédentaires sont infligés à un allié <i>(en mode expert, un allié ou un sbire)</i> dans cette zone de jeu, placez sur cette manigance une quantité égale de menace.\nSi une manigance principale est accomplie ou si un joueur est éliminé, les joueurs perdent la partie.",
+    // fne — Hung Out to Dry (MainScheme)
+    '60136b': "<b>Réponse forcée</b> : après qu'un personnage entre en jeu dans cette zone de jeu, infligez-lui 1 dégât et placez 1 menace ici.\nSi une manigance principale est accomplie ou si un joueur est éliminé, les joueurs perdent la partie.",
+    // fne — Pawn Shop Showdown (MainScheme)
+    '60137b': "Réduisez de 1 le coût de la première amélioration jouée dans cette zone de jeu à chaque round.\n<b>Réponse forcée</b> : après qu'un attachement ou une amélioration entre en jeu dans cette zone de jeu, placez 1 menace ici.\nSi une manigance principale est accomplie ou si un joueur est éliminé, les joueurs perdent la partie.",
+    // fne — A Slice of the Pizza Dough (MainScheme)
+    '60138b': "<b>Réponse forcée</b> : après qu'un personnage dans cette zone de jeu vainc un autre personnage ou une manigance annexe <i>(dans n'importe quelle zone de jeu)</i>, soignez 1 dégât du personnage vainqueur et placez 1 menace ici.\nSi une manigance principale est accomplie ou si un joueur est éliminé, les joueurs perdent la partie.",
+    // fne — The Raft Breakout (MainScheme)
+    '60142b': "Chaque sbire gagne : \"<b>Une fois vaincu</b> : retirez 1 menace de la manigance principale <i>(2 menaces à la place si ce sbire a le trait [[Elite]])</i>.\"\nSi ce stade est achevé, les joueurs perdent la partie.",
+    // fne — Stop the Presses! (MainScheme)
+    '60151b': "<b>Réponse forcée</b> : après qu'un ennemi effectue une attaque non défendue contre vous, choisissez :\n• Placez 2 menaces ici <i>(3 menaces à la place en mode expert)</i>.\n• Retirez 1 jeton d'endurance d'un soutien [[Daily Bugle]] que vous contrôlez.\nSi un soutien [[Daily Bugle]] quitte le jeu ou si ce stade est achevé, les joueurs perdent la partie.",
+    // fne — * Kingpin (Villain)
+    '60159b': "Solide.\n[star] <b>Interruption forcée</b> : quand Kingpin s'active contre vous, si vous n'êtes pas engagé avec un sbire, donnez à Kingpin 1 carte de boost supplémentaire pour cette activation.",
+    // fne — * Kingpin (Villain)
+    '60160b': "Solide.\n[star] <b>Interruption forcée</b> : quand Kingpin s'active contre vous, si vous n'êtes pas engagé avec un sbire, donnez à Kingpin 1 carte de boost supplémentaire pour cette activation, et cette activation gagne Déferlement s'il s'agit d'une attaque.",
+    // fne — The King's Gambit (MainScheme)
+    '60161b': "<b>Une fois révélée</b> : mettez Public Support en jeu, côté LOW face visible.\n<b>Action de héros</b> : retirez 5 menaces d'ici <i>(4 menaces à la place en mode expert)</i>. Mélangez la défausse rencontre dans le deck rencontre, puis défaussez des cartes du dessus du deck rencontre jusqu'à ce qu'un sbire soit défaussé, et révélez ce sbire.\nSi ce stade est achevé, les joueurs perdent la partie.",
+    // fne — Endgame (MainScheme)
+    '60162b': "Chaque sbire gagne Garde.\nSi ce stade est achevé, les joueurs perdent la partie.",
+    // fne — Public Support (Environment)
+    '60163b': "<b>Interruption</b> : quand un ennemi est censé recevoir une carte de boost face cachée, retirez plutôt 1[per_hero] jeton de soutien d'ici.\n<b>Réponse forcée</b> : après qu'un sbire est vaincu, placez 1 jeton de soutien ici.",
+    // fne — Art Museum Heist (Environment)
+    '60205b': "<b>Mise en place</b> : chaque joueur choisit de sonner ou de rendre confuse son identité <i>(en mode expert, faites les deux à la place)</i>.",
+    // fne — The Getaway (Environment)
+    '60206b': "En mode expert, les attachements ne peuvent pas être défaussés du jeu pendant le premier round.\n<b>Mise en place</b> : chaque joueur cherche un attachement dans le deck rencontre et le révèle. Attribuez une carte rencontre face cachée à chaque joueur qui n'a pas pu le faire.",
+    // fne — Protection Racket (Environment)
+    '60207b': "<b>Mise en place</b> : chaque joueur choisit et défausse 1 carte de sa main <i>(2 cartes à la place en mode expert)</i>.",
+    // fne — The Raft Breakout (Environment)
+    '60208b': "<b>Mise en place</b> : mélangez chaque sbire du set de rencontre The Raft Breakout dans le deck rencontre <i>(en mode expert, attribuez 1 de ces sbires au hasard à chaque joueur comme carte rencontre face cachée avant de mélanger les autres)</i>.",
+    // fne — Stop the Presses! (Environment)
+    '60209b': "<b>Mise en place</b> : attribuez à chaque joueur 1 carte rencontre face cachée <i>(2 cartes rencontre à la place en mode expert)</i>.",
+    // fne — * Bloody Mary (Ally)
+    '60210b': "Victoire -1.\n[star] <b>Réponse forcée</b> : après que vous révélez une manigance annexe, retirez tous les dégâts d'ici et retournez cette carte.",
+    // red_guardian — * Red Guardian (Hero)
+    'rg001a': "<i>Lancer de bouclier</i> — <b>Action</b> <i>(attaque/contre)</i> : attachez Red Guardian's Shield depuis votre main à un ennemi ou à une manigance → infligez 2 dégâts à cet ennemi ou retirez 2 menaces de cette manigance.",
+    // red_guardian — * Alexei Shostakov (AlterEgo)
+    'rg001b': "<i>Récupérer le bouclier</i> — <b>Action</b> : dépensez 1 ressource de n'importe quel type → cherchez Red Guardian's Shield dans votre deck et votre pile de défausse et ajoutez-le à votre main. (Limite d'une fois par round.)",
+    // red_guardian — * Black Widow (Ally)
+    'rg002': "<b>Réponse</b> : après que Black Widow entre en jeu, sonnez l'ennemi auquel Red Guardian's Shield est attaché.",
+    // red_guardian — * White Widow (Ally)
+    'rg003': "<b>Réponse</b> : après que White Widow entre en jeu, rendez confus l'ennemi auquel Red Guardian's Shield est attaché.",
+    // red_guardian — Shield Block (Event)
+    'rg004': "Ne peut être jouée que si Red Guardian's Shield est dans votre main.\n<b>Interruption</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts, prévenez tous ces dégâts.",
+    // red_guardian — Shielded Drop (Event)
+    'rg005': "Ne peut être jouée que si Red Guardian's Shield est dans votre main.\n<b>Action de héros</b> <i>(contre)</i> : retirez 5 menaces d'une manigance.",
+    // red_guardian — Shield Ricochet (Event)
+    'rg006': "Ne peut être jouée que si Red Guardian's Shield est attaché à un ennemi ou à une manigance.\n<b>Action de héros</b> : déplacez Red Guardian's Shield vers un ennemi ou une manigance X fois → infligez 3 dégâts à chaque ennemi et retirez 3 menaces de chaque manigance vers lesquels Red Guardian's Shield a été déplacé.",
+    // red_guardian — Shield Strike (Event)
+    'rg007': "Ne peut être jouée que si Red Guardian's Shield est dans votre main.\n<b>Action de héros</b> <i>(attaque)</i> : infligez 5 dégâts à un ennemi. Cette attaque gagne Perçant.",
+    // red_guardian — * Red Guardian's Shield (Upgrade)
+    'rg008': "Temporaire.\nTant que cette carte est dans votre main, vous pouvez contrôler 1 carte restreinte de moins.\n<b>Interruption de héros</b> : quand votre tour se termine, renvoyez cette carte du jeu dans votre main.",
+    // red_guardian — Shield Arts (Upgrade)
+    'rg009': "<b>Interruption de héros</b> : quand Red Guardian utilise un pouvoir de base contre un ennemi ou une manigance auquel Red Guardian's Shield est attaché, inclinez Shield Arts → choisissez de renvoyer Red Guardian's Shield dans votre main ou de redresser Red Guardian.",
+    // red_guardian — Shield Harness (Upgrade)
+    'rg010': "Red Guardian's Shield ne compte pas dans votre taille de main.\n<b>Réponse de héros</b> : après que Red Guardian's Shield est défaussé du jeu, inclinez Shield Harness → renvoyez Red Guardian's Shield dans votre main.",
+    // red_guardian — Soviet Super-Soldier (Upgrade)
+    'rg011': "Red Guardian gagne Solide.\n<b>Ressource</b> : inclinez Soviet Super-Soldier → générez une ressource [wild].",
+    // red_guardian — Caged Bird (Obligation)
+    'rg012': "<b><i>Donnez-la au joueur Alexei Shostakov.</i></b>\n<b>Une fois révélée</b> : trouvez Red Guardian's Shield et glissez-le sous cette carte.\n<b>Action d'alter ego</b> : inclinez Alexei Shostakov → retirez cette carte de la partie.",
+    // red_guardian — * Captain America (Minion)
+    'rg013': "Coup Rapide.\n[star] <b>Réponse forcée</b> : après que Captain America attaque et vous blesse, défaussez 1 carte au hasard de votre main.\n<i>(Sbire némésis de Red Guardian.)</i>",
+    // red_guardian — Envied Idol (SideScheme)
+    'rg014': "Le joueur Red Guardian ne peut pas passer sous forme d'alter ego.\n<b>Une fois révélée</b> : le joueur Red Guardian passe sous forme de héros.",
+    // red_guardian — "I Can't Do It All Day" (Treachery)
+    'rg015': "<b>Une fois révélée</b> : choisissez d'incliner votre identité ou de défausser 1 carte au hasard de votre main.",
+    // red_guardian — "I Don't Want You" (Treachery)
+    'rg016': "<b>Une fois révélée</b> : choisissez de dépenser une ressource [physical] ou de défausser 1 carte au hasard de votre main.",
+    // red_guardian — Symbol of Failure (Treachery)
+    'rg017': "<b>Une fois révélée</b> : choisissez de défausser une carte que vous contrôlez ou de défausser 1 carte au hasard de votre main.",
+    // wolverine_x23 — * Wolverine (Hero)
+    'wx001a': "<i>Arme vivante</i> — <b>Réponse</b> : après que Wolverine subit n'importe quelle quantité de dégâts, redressez Wolverine. (Limite d'une fois par phase.)",
+    // wolverine_x23 — * Laura Kinney (AlterEgo)
+    'wx001b': "<i>Snikt !</i> — <b>Mise en place</b> : mettez Wolverine's Claws en jeu.\n<b>Action</b> : mélangez dans votre deck l'allié Honey Badger ou l'événement Sisterly Bond de votre pile de défausse → piochez 1 carte. (Limite d'une fois par round.)",
+    // wolverine_x23 — * Wolverine's Claws (Upgrade)
+    'wx002': "Permanent.\n<b>Action de héros</b> : inclinez Wolverine's Claws et subissez 2 dégâts → Wolverine gagne +2 ATQ jusqu'à la fin du round.",
+    // wolverine_x23 — * Honey Badger (Ally)
+    'wx003': "<b>Réponse de héros</b> : après que Honey Badger subit n'importe quelle quantité de dégâts, redressez Wolverine.",
+    // wolverine_x23 — Animal Instinct (Event)
+    'wx004': "<b>Interruption de héros</b> : quand Wolverine effectue un contre de base, elle gagne +X CTR pour ce contre, X étant égal à son ATQ.",
+    // wolverine_x23 — Claw Mastery (Event)
+    'wx005': "1 max par round.\n<b>Action de héros</b> : jusqu'à la fin du round, Wolverine gagne +2 ATQ (et ses attaques gagnent Déferlement tant que Honey Badger est en jeu).",
+    // wolverine_x23 — Regenerative Longevity (Event)
+    'wx006': "<b>Action</b> : soignez un total de 4 dégâts de votre identité et de Honey Badger.",
+    // wolverine_x23 — Sisterly Bond (Event)
+    'wx007': "<b>Interruption de héros</b> : quand Honey Badger contre ou attaque, ajoutez le pouvoir correspondant de Wolverine au pouvoir de Honey Badger pour cette utilisation.",
+    // wolverine_x23 — Sisterhood (Support)
+    'wx008': "<b>Action</b> : inclinez Sisterhood et défaussez une carte Wolverine de votre main → cherchez Honey Badger dans votre deck et votre pile de défausse et ajoutez-la à votre main. <i>(Mélangez.)</i>",
+    // wolverine_x23 — Adamantium Lacing (Upgrade)
+    'wx009': "Vous gagnez +2 points de vie.\nWolverine gagne Riposte 1 et ses attaques de base gagnent Perçant.",
+    // wolverine_x23 — Grim Resolve (Upgrade)
+    'wx010': "<b>Ressource</b> : inclinez cette carte et subissez 1 dégât → générez une ressource [wild].",
+    // wolverine_x23 — Pain Tolerance (Upgrade)
+    'wx011': "<b>Réponse</b> : après avoir joué une carte Wolverine <i>(y compris celle-ci)</i>, soignez 1 dégât de votre identité.",
+    // wolverine_x23 — Puncture Wound (Upgrade)
+    'wx012': "Attachez-la à un ennemi que Wolverine ou Honey Badger a attaqué ce tour.\nL'ennemi attaché subit -1 ATQ.\n<b>Réponse forcée</b> : après le début de la phase joueur, défaussez cette carte et infligez 3 dégâts à l'ennemi attaché.",
+    // kate_bishop — * Hawkeye (Hero)
+    'kb001a': "<i>Archère émérite</i> — <b>Interruption</b> <i>(attaque)</i> : quand un ennemi déclenche une attaque, retirez jusqu'à 3 jetons de flèche de Kate's Bow → infligez 1 dégât à cet ennemi pour chaque jeton de flèche retiré.",
+    // kate_bishop — * Kate Bishop (AlterEgo)
+    'kb001b': "<i>Habile</i> — Pendant la construction du deck, vous pouvez inclure des cartes <b>COMPÉTENCE</b> de n'importe quel aspect.\n<b>Action</b> : cherchez Kate's Bow dans votre deck et votre pile de défausse et mettez-le en jeu. (Limite d'une fois par round.)",
+    // kate_bishop — * Hawkeye (Ally)
+    'kb002': "<b>Interruption</b> : quand Hawkeye est censé être vaincu par des dégâts consécutifs, mélangez-le dans votre deck et placez 1 jeton de flèche sur Kate's Bow.",
+    // kate_bishop — Evasive Shot (Event)
+    'kb003': "<b>Interruption de héros</b> <i>(défense)</i> : quand vous êtes censé subir n'importe quelle quantité de dégâts d'une attaque, prévenez 4 de ces dégâts. Ensuite, infligez 1 dégât à l'attaquant pour chaque jeton de flèche sur Kate's Bow (jusqu'à un maximum de 5).",
+    // kate_bishop — Infiltrate (Event)
+    'kb004': "<b>Interruption</b> : quand n'importe quelle quantité de menace est censée être placée sur une manigance, prévenez 2 de cette menace (4 à la place si vous êtes sous forme d'alter ego).",
+    // kate_bishop — Quick Draw (Event)
+    'kb005': "<b>Action d'alter ego</b> : passez sous forme de héros et redressez votre héros.\n<b>Action de héros</b> : redressez votre héros et placez 2 jetons de flèche sur Kate's Bow.",
+    // kate_bishop — Smoke Arrow (Event)
+    'kb006': "<b>Interruption de héros</b> : quand un ennemi déclenche une activation, retirez 1 jeton de flèche de Kate's Bow → annulez cette activation. Vous pouvez dépenser une ressource pour passer sous forme d'alter ego ou redresser votre héros.",
+    // kate_bishop — Anchor Points (Support)
+    'kb007': "<b>Ressource</b> : inclinez Anchor Points → générez une ressource [wild] pour une carte <b>COMPÉTENCE</b>.",
+    // kate_bishop — Hawkeye Investigations (Support)
+    'kb008': "<b>Réponse</b> : après avoir prévenu n'importe quelle quantité de menace qui devait être placée sur une manigance, retirez 1 menace d'une manigance.\n<b>Réponse</b> : après avoir prévenu n'importe quelle quantité de dégâts, retirez 1 menace d'une manigance.",
+    // kate_bishop — Lucky (Support)
+    'kb009': "<b>Action d'alter ego</b> : inclinez Lucky → soignez 2 dégâts de Kate Bishop et placez 1 jeton de flèche sur Kate's Bow.",
+    // kate_bishop — Athletic Agility (Upgrade)
+    'kb010': "Vous gagnez Agile 1. <i>(Réduisez de 1 les dégâts subis lors des attaques non défendues, jusqu'à un minimum de 1.)</i>\n<b>Interruption</b> : quand vous prévenez n'importe quelle quantité de dégâts d'une attaque, infligez 1 dégât à un ennemi.",
+    // kate_bishop — Kate's Aviators (Upgrade)
+    'kb011': "Utilisations (2 jetons de style). <i>(Entre en jeu avec 2 jetons. Quand ils sont épuisés, défaussez cette carte.)</i>\n<b>Action de héros</b> : inclinez Kate's Aviators et retirez-lui 1 jeton de style → piochez 1 carte.",
+    // kate_bishop — Kate's Bow (Upgrade)
+    'kb012': "Restreint.\nVos attaques de base gagnent À distance.\n<b>Interruption</b> : à la fin de la phase joueur, placez 1 jeton de flèche sur cette carte. (Maximum de 10 jetons de flèche ici.)",
+    // kate_bishop — Kate's Quiver (Upgrade)
+    'kb013': "Vous pouvez retirer jusqu'à 5 jetons de flèche avec votre Interruption <i>Archère émérite</i> à la place.\n<b>Ressource</b> : inclinez Kate's Quiver → générez une ressource [wild] et placez 1 jeton de flèche sur Kate's Bow.",
+    // kate_bishop — Family = Trouble (Obligation)
+    'kb014': "<b><i>Donnez-la au joueur Kate Bishop.</i></b>\nVous pouvez passer sous forme d'alter ego. Choisissez :\n- Trouvez l'allié Hawkeye spécifique au héros et retirez-le de la partie → retirez Family = Trouble de la partie.\n- Retirez tous les jetons de flèche de Kate's Bow. Vous ne pouvez pas placer de jetons de flèche sur Kate's Bow avant la fin du prochain round. Défaussez cette obligation.",
+    // kate_bishop — Tandem Archery (Event)
+    'kb015': "En Équipe (Hawkeye (Clint Barton) et Hawkeye (Kate Bishop)). 1 max par deck.\n<b>Action de héros</b> : redressez Hawkeye's Bow ou placez 2 jetons de flèche sur Kate's Bow. Piochez 1 carte.",
+    // kate_bishop — Finding the Perfect LMD (SideScheme)
+    'kb016': "Madame Masque a réussi à mettre la main sur d'autres Life Model Decoys et sème la pagaille avec votre image !\nTant que cette manigance est en jeu, la menace ne peut pas être prévenue lorsqu'elle est placée sur une manigance et Madame Masque ne peut pas subir de dégâts.",
+    // kate_bishop — * Madame Masque (Minion)
+    'kb017': "[star] L'ATQ et la MNG de Madame Masque sont égales respectivement à l'ATQ et au CTR de la forme de héros de l'identité avec laquelle elle est engagée.\n<i>(Sbire némésis de Hawkeye.)</i>",
+    // kate_bishop — Masque's Minions (Minion)
+    'kb018': "Garde.\n<b>Interruption forcée</b> : quand ce sbire est censé être vaincu, placez 1 jeton de sbire sur lui et soignez-le de tous ses dégâts.\n<b>Interruption forcée</b> : quand ce sbire a 2 jetons ou plus, défaussez-le.",
+    // kate_bishop — Golden Shot (Treachery)
+    'kb019': "<b>Une fois révélée</b> : subissez 1 dégât. Ensuite, subissez 1 dégât indirect par personnage ami que vous contrôlez.\n[star] <b>Boost</b> : révélez cette carte.",
+    // kate_bishop — Golden Shot (Treachery)
+    'kb020': "<b>Une fois révélée</b> : subissez 1 dégât. Ensuite, subissez 1 dégât indirect par personnage ami que vous contrôlez.\n[star] <b>Boost</b> : révélez cette carte.",
+    // silver_surfer_power_cosmic — Sakaar (Support)
+    'pc005': "<b>Arrivée</b> : le personnage arrivant gagne +2 ATQ jusqu'à la fin du round.\n<b>Départ</b> : infligez 2 dégâts à un ennemi.",
+    // silver_surfer_power_cosmic — Newhaven (Support)
+    'pc006': "<b>Arrivée</b> : le personnage arrivant gagne +2 CTR jusqu'à la fin du round.\n<b>Départ</b> : retirez 2 menaces d'une manigance.",
+    // silver_surfer_power_cosmic — Xandar (Support)
+    'pc007': "<b>Arrivée</b> : le personnage arrivant gagne +2 DEF jusqu'à la fin du round.\n<b>Départ</b> : redressez le personnage partant.",
+    // silver_surfer_power_cosmic — Cosmic Blast (Event)
+    'pc008': "<b>Réponse de héros</b> <i>(attaque)</i> : après que Silver Surfer quitte une <b>PLANET</b>, infligez 5 dégâts à un ennemi. Si cette <b>PLANET</b> était Sakaar, cette attaque gagne Perçant et vous pouvez dépenser une ressource pour redresser Silver Surfer.",
+    // silver_surfer_power_cosmic — Lightspeed Entrance (Event)
+    'pc009': "<b>Réponse de héros</b> <i>(contre)</i> : après que Silver Surfer quitte une <b>PLANET</b>, retirez 2 menaces d'une manigance. Si cette <b>PLANET</b> était Newhaven, vous pouvez dépenser une ressource pour redresser Silver Surfer.",
+    // silver_surfer_power_cosmic — Surfin' (Event)
+    'pc010': "<b>Action de héros</b> <i>(attaque)</i> : inclinez Cosmic Surfboard → infligez 9 dégâts à un ennemi. Vous pouvez dépenser une ressource pour donner Déferlement à cette attaque.",
+    // silver_surfer_power_cosmic — Ride Along (Upgrade)
+    'pc011': "Temporaire.\n<b>Action</b> : choisissez une <b>PLANET</b> et un personnage ami → ce personnage arrive sur cette <b>PLANET</b>, puis il en part. Défaussez cette carte.",
+    // silver_surfer_power_cosmic — Psionic Bond (Upgrade)
+    'pc012': "<b>Action</b> : inclinez cette carte et dépensez une ressource de n'importe quel type → redressez Cosmic Surfboard.",
+    // silver_surfer_power_cosmic — Cosmic Awareness (Upgrade)
+    'pc013': "<b>Interruption</b> : quand un sbire s'engage avec un joueur, choisissez une <b>PLANET</b> → ce sbire arrive sur cette <b>PLANET</b> et devient confus. Mélangez cette carte dans votre deck. <i>(Le sbire reste engagé avec ce joueur pendant qu'il est sur la planète et après en être parti.)</i>",
+    // silver_surfer_power_cosmic — The Power Cosmic (Resource)
+    'pc014': "<b>Réponse</b> : après avoir dépensé cette carte, mélangez-la dans votre deck. Ensuite, si vous l'avez dépensée pour une carte <b>POWER COSMIC</b> ou <b>COSMIC</b>, piochez 1 carte.",
+    // silver_surfer_power_cosmic — Tactical Navigation (Event)
+    'pc015': "<b>Interruption de héros</b> : quand un ennemi attaque, choisissez une <b>PLANET</b>. Silver Surfer arrive sur cette planète, puis il en part. Déclarez Silver Surfer défenseur de cette attaque sans l'incliner.",
+    // silver_surfer_power_cosmic — Black Hole (Support)
+    'pc016': "Quand cette carte entre en jeu, choisissez un joueur. Le méchant et chaque sbire engagé avec ce joueur arrivent ici et subissent 3 dégâts. Au début de la prochaine phase joueur, retirez cette carte de la partie.",
+    // silver_surfer_power_cosmic — * Ego (Minion)
+    'pc017': "Ego s'engage avec Silver Surfer.\n<b>Arrivée</b> : infligez 6 dégâts à Ego.\n<b>Une fois vaincu</b> : mettez en jeu sous votre contrôle l'allié Ego The Living Planet, mis de côté. Retirez cette carte de la partie.",
+    // silver_surfer_power_cosmic — * Ego The Living Planet (Ally)
+    'pc018': "Lié (Ego). Cette carte ne compte pas dans votre limite d'alliés.\nÀ la fin du round, chaque personnage ici subit des dégâts égaux à mon ATQ, puis il part.\n<b>Action</b> : choisissez un sbire → ce sbire arrive ici et je subis des dégâts égaux à l'ATQ de ce sbire.",
+    // silver_surfer_power_cosmic — * Terrax (Minion)
+    'pc019': "Terrax ne peut ni arriver sur une PLANET ni en partir.\n<b>Une fois révélé</b> : trouvez Terrax's Axe et attachez-la à Terrax. Si la manigance annexe Herald of Galactus n'est pas en jeu, trouvez-la et révélez-la.",
+    // silver_surfer_power_cosmic — Herald of Galactus (SideScheme)
+    'pc020': "La menace ne peut pas être retirée de cette manigance tant que Terrax est en jeu.\n<b>Réponse forcée</b> : après que Terrax attaque, ajoutez ici de la menace égale aux dégâts infligés par cette attaque. Ensuite, s'il y a 5 menaces ou plus ici, retirez une PLANET au hasard de la partie.",
+    // silver_surfer_power_cosmic — Terrax's Axe (Attachment)
+    'pc021': "Attachez-la à Terrax ; si Terrax n'est pas en jeu, attachez-la plutôt au méchant.\n[star] <b>Réponse forcée</b> : après que le personnage attaché attaque, si cette attaque a infligé des dégâts, sonnez le personnage attaqué.\n<b>Action de héros</b> : dépensez des ressources [energy][energy] → défaussez cette carte.",
+    // silver_surfer_power_cosmic — Cleave The Way (Treachery)
+    'pc022': "<b>Une fois révélée</b> : trouvez et révélez Terrax's Axe. Ensuite, le personnage auquel Terrax's Axe est attaché vous attaque.",
+    // silver_surfer_power_cosmic — Hungry Master (Treachery)
+    'pc023': "<b>Une fois révélée</b> : ajoutez 1 menace à la manigance annexe Herald of Galactus, puis Terrax vous attaque. Si aucune attaque n'a eu lieu de cette façon, cette carte gagne Renfort.",
+    // silver_surfer_power_cosmic — Hunger of Galactus (Obligation)
+    'pc024': "<i>Donnez-la au joueur Silver Surfer.</i>\nChaque environnement PLANET perd le texte imprimé dans sa boîte de texte.\n<b>Action d'alter ego</b> : inclinez Cosmic Surfboard et choisissez une PLANET → retirez cette PLANET de la partie. Défaussez cette carte.",
+    // core — Android Efficiency (Treachery)
+    '01144': "<b>Une fois révélée</b> : chaque joueur met la carte du dessus de son deck en jeu face cachée, engagée avec lui, comme un sbire [[Drone]].",
+    // gambit — Energy (Resource)
+    '37036': "1 max par deck.",
+    // gambit — Genius (Resource)
+    '37037': "1 max par deck.",
+    // gambit — Strength (Resource)
+    '37038': "1 max par deck.",
+    // angel — Energy (Resource)
+    '42033': "1 max par deck.",
+    // angel — Genius (Resource)
+    '42034': "1 max par deck.",
+    // angel — Strength (Resource)
+    '42035': "1 max par deck.",
+    // jubilee — Energy (Resource)
+    '47035': "1 max par deck.",
+    // jubilee — Genius (Resource)
+    '47036': "1 max par deck.",
+    // jubilee — Strength (Resource)
+    '47037': "1 max par deck.",
+    // magneto — Energy (Resource)
+    '49043': "1 max par deck.",
+    // magneto — Genius (Resource)
+    '49044': "1 max par deck.",
+    // magneto — Strength (Resource)
+    '49045': "1 max par deck.",
+    // human_torch — Energy (Resource)
+    'ht015': "1 max par deck.",
+    // human_torch — Genius (Resource)
+    'ht016': "1 max par deck.",
+    // human_torch — Strength (Resource)
+    'ht017': "1 max par deck.",
+    // the_thing — Energy (Resource)
+    'th016': "1 max par deck.",
+    // the_thing — Genius (Resource)
+    'th017': "1 max par deck.",
+    // the_thing — Strength (Resource)
+    'th018': "1 max par deck.",
+    // beast — Energy (Resource)
+    'bt024': "1 max par deck.",
+    // beast — Genius (Resource)
+    'bt025': "1 max par deck.",
+    // beast — Strength (Resource)
+    'bt026': "1 max par deck.",
+    // intergalactic_hazards — Bounty Hunter (Minion)
+    'ih001': "Patrouille.\n[star] <b>Interruption forcée</b> : quand Bounty Hunter attaque, si vous êtes confus, il obtient +2 ATQ pour cette attaque.\n<i>Votre antagoniste a de bonnes relations, mais ces mercenaires ne vous arrêteront pas.</i>",
+    // intergalactic_hazards — Solar Flare (Treachery)
+    'ih002': "<b>Une fois révélée</b> : si vous êtes confus, subissez 3 dégâts indirects. Sinon, vous devenez confus.\n<hr />\n[star] <b>Boost</b> : révélez cette carte.\n<i>« Ça a failli rater ! » -Rocket Raccoon</i>",
+    // intergalactic_hazards — Turned Around (Treachery)
+    'ih003': "<b>Une fois révélée</b> : vous devenez confus. Ensuite, choisissez un sbire engagé, si possible. Cet ennemi vous attaque.\n<i>« Ça m'embête de le dire, mais je crois qu'on est perdus. » —Star-Lord</i>",
+    // intergalactic_hazards — Asteroid Belt (Environment)
+    'ih004': "Utilisations (2[per_hero] jetons d'astéroïde).\n<b>Réponse forcée</b> : après la fin de la phase des joueurs, chaque joueur subit 2 dégâts indirects.\n<b>Action de héros</b> : épuisez votre héros → retirez X jetons d'astéroïde de cette carte, où X est la plus élevée de vos valeurs d'ATQ, CTR ou DEF.",
+    // necroverse — Shadow Serpent (Minion)
+    'nv001': "[star] Les attaques de Shadow Serpent gagnent Déferlement.\n<hr />\n[star] <b>Boost</b> : attribuez-vous 1 carte rencontre face cachée.\n<i>« Je les sens... se noyer. Sentez les ténèbres les submerger. »</i>",
+    // necroverse — * Annihilablade (Attachment)
+    'nv002': "Attachez-la au méchant.\n[star] <b>Interruption forcée</b> : quand l'attaque du méchant devrait vaincre un allié, retirez plutôt cet allié du jeu au lieu de le défausser.\n<b>Action de héros</b> : dépensez des ressources [physical][mental][energy] et défaussez les 5 cartes du dessus de votre deck → défaussez cette carte.",
+    // necroverse — Dark Apotheosis (Attachment)
+    'nv003': "Attachez-la à l'ennemi qui a le plus de points de vie restants.\n<b>Action de héros</b> : dépensez des ressources [physical][mental] et défaussez les 3 cartes du dessus de votre deck → défaussez cette carte.",
+    // necroverse — Manifest Will (Treachery)
+    'nv004': "<b>Une fois révélée</b> : mélangez tous les sbires de la défausse rencontre dans le deck rencontre. Défaussez des cartes du dessus du deck rencontre jusqu'à ce qu'un sbire soit défaussé. Révélez cette carte.",
+    // necroverse — The Ingenuity of Hatred (Treachery)
+    'nv005': "<b>Une fois révélée</b> : mélangez tous les attachements de la défausse rencontre dans le deck rencontre. Défaussez des cartes du dessus du deck rencontre jusqu'à ce qu'un attachement soit défaussé. Révélez cette carte.",
+    // necroverse — The Planet Cleaver (SideScheme)
+    'nv006': "<i>La destinée finale de tous les dieux est l'arme de Gorr sous sa forme la plus pure. L'Annihilablade plane au-dessus de nous tous.</i>\nEntrave 2[per_hero].\n<b>Interruption forcée</b> : quand des cartes rencontre face cachée sont attribuées aux joueurs durant la phase du méchant, attribuez à chaque joueur 1 carte rencontre face cachée supplémentaire.",
+    // punisher_mcdc_2026 — Rise of the Machines (Challenge)
+    'pu279': "Méchant : Vision (Synthezoid Smackdown). Manigances principales : Rallying Call, Neighborhood Protectors (Civil War). Ensembles modulaires : Sentinels, Future Past, Doomsday Chair, Vision Nemesis, Super Strength (attachements uniquement).\nLes cartes avec un [energy] imprimé infligent 1 dégât supplémentaire.\nToutes les cartes Future Past perdent Victoire 1.\nQuand le stade du méchant avance, faites avancer la manigance principale au stade 2A.",
+    // punisher_mcdc_2026 — Secret Agent (Challenge)
+    'pu280': "Méchant : Captain America (Civil War). Manigances principales : Gathering Support, Guerilla Warfare (Civil War). Ensembles modulaires : Hydra Assault, Hydra Patrol, Legions of Hydra, Captain America Nemesis.\nCaptain America gagne le trait HYDRA.\nTous les sbires HYDRA gagnent Coup Rapide.\nQuand le stade du méchant avance, faites avancer la manigance principale au stade 2A.",
+    // punisher_mcdc_2026 — It's a Trap! (Challenge)
+    'pu281': "Méchant : En Sabah Nur (Age of Apocalypse). Ensembles modulaires : Arcade, Galactic Artifacts.\nToutes les manigances annexes rencontre gagnent Incitation 1, Crise et Accélération.\nLe méchant gagne Solide.\nQuand le stade du méchant avance, faites avancer la manigance principale au stade 2A.",
+    // punisher_mcdc_2026 — Angry Birds (Challenge)
+    'pu282': "Méchant : Tower Defense (Mad Titan's Shadow). Red Birds : Angel, Falcon, Nova, Rogue, Spectrum, Wonder Man. Blue Birds : Captain Marvel, Doctor Strange, Magneto, Phoenix, Rocket, Star Lord, Storm, Thor, Valkyrie, Vision, War Machine, Wasp. Les Blue Birds commencent la partie avec leur amélioration AERIAL en jeu, mais avec -2 à la taille de main pour leur main de départ.\nUniquement des cartes AERIAL et des alliés propres à une identité.\nTous les alliés gagnent : \"<b>Action</b> : défaussez cet allié -> infligez 1 dégât à Avenger's Tower et 4 dégâts au méchant.\"",
 };
