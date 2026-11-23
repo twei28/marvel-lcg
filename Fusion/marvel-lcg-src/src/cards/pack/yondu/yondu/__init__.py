@@ -152,7 +152,17 @@ def QuitterLHote(effect: 'Effect') -> None:
         # levait « AssertionError: self=Yaka Arrow by_effect.this=Whistle While
         # You Work » — AVALEE par le moteur, donc une carte simplement inerte.
         # Trouvee au journal le 04/09/2026, pas par le message d'echec du cas.
-        effect.this.DealDamage([hote], 1, effect)
+        # ⚠ RAPPORT #164 (22/11/2026) : la fleche est encore accrochee a l'hote
+        # pendant cette frappe (`can_attach.py:99`). Si le degat l'acheve, l'interruption
+        # forcee de `yd012` (« quand l'ennemi auquel elle est attachee devrait etre
+        # vaincu ») s'ouvrait et redemandait ou poser une fleche que le joueur
+        # vient justement de deplacer. Le drapeau dit « elle part de son plein gre » :
+        # `yd012` s'efface, l'ennemi meurt, la fleche continue vers sa destination.
+        fleche.depart_volontaire = True
+        try:
+            effect.this.DealDamage([hote], 1, effect)
+        finally:
+            fleche.depart_volontaire = False
 
 
 def RappelerLaFlecheEnMain(effect: 'Effect') -> bool:
