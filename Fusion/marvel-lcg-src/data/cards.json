@@ -137067,10 +137067,10 @@
    "name": "* Drax",
    "subtitle": "",
    "desc": {
-    "Cost": "4",
+    "Cost": "3",
     "HP": "3",
     "ATK": "2*",
-    "THW": "2*",
+    "THW": "1*",
     "RES": "R",
     "Class": "Hero"
    },
@@ -137078,7 +137078,7 @@
     "GUARDIAN"
    ],
    "set_name": "Mantis",
-   "text": "Drax cannot attack minions.\nWhile Drax is confused, add his THW to his ATK.\n[star] Drax's basic attack gains piercing and ignores the guard keyword.",
+   "text": "Drax cannot attack minions.\n[star] While Drax is confused, add his THW to his ATK and his basic attacks gain piercing and ignore the guard keyword.\n<i>\"Give me something worthwhile to do.\" —Drax</i>",
    "custom": "BlueHG"
   },
   {
@@ -137096,7 +137096,7 @@
     "THWART"
    ],
    "set_name": "Mantis",
-   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, remove 1 threat from a scheme. Shuffle your deck.",
+   "text": "<b>Hero Action</b> <i>(thwart)</i>: Remove 2 threat from a scheme. Search the top 3 cards of your deck for a card and add it to your hand. If it is a Mantis card, remove 1 threat from a scheme.\n<i>\"A welcome and a warning in a single breath.\" —Mantis</i>",
    "custom": "BlueHG"
   },
   {
@@ -137180,7 +137180,7 @@
     "PSIONIC"
    ],
    "set_name": "Mantis",
-   "text": "Hero form only. Attach to an ally. Limit 1 per ally.\n<b>Forced Interrupt</b>: When attached ally would take consequential damage, discard Fortified Mind instead. Then, confuse that ally.",
+   "text": "Attach to an ally. Limit 1 per ally.\n<b>Interrupt</b>: When attached ally attacks or thwarts, discard Fortified Mind → that ally gets +1 THW and +1 ATK and takes no consequential damage for this activation. Then, confuse that ally.",
    "custom": "BlueHG"
   },
   {
@@ -137189,16 +137189,16 @@
    "name": "Psionic Mindlock",
    "subtitle": "",
    "desc": {
-    "Cost": "1",
+    "Cost": "2",
     "RES": "B",
     "Class": "Hero"
    },
    "traits": [
-    "PSIONIC",
-    "PREPARATION"
+    "CONDITION",
+    "PSIONIC"
    ],
    "set_name": "Mantis",
-   "text": "<b>Hero Response</b> <i>(attack)</i>: After a minion enters play, discard Psionic Mindlock → deal 2 damage to that minion and confuse it.",
+   "text": "Attach to an enemy. If attached enemy has stalwart, it loses stalwart and gains steady.\n<b>Hero Response</b>: After attached enemy activates, discard Psionic Mindlock → deal 3 damage to that enemy and confuse it.",
    "custom": "BlueHG"
   },
   {
@@ -137215,7 +137215,7 @@
     "TITLE"
    ],
    "set_name": "Mantis",
-   "text": "<b>Hero Interrupt</b>: When you resolve Mantis' <i>\"Empathetic Advantage\"</i> ability, exhaust The Celestial Madonna → this use does not count against that ability's limit.\n<i>\"She's trained since birth by priests from another world to represent all of humanity.\" —Thor</i>",
+   "text": "<b>Hero Resource</b>: Exhaust The Celestial Madonna → Use Mantis' <i>\"Empathetic Advantage\"</i> ability. This use does not count against that ability's limit.\n<i>\"She's trained since birth by priests from another world to represent all of humanity.\" —Thor</i>",
    "custom": "BlueHG"
   },
   {

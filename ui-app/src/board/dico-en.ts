@@ -703,6 +703,7 @@ export const DICO_EN_BASE: Record<string, string> = {
   'ressource': 'resource',
   'ressources': 'resources',
   'Coût couvert': 'Cost covered',
+  'touchez la carte à nouveau pour changer d’origine': 'tap the card again to change the origin',
   'pour': 'to',
   'et': 'and',
   'mentale': 'mental',

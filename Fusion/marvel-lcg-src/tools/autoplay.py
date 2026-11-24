@@ -787,6 +787,26 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         besoin = min(max(maxi, besoin), besoin + etat.get("cibles_bonus", 0))
         return ordonnees[:besoin]
 
+    def sans_reserve_epuisee(candidates, infos, besoin):
+        """Garde au plus `besoin` moyens, en laissant de cote ceux dont la reserve de cartes est deja prise.
+
+        Moyens qui se partagent une reserve de cartes (Mantis : Empathetic Advantage + La Madone Celeste, une carte Desorientee chacune) : le
+        moteur refuse le paiement entier si on en prend plus que la reserve n'en contient (24/11/2026)."""
+        reserves = infos.get("reserves") or {}
+        prises = {}
+        choisies = []
+        for oid in candidates:
+            if len(choisies) >= besoin:
+                break
+            reserve = reserves.get(oid) or reserves.get(str(oid))
+            if reserve:
+                cle, disponibles = reserve[0], reserve[1]
+                if prises.get(cle, 0) >= disponibles:
+                    continue
+                prises[cle] = prises.get(cle, 0) + 1
+            choisies.append(oid)
+        return choisies
+
     def payer(option, cibles, ctx):
         """Couvre le cout en depensant d'abord les cartes les plus cheres.
 
@@ -816,7 +836,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # Depenser d'abord ce qu'on aura le plus de mal a jouer.
         candidates.sort(key=lambda oid: infos_carte(ctx, oid).get("cout", 0),
                         reverse=True)
-        choisies = candidates[:besoin]
+        choisies = sans_reserve_epuisee(candidates, infos, besoin)
         return choisies if len(choisies) >= besoin else []
 
     def executable(option, ctx):
@@ -858,7 +878,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         interdits = {str(option.get("bind_id"))}
         candidates = [str(oid) for entree in (infos.get("payment") or [])
                       for oid in list(entree)[:1] if str(oid) not in interdits]
-        return len(candidates) >= besoin
+        return len(sans_reserve_epuisee(candidates, infos, besoin)) >= besoin
 
     def compteurs_du_joueur(ctx):
         """Compteurs portes par l'identite et les allies du joueur.

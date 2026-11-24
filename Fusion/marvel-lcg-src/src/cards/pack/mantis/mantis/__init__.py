@@ -2,6 +2,8 @@ from cards.pack import *
 # Helpers partages du set « Mantis » (⚠ un helper defini dans le `__init__.py` du PACK leve un NameError avale par le moteur : lecon hk005, tout vit ICI).
 NOM_EMPATHETIC_ADVANTAGE = "Empathetic Advantage"
 NOM_EA_PERSONNAGE = "Empathetic Advantage (character)"
+NOM_MADONNA_ENNEMI = "The Celestial Madonna : Empathetic Advantage"
+NOM_MADONNA_PERSONNAGE = "The Celestial Madonna : Empathetic Advantage (character)"
 NOM_MANTIS = "Mantis"
 
 
@@ -48,7 +50,7 @@ def SoignerUnAmi(effect: 'Effect', joueur: 'Player', source: 'CardFace', degats:
 
 # --- Empathetic Advantage (mt001a) : la limite « once per round » est COMPTEE a la main -----------------------------------------------------------------
 # Une identite ne porte qu une capacite de ressource ; `LimitOncePerRound` ne se relance pas (Madonna). Le compteur de
-# round du joueur (`world.stat.AddRoundCounter`, remis a zero en fin de round) est partage ; The Celestial Madonna (mt010) le decremente.
+# round du joueur (`world.stat.AddRoundCounter`, remis a zero en fin de round). The Celestial Madonna (mt010) a ses PROPRES moyens de paiement qui ne l'incrementent pas.
 CLE_EMPATHETIC_ADVANTAGE = "mt_empathetic_advantage"
 
 
@@ -67,8 +69,9 @@ def EnnemisConfus(effect: 'Effect') -> List['CardFace']:
     return [f for f in Worlds.FindCardsOnField(effect, card_type=Enemy) if f.IsConfused()]
 
 
-def DefausserUnConfus(effect: 'Effect', candidats: List['CardFace']) -> bool:
-    """Cout d'Empathetic Advantage : le joueur CHOISIT la carte, un statut Desoriente en est defausse, et l'emploi est compte pour le round.
+def DefausserUnConfus(effect: 'Effect', candidats: List['CardFace'], compter: bool=True) -> bool:
+    """Cout d'Empathetic Advantage : le joueur CHOISIT la carte, un statut Desoriente en est defausse, et l'emploi est compte pour le round
+    (`compter=False` pour The Celestial Madonna : « this use does not count against that ability's limit »).
 
     Faux (paiement abandonne) si rien n'a pu etre defausse. Modele `hc001a` Empowered : `CostFunc.Custom(None, fn)` + `AskChooseFaces`."""
     joueur = effect.GetInitiator()
@@ -79,5 +82,17 @@ def DefausserUnConfus(effect: 'Effect', candidats: List['CardFace']) -> bool:
         return False
     if choisies[0].DiscardConfused(effect, rule=1) <= 0:
         return False
-    effect.world.stat.AddRoundCounter(joueur, CLE_EMPATHETIC_ADVANTAGE)
+    if compter:
+        effect.world.stat.AddRoundCounter(joueur, CLE_EMPATHETIC_ADVANTAGE)
     return True
+
+
+def ReserveConfus(ability: 'Ability', origine: str) -> 'Ability':
+    """Annonce au moteur la reserve de cartes Desorientees que ce moyen de paiement consomme (voir `PlayerAction.SpendResource`) : Empathetic Advantage
+    et The Celestial Madonna se partagent la MEME reserve par origine (« enemy » ou « character »), et ne peuvent pas payer ensemble s'il n'en reste qu'une."""
+    if origine == "enemy":
+        fn = lambda effet: EnnemisConfus(effet)
+    else:
+        fn = lambda effet: PersonnagesConfusDuJoueur(effet.GetInitiator()) if effet.GetInitiator() is not None else []
+    ability.reserve_partagee = ("mt_confus_" + origine, fn)
+    return ability

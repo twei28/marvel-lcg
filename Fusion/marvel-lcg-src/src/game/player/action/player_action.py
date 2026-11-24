@@ -1749,6 +1749,22 @@ class PlayerAction:
         # ressource (elle transite par `area_resources`) la ou elle etait.
         zones_avant: Dict['CardFace', 'Deck'] = {}
 
+        # ⚠ MOYENS QUI SE PARTAGENT UNE RESERVE (correctif du 24/11/2026, Mantis « Empathetic Advantage » + The Celestial Madonna) : deux moyens
+        # dont le cout defausse une carte « Desorientee » ne peuvent pas payer ensemble s'il n'en reste qu'UNE. Le second `PayCost` echouait
+        # (`GameSignal_UndoRequest`), apres que le premier ait paye. La capacite annonce sa reserve (`ability.reserve_partagee = (cle, fn)`,
+        # `fn(effet) -> cartes disponibles`) : on compte les moyens CHOISIS par cle et on refuse AVANT toute depense, comme un manque de ressources.
+        reserves: Dict[str, List[Any]] = {}
+        for paying_effect in paid_effects:
+            reserve = getattr(paying_effect.ability, 'reserve_partagee', None)
+            if reserve is None:
+                continue
+            paying_effect.context.initiator = player
+            cle, cartes_fn = reserve
+            reserves.setdefault(cle, [len(cartes_fn(paying_effect)), 0])[1] += 1
+        if any(demandes > disponibles for disponibles, demandes in reserves.values()):
+            player.res_pool.Reset()
+            return Resources("0")
+
         for paying_effect in paid_effects:
             paid = False
             for pay_info in payment.payments:

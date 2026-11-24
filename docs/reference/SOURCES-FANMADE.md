@@ -5,7 +5,7 @@ pack par pack, se fait APRES la collecte. Ne rien verifier pendant qu'on collect
 
 | Pack | Createur | Lien | Note |
 |---|---|---|---|
-| Mantis (mt) | BlueHG (Drive de patrick.w.burk) | https://drive.google.com/drive/folders/1RxueCPbo3k2N_PXgC3FbJ3Jl20zKf6eO | dossier « Mantis [4.0] », modifie le 23/11/2024 ; le connecteur Drive ne montre pas tout (Encounter/Aspect incomplets) |
+| Mantis (mt) | BlueHG (Drive de patrick.w.burk) | https://drive.google.com/drive/folders/1RxueCPbo3k2N_PXgC3FbJ3Jl20zKf6eO | dossier « Mantis [4.0] », modifie le 23/11/2024 ; le connecteur Drive ne montre pas tout (Encounter/Aspect incomplets) ; **verifie carte par carte le 24/11/2026** : 5 cartes mises a jour (Drax, Precognition, Fortified Mind, Psionic Mindlock, The Celestial Madonna, version du 04/03/2024), les 12 autres identiques ; voir docs/packs/mantis/GABARITS.md |
 | Destiny (dy) | Merlin | https://drive.google.com/drive/folders/1ra9lIHQbta_x8vGLSJV611q4FA1ojCAg | nom du dossier non verifie (collecte) |
 | Mystique (my) | Merlin | https://drive.google.com/drive/folders/1jhiKjDrJRXq5FjqtHK5_c8_rEImth0S- | collecte, non verifie |
 | Beast (bs) | Proust | (aucun) | PAS de lien necessaire : plus modifie. Backlog : l'utilisateur redonnera quand meme le lien un jour. |

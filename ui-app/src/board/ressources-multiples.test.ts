@@ -4,7 +4,7 @@
 // MÊME effet autant de fois qu'il a de jetons (3 jetons = 3 moyens de paiement identiques). Headbutt coûte 2 : le premier
 // toucher payait un jeton, le second le RENDAIT au lieu d'en payer un deuxième.
 import { describe, expect, it } from 'vitest'
-import { ressourcesApresToucher } from './ask'
+import { reserveEpuisee, ressourcesApresToucher } from './ask'
 import { moyensChoisisDesAlternatives } from './interaction'
 import type { Paiement } from './ask'
 
@@ -112,6 +112,27 @@ describe('des moyens alternatifs d’une même carte (Empathetic Advantage)', ()
   })
 })
 
+describe('reserve partagee de cartes Desorientees (rapport #168)', () => {
+  // identite (effet 1, ennemi) et Madone (effet 20, ennemi) se partagent la reserve « ennemi » ; un seul ennemi Desoriente
+  const p = (disponibles: number): Paiement => ({
+    cost: 'BBB',
+    payment: [{ effect_id: 1, res_text: 'GB' }, { effect_id: 20, res_text: 'GB' }],
+    rule: [],
+    reserves: { 1: { cle: 'enemy', disponibles }, 20: { cle: 'enemy', disponibles } },
+  })
+  it('refuse le second moyen quand la reserve est deja prise, sans rien casser', () => {
+    expect(reserveEpuisee(p(1), 20, [1])).toBe(true)
+    expect(ressourcesApresToucher([20], [1], p(1), 3, false)).toEqual([1])
+  })
+  it('accepte le second moyen quand la reserve en contient assez', () => {
+    expect(reserveEpuisee(p(2), 20, [1])).toBe(false)
+    expect(ressourcesApresToucher([20], [1], p(2), 3, false)).toEqual([1, 20])
+  })
+  it('rend un moyen deja pose meme si la reserve est epuisee', () => {
+    expect(ressourcesApresToucher([1], [1], p(1), 3, false)).toEqual([])
+  })
+})
+
 describe('moyensChoisisDesAlternatives : dire quel moyen est posé', () => {
   const mantis = { name: 'Mantis', resources: [1, 2] } as unknown as import('./world').WorldCard
   const autre = { name: 'Genius', resources: [9] } as unknown as import('./world').WorldCard
@@ -127,5 +148,20 @@ describe('moyensChoisisDesAlternatives : dire quel moyen est posé', () => {
   it('ne dit rien pour une carte ordinaire ni sans ressource posée', () => {
     expect(moyensChoisisDesAlternatives(p, [9], [mantis, autre])).toBeUndefined()
     expect(moyensChoisisDesAlternatives(p, [], [mantis, autre])).toBeUndefined()
+  })
+  // Rapport de la passe langue du 24/11/2026 : « The Celestial Madonna : mental + joker » s'affichait en anglais sur un écran français.
+  it('nomme la carte par son nom FRANÇAIS (La Madone Céleste) quand les scans français sont actifs', () => {
+    const madone = { card_id: 'mt010', name: 'The Celestial Madonna', resources: [17, 18] } as unknown as import('./world').WorldCard
+    const pm: Paiement = { cost: 'B', payment: [{ effect_id: 17, res_text: 'BG' }, { effect_id: 18, res_text: 'B' }], rule: [] }
+    expect(moyensChoisisDesAlternatives(pm, [17], [madone])).toBe('La Madone Céleste : mental + joker')
+  })
+  // Rapport #168 : rien ne disait qu'un second toucher change l'origine.
+  it('conseille de retoucher la carte quand un autre moyen couvre aussi le cout, et seulement alors', () => {
+    expect(moyensChoisisDesAlternatives(p, [1], [mantis, autre], 1)).toBe(
+      'Mantis : mental + joker (touchez la carte à nouveau pour changer d’origine)'
+    )
+    // cout 2 : le moyen « B » seul ne couvre plus, donc pas d'autre choix a proposer depuis « BG »
+    const deux: Paiement = { ...p, cost: 'BB' }
+    expect(moyensChoisisDesAlternatives(deux, [2], [mantis, autre], 2)).toBe('Mantis : mental')
   })
 })

@@ -47,6 +47,12 @@ export const GENRES = {
 // du telephone (09/10/2026) s'annonce comme le reste.
 export const NOUVEAUTES = [
     {
+        date: "2026-11-24",
+        genre: "correction",
+        fr: "Mantis : cinq cartes passent à la dernière version de l'auteur (Drax, Précognition, Esprit Renforcé, Blocage Mental Psionique, La Madone Céleste). La Madone Céleste devient une Ressource de héros : on l'incline pour payer avec Avantage Empathique, sans compter dans la limite. Le plateau n'offre plus deux moyens qui défausseraient la même carte Désorientée, et indique quand on peut toucher à nouveau la carte pour changer d'origine.",
+        en: "Mantis: five cards are updated to the author's latest version (Drax, Precognition, Fortified Mind, Psionic Mindlock, The Celestial Madonna). The Celestial Madonna becomes a Hero Resource: exhaust her to pay with Empathetic Advantage, without counting against its limit. The board no longer offers two means that would discard the same Confused card, and says when you can tap the card again to change the origin.",
+    },
+    {
         date: "2026-11-23",
         genre: "correction",
         fr: "435 cartes fan-made (Galactic Storm, Dazzler, Skrull Menace, Gorr, Spot, Kate Bishop, Red Guardian, Wolverine X-23 et d'autres) ont maintenant leur texte en français. Les noms des arts alternatifs, à l'étape Decks, sont aussi traduits.",

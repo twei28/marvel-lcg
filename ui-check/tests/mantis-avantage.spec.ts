@@ -56,7 +56,7 @@ async function statuts(request: APIRequestContext) {
 }
 
 async function payerMindlock(page: Page, request: APIRequestContext, nom: string, puis: () => Promise<void>) {
-  await page.mouse.click(770, 830) // la carte de la main (Psionic Mindlock, seule)
+  await page.mouse.click(770, 830) // la carte de la main (Veste Blindee (01081), cout 1)
   await page.waitForTimeout(1500)
   await page.mouse.click(799, 438)
   await page.waitForTimeout(2000)
@@ -67,7 +67,7 @@ async function payerMindlock(page: Page, request: APIRequestContext, nom: string
 }
 
 test('B : seul Mantis est confus, carte a 1 : origine personnage', async ({ page }) => {
-  const { request } = await preparer(page, ['mt001a'], ['mt009'])
+  const { request } = await preparer(page, ['mt001a'], ['01081'])
   console.log('B avant', JSON.stringify(await statuts(request)))
   await payerMindlock(page, request, 'B', async () => {
     await page.mouse.click(320, 590)
@@ -75,7 +75,7 @@ test('B : seul Mantis est confus, carte a 1 : origine personnage', async ({ page
     await page.screenshot({ path: path.join(SORTIE, 'B-2-clic-mantis.png') })
     console.log('B boutons', JSON.stringify(await page.getByRole('button').allInnerTexts()))
     await page.mouse.move(800, 250)
-    const valider = page.getByRole('button', { name: /jouer psionic/i })
+    const valider = page.getByRole('button', { name: /jouer (veste|armored)/i })
     if (await valider.isVisible().catch(() => false)) await valider.click() // sinon le jeu a deja paye tout seul
     await page.waitForTimeout(2500)
     await page.screenshot({ path: path.join(SORTIE, 'B-3-valide.png') })
@@ -84,18 +84,20 @@ test('B : seul Mantis est confus, carte a 1 : origine personnage', async ({ page
 })
 
 test('C : Rhino ET Mantis confus, carte a 1 : un second toucher sur Mantis passe a la source personnage', async ({ page }) => {
-  const { request } = await preparer(page, ['mt001a', '01094'], ['mt009'])
+  const { request } = await preparer(page, ['mt001a', '01094'], ['01081'])
   console.log('C avant', JSON.stringify(await statuts(request)))
   await payerMindlock(page, request, 'C', async () => {
     await page.mouse.click(320, 590)
     await page.waitForTimeout(1200)
     await page.screenshot({ path: path.join(SORTIE, 'C-2a-premier-toucher.png') })
+    // Rapport #168 : le conseil « touchez la carte à nouveau » doit apparaitre quand un autre moyen de Mantis couvre aussi le cout.
+    await expect(page.getByText(/touchez la carte à nouveau pour changer d’origine/)).toBeVisible()
     await page.mouse.click(320, 590)
     await page.waitForTimeout(2000)
     await page.screenshot({ path: path.join(SORTIE, 'C-2-clic-mantis.png') })
     console.log('C boutons', JSON.stringify(await page.getByRole('button').allInnerTexts()))
     await page.mouse.move(800, 250)
-    const valider = page.getByRole('button', { name: /jouer psionic/i })
+    const valider = page.getByRole('button', { name: /jouer (veste|armored)/i })
     if (await valider.isVisible().catch(() => false)) await valider.click() // sinon le jeu a deja paye tout seul
     await page.waitForTimeout(2500)
     await page.screenshot({ path: path.join(SORTIE, 'C-3-valide.png') })
@@ -104,17 +106,19 @@ test('C : Rhino ET Mantis confus, carte a 1 : un second toucher sur Mantis passe
 })
 
 test('D : choix de la carte Desorientee a defausser, puis limite une fois par round', async ({ page }) => {
-  const { request, cmd } = await preparer(page, [], ['mt009', 'mt009'])
+  const { request, cmd } = await preparer(page, [], ['01082', '01082'])
   await cmd("Puzzle.PutIntoPlay('01172')")
   await cmd("Puzzle.Confuse('01094')")
   await cmd("Puzzle.Confuse('01172')")
   const jouerMindlock = async (nom: string) => {
-    const carte = page.locator('article[aria-label^="Psionic Mindlock"]').last()
+    const carte = page.locator('article[aria-label^="In\u00e9branlable"]').last()
     const box = await carte.boundingBox()
     if (!box) throw new Error('Mindlock absente de la main')
     await page.mouse.click(box.x + box.width / 2, box.y + 8)
     await page.waitForTimeout(1500)
-    await page.getByRole('button', { name: /^jouer$/i }).click()
+    // Depuis le 19/11/2026 une carte a UNE seule action se joue au premier clic : le menu « Jouer » n'existe plus.
+    const jouer = page.getByRole('button', { name: /^jouer$/i })
+    if (await jouer.isVisible().catch(() => false)) await jouer.click()
     await page.waitForTimeout(2000)
     const non = page.getByRole('button', { name: /non, je clique moi-m/i })
     if (await non.isVisible().catch(() => false)) { await non.click(); await page.waitForTimeout(1200) }
@@ -127,20 +131,20 @@ test('D : choix de la carte Desorientee a defausser, puis limite une fois par ro
   await page.waitForTimeout(1500)
   await page.screenshot({ path: path.join(SORTIE, 'D-premier-2-mantis.png') })
   await page.mouse.move(800, 250)
-  await page.getByRole('button', { name: /jouer psionic/i }).click()
+  await page.getByRole('button', { name: /jouer (in\u00e9branlable|indomitable)/i }).click()
   await page.waitForTimeout(2500)
   await page.screenshot({ path: path.join(SORTIE, 'D-premier-3-choix.png') })
   const q = JSON.parse((await (await request.get('/get_ask?p=0')).text()) || '{}')
   console.log('D choix', q.event_name, q.prompt_text, (q.options_json ?? '').slice(0, 500))
   console.log('D apres 1', JSON.stringify(await statuts(request)))
   console.log('D boutons choix', JSON.stringify(await page.getByRole('button').allInnerTexts()))
-  await page.getByRole('button', { name: /empathetic advantage : d[ée]fausser/i }).click()
+  await page.getByRole('button', { name: /avantage empathique : d[ée]fausser/i }).click()
   await page.waitForTimeout(1500)
   await page.screenshot({ path: path.join(SORTIE, 'D-premier-3b-banniere.png') })
   await page.mouse.click(320, 160) // Rhino
   await page.waitForTimeout(1200)
   await page.screenshot({ path: path.join(SORTIE, 'D-premier-3c-rhino-vise.png') })
-  await page.getByRole('button', { name: /empathetic advantage : d[ée]fausser/i }).click()
+  await page.getByRole('button', { name: /avantage empathique : d[ée]fausser/i }).click()
   await page.waitForTimeout(2500)
   await page.screenshot({ path: path.join(SORTIE, 'D-premier-4-rhino-choisi.png') })
   console.log('D apres choix Rhino', JSON.stringify(await statuts(request)), JSON.stringify(await page.getByRole('button').allInnerTexts()), ((await (await request.get('/get_ask?p=0')).text()) || '').slice(0, 300))
@@ -151,4 +155,38 @@ test('D : choix de la carte Desorientee a defausser, puis limite une fois par ro
   await page.screenshot({ path: path.join(SORTIE, 'D-second-2-mantis.png') })
   console.log('D second boutons', JSON.stringify(await page.getByRole('button').allInnerTexts()))
   console.log('D second statuts', JSON.stringify(await statuts(request)))
+})
+
+// Rapport #168 : La Madone Celeste et l'identite se partagent UNE reserve (un seul ennemi Desoriente) : Drax (cout 3) ne peut pas etre paye par les deux,
+// le plateau ne propose plus le second moyen (le moteur refuserait tout le paiement).
+test('E : un seul ennemi confus, Drax (cout 3) : la Madone n\u2019est plus offerte apres l\u2019identite', async ({ page }) => {
+  const { request, cmd } = await preparer(page, ['01094'], ['mt002'])
+  await cmd("Puzzle.PutIntoPlay('mt010', under_control=True)")
+  const carte = page.locator('article[aria-label^="Drax"]').last()
+  const box = await carte.boundingBox()
+  if (!box) throw new Error('Drax absent de la main')
+  await page.mouse.click(box.x + box.width / 2, box.y + 8)
+  await page.waitForTimeout(1500)
+  const jouer = page.getByRole('button', { name: /^jouer$/i })
+  if (await jouer.isVisible().catch(() => false)) await jouer.click()
+  await page.waitForTimeout(2000)
+  const non = page.getByRole('button', { name: /non, je clique moi-m/i })
+  if (await non.isVisible().catch(() => false)) { await non.click(); await page.waitForTimeout(1200) }
+  await page.mouse.click(320, 590) // l'identite : origine ennemi
+  await page.waitForTimeout(1500)
+  await page.screenshot({ path: path.join(SORTIE, 'E-1-identite.png') })
+  const q = JSON.parse((await (await request.get('/get_ask?p=0')).text()) || '{}')
+  console.log('E PAIEMENT-ASK', JSON.stringify(q).slice(0, 1500))
+  console.log('E boutons', JSON.stringify(await page.getByRole('button').allInnerTexts()))
+  await expect(page.getByText(/Il manque 1 ressource/)).toBeVisible()
+  // Toucher la Madone ne change rien : sa reserve (le seul ennemi Desoriente) est deja prise par l'identite.
+  const madone = page.locator('article[aria-label^="La Madone"]').first()
+  const boite = await madone.boundingBox()
+  console.log('E madone', JSON.stringify(boite))
+  if (!boite) throw new Error('Madone absente de la table')
+  // le coin bas-droit de la carte est dehors de celle de Mantis qui la recouvre
+  await page.mouse.click(boite.x + boite.width - 4, boite.y + boite.height - 4)
+  await page.waitForTimeout(1500)
+  await page.screenshot({ path: path.join(SORTIE, 'E-2-madone-touchee.png') })
+  await expect(page.getByText(/Il manque 1 ressource/)).toBeVisible()
 })

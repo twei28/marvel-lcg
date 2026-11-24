@@ -1,0 +1,221 @@
+{
+ "Mantis (BlueHG)": {
+  "id": "1RxueCPbo3k2N_PXgC3FbJ3Jl20zKf6eO",
+  "fichiers": 30,
+  "dossiers": 4,
+  "arbre": [
+   {
+    "id": "1_dZeInwRZs6pXK4KCkHgWF3e8apph8Lw",
+    "nom": "Aspect Cards",
+    "type": "dossier",
+    "date": "6/29/21",
+    "contenu": [
+     {
+      "id": "1ep1yXFGMZvJVIx37OdKLGplQZ3GRlyyK",
+      "nom": "B06 Mindlink.png",
+      "type": "fichier",
+      "date": "4/4/22"
+     }
+    ]
+   },
+   {
+    "id": "1dhwJ5CtgDeBLm36z14bWQZQStogPAi9j",
+    "nom": "Encounter Cards",
+    "type": "dossier",
+    "date": "4/27/21",
+    "contenu": [
+     {
+      "id": "1a6X5Jbu8xlGyZINVzHLe5vz2Q8jzfc3J",
+      "nom": "N1 Death Blossom's Bloom.png",
+      "type": "fichier",
+      "date": "4/30/21"
+     },
+     {
+      "id": "1qhvx7S8IaRZ8FL5CJAH7PhEYL8-2amU7",
+      "nom": "N2 Swordsman.png",
+      "type": "fichier",
+      "date": "6/1/21"
+     },
+     {
+      "id": "1jrtTNUTrrlRLVgTv8dg_u9xqiNWeJvJO",
+      "nom": "N3 Plantman.png",
+      "type": "fichier",
+      "date": "1/26/22"
+     },
+     {
+      "id": "1i0tkkMbS-g_6rv0FqLqn8KvlEiYML6A3",
+      "nom": "N4 Cotati Resiliency.png",
+      "type": "fichier",
+      "date": "8/18/21"
+     },
+     {
+      "id": "1IMzGl3FotsA-y716j_0K86Ax9gQmdP3O",
+      "nom": "N5 Cotati Resiliency.png",
+      "type": "fichier",
+      "date": "8/18/21"
+     },
+     {
+      "id": "1ohPap2tJM18BC__7_qqJ1543E3s3HzbZ",
+      "nom": "O1 Psychic Tremor.png",
+      "type": "fichier",
+      "date": "1/26/22"
+     }
+    ]
+   },
+   {
+    "id": "1wFrUZ_6pMkx-koZrQhx0Xdz0N6-aKzH7",
+    "nom": "Hero Cards",
+    "type": "dossier",
+    "date": "4/27/21",
+    "contenu": [
+     {
+      "id": "11MtcFwAjjsQIrbmU9CbxZdts_fKqXtJN",
+      "nom": "01 Drax.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "1hrehL6y3ISD02zGd091FSaZz3jtBMERl",
+      "nom": "02 Precognition.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "1gZYF7RXlNbg1EP-tIxlwp7AIZjQ1UrW6",
+      "nom": "03 Precognition.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "14XuduRwuFCrV2k_90biVdyHh1gQDDiBR",
+      "nom": "04 Pressure Point Strike.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1ptI8eTLRCGiyrGvIDyxGbEYAhQC8ARXA",
+      "nom": "05 Pressure Point Strike.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1B5AMIljAVz5eQ6lD3eTTkKluuelGgTBZ",
+      "nom": "06 Psychic Feat.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1F1ZJDi14YfGJ5Hqx2JuXcku6pFPU-TXh",
+      "nom": "07 Psychic Feat.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1JlSw6GwwKm2QmliZBZHUeYt-50U4Lje2",
+      "nom": "08 Psychic Feat.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1t3KZUjYXlKVlvShdjXLDCiiXZKMOtvFB",
+      "nom": "09 Biopathy.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "12yF_5o4-KhhAvTrvy4RzPhdjrhdc_4WZ",
+      "nom": "10 Biopathy.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1oe3jMIKiYKwKhUntxd-8x8ur9QhkvPrn",
+      "nom": "11 Meditation Atrium.png",
+      "type": "fichier",
+      "date": "7/24/23"
+     },
+     {
+      "id": "1Rmc7W-VcI4TDXFwi2hfIvnUabZyyrm8T",
+      "nom": "12 Fortified Mind.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "1JWc8q7-dj_bFEZM6mLCZCRx1pZVmb69t",
+      "nom": "13 Fortified Mind.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "1A95Tk2vwLSGhvC1F0WUsgg4aKf7whxUS",
+      "nom": "14 Psionic Mindlock.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     },
+     {
+      "id": "189G3LGfw_rT6OFU22Tokb_x1P6-lySc9",
+      "nom": "15 The Celestial Madonna.png",
+      "type": "fichier",
+      "date": "3/4/24"
+     }
+    ]
+   },
+   {
+    "id": "1H1TUOqRl0HZxW9uz-fJETjoV9lXlyBhx",
+    "nom": "Pack Extras",
+    "type": "dossier",
+    "date": "5/1/21",
+    "contenu": [
+     {
+      "id": "1zoftZJ7OfrCsXMrOwCYkyLWnM10z4Swd",
+      "nom": "Mantis Hero Pack.png",
+      "type": "fichier",
+      "date": "4/27/21"
+     },
+     {
+      "id": "18FJ6vVqmhMfT4V8jC_mlNSHYZhF7nhDi",
+      "nom": "Mantis HP Counter.png",
+      "type": "fichier",
+      "date": "3/28/21"
+     },
+     {
+      "id": "1-gwWqtmPiZ23CYRFfkWbP5kHdIzWuD-Z",
+      "nom": "Mantis Insert.png",
+      "type": "fichier",
+      "date": "6/29/21"
+     },
+     {
+      "id": "1cDAXaPOosCuVnWWumy71f_b1J_XFLvTK",
+      "nom": "Mantis Playmat.png",
+      "type": "fichier",
+      "date": "6/29/21"
+     },
+     {
+      "id": "1jj1eOrsPeJefJB4e5hTqcevqx5NodW-Y",
+      "nom": "Mantis Starter Deck.png",
+      "type": "fichier",
+      "date": "12/31/22"
+     }
+    ]
+   },
+   {
+    "id": "1Bie-H5-evSysQ-K89XyGJZatpfne2WnW",
+    "nom": "00a Mantis - Hero.png",
+    "type": "fichier",
+    "date": "10/25/22"
+   },
+   {
+    "id": "1OnUHFacGwyPuFhU0_SPg141h3apLpUOh",
+    "nom": "00b Mantis - Alter-Ego.png",
+    "type": "fichier",
+    "date": "12/25/22"
+   },
+   {
+    "id": "1mL8YSV5mzvx5NbrKtMAWWXqq-dRIcT6P",
+    "nom": "Mantis Printable Sheet.pdf",
+    "type": "fichier",
+    "date": "7/24/23"
+   }
+  ]
+ }
+}

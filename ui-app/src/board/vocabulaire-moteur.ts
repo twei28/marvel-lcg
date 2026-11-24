@@ -569,7 +569,7 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^Stun an enemy$/, () => 'Rendre un ennemi sonné'],
   [/^Confuse an enemy$/, () => 'Rendre un ennemi désorienté'],
   // Pack Mantis (`mt`, 01/11/2026) : les choix de Mantis, Biopathy, Meditation Atrium, Mindlink, Pressure Point Strike, Psychic Tremor.
-  // Le NOM de capacite imprime (« Empathetic Advantage ») reste anglais comme sur le scan ; seule la consigne se traduit.
+  // Le nom de capacité imprimé suit le scan : « Avantage Empathique » sur le scan français de Mantis.
   // 17020 Cosmo (18/11/2026, rapports nicodede62 #148/#149) : le type est nommé d'abord, puis le paquet se choisit par son nom.
   [/^Deal (\d+) damage$/, (m) => `Infliger ${degats(m[1]!)}`], // Iron Lad il004, il005
   [/^Move (\d+) threat$/, (m) => `Déplacer ${m[1]} menace${Number(m[1]) > 1 ? 's' : ''}`], // Spot sp006
@@ -581,7 +581,8 @@ const GABARITS_CHOIX: Array<[RegExp, (m: RegExpExecArray) => string]> = [
   [/^(.+): look at the top card of which deck\?$/, (m) => `${m[1]} : regarder le dessus de quel deck ?`],
   [/^Additional deck \((.+)\)$/, (m) => `Deck supplémentaire (${m[1]})`],
   [/^Encounter deck$/, () => 'Deck rencontre'],
-  [/^Empathetic Advantage : discard a confused status card$/, () => 'Empathetic Advantage : défausser une carte d’état Désorienté'],
+  // Le scan FRANCAIS de Mantis nomme la capacite « Avantage Empathique » (relevé du 24/11/2026) : on l'écrit comme lui.
+  [/^Empathetic Advantage : discard a confused status card$/, () => 'Avantage Empathique : défausser une carte d’état Désorienté'],
   [/^Confuse a character you control( to draw 1 card)?$/, (m) => `Rendre désorienté un personnage que tu contrôles${m[1] ? ' pour piocher 1 carte' : ''}`],
   [/^Heal (\d+) damage from a friendly character$/, (m) => `Soigner ${degats(m[1]!)} d’un personnage allié`],
   [/^Take 1 damage to shuffle this card into your deck$/, () => 'Subir 1 dégât pour mélanger cette carte dans ton deck'],

@@ -59,7 +59,7 @@ def GetAbilities() -> Sequence['Ability']:
             resources_fn=montant_ennemi,
         ).SetCostFunc(CostFunc.Custom(None, defausser_ennemi))
         .SetName(NOM_EMPATHETIC_ADVANTAGE),
-        AbilityFactory.DoGenerateResources(AbilityType.Resource, "This").SetName(NOM_EMPATHETIC_ADVANTAGE),
+        ReserveConfus(AbilityFactory.DoGenerateResources(AbilityType.Resource, "This").SetName(NOM_EMPATHETIC_ADVANTAGE), "enemy"),
         moyen_personnage(),
-        AbilityFactory.DoGenerateResources(AbilityType.Resource, "This").SetName(NOM_EA_PERSONNAGE),
+        ReserveConfus(AbilityFactory.DoGenerateResources(AbilityType.Resource, "This").SetName(NOM_EA_PERSONNAGE), "character"),
     ]

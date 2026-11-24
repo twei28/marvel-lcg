@@ -17,6 +17,10 @@ class EffectDescriptor:
         # AVANT d'envoyer la reponse ; il ne connait ni la carte ni la regle,
         # seulement ceci.
         warning: Dict[str, str]
+        # AJOUT 24/11/2026 (rapport #168) : les moyens de paiement qui se PARTAGENT une reserve de cartes (Mantis : Empathetic Advantage et
+        # The Celestial Madonna defaussent chacun une carte Desorientee). {effect_id: [cle de reserve, cartes disponibles]} ; absent pour les
+        # autres. Le plateau n'offre plus un moyen dont la reserve est deja prise par les moyens choisis (voir `PlayerAction.SpendResource`).
+        reserves: Dict[int, List] = field(default_factory=dict)
 
     id: int                         # game object id
     name: str

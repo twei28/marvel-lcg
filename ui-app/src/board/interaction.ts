@@ -45,6 +45,7 @@ import {
 } from './vilain-et-sbires'
 import { demandeHorsPanneauManigance } from './manigance-face-a'
 import { t } from './langue'
+import { nomAffiche as nomAfficheCarte } from './noms-cartes-fr'
 import type { ScanCardProps } from '../components/ScanCard'
 import type { World, WorldCard } from './world'
 
@@ -365,12 +366,14 @@ const MOT_RESSOURCE: Record<string, string> = { R: 'physique', B: 'mental', Y: '
 export function moyensChoisisDesAlternatives(
   paiement: Paiement | undefined,
   ressources: number[],
-  cartes: Iterable<WorldCard>
+  cartes: Iterable<WorldCard>,
+  requis?: number
 ): string | undefined {
   if (!paiement || ressources.length === 0) return undefined
   const texteParEffet = new Map<number, string>()
   for (const moyen of paiement.payment) if (!texteParEffet.has(moyen.effect_id)) texteParEffet.set(moyen.effect_id, moyen.res_text)
   const morceaux: string[] = []
+  let peutChanger = false
   for (const carte of cartes) {
     const siens = new Set((carte.resources ?? []).filter((id) => texteParEffet.has(id)))
     if (siens.size < 2) continue
@@ -380,9 +383,19 @@ export function moyensChoisisDesAlternatives(
       const lettres = libelleRessource(texteParEffet.get(id) ?? '')
       return lettres.split('').map((l) => t(MOT_RESSOURCE[l] ?? l)).join(' + ')
     })
-    morceaux.push(`${carte.name} : ${mots.join(' ; ')}`)
+    // Le nom FRANÇAIS de la carte (La Madone Céleste), pas le nom du moteur (« The Celestial Madonna » restait en anglais à l'écran).
+    morceaux.push(`${nomAfficheCarte(carte)} : ${mots.join(' ; ')}`)
+    // Rapport #168 : l'origine (ennemi ou personnage) ne se change qu'en retouchant la carte, et rien ne le disait. Le conseil n'apparait
+    // que si un autre moyen de CETTE carte couvre aussi le cout (meme regle que le toucher : `ressourcesApresToucher`).
+    if (requis !== undefined && autreMoyenPossible(carte, ressources, paiement, requis)) peutChanger = true
   }
-  return morceaux.length > 0 ? morceaux.join(' · ') : undefined
+  if (morceaux.length === 0) return undefined
+  return peutChanger ? `${morceaux.join(' · ')} (${t('touchez la carte à nouveau pour changer d’origine')})` : morceaux.join(' · ')
+}
+
+function autreMoyenPossible(carte: WorldCard, ressources: number[], paiement: Paiement, requis: number): boolean {
+  const apres = ressourcesApresToucher(carte.resources, ressources, paiement, requis, false)
+  return apres.length === ressources.length && apres.some((id, i) => id !== ressources[i])
 }
 
 function libelleRessource(resText: string): string {
@@ -1321,7 +1334,7 @@ export function useInteraction(
     coutRegles: reglesCout(paiement),
     typesManquants: typesManquants(paiement, ressources),
     coutFacultatif: paiementFacultatif(paiement),
-    moyensChoisis: moyensChoisisDesAlternatives(paiement, ressources, index.values()),
+    moyensChoisis: moyensChoisisDesAlternatives(paiement, ressources, index.values(), requis),
     surpaiementRecompense,
   }
 

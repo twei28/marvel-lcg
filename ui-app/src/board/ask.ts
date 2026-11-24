@@ -47,6 +47,11 @@ export type Paiement = {
   rule: string[]
   /** Absent dans l'immense majorite des cas. Voir `Avertissement`. */
   avertissement?: Avertissement
+  /**
+   * Moyens qui se PARTAGENT une reserve de cartes (Mantis : Empathetic Advantage et La Madone Celeste defaussent chacune une carte
+   * Desorientee), par identifiant d'effet : cle de la reserve et nombre de cartes qu'elle contient (rapport #168). Absent sinon.
+   */
+  reserves?: Record<number, { cle: string; disponibles: number }>
 }
 
 export type Option = {
@@ -147,15 +152,28 @@ function lireAvertissement(brut: unknown): Avertissement | undefined {
   return mot_cle && ressource ? { mot_cle, ressource, seulement } : undefined
 }
 
+function lireReserves(brut: unknown): Record<number, { cle: string; disponibles: number }> | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const reserves: Record<number, { cle: string; disponibles: number }> = {}
+  for (const [id, valeur] of Object.entries(brut as Record<string, unknown>)) {
+    if (!Array.isArray(valeur) || !Number.isFinite(Number(id))) continue
+    const disponibles = Number(valeur[1])
+    if (typeof valeur[0] === 'string' && Number.isFinite(disponibles)) reserves[Number(id)] = { cle: valeur[0], disponibles }
+  }
+  return Object.keys(reserves).length > 0 ? reserves : undefined
+}
+
 function lirePaiement(brut: unknown): Paiement {
   const objet = (typeof brut === 'object' && brut !== null ? brut : {}) as Record<string, unknown>
   const moyens = Array.isArray(objet.payment) ? objet.payment : []
   const avertissement = lireAvertissement(objet.warning)
+  const reserves = lireReserves(objet.reserves)
   return {
     cost: texte(objet.cost),
     payment: moyens.map(lireMoyen).filter((m): m is MoyenDePaiement => m !== undefined),
     rule: Array.isArray(objet.rule) ? objet.rule.filter((r): r is string => typeof r === 'string') : [],
     ...(avertissement ? { avertissement } : {}),
+    ...(reserves ? { reserves } : {}),
   }
 }
 
@@ -393,6 +411,17 @@ export function foisDisponible(paiement: Paiement | undefined, effectId: number)
 }
 
 /**
+ * Un moyen dont la reserve de cartes est DEJA prise par les moyens choisis ne peut plus payer (La Madone Celeste apres Empathetic Advantage
+ * quand un seul ennemi est Desoriente) : le moteur refuserait tout le paiement. Rapport #168.
+ */
+export function reserveEpuisee(paiement: Paiement | undefined, effectId: number, choisies: number[]): boolean {
+  const reserve = paiement?.reserves?.[effectId]
+  if (!reserve) return false
+  const prises = choisies.filter((id) => id !== effectId && paiement?.reserves?.[id]?.cle === reserve.cle).length
+  return prises >= reserve.disponibles
+}
+
+/**
  * Ce que devient la liste des ressources choisies quand on touche UNE carte.
  *
  * - Une carte qui ne paie qu'une fois (la grande majorite) : un toucher paie, un second retire.
@@ -410,7 +439,9 @@ export function ressourcesApresToucher(
   requis: number,
   surpayable: boolean
 ): number[] {
-  const disponibles = effets.filter((effectId) => foisDisponible(paiement, effectId) > 0)
+  const disponibles = effets.filter(
+    (effectId) => foisDisponible(paiement, effectId) > 0 && (actuelles.includes(effectId) || !reserveEpuisee(paiement, effectId, actuelles))
+  )
   const total = disponibles.reduce((somme, effectId) => somme + foisDisponible(paiement, effectId), 0)
   const posees = disponibles.reduce((somme, effectId) => somme + actuelles.filter((x) => x === effectId).length, 0)
 
