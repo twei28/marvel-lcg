@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Yondu",
     "metadata": {
+        "author": "BlueHG + DesignHacker",
         "url": "",
         "aspect_note": "DECKLIST DONNEE PAR L'AUTEUR (scan « Yondu Starter Deck » du zip MC4 SEALED), aspect AGRESSIVITE : aucune question d'aspect n'a ete posee, contrairement a lady_sif, iron_man_model_42 et night_thrasher. Les 25 cartes ci-dessous sont exactement celles de la liste imprimee, dans son ordre : 18 cartes d'Agressivite et 7 cartes Basic.",
         "fleche_note": "LA MECANIQUE VEDETTE. `yd012` Yaka Arrow est une amelioration qui ne vit PAS sur son porteur habituel : elle s'attache a un ENNEMI, a l'IDENTITE, ou revient en MAIN. Le pouvoir du heros (`yd001a` D'ast Whistlin') transforme chaque DEPLACEMENT en effet — 1 degat quand elle arrive sur un ennemi, 1 degat quand elle le quitte, 1 soin quand elle se pose sur l'identite. Un aller-retour ennemi -> identite -> ennemi fait donc mal TROIS fois. NEUF cartes du pack ne font que la deplacer ou la lire.",

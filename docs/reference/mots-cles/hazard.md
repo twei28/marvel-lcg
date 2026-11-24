@@ -51,3 +51,7 @@
 > clé `icones`, ajoutée pour cela.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+## Pack Cassandra Nova (Hellfire Hunt, `hf388`, 01/11/2026)
+
+`hf388` Worldwide Sentinel Deployment : icone Hazard imprimee au CENTRE du cadre de texte (une carte penchee a croix, rien dessous) : `desc.Hazard = "1"` ; les deux icones « Y » du bas gauche sont des icones de BOOST (`Boost: 2`), pas des icones Hazard.

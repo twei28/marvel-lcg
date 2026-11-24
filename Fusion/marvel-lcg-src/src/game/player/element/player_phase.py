@@ -39,6 +39,8 @@ class PlayerPhase:
 
     def BeginTurn(self) -> None:
         player = self.player
+        # CORRECTIF (26/10/2026, pack `rm`) : « end this turn » (rm013) ne vaut que pour le tour en cours.
+        player.flag.Set("RM_FIN_DE_TOUR", 0)
         player.controller.manager.OnBeginTurn()
         player.stat.OnBeginTurn()
         return
@@ -76,6 +78,45 @@ class PlayerPhase:
         player = self.player
         player.stat.OnEndTurn()
 
+    def _cartes_a_redresser(self) -> List['CardFace']:
+        """Tout ce que le joueur redresse en fin de phase : ses cartes controlees ET ses Voies (type Path).
+
+        AJOUT (30/10/2026). Une Voie vit dans l'aire de soutien sans etre un Support (`path.py`) ; depuis que
+        `GetControlCardsByType(support=True)` filtre sur le type, `GetControlCards()` ne la rend plus, et une Voie
+        inclinee par son cout (Ashigaru, Light of Foot) ne se redressait jamais : une seule ressource par partie.
+        """
+        from game.card.face.card_type import Path
+
+        player = self.player
+        faces = list(player.GetControlCards())
+        # `supports.Get()` ne rend que les cartes du type de la zone (Support) : la Voie n'y est pas, `GetAll` la voit.
+        faces += [x for x in player.supports.GetAll(False, include_removed=False) if Path.IsType(x) and x not in faces]
+        return faces
+
+    # CORRECTIF (26/10/2026, pack Rachel Summers `rm`, rm007 Temporal Reversal) : les trois etapes de « At the end of this
+    # turn, perform each of the following in order » : defausser autant de cartes qu'on veut (et au moins jusqu'a la
+    # taille de main), piocher jusqu'a la taille de main, redresser toutes ses cartes. Les deux premieres sont celles de la
+    # fin de phase (`MayDiscardHandCardsAndDrawUpToMax`), la troisieme le meme perimetre que `EndPhase`. Appelee par
+    # `World.PlayerPhase` entre le tour qui finit et le tour supplementaire ; jamais pour un autre heros.
+    def FinDeTourSupplementaire(self) -> None:
+        from game.message import Message
+        from game.effect.rule import EndPhase
+        from game.operate.faces import Faces
+
+        player = self.player
+        message = Message.WhenPlayerTurnEnd(player, player.world.round_id)
+        self.MayDiscardHandCardsAndDrawUpToMax("Temporal Reversal", message)
+        if player.is_eliminated:
+            return
+
+        faces: List['CardFace'] = []
+        effect = EndPhase(player)
+        for face in self._cartes_a_redresser():
+            faces.append(face)
+            for upgrade in face.GetInventoryDeck().Get():
+                faces.append(upgrade)
+        Faces.ReadyAll(faces, effect)
+
     # TODO: use trigger to rewrite?
     def EndPhase(self) -> None:
         from game.card.face.card_face import CardFace
@@ -107,7 +148,7 @@ class PlayerPhase:
 
         faces: List[CardFace] = []
         effect = EndPhase(player)
-        for face in player.GetControlCards():
+        for face in self._cartes_a_redresser():
             faces.append(face)
             for upgrade in face.GetInventoryDeck().Get():
                 faces.append(upgrade)

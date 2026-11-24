@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Destiny",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Destiny » (Merlin, Release FR 1.2 / beta EN 1.0, zip envoye par l'utilisateur). Deck de heros = les 16 numeros « n/16 » (dy002 Glimpse of the Future Permanent+Setup, dy003 Mystique allie, ...). Obligation Seizure (dy013), set nemesis Destiny Nemesis (dy014 Mister Sinister, dy015 Destiny's Warning, dy016 So, What's the Plan? x3). Aucun dossier Extras : player_deck vide."
+    },
+    "hero": [
+        "dy001a,dy001b"
+    ],
+    "hero_deck": [
+        "dy002",
+        "dy003",
+        "dy004",
+        "dy004",
+        "dy005",
+        "dy006",
+        "dy007",
+        "dy008",
+        "dy008",
+        "dy009",
+        "dy009",
+        "dy010",
+        "dy010",
+        "dy010",
+        "dy011",
+        "dy012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "dy013"
+    ],
+    "nemesis_set": [
+        "dy014",
+        "dy015",
+        "dy016",
+        "dy016",
+        "dy016"
+    ],
+    "player_deck": []
+}

@@ -1,6 +1,10 @@
 from . import *
 
 # Energy Transfer
+#
+# ERRATA RRG 1.7 / 1.8 (Annexe V, Rogue Hero Pack #7) : « Find Touched and attach it to a character other than Rogue and deal 2 damage to that character → heal 2 damage from Rogue and ready her. »
+#   (« Attach Touched ... » devient « Find Touched and attach it ... »). Le script suivait DEJA ce texte : le cout personnalise (`attach_touched`) retrouve Touched (`FindTouched`),
+#   l'attache a un personnage autre que Rogue et lui inflige 2 degats, l'effet soigne et redresse Rogue. Relu le 03/11/2026 : rien a changer.
 
 def GetAbilities() -> Sequence['Ability']:
 

@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Iron Man (Model 42)",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Agressivite (construite par le portage, aspect arbitre le 03/09/2026).",
         "reactor_note": "LA MECANIQUE VEDETTE. `reactor` est un compteur MAISON, ajoute a l'enum COUNTER du moteur pour ce pack. Quatre cartes en posent (im001a en convertissant des cartes energie de la main, im004 si Iron Man est deja AERIAL, im006 en forme civile, im009 a la demande) et huit en depensent (im002 +3 degats, im003 +3 menaces, im007 previent 2, im008 +2 degats et Portee, im009 redresse, im011 annule une traitrise, im013 +2 menaces et ignore Patrouille, im014 l'obligation en retire 2 de force). Avec 10 PV seulement, le compteur est a la fois la ressource offensive ET la reserve de survie.",

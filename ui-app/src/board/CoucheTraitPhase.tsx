@@ -18,6 +18,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { EtapeDeroule } from './deroule-phase'
+import { suffixeBoosts } from './ligne-attaque'
 import { t } from './langue'
 import { boiteDeCarte, cadreDuPlateau } from './mesures-plateau'
 import { alerteMenace, contenuDuTrait, deltaSurTable, deltasDesEffets, etiquetteDuTrait, traitEntre, type Trait } from './trait-phase'
@@ -26,11 +27,18 @@ export function CoucheTraitPhase({
   etape,
   actif,
   sansEtiquette = false,
+  compterBoosts,
 }: {
   etape: EtapeDeroule | undefined
   actif: boolean
   /** Le jeton porte déjà le nombre (16/10/2026) : pas de pastille « 4 dégâts » au milieu du trait. */
   sansEtiquette?: boolean
+  /**
+   * Les cartes boost (face cachée) déjà attachées à l'ennemi de cette étape —
+   * seconde ligne « + N carte(s) boost » sous « 2 dégâts »/« 2 menaces » tant
+   * que le coup n'est pas résolu (demande du 07/11/2026, attaque ET manigance).
+   */
+  compterBoosts?: (enemyId: number) => number
 }) {
   const [trait, setTrait] = useState<Trait | undefined>(undefined)
   const [cadre, setCadre] = useState<{ w: number; h: number } | undefined>(undefined)
@@ -85,6 +93,16 @@ export function CoucheTraitPhase({
   // Une annonce à 0 (l'ATQ de Klaw avant ses boosts) ne dit pas « 0 dégâts » : ce serait faux.
   // 19/10/2026 : un coup a 0 degat ne l'affiche pas non plus (le bandeau et le « −0 PV » le disent).
   const etiquette = etiquetteDuTrait(contenu, sansEtiquette)
+  // La seconde ligne : CE QUI EST CONNU avant la résolution, jamais un total
+  // (même règle que `ligneSansDefense`, voir ligne-attaque.ts). Seulement sur
+  // une ANNONCE (le coup n'a pas eu lieu) d'une activation identifiée.
+  const boostsTexte =
+    etape.etat === 'annonce' &&
+    (etape.titre === 'attaque' || etape.titre === 'manigance') &&
+    etape.carteId !== undefined &&
+    compterBoosts
+      ? suffixeBoosts(compterBoosts(etape.carteId)).trim()
+      : ''
   const arc = `M ${trait.x1} ${trait.y1} Q ${trait.cx} ${trait.cy} ${trait.x2} ${trait.y2}`
   return (
     <svg
@@ -119,19 +137,23 @@ export function CoucheTraitPhase({
       <path className="trait-phase-ligne" d={arc} pathLength={1} markerEnd="url(#trait-phase-pointe)" />
       {etiquette ? (
         <g className="trait-phase-etiquette" transform={`translate(${trait.mx} ${trait.my})`}>
-          {/* La largeur suit le texte : une boîte fixe couperait « 3 menaces »
-              et laisserait du vide autour de « 2 ». 8,4 px par caractère est
-              mesuré sur la fonte du plateau à cette taille. */}
+          {/* La largeur suit le texte le plus long des deux lignes : une
+              boîte fixe couperait « + 3 cartes boost » sous un « 2 » étroit. */}
           <rect
-            x={-(etiquette.length * 4.2 + 10)}
-            y={-13}
-            width={etiquette.length * 8.4 + 20}
-            height={26}
+            x={-(Math.max(etiquette.length, boostsTexte.length) * 4.2 + 10)}
+            y={boostsTexte ? -22 : -13}
+            width={Math.max(etiquette.length, boostsTexte.length) * 8.4 + 20}
+            height={boostsTexte ? 44 : 26}
             rx={13}
           />
-          <text x={0} y={5} textAnchor="middle">
+          <text x={0} y={boostsTexte ? -4 : 5} textAnchor="middle">
             {etiquette}
           </text>
+          {boostsTexte ? (
+            <text x={0} y={16} textAnchor="middle" className="trait-phase-boosts">
+              {boostsTexte}
+            </text>
+          ) : null}
         </g>
       ) : null}
     </svg>

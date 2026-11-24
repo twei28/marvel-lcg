@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { decouperNoms, referencesDeBrut, referencesDeEntree } from './cartes-journal'
+import { sansIdentifiantsEnFrancais } from './DemandeCentrale'
 
 describe('les cartes nommees dans une ligne du journal', () => {
   it('lit les identifiants du moteur dans le texte brut', () => {
@@ -17,6 +18,20 @@ describe('les cartes nommees dans une ligne du journal', () => {
     } finally {
       window.localStorage.removeItem('marvel-board-scans-fr')
     }
+  })
+
+  // Rapport n°134 (16/11/2026, « encore quelques infos en anglais ») : le journal ecrivait « "Too Good to be True" retournee »
+  // alors que le scan dit « Trop Beau pour Etre Vrai » : le journal ne lisait que NOMS_FR (cartes officielles), jamais les
+  // noms des cartes fan-made (NOMS_FR_FANMADE).
+  it('donne le nom francais des cartes FAN-MADE (Dazzler) dans le journal et dans les liens', () => {
+    const brut = '[(19,dz012) "Too Good to be True"] retournée(s)'
+    expect(referencesDeBrut(brut)).toEqual([{ id: 19, nom: '"Trop Beau pour Être Vrai"' }])
+    expect(sansIdentifiantsEnFrancais(brut)).toBe('"Trop Beau pour Être Vrai" retournée(s)')
+    expect(sansIdentifiantsEnFrancais('[(5,bl016) Embraced] entre en jeu')).toBe('Étreinte entre en jeu')
+  })
+
+  it('une carte fan-made sans nom francais garde son nom du moteur', () => {
+    expect(sansIdentifiantsEnFrancais('[(9,dz024) Song of Aggression] entre en jeu')).toBe('Song of Aggression entre en jeu')
   })
 
   it('reprend la carte visee par une entree de jeu, sans texte brut', () => {

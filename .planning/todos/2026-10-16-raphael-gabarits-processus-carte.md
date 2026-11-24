@@ -40,7 +40,11 @@ et fin de round (ATQ retombe) ; tr012 une/deux Sai, ennemi vaincu par attaque, e
 
 ## Non prouve / limites
 
-- Aucune partie jouee par un humain dans le navigateur ; biographie `heros-info.js` non verifiee au survol ; textes FR non deployes.
+- Aucune partie jouee par un humain dans le navigateur ; textes FR non deployes.
+
+**Biographie verifiee le 21/10/2026** (serveur local, recherche Fan-made > Raphael (Inkwire) > Biographie) :
+texte, identite civile (« Raph »), base, equipes, ennemis s'affichent tous correctement. Item 13 du backlog
+desormais entierement clos (voir `docs/rapports/etat-du-backlog-2026-10-21.md`).
 - `verifier_tous_les_decks.py` (toutes les decks, tres long) et `verifier_appels_modules.py` non relances.
 - tr014 : le 2e passage par deux `RunVillainPhase` successifs ne rejoue pas la reponse ; la regle est prouvee par les messages d'etape 1 envoyes
   directement (cles `etape1_vilain`), pas par une phase du vilain complete.

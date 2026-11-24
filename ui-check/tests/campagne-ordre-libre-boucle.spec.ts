@@ -13,6 +13,7 @@
 // — carnet de campagne, panneau de récompenses, mise en place suivante —
 // restait hors de portée des tests.
 import { test, expect, type Page } from '@playwright/test'
+import { parcoursOuvert, validerParcours } from './aide-parcours-fin'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { acheverLaPartie, monde, repondre, sieges } from '../pilote-campagne'
@@ -81,9 +82,8 @@ test('gagner une affaire l inscrit au carnet, et la suivante démarre avec son e
   await acheverLaPartie(page, request, 'Gagner()')
 
   // 3. Le panneau de récompenses s'ouvre et se valide.
-  const panneau = page.locator('section.camp-recomp')
-  await expect(panneau, 'le panneau de récompenses ne s est pas ouvert').toBeVisible({ timeout: 60000 })
-  await page.getByRole('button', { name: /Valider et continuer la campagne|Voir la conclusion/ }).click()
+  await parcoursOuvert(page, 60000)
+  await validerParcours(page)
   // Le panneau ramene lui-meme a l'ecran des campagnes : attendre ce retour, sinon
   // le `goto` suivant est interrompu par cette navigation.
   await page.waitForURL(/campagne\.html/, { timeout: 30000 })

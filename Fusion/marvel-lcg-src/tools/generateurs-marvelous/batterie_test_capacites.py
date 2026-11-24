@@ -39,6 +39,16 @@ import test_capacites as tc  # noqa: E402
 
 _voulus = [x.strip() for x in os.environ.get("MARVELOUS_DECKS", "").split(",") if x.strip()]
 tc.CAS = generer_cas.generer(_voulus or None)
+# `MARVELOUS_SAUF=<rapport.json>` : ne rejouer QUE les cas dont le nom n'est pas deja
+# dans ce rapport (reprise apres une pause, 21/10/2026). On ne reprend pas « a partir
+# de l'index N » : la liste a grandi entre-temps (nouveaux heros inseres au milieu),
+# les index ne designent plus les memes cartes. Le nom, lui, ne bouge pas. La liste
+# reduite est regeneree a l'identique dans chaque fils (CAS_INDEX), comme la liste entiere.
+_sauf = os.environ.get("MARVELOUS_SAUF")
+if _sauf:
+    with open(_sauf, encoding="utf-8") as _f:
+        _faits = {c["nom"] for c in json.load(_f)["cas"]}
+    tc.CAS = [c for c in tc.CAS if c["nom"] not in _faits]
 tc.VERIFICATIONS = tc.VERIFICATIONS + generer_cas.VERIFICATEURS
 tc.__file__ = os.path.abspath(__file__)
 

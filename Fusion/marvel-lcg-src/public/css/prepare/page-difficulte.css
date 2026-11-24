@@ -1,0 +1,94 @@
+/* L'étape « Difficulté » (30/10/2026) : deux colonnes (ce qui sera joué | niveau + tous les sets) et, dessous,
+   les propositions VillainTheory. Sur téléphone, trois onglets (Sets de la partie / Niveau / Propositions).
+   Les couleurs viennent des variables du site ; la découpe en biseau et le dégradé ne vont qu'à l'affichage
+   « Normal » (html[data-epure]), comme les autres panneaux de l'étape Méchant. */
+.step.difficulte {
+  position: relative; height: calc(100dvh - 140px); min-height: 520px; box-sizing: border-box;
+  padding: 12px 10px 10px; gap: 12px; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.difficulte .dp-haut { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; padding: 0 6px; }
+.difficulte .dp-titre { font-size: 32px; line-height: 1; color: #fff; font-style: italic; }
+html[data-epure] .difficulte .dp-titre {
+  font-family: var(--ep-titres) !important; font-size: 30px !important; font-weight: 400 !important; font-style: normal;
+  letter-spacing: .04em; text-transform: uppercase; color: #fff !important; text-shadow: 0 2px 0 rgba(0, 0, 0, .5);
+}
+.difficulte .dp-sous { color: var(--mute, #8c97ad); font-size: 13px; }
+.difficulte .dp-pn {
+  min-width: 0; min-height: 0; overflow: auto; box-sizing: border-box; padding: 16px 20px 18px;
+  display: flex; flex-direction: column; gap: 8px;
+  background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .12);
+}
+html[data-epure] .difficulte .dp-pn {
+  border: 0; background: linear-gradient(160deg, #2b3a58 0%, #1f2a40 55%, #171e2e 100%);
+  box-shadow: inset 0 0 0 1px rgba(63, 134, 224, .25);
+  clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 34px 100%, 0 calc(100% - 34px));
+}
+.difficulte .dp-k { margin: 2px 0 0; font: 700 11px "Segoe UI", system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--mute, #7c8494); }
+.difficulte .dp-etiq { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--mute, #7c8494); margin-top: 6px; }
+.difficulte .dp-vide { color: var(--mute, #8c97ad); font-size: 13px; font-style: italic; }
+.difficulte .dp-set {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px; font-size: 14px;
+  background: rgba(0, 0, 0, .28); border: 1px solid #4a5a7c;
+}
+.difficulte .dp-set.ajoute { border-color: #5a9bf0; }
+.difficulte .dp-set.attenue { opacity: .5; cursor: pointer; }
+.difficulte .dp-set small { margin-left: auto; color: var(--mute, #8c97ad); font-size: 12px; }
+.difficulte .dp-set .dp-x { margin-left: 8px; background: none; border: 0; color: inherit; cursor: pointer; font-size: 14px; }
+.difficulte .dp-set .dp-x:hover { color: var(--eux2, #ff4048); }
+.difficulte .dp-rapide { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.difficulte .dp-alerte { color: #f2b13c; font-size: 13px; font-style: normal; }
+.difficulte .dp-vt { display: inline-flex; align-items: center; gap: 8px; }
+.difficulte .dp-fleche { margin-left: 2px; }
+.difficulte .dp-selection { margin-left: 6px; color: #5a9bf0; font: 700 11px "Segoe UI", system-ui, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+.difficulte .dp-reglages .dp-niveau { display: flex; flex-direction: column; gap: 8px; }
+.difficulte .dp-recherche { box-sizing: border-box; width: 100%; padding: 9px 12px; }
+.difficulte .dp-liste { display: flex; flex-direction: column; gap: 2px; min-height: 0; overflow: auto; padding-right: 6px; flex: 1 1 auto; }
+.difficulte .dp-boite > summary { cursor: pointer; padding: 8px 0 2px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #f2b13c; }
+.difficulte .dp-boite > summary small { color: var(--mute, #8c97ad); letter-spacing: 0; text-transform: none; }
+.difficulte .dp-case { display: flex; align-items: center; gap: 9px; padding: 4px 6px; font-size: 14px; cursor: pointer; }
+.difficulte .dp-case small { margin-left: auto; color: var(--mute, #8c97ad); font-size: 11px; }
+.difficulte .dp-case.on { color: #fff; }
+.difficulte .dp-props { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; max-height: 28vh; overflow: auto; }
+.difficulte .dp-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.difficulte .dp-carte {
+  display: flex; flex-direction: column; gap: 4px; padding: 11px 14px; font-size: 13px; min-width: 0;
+  background: rgba(255, 255, 255, .05); border: 1px solid rgba(255, 255, 255, .14);
+}
+html[data-epure] .difficulte .dp-carte {
+  border: 0; background: linear-gradient(160deg, #2b3a58, #1f2a40); box-shadow: inset 0 0 0 1px rgba(63, 134, 224, .25);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.difficulte .dp-carte.active { box-shadow: inset 0 0 0 2px #5a9bf0; }
+.difficulte .dp-carte.grisee { opacity: .5; }
+.difficulte .dp-carte header { display: flex; align-items: baseline; gap: 8px; }
+.difficulte .dp-carte header b { font-size: 17px; font-style: italic; }
+.difficulte .dp-note { margin-left: auto; color: #f2b13c; font-size: 19px; font-weight: 800; }
+.difficulte .dp-carte-sets { color: #fff; }
+.difficulte .dp-carte p { margin: 0; color: var(--mute, #8c97ad); font-size: 12px; }
+.difficulte .dp-reco { color: #f2b13c; }
+.difficulte .dp-manque { color: #f2b13c; font-size: 12px; }
+.difficulte .dp-carte .tampon { align-self: flex-start; margin-top: 4px; }
+.difficulte .dp-carte .tampon:disabled { cursor: not-allowed; }
+.difficulte .dp-onglets { grid-column: 1 / -1; display: flex; gap: 6px; }
+
+/* Téléphone : un seul panneau à la fois, choisi par l'onglet. */
+.step.difficulte.dp-tel { height: auto; min-height: 0; grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow: visible; padding-bottom: 100px; }
+.difficulte.dp-tel .dp-titre { font-size: 22px; }
+.difficulte.dp-tel .dp-pn, .difficulte.dp-tel .dp-props { display: none; }
+.difficulte.dp-tel[data-onglet="sets"] .dp-sets,
+.difficulte.dp-tel[data-onglet="niveau"] .dp-reglages { display: flex; }
+.difficulte.dp-tel[data-onglet="propositions"] .dp-props { display: flex; max-height: none; }
+.difficulte.dp-tel[data-onglet="niveau"] .dp-reglages .dp-liste { max-height: 50vh; }
+@media (max-width: 899px) {
+  .step.difficulte:not(.dp-tel) { height: auto; min-height: 0; grid-template-columns: 1fr; overflow: visible; grid-template-rows: auto auto auto auto; padding-bottom: 100px; }
+}
+/* Zones tactiles d'au moins 44 px (règle du mode téléphone). */
+.difficulte.dp-tel .dp-case,
+.difficulte.dp-tel .dp-boite > summary { min-height: 44px; display: flex; align-items: center; }
+.difficulte.dp-tel .dp-set { min-height: 44px; }
+.difficulte.dp-tel .dp-set .dp-x { min-width: 44px; min-height: 44px; margin: -6px -8px -6px 0; }
+.difficulte.dp-tel .dp-recherche,
+.difficulte.dp-tel .tb-heroique input[type="range"] { min-height: 44px; }
+.difficulte.dp-tel .dp-pn { padding: 14px; }
+.difficulte.dp-tel .dp-carte .tampon, .difficulte.dp-tel .dp-onglets .tampon, .difficulte.dp-tel .dp-rapide .tampon { min-height: 44px; }

@@ -47,6 +47,11 @@ export type Paiement = {
   rule: string[]
   /** Absent dans l'immense majorite des cas. Voir `Avertissement`. */
   avertissement?: Avertissement
+  /**
+   * Moyens qui se PARTAGENT une reserve de cartes (Mantis : Empathetic Advantage et La Madone Celeste defaussent chacune une carte
+   * Desorientee), par identifiant d'effet : cle de la reserve et nombre de cartes qu'elle contient (rapport #168). Absent sinon.
+   */
+  reserves?: Record<number, { cle: string; disponibles: number }>
 }
 
 export type Option = {
@@ -68,6 +73,15 @@ export type Option = {
   is_search: boolean
   /** Aucune option d'une carte rencontre n'est faisable en entier : celle-ci, réduite au maximum payable, est à faire. */
   au_maximum?: boolean
+  /**
+   * Vient d'`AskChooseOneText`/`ForChoiceAbility` (moteur) : le nom DESIGNE la
+   * carte, `bind_id` vaut l'identité du joueur, jamais la carte choisie — le
+   * plateau doit la retrouver par son nom et l'afficher en grille de
+   * vignettes plutôt qu'en bouton de texte brut (07/11/2026, voir
+   * `option-carte.ts`/`SelecteurChoixTexte`). Absent (ancien fichier
+   * enregistré, test) : `false`, comme avant ce champ.
+   */
+  is_text_choice?: boolean
 }
 
 export type Demande = {
@@ -138,15 +152,28 @@ function lireAvertissement(brut: unknown): Avertissement | undefined {
   return mot_cle && ressource ? { mot_cle, ressource, seulement } : undefined
 }
 
+function lireReserves(brut: unknown): Record<number, { cle: string; disponibles: number }> | undefined {
+  if (typeof brut !== 'object' || brut === null) return undefined
+  const reserves: Record<number, { cle: string; disponibles: number }> = {}
+  for (const [id, valeur] of Object.entries(brut as Record<string, unknown>)) {
+    if (!Array.isArray(valeur) || !Number.isFinite(Number(id))) continue
+    const disponibles = Number(valeur[1])
+    if (typeof valeur[0] === 'string' && Number.isFinite(disponibles)) reserves[Number(id)] = { cle: valeur[0], disponibles }
+  }
+  return Object.keys(reserves).length > 0 ? reserves : undefined
+}
+
 function lirePaiement(brut: unknown): Paiement {
   const objet = (typeof brut === 'object' && brut !== null ? brut : {}) as Record<string, unknown>
   const moyens = Array.isArray(objet.payment) ? objet.payment : []
   const avertissement = lireAvertissement(objet.warning)
+  const reserves = lireReserves(objet.reserves)
   return {
     cost: texte(objet.cost),
     payment: moyens.map(lireMoyen).filter((m): m is MoyenDePaiement => m !== undefined),
     rule: Array.isArray(objet.rule) ? objet.rule.filter((r): r is string => typeof r === 'string') : [],
     ...(avertissement ? { avertissement } : {}),
+    ...(reserves ? { reserves } : {}),
   }
 }
 
@@ -188,6 +215,7 @@ function lireOption(brut: unknown): Option | undefined {
     failure_reason: texte(o.failure_reason),
     is_search: o.is_search === true,
     au_maximum: o.au_maximum === true,
+    is_text_choice: o.is_text_choice === true,
   }
 }
 
@@ -380,6 +408,82 @@ export function paiementFacultatif(paiement: Paiement | undefined): boolean {
 export function foisDisponible(paiement: Paiement | undefined, effectId: number): number {
   if (!paiement) return 0
   return paiement.payment.filter((moyen) => moyen.effect_id === effectId).length
+}
+
+/**
+ * Un moyen dont la reserve de cartes est DEJA prise par les moyens choisis ne peut plus payer (La Madone Celeste apres Empathetic Advantage
+ * quand un seul ennemi est Desoriente) : le moteur refuserait tout le paiement. Rapport #168.
+ */
+export function reserveEpuisee(paiement: Paiement | undefined, effectId: number, choisies: number[]): boolean {
+  const reserve = paiement?.reserves?.[effectId]
+  if (!reserve) return false
+  const prises = choisies.filter((id) => id !== effectId && paiement?.reserves?.[id]?.cle === reserve.cle).length
+  return prises >= reserve.disponibles
+}
+
+/**
+ * Ce que devient la liste des ressources choisies quand on touche UNE carte.
+ *
+ * - Une carte qui ne paie qu'une fois (la grande majorite) : un toucher paie, un second retire.
+ * - Une carte qui peut payer PLUSIEURS fois (les jetons Rage de Raphael, les jetons de Spider-Ham : le moteur
+ *   repete le meme effet autant de fois qu'il y a de jetons) : chaque toucher en ajoute un, tant qu'il en reste ET
+ *   qu'il manque de quoi payer ; le toucher suivant les rend tous. Avant, le second toucher rendait le premier et
+ *   on ne pouvait jamais en depenser deux (30/10/2026).
+ *
+ * `surpayable` : le cout accepte plus que son montant (Ant-Man...), donc seul le nombre de jetons borne.
+ */
+export function ressourcesApresToucher(
+  effets: number[],
+  actuelles: number[],
+  paiement: Paiement | undefined,
+  requis: number,
+  surpayable: boolean
+): number[] {
+  const disponibles = effets.filter(
+    (effectId) => foisDisponible(paiement, effectId) > 0 && (actuelles.includes(effectId) || !reserveEpuisee(paiement, effectId, actuelles))
+  )
+  const total = disponibles.reduce((somme, effectId) => somme + foisDisponible(paiement, effectId), 0)
+  const posees = disponibles.reduce((somme, effectId) => somme + actuelles.filter((x) => x === effectId).length, 0)
+
+  if (total <= 1) {
+    // Un second toucher rend la ressource au lieu d'en depenser une de plus.
+    const dejaPosee = disponibles.find((effectId) => actuelles.includes(effectId))
+    if (dejaPosee !== undefined) {
+      const position = actuelles.indexOf(dejaPosee)
+      return [...actuelles.slice(0, position), ...actuelles.slice(position + 1)]
+    }
+    return disponibles.length > 0 ? [...actuelles, disponibles[0]] : actuelles
+  }
+
+  const exige = paiement && coutParType(paiement.cost)
+  const manquePour = (choisies: number[]) =>
+    exige ? Object.keys(typesManquants(paiement, choisies)).length > 0 : valeurPayee(paiement, choisies) < requis
+  const manque = manquePour(actuelles)
+
+  // DES MOYENS ALTERNATIFS d'une meme carte (Mantis, Empathetic Advantage : defausser une carte Desorientee d'un ENNEMI
+  // donne [wild][mental], d'un de SES personnages [mental]) : le moteur offre chaque moyen UNE fois. Le premier toucher pose
+  // le premier ; tant que le cout est deja couvert, le toucher suivant passe au moyen d'apres QUI COUVRE AUSSI le cout, puis
+  // rend tout quand il n'y en a plus. Sans cela, le second moyen n'etait atteignable qu'au moteur (01/11/2026).
+  const alternatives = disponibles.length > 1 && disponibles.every((effectId) => foisDisponible(paiement, effectId) === 1)
+  if (alternatives && posees === 1 && !manque && !surpayable) {
+    const courant = disponibles.find((effectId) => actuelles.includes(effectId))
+    if (courant !== undefined) {
+      for (const suivant of disponibles.slice(disponibles.indexOf(courant) + 1)) {
+        const essai = actuelles.map((effectId) => (effectId === courant ? suivant : effectId))
+        if (!manquePour(essai)) return essai
+      }
+    }
+  }
+
+  if (posees < total && (surpayable || manque)) {
+    for (const effectId of disponibles) {
+      if (actuelles.filter((x) => x === effectId).length < foisDisponible(paiement, effectId)) {
+        return [...actuelles, effectId]
+      }
+    }
+  }
+  // Rien de plus a ajouter : on rend ce que cette carte avait paye.
+  return actuelles.filter((x) => !disponibles.includes(x))
 }
 
 /**

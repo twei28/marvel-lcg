@@ -1,0 +1,41 @@
+{
+    "version": "0.5.8",
+    "name": "Beast (Proust)",
+    "metadata": {
+        "url": "",
+        "note": "Pack « Beast » de Proust (scans FR seuls, textes EN traduits du FR ; ne pas confondre avec le Beast de D0natello, deck `beast`). Deck de heros = les 16 numeros « n/16 » (bs002 Beast's Lab Permanent+Setup, bs003 Ultimate Mutation, bs004 Hacked Power Gloves, bs005 Peter's Spider-Tracers, bs006 Bobby's Belt, bs007 Tony's Arc Reactor, bs008 Xavier's Cerebro, bs009 Tech Support x3, bs010 Beastly Charge x2, bs011 Civil Genius x2, bs012 Tech Genius x2). Obligation Overworked (bs013), set nemesis Beast Proust Nemesis (bs014 Technical Difficulties, bs015 Black Beast, bs016 Evil Genius x2, bs017 High-Tech Glasses). Aucun dossier Extras : player_deck vide."
+    },
+    "hero": [
+        "bs001a,bs001b"
+    ],
+    "hero_deck": [
+        "bs002",
+        "bs003",
+        "bs004",
+        "bs005",
+        "bs006",
+        "bs007",
+        "bs008",
+        "bs009",
+        "bs009",
+        "bs009",
+        "bs010",
+        "bs010",
+        "bs011",
+        "bs011",
+        "bs012",
+        "bs012"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "bs013"
+    ],
+    "nemesis_set": [
+        "bs014",
+        "bs015",
+        "bs016",
+        "bs016",
+        "bs017"
+    ],
+    "player_deck": []
+}

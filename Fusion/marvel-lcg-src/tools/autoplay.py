@@ -279,6 +279,30 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         except Exception as exc:
             print("CAPTURE ECHOUEE:", exc, flush=True)
 
+    # ---------------------------- une photo par ROUND (calibration de la barre d'avantage) --
+    # ⚠ AUCUN EFFET SANS `AUTOPLAY_INSTANTANES` (comme `AUTOPLAY_CAPTURE`) : outillage, pas de changement de comportement.
+    # Ecrit, au PREMIER tour de chaque round, le descripteur que le plateau lit (`world.render.descriptor`, celui de `/get_world`) dans
+    # `<dossier>/<etiquette>-r<round>.json`. `ui-app/outils/calibrer-barre-avantage.mjs` rejoue `estimerAvantage` dessus et le confronte au verdict
+    # final (`verdict` / `gagne` du fichier de resultat de la partie).
+    instantanes = {"dossier": os.environ.get("AUTOPLAY_INSTANTANES") or "", "dernier": -1}
+
+    def photographier_le_round():
+        if not instantanes["dossier"]:
+            return
+        try:
+            from engine import Engine
+            from engine.lib import Json
+            ronde = nombre(getattr(Engine.game.world, "round_id", 0))
+            if ronde <= instantanes["dernier"]:
+                return
+            instantanes["dernier"] = ronde
+            d = Engine.game.world.render.descriptor
+            os.makedirs(instantanes["dossier"], exist_ok=True)
+            with open(os.path.join(instantanes["dossier"], f"{etiquette}-r{ronde:03d}.json"), "w", encoding="utf-8") as f:
+                f.write(Json.Dumps(d, indent=0))
+        except Exception as exc:
+            print("INSTANTANE ECHOUE:", exc, flush=True)
+
     # ------------------------------------------------- lecture de l'etat --
     def lire_etat():
         """Photographie du monde utile a la decision, tolerante aux absences."""
@@ -669,6 +693,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             # jamais rendre "bloquee". Aucun code a changer.
             deja_prise = (ctx.get("actes_du_round") or {}).get(nom, 0)
             fixe = 20.0 / (1.0 + deja_prise)
+            # ⚠ AJOUT 22/10/2026 (Shadowland, sl004a/b « HERO POSITION ») : l'Action du premier joueur se RETOURNE apres usage, donc elle
+            # est de nouveau offerte juste apres : le pilote la reprenait a chaque ask (3 menaces ou 3 degats a chaque fois), partie
+            # perdue au round 1. Les trois effets sont des COUTS (3 menaces, 3 degats a soi, defausse d'un allie) : le pilote, qui ne sait pas les
+            # chiffrer, ne la prend jamais (les cas test_capacites [sl] couvrent ses six branches).
+            if nom == "First_Player_Action" and str(infos_carte(ctx, option.get("bind_id")).get("card_id") or "").startswith("sl004"):
+                fixe = 0.0
 
         if fixe is not None:
             return fixe
@@ -723,6 +753,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 return 50
             if nom == "Thwart":
                 if type_cible == "MainScheme":
+                    # AJOUT 01/11/2026 (Hellfire Hunt, Black King hf204b : « Threat cannot be removed from this scheme ») : contrer un
+                    # complot qui refuse qu'on lui retire de la menace ne fait rien, la manigance annexe (Captured by Hellfire!) passe d'abord.
+                    # Sans effet sur tout complot dont le texte ne porte pas cette phrase.
+                    _texte_cx = str(getattr(getattr(face, "paper", None), "text", "") or "").lower()
+                    if "threat cannot be removed" in _texte_cx:
+                        return 60
                     # Sous Crise, retirer de la menace du plan principal ne
                     # fait rien : tout passe apres la manigance qui l'impose.
                     return 60 if ctx.get("crise") else 200
@@ -750,6 +786,26 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # passe.
         besoin = min(max(maxi, besoin), besoin + etat.get("cibles_bonus", 0))
         return ordonnees[:besoin]
+
+    def sans_reserve_epuisee(candidates, infos, besoin):
+        """Garde au plus `besoin` moyens, en laissant de cote ceux dont la reserve de cartes est deja prise.
+
+        Moyens qui se partagent une reserve de cartes (Mantis : Empathetic Advantage + La Madone Celeste, une carte Desorientee chacune) : le
+        moteur refuse le paiement entier si on en prend plus que la reserve n'en contient (24/11/2026)."""
+        reserves = infos.get("reserves") or {}
+        prises = {}
+        choisies = []
+        for oid in candidates:
+            if len(choisies) >= besoin:
+                break
+            reserve = reserves.get(oid) or reserves.get(str(oid))
+            if reserve:
+                cle, disponibles = reserve[0], reserve[1]
+                if prises.get(cle, 0) >= disponibles:
+                    continue
+                prises[cle] = prises.get(cle, 0) + 1
+            choisies.append(oid)
+        return choisies
 
     def payer(option, cibles, ctx):
         """Couvre le cout en depensant d'abord les cartes les plus cheres.
@@ -780,7 +836,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         # Depenser d'abord ce qu'on aura le plus de mal a jouer.
         candidates.sort(key=lambda oid: infos_carte(ctx, oid).get("cout", 0),
                         reverse=True)
-        choisies = candidates[:besoin]
+        choisies = sans_reserve_epuisee(candidates, infos, besoin)
         return choisies if len(choisies) >= besoin else []
 
     def executable(option, ctx):
@@ -822,7 +878,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         interdits = {str(option.get("bind_id"))}
         candidates = [str(oid) for entree in (infos.get("payment") or [])
                       for oid in list(entree)[:1] if str(oid) not in interdits]
-        return len(candidates) >= besoin
+        return len(sans_reserve_epuisee(candidates, infos, besoin)) >= besoin
 
     def compteurs_du_joueur(ctx):
         """Compteurs portes par l'identite et les allies du joueur.
@@ -903,7 +959,19 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                 tuple(sorted(nombre(getattr(s, "health", 0))
                              for s in ctx.get("sbires") or [])),
                 compteurs_du_joueur(ctx),
+                positions_ville(),
                 tuple(sorted(str(o.get("id")) for o in options)))
+
+    def positions_ville():
+        """AJOUT (22/10/2026, « La ville ne dort jamais ») : la case de chaque joueur dans la ville. Se deplacer (The City) change le plateau
+        sans toucher aucun des autres termes, donc deux deplacements d'affilee passaient pour « le plateau n'a pas bouge ». (Le pilote peut
+        encore boucler en allant et venant entre deux lieux : l'empreinte revient alors a l'identique, c'est une limite de SON heuristique,
+        pas un defaut du moteur.)"""
+        try:
+            ville = getattr(monde(), "ville", None)
+            return () if ville is None else tuple(sorted(ville.positions.items()))
+        except Exception:
+            return ()
 
     def clef_option(o):
         """Identite d'une option pour le compteur anti-repetition `deja`.
@@ -940,6 +1008,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
         except Exception:
             etat["joueur_interroge"] = 0
         capturer_si_phase_mechant()
+        photographier_le_round()
         if etat["asks"] > MAX_ASKS:
             rendre("bloquee", f"plafond de {MAX_ASKS} questions atteint")
         try:
@@ -1005,6 +1074,7 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
             ctx.get("taille_defausse", 0),
             len(ctx["allies"]) + len(ctx["sbires"]) + len(ctx["schemes_secondaires"]),
             compteurs_du_joueur(ctx),
+            positions_ville(),   # (22/10/2026) un deplacement dans la ville est un progres
         )
         if brute and brute == etat.get("derniere_question_brute") \
                 and progres == etat.get("dernier_progres") \
@@ -1273,6 +1343,12 @@ def jouer_une_partie(game_dir, port, deck, vilain, difficulte, profil, graine,
                            "resources": payer(meilleure, cibles, ctx)})
 
     DeviceManager.DoGetInput = pilote
+    # AJOUT 16/11/2026 : la SONDE D'ANNULATION (tools/sonde_annuler.py) s'intercale devant le pilote quand
+    # `AUTOPLAY_SONDE_ANNULER` est posee ; sans elle, aucun changement.
+    if os.environ.get("AUTOPLAY_SONDE_ANNULER"):
+        sys.path.insert(0, os.path.join(game_dir, "tools"))
+        import sonde_annuler
+        DeviceManager.DoGetInput = sonde_annuler.envelopper(pilote, monde, etiquette)
     DeviceManager.DoWaitConnect = lambda self, player_id, check: None
     DeviceManager.DoWaitSync = lambda self, player_id, check: None
 

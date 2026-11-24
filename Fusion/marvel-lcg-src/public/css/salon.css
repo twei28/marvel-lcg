@@ -52,6 +52,13 @@
 .salon-place.mechant .tb-siege{box-shadow:inset 0 0 0 3px var(--eux,var(--agir))}
 .salon-place.mechant .tb-siege .portrait{background-size:cover;background-position:center 18%}
 
+.salon-echanger{margin-top:2px;width:100%;font:700 9px "Segoe UI",system-ui,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:var(--mute);background:transparent;border:1px solid var(--mute);border-radius:4px;padding:2px 0;cursor:pointer}
+.salon-echanger:hover{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
+.salon-echanger.en-attente,.salon-echanger:disabled{opacity:.5;cursor:default}
+.salon-echange-recu{display:flex;align-items:center;flex-wrap:wrap;gap:8px;width:100%;margin-top:8px;padding:6px 10px;background:var(--panneau,#1b1b22);border:1px solid var(--affiche-jaune);border-radius:6px;font:600 11px "Segoe UI",system-ui,sans-serif;color:var(--mute)}
+.salon-echange-recu button{font:700 10px "Segoe UI",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.03em;border-radius:4px;border:1px solid var(--mute);background:transparent;color:var(--mute);padding:3px 8px;cursor:pointer}
+.salon-echange-recu button:hover{color:var(--affiche-jaune);border-color:var(--affiche-jaune)}
+
 /* Les decks : la grille de l'assistant, le retour en tête. */
 .salon-retour{
   flex:none;align-self:flex-start;font:800 12px "Segoe UI",system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;
@@ -74,6 +81,21 @@
 /* Un deck du compte de l'invité (13/10/2026) : le sien, pas celui de l'hôte. */
 .salon-tag-compte{background:var(--affiche-jaune);color:#1b1405}
 .salon-b .tb-deck .do-foot{justify-content:flex-start}
+
+/* Connexion de l'invité dans le salon (cas B, 28/10/2026). */
+.salon-connexion{
+  flex:none;display:flex;flex-direction:column;gap:8px;
+  padding:10px 12px;border:1px solid var(--affiche-jaune);background:var(--steel);
+}
+.salon-connexion-intro{margin:0;font-size:13px;line-height:1.4;color:var(--mute)}
+.salon-connexion-ligne{display:flex;gap:8px;flex-wrap:wrap;align-items:stretch}
+.salon-connexion-champ{
+  flex:1 1 180px;min-width:0;min-height:36px;padding:7px 10px;font:inherit;font-size:13px;color:inherit;
+  border:3px solid #1e1e1e;background:#1e1e1e;
+}
+.salon-connexion-champ:focus{outline:0;border-color:var(--affiche-jaune)}
+.salon-connexion .salon-pret{flex:none}
+.salon-connexion-erreur{margin:0;font-size:12px;color:#e0484a}
 
 .salon-mcdb{flex:none;padding:10px 0 0;border-top:3px solid #1e1e1e}
 .salon-mcdb b{display:block;margin-bottom:8px;font:800 11px "Segoe UI",system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}

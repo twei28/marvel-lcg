@@ -1,0 +1,501 @@
+{
+ "identite": 1,
+ "monde": {
+  "players": [
+   {
+    "additional_deck": [],
+    "additional_discard_pile": [],
+    "allies": [],
+    "area_hero": [
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60037a",
+      "card_type": "Hero",
+      "cost": 0,
+      "crc": 38,
+      "down_card_ids": [
+       "60037b"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [
+       3,
+       4,
+       5,
+       6,
+       7,
+       1,
+       2,
+       8
+      ],
+      "game_area": 1,
+      "id": 1,
+      "info": {
+       "acceleration_icon": 0,
+       "ally_limit": 3,
+       "attached_to_enemy": 0,
+       "attack": 2,
+       "curr_ally_limit": 0,
+       "curr_restricted_limit": 0,
+       "defense": 2,
+       "hand_size": 5,
+       "health": 9,
+       "is_infinite_health": 0,
+       "k_first_player_token": 1,
+       "k_threat": 0,
+       "max_health": 9,
+       "restricted_limit": 2,
+       "retaliate": 0,
+       "stalwart": 0,
+       "steady": 0,
+       "surge": 0,
+       "thwart": 2,
+       "toughness": 0,
+       "villainous": 0,
+       "vulnerable": 0,
+       "with_player": 1
+      },
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": false,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Echo",
+      "pic_id": "60037a",
+      "resources": [],
+      "traits": {
+       "t_DEFENDER": 1,
+       "t_MARTIAL_ARTIST": 1
+      },
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 1,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "01087",
+      "card_type": "Event",
+      "cost": 2,
+      "crc": -1,
+      "down_card_ids": [
+       "player"
+      ],
+      "effect_by_cards": [
+       1
+      ],
+      "effect_to_cards": [],
+      "effects": [
+       60
+      ],
+      "game_area": 1,
+      "id": 81,
+      "info": {},
+      "is_action": true,
+      "is_face_up": false,
+      "is_new": false,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Haymaker",
+      "pic_id": "01087",
+      "resources": [
+       42
+      ],
+      "traits": {
+       "t_ATTACK": 1
+      },
+      "visible_for_players": [
+       0
+      ]
+     }
+    ],
+    "area_processing": [],
+    "dealt_encounter_cards": [],
+    "engaged_enemies": [],
+    "environment_area": [],
+    "hand_cards": [
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60040a",
+      "card_type": "Event",
+      "cost": 0,
+      "crc": -2,
+      "down_card_ids": [
+       "player"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [
+       15
+      ],
+      "game_area": 1,
+      "id": 9,
+      "info": {},
+      "is_action": true,
+      "is_face_up": false,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Photographic Reflexes",
+      "pic_id": "60040a",
+      "resources": [
+       2
+      ],
+      "traits": {},
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60040b",
+      "card_type": "Event",
+      "cost": 0,
+      "crc": -2,
+      "down_card_ids": [
+       "player"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [
+       17
+      ],
+      "game_area": 1,
+      "id": 11,
+      "info": {},
+      "is_action": true,
+      "is_face_up": false,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Photographic Reflexes",
+      "pic_id": "60040b",
+      "resources": [
+       4
+      ],
+      "traits": {},
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60040c",
+      "card_type": "Event",
+      "cost": 0,
+      "crc": -2,
+      "down_card_ids": [
+       "player"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [
+       19
+      ],
+      "game_area": 1,
+      "id": 13,
+      "info": {},
+      "is_action": true,
+      "is_face_up": false,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Photographic Reflexes",
+      "pic_id": "60040c",
+      "resources": [
+       6
+      ],
+      "traits": {},
+      "visible_for_players": [
+       0
+      ]
+     }
+    ],
+    "hand_size": 5,
+    "has_finished_turn_this_round": false,
+    "is_eliminated": false,
+    "obligations_area": [],
+    "player_deck": [],
+    "player_discard_pile": [],
+    "reserve": [],
+    "resources": "",
+    "rising_tide": [],
+    "set_aside_deck": [],
+    "set_aside_nemesis_sets": [
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60061",
+      "card_type": "Minion",
+      "cost": 0,
+      "crc": -1,
+      "down_card_ids": [
+       "encounter"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [],
+      "game_area": 1,
+      "id": 3,
+      "info": {},
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Kingpin",
+      "pic_id": "60061",
+      "resources": [],
+      "traits": {
+       "t_CRIMINAL": 1
+      },
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60062",
+      "card_type": "EncounterSideScheme",
+      "cost": 0,
+      "crc": -1,
+      "down_card_ids": [
+       "encounter"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [],
+      "game_area": 1,
+      "id": 4,
+      "info": {},
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Master Manipulator",
+      "pic_id": "60062",
+      "resources": [],
+      "traits": {},
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60063",
+      "card_type": "Minion",
+      "cost": 0,
+      "crc": -1,
+      "down_card_ids": [
+       "encounter"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [],
+      "game_area": 1,
+      "id": 5,
+      "info": {},
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Kingpin's Henchman",
+      "pic_id": "60063",
+      "resources": [],
+      "traits": {
+       "t_CRIMINAL": 1
+      },
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60063",
+      "card_type": "Minion",
+      "cost": 0,
+      "crc": -1,
+      "down_card_ids": [
+       "encounter"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [],
+      "game_area": 1,
+      "id": 6,
+      "info": {},
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Kingpin's Henchman",
+      "pic_id": "60063",
+      "resources": [],
+      "traits": {
+       "t_CRIMINAL": 1
+      },
+      "visible_for_players": [
+       0
+      ]
+     },
+     {
+      "bind_object_id": 0,
+      "bonus": {},
+      "buffs": {},
+      "card_id": "60064",
+      "card_type": "Treachery",
+      "cost": 0,
+      "crc": -1,
+      "down_card_ids": [
+       "encounter"
+      ],
+      "effect_by_cards": [],
+      "effect_to_cards": [],
+      "effects": [],
+      "game_area": 1,
+      "id": 7,
+      "info": {},
+      "is_action": false,
+      "is_face_up": true,
+      "is_new": true,
+      "is_ready": true,
+      "looked_at_by": [],
+      "name": "Pawn of the Kingpin",
+      "pic_id": "60064",
+      "resources": [],
+      "traits": {},
+      "visible_for_players": [
+       0
+      ]
+     }
+    ],
+    "supports": []
+   }
+  ],
+  "render_id": 1
+ },
+ "options": [
+  {
+   "all_legal_targets": [],
+   "au_maximum": false,
+   "bind_id": 9,
+   "bind_player_id": 0,
+   "failure_reason": "",
+   "id": 15,
+   "is_search": false,
+   "name": "Hero_Action",
+   "select_rule": "",
+   "select_rule_param": [
+    0,
+    0
+   ],
+   "target_must_include_traits": [],
+   "target_num_range": [
+    0,
+    0
+   ],
+   "target_payment": {}
+  },
+  {
+   "all_legal_targets": [],
+   "au_maximum": false,
+   "bind_id": 11,
+   "bind_player_id": 0,
+   "failure_reason": "",
+   "id": 17,
+   "is_search": false,
+   "name": "Hero_Action",
+   "select_rule": "",
+   "select_rule_param": [
+    0,
+    0
+   ],
+   "target_must_include_traits": [],
+   "target_num_range": [
+    0,
+    0
+   ],
+   "target_payment": {}
+  },
+  {
+   "all_legal_targets": [],
+   "au_maximum": false,
+   "bind_id": 13,
+   "bind_player_id": 0,
+   "failure_reason": "",
+   "id": 19,
+   "is_search": false,
+   "name": "Hero_Action",
+   "select_rule": "",
+   "select_rule_param": [
+    0,
+    0
+   ],
+   "target_must_include_traits": [],
+   "target_num_range": [
+    0,
+    0
+   ],
+   "target_payment": {}
+  },
+  {
+   "all_legal_targets": [
+    49
+   ],
+   "au_maximum": false,
+   "bind_id": 81,
+   "bind_player_id": 0,
+   "failure_reason": "",
+   "id": 60,
+   "is_search": false,
+   "name": "Play",
+   "select_rule": "",
+   "select_rule_param": [
+    0,
+    0
+   ],
+   "target_must_include_traits": [],
+   "target_num_range": [
+    1,
+    1
+   ],
+   "target_payment": {
+    "0": {
+     "cost": "0",
+     "payment": [
+      {
+       "2": "Y"
+      },
+      {
+       "4": "B"
+      },
+      {
+       "6": "R"
+      }
+     ],
+     "rule": [],
+     "warning": {}
+    }
+   }
+  }
+ ]
+}

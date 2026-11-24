@@ -198,7 +198,7 @@ EPREUVES += [
         "heros": "captain_america",
         # 21180a « Secure the Landing Pad » vaincu se retourne sur 21180b
         # « * Cosmo » : c'est cette face que CollectMTS cherche en jeu.
-        "avant": ["Puzzle.PutIntoPlay('21180b', under_control=True)"],
+        "avant": ["Puzzle.Flip('21180a')"],
         "carnet_attendu": {
             "gagnee": True,
             "cles": {"Campaign Pool: Cosmo": "1"},
@@ -206,6 +206,14 @@ EPREUVES += [
         },
         "suivant": "thanos",
         "attendu": {"en_jeu": ["21180b"]},
+    },
+    {
+        "nom": "mts — scenario 3 : la manigance de campagne Hack Sanctuary's Computer est recto-verso (elle se retourne, elle ne se couche pas)",
+        "scenario": "the_tower_defense",
+        "heros": "captain_america",
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "thanos",
+        "attendu": {"en_jeu": ["21184a"], "avec_dos": ["21184a"]},
     },
     {
         "nom": "mts — Cosmo NON libere : rien au carnet, et aucun allie de campagne au scenario 3",
@@ -233,7 +241,7 @@ EPREUVES += [
         # 21182a « Save the Shawarma Place » retourne sur 21182b « * Black
         # Swan » : la carte existe (Shawarma), et elle n'est pas dans la pile
         # de victoire (Black Swan reste avec vous).
-        "avant": ["Puzzle.PutIntoPlay('21182b')"],
+        "avant": ["Puzzle.Flip('21182a')"],
         "carnet_attendu": {
             "cles": {"Campaign Pool: Shawarma": "1", "Campaign Pool: Black Swan": "1"},
         },
@@ -247,7 +255,7 @@ EPREUVES += [
         "scenario": "the_tower_defense",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21182b')",
+            "Puzzle.Flip('21182a')",
             "Puzzle.MoveTo('21182b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {
@@ -281,7 +289,7 @@ EPREUVES += [
         "scenario": "thanos",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21184b')",
+            "Puzzle.Flip('21184a')",
             "Puzzle.MoveTo('21184b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {"cles_absentes": ["Campaign Pool: System Shock"]},
@@ -313,7 +321,7 @@ EPREUVES += [
         "heros": "captain_america",
         # 21186b « Retrieve Odin's Armor » existe (la quete a ete retournee)
         # mais n'est pas en pile de victoire : la pierre, pas l'armure.
-        "avant": ["Puzzle.PutIntoPlay('21186b')"],
+        "avant": ["Puzzle.Flip('21186a')"],
         "carnet_attendu": {
             "cles": {"Campaign Pool: Norn Stone": "1"},
             "cles_absentes": ["Campaign Pool: Odin"],
@@ -326,7 +334,7 @@ EPREUVES += [
         "scenario": "hela",
         "heros": "captain_america",
         "avant": [
-            "Puzzle.PutIntoPlay('21186b')",
+            "Puzzle.Flip('21186a')",
             "Puzzle.MoveTo('21186b', 'VictoryDisplay')",
         ],
         "carnet_attendu": {
@@ -1519,3 +1527,366 @@ EPREUVES += [
         "attendu": {"taille_main": 6},
     },
 ]
+
+
+# ============================================================ Galactic Storm (galactic_storm)
+#
+# Carnet : « Recruited Allies » / « Campaign Pool: <nom> » (listes/drapeaux cumulatifs), « Imperial
+# Guard Removed » (liste, informationnel — voir le mot en tete de cards/pack/galactic_storm/
+# campaign.py), « Time Pressure » (entier, ne baisse jamais), « Odd Guesses Correct » (entier,
+# saisi par le joueur), « Campaign Completed ». Le moteur ecrit tout (campaign.py), le panneau
+# n'a rien a detecter seul (victoire majoritairement "auto" sans "detection").
+EPREUVES += [
+    {
+        "nom": "galactic_storm — victoire Kree Sentry, Gladiator vaincu : Rick Jones ET Gladiator rejoignent la reserve, l'Imperial Guard utilisee est notee",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "avant": [
+            "Puzzle.PutIntoPlay('gs098')", "Puzzle.Damage('gs098', 8)",
+            "Puzzle.PutIntoPlay('gs094')",
+        ],
+        "carnet_attendu": {
+            "gagnee": True,
+            "cles": {
+                "Recruited Allies": "Rick Jones;Gladiator",
+                "Campaign Pool: Rick Jones": "1",
+                "Campaign Pool: Gladiator": "1",
+                "Imperial Guard Removed": "gs092;gs094;gs098",
+            },
+        },
+    },
+    {
+        # gs092 (un des 3 environnements Loyal Devotion/Disciplined Training/Noble Bearing) entre
+        # TOUJOURS en jeu de base des que le modulaire Imperial Guard est actif (un seul SETTING en
+        # jeu, choisi au hasard a la mise en place du scenario) : sa presence dans « Imperial Guard
+        # Removed » ne depend donc PAS d'un allie explicitement pose par l'epreuve.
+        "nom": "galactic_storm — victoire Kree Sentry SANS Gladiator vaincu : seul Rick Jones rejoint la reserve, l'environnement Imperial Guard de base est quand meme note",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "cles": {"Recruited Allies": "Rick Jones", "Campaign Pool: Rick Jones": "1",
+                      "Imperial Guard Removed": "gs092"},
+            "cles_absentes": ["Campaign Pool: Gladiator"],
+        },
+    },
+    {
+        "nom": "galactic_storm — Time Pressure cumulee (venue du carnet) fixe la menace de depart de la Nega-Bombe au scenario 5",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet": {"Time Pressure": "20"},
+        "carnet_attendu": {"gagnee": True, "cles": {"Time Pressure": "20"}},
+        "suivant": "gs_supreme_intelligence",
+        "attendu": {"menace": [["gs222a", 20]], "deck_rencontre": ["gs223"]},
+    },
+    {
+        # Graine 42 : sans correction, le tirage aleatoire de l'environnement Imperial Guard au
+        # scenario 2 tombe sur gs092 (meme tirage que celui constate au scenario 1 plus haut,
+        # DETERMINISTE par graine) — exactement la carte que ce carnet entrant dit deja retiree de
+        # la campagne. `CorrigerImperialGuardExclue` doit la remplacer par une AUTRE carte du meme
+        # groupe (gs091 ou gs093), jamais par gs092 lui-meme.
+        "nom": "galactic_storm — une carte Imperial Guard deja retiree de la campagne n'est pas repiochee au scenario suivant",
+        "scenario": "gs_kree_sentry",
+        "heros": "spider_man",
+        "carnet": {"Imperial Guard Removed": "gs092"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "gs_majestrix_verdict",
+        "attendu": {"pas_en_jeu": ["gs092"], "un_parmi": [["en_jeu", ["gs091", "gs093"]]]},
+    },
+    {
+        # Quasar porte gs302 Epoch (allie IDENTITY-SPECIFIC, desc.Class "Hero") dans son hero_deck.
+        # Le pilote de test accepte toujours la PREMIERE option offerte : avec gs227 (Binary)
+        # disponible en reserve, « chaque_joueur_peut_remplacer_un_allie » doit retirer Epoch et
+        # poser Binary a la place.
+        "nom": "galactic_storm — remplacement cible d'un allie d'identite par un allie de campagne au scenario 5",
+        "scenario": "gs_kree_sentry",
+        "heros": "quasar",
+        "carnet": {"Campaign Pool: gs227": "1"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "gs_supreme_intelligence",
+        "heros_suivant": "quasar",
+        "attendu": {"pas_deck": ["gs302"], "deck": ["gs227"]},
+    },
+]
+
+
+# ============================================ La ville ne dort jamais (punisher_mcdc_2026)
+#
+# Carnet : « Final LEAD Location », « Gunrunner », « Seized Tech Crates » (combat 1) ; « Underling », « Punisher's Ordnance Cache » (combat 2) ;
+# « Punisher Ally » (combat 3). Le moteur ecrit tout (cards/pack/punisher_mcdc_2026/campaign.py) ; l'ecran choisit le scenario des combats 2 et 3
+# d'apres le carnet (public/js/campagne/catalogue-carnet.js, teste par tools/test_catalogue_carnet.mjs).
+EPREUVES += [
+    {
+        "nom": "punisher — victoire au combat 2 (Jigsaw) : le sous-fifre et la Cache sont notes, et le combat 3 met en jeu les Caisses, la Cache et Punishment",
+        "scenario": "tracking_the_buyer_the_getaway_jigsaw",
+        "heros": "spider_man",
+        "carnet": {"Seized Tech Crates": "1", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "tracking_the_buyer",
+            "cles": {"Underling": "Jigsaw", "Punisher's Ordnance Cache": "1"},
+        },
+        "suivant": "punishment_hobgoblin",
+        "attendu": {"en_jeu": ["pu144", "pu141", "pu143"], "pas_en_jeu": ["pu145"]},
+    },
+    {
+        "nom": "punisher — victoire au combat 3 : l'allie Punisher est gagne, et le combat 4 le met en jeu avec Power to the People",
+        "scenario": "punishment_hobgoblin",
+        "heros": "spider_man",
+        "carnet": {"Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": True, "scenario": "punishment", "cles": {"Punisher Ally": "1"}},
+        "suivant": "kingsfall",
+        "attendu": {"en_jeu": ["pu146", "pu148", "pu149a"], "pas_en_jeu": ["pu147"], "compteurs": [["pu148", "counter", 1]]},
+    },
+    {
+        "nom": "punisher — DEFAITE au combat 3 : pas d'allie, et le combat 4 n'a pas le Punisher (mais Power to the People y est)",
+        "scenario": "punishment_hobgoblin",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Seized Tech Crates": "1", "Punisher's Ordnance Cache": "1", "Underling": "Jigsaw", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": False, "scenario": "punishment", "cles_absentes": ["Punisher Ally"]},
+        "suivant": "kingsfall",
+        "attendu": {"en_jeu": ["pu148", "pu149a"], "pas_en_jeu": ["pu146"]},
+    },
+    {
+        "nom": "punisher — victoire au combat 4 (Kingsfall) : estampille `kingsfall`, campagne gagnee",
+        "scenario": "kingsfall",
+        "heros": "spider_man",
+        "carnet": {"Punisher Ally": "1", "Player 1 Identity": "Spider-Man"},
+        "carnet_attendu": {"gagnee": True, "scenario": "kingsfall"},
+    },
+]
+
+
+# ============================================================ Shadowland (shadowland), livret FR
+#
+# Carnet : « Dark Protege Removed » (liste, ecrit par le moteur), « Player N Overpowering Scenario 1|2 » (ecrit par le moteur : la Corruption est
+# retournee en face B), « Player N Recorded Card 1|2 » (SAISI par le joueur : `choix`), « Campaign Completed ». Voir docs/packs/shadowland/CAMPAGNE.md.
+EPREUVES += [
+    {
+        "nom": "shadowland — victoire au scenario 1 avec une Corruption INSOUTENABLE : le scenario 2 la recoit avec 1 jeton Corruption",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "avant": ["Puzzle.Counter('sl072a', 'corruption', 5)"],
+        "carnet_attendu": {"gagnee": True, "scenario": "shadows_in_the_night",
+                           "cles": {"Player 1 Overpowering Scenario 1": "1"}, "cles_presentes": ["Dark Protege Removed"]},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["sl072a"], "compteurs": [["sl072a", "corruption", 1]]},
+    },
+    {
+        "nom": "shadowland — victoire au scenario 1 avec une Corruption ordinaire : le scenario 2 la recoit SANS jeton",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True, "cles_absentes": ["Player 1 Overpowering Scenario 1"]},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["sl072a"], "compteurs": [["sl072a", "corruption", 0]]},
+    },
+    {
+        "nom": "shadowland — la carte inscrite par le joueur apres le scenario 1 (Aunt May) entre en jeu au scenario 2, contre 1 jeton Corruption",
+        "scenario": "shadows_in_the_night",
+        "heros": "spider_man",
+        "choix": {"Player 1 Recorded Card 1": "01006"},
+        "carnet_attendu": {"gagnee": True},
+        "suivant": "shadow_labyrinth",
+        "attendu": {"en_jeu": ["01006", "sl072a"], "compteurs": [["sl072a", "corruption", 1]]},
+    },
+    {
+        "nom": "shadowland — scenario 2 gagne avec une Corruption insoutenable, deux cartes inscrites : le scenario 3 pose 1 + 2 jetons Corruption et met les deux cartes en jeu",
+        "scenario": "shadow_labyrinth",
+        "heros": "spider_man",
+        "carnet": {"Player 1 Overpowering Scenario 1": "1", "Player 1 Recorded Card 1": "01006"},
+        "avant": ["Puzzle.Counter('sl072a', 'corruption', 5)"],
+        "choix": {"Player 1 Recorded Card 2": "01008"},
+        "carnet_attendu": {"gagnee": True, "scenario": "shadow_labyrinth",
+                           "cles": {"Player 1 Overpowering Scenario 1": "1", "Player 1 Overpowering Scenario 2": "1", "Player 1 Recorded Card 1": "01006"}},
+        "suivant": "heart_of_shadow",
+        "attendu": {"en_jeu": ["01006", "01008"], "compteurs": [["sl072a", "corruption", 4]]},
+    },
+    {
+        "nom": "shadowland — victoire au scenario 3 : la campagne est gagnee",
+        "scenario": "heart_of_shadow",
+        "heros": "spider_man",
+        "carnet_attendu": {"gagnee": True, "scenario": "heart_of_shadow", "cles": {"Campaign Completed": "1"}},
+    },
+]
+
+
+# ================================================ MojoMania (mojo) — 3 scenarios
+#
+# Livret officiel (pack 39) : pages 9 (MaGog), 13-14 (Spiral), 17 (Mojo).
+# Moteur : `cards/pack/mojo/campaign.py`. Cles du carnet :
+#   « Player N Support / Upgrade #1 » (scenario 1) et « #2 » (scenario 2) ;
+#   « Longshot In Play: Scenario 1 / 2 » ; « Modular Sets Used » (cumulee, ecrite
+#   par le moteur a partir de « Modular Sets This Scenario » que l'ecran injecte).
+# Cartes choisies : Stark Tower (01034, soutien, cout 2) et Powered Gauntlets
+# (01038, amelioration, cout 2), toutes deux dans le deck de depart d'Iron Man.
+EPREUVES += [
+    {
+        "nom": "mojo — MaGog gagne AVEC Longshot en jeu : le carnet le note et porte l'estampille « magog »",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "avant": ["Puzzle.PutIntoPlay('39071', under_control=True)"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles": {"Longshot In Play: Scenario 1": "1"},
+        },
+    },
+    {
+        "nom": "mojo — MaGog : l'ecran se voit proposer les soutiens a cout 3 ou moins (The Champion est cote BOOING CROWD), jamais le cout 4",
+        "scenario": "magog",
+        "heros": "iron_man",
+        # Helicarrier (01092, cout 3) et Tac Team (01056, cout 3) sont eligibles ; Avengers Mansion (01091, cout 4) ne l'est pas.
+        "avant": ["Puzzle.PutIntoPlay('01092')", "Puzzle.PutIntoPlay('01056')", "Puzzle.PutIntoPlay('01091')"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles": {"Player 1 Eligible Support / Upgrade": "01056;01092"},
+        },
+    },
+    {
+        "nom": "mojo — MaGog gagne SANS Longshot en jeu : la cle est absente du carnet",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "magog",
+            "cles_absentes": ["Longshot In Play: Scenario 1"],
+        },
+    },
+    {
+        "nom": "mojo — Spiral : la carte enregistree au scenario 1 entre en jeu sous controle, et la menace de la manigance monte de son cout",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "choix": {"Player 1 Support / Upgrade #1": "01034"},
+        "suivant": "spiral",
+        # 39015b : 1 de menace par heros au depart (1 joueur) + cout 2 de Stark Tower.
+        "attendu": {"en_jeu": ["01034"], "menace": [["39015b", 3]]},
+    },
+    {
+        "nom": "mojo — Spiral : Longshot note en jeu au carnet est REVELE (en jeu, pas dans le deck rencontre)",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "avant": ["Puzzle.PutIntoPlay('39071', under_control=True)"],
+        "suivant": "spiral",
+        "attendu": {"en_jeu": ["39071"], "pas_deck_rencontre": ["39071"]},
+    },
+    {
+        "nom": "mojo — Spiral : Longshot NON note au carnet est melange au deck rencontre",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "suivant": "spiral",
+        "attendu": {"pas_en_jeu": ["39071"], "deck_rencontre": ["39071"]},
+    },
+    {
+        "nom": "mojo — Mojo : les DEUX cartes enregistrees (#1 et #2) entrent en jeu, menace = cout total",
+        "scenario": "spiral",
+        "heros": "iron_man",
+        "carnet": {"Player 1 Support / Upgrade #1": "01034"},
+        "choix": {"Player 1 Support / Upgrade #2": "01038"},
+        "suivant": "mojo",
+        # 39025b : 10 de menace au depart + 2 (Stark Tower) + 2 (Powered Gauntlets).
+        "attendu": {"en_jeu": ["01034", "01038"], "menace": [["39025b", 14]]},
+    },
+    {
+        "nom": "mojo — Modules utilises : apres MaGog avec « Modular Sets This Scenario » = crime, la cle vaut « crime »",
+        "scenario": "magog",
+        "heros": "iron_man",
+        "carnet": {"Modular Sets This Scenario": "crime"},
+        "carnet_attendu": {"cles": {"Modular Sets Used": "crime"}},
+    },
+    {
+        "nom": "mojo — Modules utilises : la liste est CUMULEE d'un scenario a l'autre, sans doublon",
+        "scenario": "spiral",
+        "heros": "iron_man",
+        "carnet": {"Modular Sets Used": "crime", "Modular Sets This Scenario": "fantasy;horror;sci_fi"},
+        "carnet_attendu": {"scenario": "spiral", "cles": {"Modular Sets Used": "crime;fantasy;horror;sci_fi"}},
+    },
+]
+
+
+# ============================================================ Hellfire Hunt (hf), scenario 5 « Cassandra Nova » (01/11/2026)
+#
+# Le scenario 5 est le DERNIER de la boite : pas de « suivant » naturel. On rejoue donc le meme scenario avec le carnet sortant pour mesurer ce que
+# la mise en place de CAMPAGNE (cards.pack.hellfire_hunt.campaign.CampaignSetup(5), appelee par hf604a) fait des cles : Rally the Survivors revelee, pas de
+# Xavier's Institute, Tactical Help et Enemy Of Enemy melanges au deck de rencontre. La defaite de CAMPAGNE en expert est une regle d'ecran
+# (ui-app/src/board/campagne/defaite-campagne.ts) : voir defaite-hellfire.test.ts.
+# BLOC « hellfire_cassandra_nova » (ne pas deplacer : l'agent du scenario 5 le reecrit seul).
+EPREUVES += [
+    {
+        "nom": "hellfire — victoire sur Cassandra Nova (campagne) : carnet sortant estampille du scenario, allies Recruited gardes ; la mise en place du scenario 5 est jouee",
+        "scenario": "hellfire_cassandra_nova",
+        "heros": "spider_man",
+        "carnet": {"Recruited Allies": "hf013;hf014"},
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hellfire_cassandra_nova",
+            # Emma Frost (case « Redemption » non cochee) est melangee au deck Recruited Mutants par la mise en place du scenario 5 : tout allie sorti de la zone
+            # « mise de cote » est note recrute (livret : « Record each ... ally in the Recruited Mutants deck »), regle du 01/11/2026.
+            "cles": {"Recruited Allies": "hf013;hf014;hf025"},
+            "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity"],
+        },
+        "suivant": "hellfire_cassandra_nova",
+        "attendu": {"en_jeu": ["hf045", "hf607"], "pas_en_jeu": ["hf048"]},
+    },
+    {
+        "nom": "hellfire — DEFAITE sur Cassandra Nova : rien n'est ecrit au carnet de scenario (on rejoue sans penalite en standard)",
+        "scenario": "hellfire_cassandra_nova",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Recruited Allies": "hf013;hf014"},
+        "carnet_attendu": {"gagnee": False, "scenario": "hellfire_cassandra_nova", "cles_presentes": ["Player 1 Remaining hit points"]},
+    },
+    {
+        "nom": "hellfire — EXPERT : les PV restants du carnet (4) sont reposes au depart ; le pilote accepte de payer 1 pion Acceleration pour soigner : identite soignee (0 degat) et 1 pion sur le complot COURANT (hf605b)",
+        "scenario": "hellfire_cassandra_nova_expert",
+        "heros": "spider_man",
+        "choix": {"Player 1 Remaining hit points": "4"},
+        "suivant": "hellfire_cassandra_nova_expert",
+        "attendu": {"degats_identite": 0, "jetons": [["hf605b", "acceleration_token", 1]], "en_jeu": ["hf602", "hf607"]},
+    },
+]
+# FIN BLOC hellfire_cassandra_nova
+
+
+# ============================================================ Hellfire Hunt (hf), scenario 4 « Torn » (01/11/2026)
+#
+# `hf503a` porte `hc.MiseEnPlace(4)` (mise en place de CAMPAGNE) et `WriteCampaignLogAtGameOver(ReleveTorn)` : le releve commun + les allies qui ne sont plus dans la zone
+# « mise de cote » (livret p.14). On rejoue le meme scenario avec le carnet sortant pour mesurer la reprise (Xavier's Institute en jeu, allies gagnes hors de la zone mise de cote).
+# BLOC « hellfire_torn » (ne pas deplacer : l'agent du scenario 4 le reecrit seul).
+EPREUVES += [
+    {
+        "nom": "hellfire Torn — victoire (campagne) : carnet sortant estampille « hellfire_torn », l'allie recrute en cours de partie est note ; la mise en place suivante : Xavier's Institute en jeu, l'allie note n'est plus de cote",
+        "scenario": "hellfire_torn",
+        "heros": "spider_man",
+        "carnet": {"Recruited Allies": "hf013"},
+        "avant": ["Puzzle.PutIntoPlay('hf014', under_control=True)"],
+        "carnet_attendu": {
+            "gagnee": True,
+            "scenario": "hellfire_torn",
+            "cles": {"Recruited Allies": "hf013;hf014"},
+            "cles_presentes": ["Player 1 Remaining hit points", "Player 1 Identity", "Removed Potential Allies"],
+        },
+        "suivant": "hellfire_torn",
+        "attendu": {"en_jeu": ["hf048"], "pas_de_cote": ["hf013"], "de_cote": ["hf015", "hf016"]},
+    },
+    {
+        "nom": "hellfire Torn — DEFAITE : rien n'est ecrit au carnet de scenario (on rejoue sans penalite)",
+        "scenario": "hellfire_torn",
+        "heros": "spider_man",
+        "fin": "Lose",
+        "carnet": {"Recruited Allies": "hf013"},
+        "avant": ["Puzzle.PutIntoPlay('hf014', under_control=True)"],
+        "carnet_attendu": {"gagnee": False, "scenario": "hellfire_torn", "cles_presentes": ["Player 1 Remaining hit points"], "cles": {"Recruited Allies": "hf013"}},
+    },
+    {
+        "nom": "hellfire Torn expert — PV restants notes au carnet (4 sur 10) et reportes a la mise en place suivante (le pilote accepte le soin par pion Acceleration : 10)",
+        "scenario": "hellfire_torn_expert",
+        "heros": "spider_man",
+        "avant": ["Puzzle.Damage('01001b', 6)"],
+        "carnet_attendu": {"gagnee": True, "scenario": "hellfire_torn", "cles": {"Player 1 Remaining hit points": "4"}},
+        "suivant": "hellfire_torn_expert",
+        "attendu": {"en_jeu": ["hf048"], "pv_identite": 10},
+    },
+]
+# FIN BLOC « hellfire_torn »

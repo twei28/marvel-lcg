@@ -3,7 +3,9 @@ from . import *
 # America's Anger (2/2) - exemplaire physique 2/2, contenu identique a
 # ma009 (voir ce fichier pour le detail des modeles et des arbitrages,
 # notamment la fleche lue comme un COUT : identite deja prete = carte
-# INJOUABLE, arbitrage explicite de l'utilisateur du 30/08/2026).
+# INJOUABLE, arbitrage explicite de l'utilisateur du 30/08/2026). Texte change le
+# 17/11/2026 (« apply all basic power modifiers... », lecture « somme des deux »,
+# choisie par l'utilisateur) : meme code que ma009.
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -26,17 +28,19 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         def armer(pouvoir: str):
-            def doubler(effect2: 'Effect',
-                        message2: 'Message.WhenUnitUseBasicPower') -> None:
-                bonus = _pouvoir(identite, pouvoir)
-                if bonus > 0:
-                    message2.GainValue(bonus, effect2)
+            autre = "ATK" if pouvoir == "THW" else "THW"
+
+            def appliquer_les_deux(effect2: 'Effect',
+                                   message2: 'Message.WhenUnitUseBasicPower') -> None:
+                supplement = _pouvoir(identite, autre)
+                if supplement != 0:
+                    message2.GainValue(supplement, effect2)
 
             identite.effect.RegisterTemp(
                 AbilityFactory.WhenUnitUseBasicPower(
                     AbilityType.Temp2,
                     "You",
-                    doubler,
+                    appliquer_les_deux,
                     powers=[pouvoir],
                 ),
                 unregister_after_exec=True,
@@ -46,11 +50,11 @@ def GetAbilities() -> Sequence['Ability']:
         player.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility(
-                "Double all modifiers applied to your THW on its next use",
+                "Apply all basic power modifiers to your THW on its next use",
                 lambda targets: armer("THW"),
             ).SetHasNoTargetEffect(),
             AbilityFactory.ForChoiceAbility(
-                "Double all modifiers applied to your ATK on its next use",
+                "Apply all basic power modifiers to your ATK on its next use",
                 lambda targets: armer("ATK"),
             ).SetHasNoTargetEffect(),
         )

@@ -22,8 +22,9 @@
 (function () {
   'use strict';
 
+  // La langue passe par langue-classique.js (window.MarvelLangue : choix dans le jeu > cookie du site > navigateur > français).
   var LANGUE = (function () {
-    try { return localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'; }
+    try { return window.MarvelLangue ? window.MarvelLangue.actuelle() : (localStorage.getItem('marvel-langue') === 'en' ? 'en' : 'fr'); }
     catch (e) { return 'fr'; }
   })();
   var DICO_EN_LOCAL = {

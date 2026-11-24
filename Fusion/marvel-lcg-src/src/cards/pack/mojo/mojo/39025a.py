@@ -1,4 +1,5 @@
 from . import *
+from cards.pack.mojo.campaign import CampaignSetup
 
 # MojoMania
 
@@ -16,6 +17,7 @@ def GetAbilities() -> Sequence['Ability']:
 
 
     return [
+        *CampaignSetup(3),
         AbilityFactory.SetModularSetsAside(lambda effect: 1 + 1 * Worlds.GetPlayerNumIcon(effect)),
         AbilityFactory.WhenCardSetup(
             "This",

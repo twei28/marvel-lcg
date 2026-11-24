@@ -147,7 +147,7 @@ export function origineDe(world: World | undefined, id: number): Origine | undef
   ]
   const pilesDesJoueurs = joueurs.flatMap((joueur) => [
     joueur.player_deck, joueur.player_discard_pile, joueur.set_aside_nemesis_sets, joueur.set_aside_deck,
-    joueur.additional_deck, joueur.additional_discard_pile, joueur.reserve, joueur.rising_tide,
+    joueur.additional_deck, joueur.additional_discard_pile, joueur.reserve, joueur.rising_tide, joueur.damnation,
   ])
   if ([...pilesDuMonde, ...pilesDesJoueurs].some((pile) => contient(pile, id))) return 'pile'
   const enJeuDuMonde: (WorldCard[] | undefined)[] = [
@@ -173,7 +173,7 @@ export function carteDeLaTrame(world: World | undefined, id: number): WorldCard 
     ...(world.additional_decks ?? []), ...(world.additional_discard_piles ?? []),
     ...(world.players ?? []).flatMap((joueur) => [
       joueur.area_hero, joueur.allies, joueur.supports, joueur.player_deck, joueur.player_discard_pile,
-      joueur.dealt_encounter_cards, joueur.hand_cards, joueur.reserve, joueur.rising_tide, joueur.area_processing,
+      joueur.dealt_encounter_cards, joueur.hand_cards, joueur.reserve, joueur.rising_tide, joueur.damnation, joueur.area_processing,
       joueur.engaged_enemies, joueur.set_aside_nemesis_sets, joueur.set_aside_deck, joueur.additional_deck,
       joueur.additional_discard_pile, joueur.obligations_area, joueur.environment_area,
     ]),

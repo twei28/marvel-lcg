@@ -48,7 +48,7 @@ class Selector(metaclass=Tracker.Meta):
 
     def GetRandomTarget(self, legal_faces: Sequence['CardFace'], effect: 'Effect') -> Sequence['CardFace']:
         from game.operate.rand import Rand
-        return Rand.RandomChoice2(legal_faces, self.selector_range.GetTargetMax(effect, legal_faces), effect)
+        return Rand.RandomCards(legal_faces, self.selector_range.GetTargetMax(effect, legal_faces), effect)
 
     def GetAllLegalTargets(self, effect: 'Effect', referential_effect: 'Effect|None'=None, *, just_check: bool=False) -> Sequence['CardFace']:
         from game.operate.referential import Referential
@@ -72,6 +72,14 @@ class Selector(metaclass=Tracker.Meta):
             if not (getattr(face, 'refuse_target_fn', None) is not None
                     and face.refuse_target_fn(effect))
         ]
+
+        # BRIQUE 2 (20/10/2026) : une face « insensible aux cartes joueur »
+        # n'est jamais une cible legale d'un effet de carte joueur. Une carte a
+        # cibles multiples reste jouable s'il reste une autre cible ; une carte
+        # a cible unique devient injouable (Galactic Storm p.14).
+        from game.operate.immunity import PlayerCardImmunity
+        legal_faces = [face for face in legal_faces
+                       if not PlayerCardImmunity.Refuses(face, effect)]
 
         legal_faces = self.selector_rule.Process(legal_faces, effect, self.selector_range)
 

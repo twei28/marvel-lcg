@@ -29,6 +29,15 @@ mot-clé. `33005`-`33007` (Cyclops) et `60052` (Daredevil) pareil.
 - Une carte Temporary attachée à un ennemi part avec la fin du round même si
   l'ennemi survit (cf. `33005` Exploit Weakness).
 
+- **Perdre Temporary** (« loses the temporary keyword ») : capacité CONTINUE
+  `GiveKeywordToInPlayWhenApplyThis(<finder>, temporary=-1)` (`33004` Field
+  Commander, `64001b` Danny Rand « Your Technique cards lose temporary »). Posée
+  sur une face d'identité, elle cesse quand la face se retourne : la carte
+  redevient Temporary et `ProcessTemporary` la défausse à la fin du round
+  (décision utilisateur du 19/10/2026 pour Iron Fist ; cas `[iron_fist] 64001b`).
+  Le `CardFinder` doit porter `card_type` ET `trait` (assert
+  `len(card_finder.params) == 2`, environment.py).
+
 **Variantes maison** : `ho012` (« That Had to Hurt », pack `harry_osborn`)
 cumule Temporary avec « Hero form only », « Max 1 per enemy » et une Response :
 seul le surplus est scripté, jamais le mot-clé.

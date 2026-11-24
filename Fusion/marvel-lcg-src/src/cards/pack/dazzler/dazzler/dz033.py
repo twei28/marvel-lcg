@@ -22,7 +22,10 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Event)
         Unused(this)
         joueur = effect.GetInitiator()
-        heros = None if joueur is None else joueur.GetIdentity()
+        identite = None if joueur is None else joueur.GetIdentity()
+        # « your HERO » : en alter ego il n'y a pas de heros a redresser
+        # (20/10/2026 : l'alter ego etait redresse a la place).
+        heros = identite if identite is not None and Hero.IsType(identite) else None
         # « READY YOUR HERO and another friendly character » : le heros n'est
         # pas un choix, il est nomme. Seul le second personnage se selectionne.
         cibles = ([] if heros is None else [heros]) + list(effect.targets)
@@ -44,6 +47,14 @@ def GetAbilities() -> Sequence['Ability']:
         # selecteur ne propose plus que l'AUTRE personnage. La fourchette part
         # de zero : s'il n'y a personne d'autre a redresser, la carte reste
         # jouable et fait ce qu'elle peut.
-        .SetTarget("YouControlUnit", canbe_ready=True, range=(0, 1),
-                   check_fn=pas_ton_heros),
+        # « another FRIENDLY character » : `Friend`, les personnages de TOUS les
+        # joueurs (avant le 20/10/2026 : « YouControlUnit »). Minimum dynamique
+        # (modele 09035) : obligatoire des qu'un autre personnage peut etre
+        # redresse, zero sinon pour que la carte reste jouable pour le heros.
+        # `check_fn` n'est pas transmis par le selecteur (commente dans
+        # selector/factory.py) : le filtre « pas ton heros » passe par
+        # `check_effect_fn` du `CardFinder`.
+        .SetTarget(CardFinder(card_type=Friend, canbe_ready=True,
+                              check_effect_fn=pas_ton_heros),
+                   range=(lambda effect: min(1, len(effect.context.all_legal_targets)), 1)),
     ]

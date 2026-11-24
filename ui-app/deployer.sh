@@ -34,6 +34,11 @@ npm run verifier-sortie
 # ecrit les pires cas, le garde les mesure dans Chromium avec la feuille qu'on vient de construire.
 npx vitest run src/board/boite-questions.pires-cas.test.tsx
 (cd "$RACINE_APP/../ui-check" && node scripts/garde-boite-questions.mjs)
+# La boite de question du centre, SUR TELEPHONE (feuille basse, body.mode-plateau-portrait) :
+# aucun bouton inatteignable, pour un choix ordinaire (pas defense), sur deux tailles de
+# telephone reelles (05/11/2026, signalement nicodede62 : bouton coince derriere un double
+# defilement imbrique).
+(cd "$RACINE_APP/../ui-check" && node scripts/garde-boite-choix-mobile.mjs)
 
 deployer_vers() {
   local JEU="$1"

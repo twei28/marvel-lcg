@@ -31,7 +31,10 @@ export function normaliserAffichage(valeur: unknown): Affichage {
  * vient d'avoir lieu dans ce navigateur : le compte porte alors encore l'ancien choix, a corriger.
  */
 export const CLE_MIGRATION_AFFICHAGE = 'mc_affichage_migre'
-export const VERSION_MIGRATION_AFFICHAGE = '2026-10-19'
+// Repasse tout le monde sur Normal une fois de plus (07/11/2026, « on enlève tous les modes, on
+// garde que le mode normal (...) forcer tout le monde sur Normal ») : les anciens choix Sobre/Coloré
+// qui avaient survécu au premier passage (19/10/2026) repassent ici sur Normal.
+export const VERSION_MIGRATION_AFFICHAGE = '2026-11-07'
 export function migrerAffichage(stockage: Pick<Storage, 'getItem' | 'setItem'> | null | undefined): boolean {
   try {
     if (!stockage || stockage.getItem(CLE_MIGRATION_AFFICHAGE) === VERSION_MIGRATION_AFFICHAGE) return false
@@ -75,6 +78,24 @@ let epurePourTous = true
 
 export function reglerEpurePourTous(valeur: boolean): void {
   epurePourTous = valeur
+}
+
+/**
+ * SEUL « COLORÉ » EST RETIRÉ (07/11/2026, demande de l'utilisateur ; revenue en arrière le même jour
+ * sur « un seul affichage » : « tu peux laisser le mode sobre, juste enlever le mode coloré »). Tant
+ * que ce réglage est faux, le choix « Coloré » (valeur `normal`) n'apparaît plus dans le sélecteur
+ * « Style d'affichage » — Normal et Sobre restent tous les deux proposés. Rien n'est supprimé (CSS,
+ * logique `data-affichage`, `epurePermis` ci-dessus), juste rendu inaccessible. `true` restaure
+ * l'ancien comportement (utile pour les tests qui couvrent encore les trois choix).
+ */
+let coloreActif = false
+
+export function reglerColoreActif(valeur: boolean): void {
+  coloreActif = valeur
+}
+
+export function coloreEstActif(): boolean {
+  return coloreActif
 }
 
 export function epurePermis(): boolean {

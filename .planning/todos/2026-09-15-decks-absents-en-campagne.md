@@ -45,3 +45,16 @@ Même remarque à vérifier pour les autres exclusions de cette ligne
 ## Statut
 
 **Mis de côté le 15/09/2026 à la demande de l'utilisateur.** Rien modifié.
+
+**Clos le 21/10/2026.** Relu la chaîne complète (`DECKS_CAMPAGNE` →
+`decksSauvegardesPourHeros` → `memeHeros` dans `decks-serveur.js`) : aucun
+défaut trouvé, la comparaison par `heroCardId` est correcte pour le cas
+normal. Aucun exemple concret de deck manquant n'a jamais été fourni (c'était
+déjà la seule question bloquante en septembre). Décision de l'utilisateur :
+clore sans code, retiré du backlog.
+
+Note en passant : le défaut `--exclude=decks` (pluriel, sur un dossier
+`deck/` singulier) signalé ci-dessus ne figure plus dans
+`deploiement/deployer.ps1` ni dans `deploiement/deployer-linux.sh`
+(vérifié le 21/10/2026, aucune des deux ne mentionne `deck` dans ses
+exclusions) — non creusé plus loin, hors de la question posée ici.

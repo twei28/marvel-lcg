@@ -17,6 +17,10 @@ class EffectDescriptor:
         # AVANT d'envoyer la reponse ; il ne connait ni la carte ni la regle,
         # seulement ceci.
         warning: Dict[str, str]
+        # AJOUT 24/11/2026 (rapport #168) : les moyens de paiement qui se PARTAGENT une reserve de cartes (Mantis : Empathetic Advantage et
+        # The Celestial Madonna defaussent chacun une carte Desorientee). {effect_id: [cle de reserve, cartes disponibles]} ; absent pour les
+        # autres. Le plateau n'offre plus un moyen dont la reserve est deja prise par les moyens choisis (voir `PlayerAction.SpendResource`).
+        reserves: Dict[int, List] = field(default_factory=dict)
 
     id: int                         # game object id
     name: str
@@ -34,6 +38,11 @@ class EffectDescriptor:
     is_search: bool
     # Option de cout d'une carte rencontre reduite au plus gros morceau payable : le plateau la surligne.
     au_maximum: bool = False
+    # AJOUT 07/11/2026 : cette option vient d'`AskChooseOneText`/`ForChoiceAbility` (le moteur ne
+    # transporte que le NOM de la carte, `bind_id` vaut l'identite du joueur, jamais la carte choisie).
+    # Signale au plateau de retrouver la vraie carte par son nom et de l'afficher en grille de vignettes
+    # plutot qu'en bouton de texte brut (ui-app/src/board/option-carte.ts, DemandeCentrale.tsx).
+    is_text_choice: bool = False
 
     # is_ex_effect check `AskOption`
 

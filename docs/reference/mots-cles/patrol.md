@@ -49,3 +49,11 @@ pour lui.
   cette capacité annexe, jamais le mot-clé Patrol lui-même.
 
 **Variantes maison** : aucune recensée pour l'instant.
+
+**CORRECTIF du 20/10/2026 (gs315 Quantum Jump, Galactic Storm)** : la Patrouille ne verrouillait qu'au CIBLAGE.
+Une ignorance qui depend du PAIEMENT (rien n'est paye au ciblage) laissait donc contrecarrer le complot principal
+meme quand le paiement final ne remplissait pas la condition (vaut aussi pour `hc006`). `CanBeThwartBy` note
+desormais sur le contexte de l'effet que SON ciblage a franchi la Patrouille par une ignorance
+(`patrouille_levee_au_ciblage`, remis a faux par `EffectContext.ResetAfterOperation`) ; `RemoveThreatInternal`
+reverifie alors l'ignorance et rend 0 si elle ne tient plus. Rien ne change pour un effet qui n'a pas franchi de
+Patrouille. Cas `[quasar] gs315 ... CORRECTIF scheme_main` (rouge sans le correctif : 6 -> 3 ; vert avec : 6).

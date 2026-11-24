@@ -73,3 +73,11 @@ describe('libelleQuiAgit', () => {
     ).toBe('')
   })
 })
+
+// Journal : l'etat de phase du moteur « Scenario Setup » restait en anglais (audit du 16/11/2026).
+describe('libellePhase — les etats de mise en place', () => {
+  it('dit « Mise en place du scénario » en francais', () => {
+    expect(libellePhase({ phase: 'Scenario Setup', round_id: 0 } as never)).toBe('Mise en place du scénario')
+    expect(libellePhase({ phase: 'Init Finished', round_id: 0 } as never)).toBe('Mise en place terminée')
+  })
+})

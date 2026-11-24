@@ -54,5 +54,6 @@ def GetAbilities() -> Sequence['Ability']:
             AbilityType.HeroAction,
             ranger_la_plus_basse,
             conditions=[une_arme_dans_la_defausse],
-        ).SetCostFunc(CostFunc.Exhaust("This")),
+        ).SetCostFunc(CostFunc.Exhaust("This"))
+        .SetRaisonRefus("Aucune arme dans ta défausse"),
     ]

@@ -255,6 +255,11 @@ describe('D12 : la menace du point 1', () => {
     expect(vue.resultat).toEqual({ texte: '+2 menaces', jauge: { avant: 2, apres: 4, plafond: 7 } })
   })
 
+  it('nomme la carte dont l icone d acceleration est comptee (rapport BL-Stark n°104 : Cloak)', () => {
+    const vue = rangee({ ...menace, montant: 2, restant: 4, escalade: 1, acceleration: 1, joueurs: 1, sourcesAcceleration: ['Cloak'] })
+    expect(vue.calcul).toBe('1 par joueur + 1 accélération (Cloak) = 2')
+  })
+
   it('« par joueur » seulement si l escalade se divise, sinon « d’escalade »', () => {
     expect(rangee({ ...menace, montant: 2, escalade: 2, acceleration: 0, joueurs: 2 }).calcul).toBe('1 par joueur = 2')
     expect(rangee({ ...menace, montant: 3, escalade: 3, acceleration: 0, joueurs: 2 }).calcul).toBe('3 d’escalade = 3')
@@ -351,6 +356,11 @@ describe('piege 40 : des valeurs nulles, rien d invente', () => {
   it('13/10/2026 : ce qu une recherche a donne, trouvee ou non', () => {
     expect(textesRecherches([{ trouve: [], paquet: true }])).toEqual(['Recherche : rien trouvé', 'Paquet rencontre mélangé'])
     expect(textesRecherches([{ trouve: ['* Le Requin-Tigre'], paquet: false }])).toEqual(['Trouvé : Le Requin-Tigre'])
+    // Piller l'Armurerie (rapport n°102) : ce qui est défaussé en chemin, puis ce qui est trouvé, sans prétendre que le paquet est mélangé.
+    expect(textesRecherches([{ trouve: ['Hydra Sidearm'], paquet: false, defausse: ['Gang-Up'] }])).toEqual([
+      'Défaussé : Gang-Up',
+      'Trouvé : Hydra Sidearm',
+    ])
     expect(textesRecherches(undefined)).toEqual([])
   })
 

@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Viv Vision",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Protection (construite par le portage, aspect arbitre le 02/09/2026).",
         "nemesis_note": "Le zip ne fournit AUCUNE carte nemesis. La critique BGG du pack rapporte que Rainy recommande a cette place le modulaire officiel Zzzax (Ironheart, 29036-29040) : 1 sbire, 1 manigance annexe et 3 cartes, soit exactement la forme d'un set nemesis, et son theme (attaquer les ressources energie) mord precisement sur l'economie de Viv. Choix confirme par l'utilisateur le 02/09/2026. ⚠ Si le joueur choisit AUSSI Zzzax comme modulaire du scenario, les cinq cartes existent en double.",

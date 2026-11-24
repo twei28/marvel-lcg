@@ -10,6 +10,7 @@ from engine.log import Log
 from engine.file import FileManager
 import hashlib
 import html
+import re
 
 CATEGORY_NAME = "WEB"
 
@@ -442,8 +443,16 @@ class WebServer:
                 raise web.HTTPFound('/')
             return self.ReadFile(request.path, ['./public/', './public/blueprints'])
 
+        # Une feuille de style appelee avec une EMPREINTE DE CONTENU (`?v=` de 8 chiffres hexadecimaux, recalculee a chaque
+        # deploiement par ui-app/deployer.sh) ne change jamais sous cette adresse : le navigateur la garde un an, au lieu de la
+        # retelecharger toutes les 60 s. Sans cela, apres une minute, l'assistant attendait ses feuilles et montrait l'ancienne
+        # page le temps du chargement (retour du 25/10/2026). Les `?v=1`, `?v=9` tenus a la main ne sont PAS concernes : rien
+        # ne dit qu'ils changent quand le fichier change.
         async def handle_css(request: web.Request):
-            return self.ReadFile(request.path, ['./public/css', './public/'])
+            reponse = self.ReadFile(request.path, ['./public/css', './public/'])
+            if Build.release and reponse.status == 200 and reponse.content_length and re.fullmatch(r'[0-9a-f]{8}', request.query.get('v', '')):
+                reponse.headers['Cache-Control'] = 'public, max-age=31536000, immutable'
+            return reponse
 
         async def handle_js(request: web.Request):
             return self.ReadFile(request.path, ['./public/js', './public/'])

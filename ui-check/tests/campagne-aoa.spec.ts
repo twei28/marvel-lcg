@@ -30,6 +30,7 @@
 // ATTENTION : ce test lance une VRAIE partie. Toute partie en cours sur le
 // serveur visé est perdue.
 import { test, expect } from '@playwright/test'
+import { allerA, parcoursOuvert, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   lancer,
@@ -86,18 +87,19 @@ test.describe.serial("Campagne : le dernier scénario de l'Ère d'Apocalypse", (
     expect(m.players_won, 'La partie devait être GAGNÉE : tout le sel du cas est là.').toBe(true)
 
     // Le panneau s'ouvre sur une victoire, et doit annoncer la campagne perdue.
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await parcoursOuvert(page)
+    // La page Victoire dit déjà que la campagne est perdue ; le bilan dit les DEUX choses : le scénario est
+    // gagné, la campagne s'arrête là. Ne dire que la seconde ferait croire à une défaite en partie.
+    await expect(page.locator('.pf-victoire-titre')).toContainText(/perdue|lost/i)
+    await allerA(page, 'bilan')
     await expect(
-      page.locator('.camp-recomp-defaite'),
-      "Le panneau n'annonce pas la campagne perdue alors que le Professeur n'a pas été sauvé."
+      page.locator('.pf-alerte'),
+      "Le parcours n'annonce pas la campagne perdue alors que le Professeur n'a pas été sauvé."
     ).toBeVisible()
-    // Le panneau doit dire les DEUX choses : le scénario est gagné, la campagne
-    // s'arrête là. Ne dire que la seconde ferait croire à une défaite en partie.
-    await expect(page.locator('.camp-recomp-titre')).toContainText(/perdue/i)
-    await expect(page.locator('.camp-recomp-defaite')).toContainText(/gagné/i)
+    await expect(page.locator('.pf-alerte')).toContainText(/gagné|won/i)
 
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     expect(
@@ -187,17 +189,19 @@ test.describe.serial("Campagne : le dernier scénario de l'Ère d'Apocalypse", (
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait être gagnée.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await parcoursOuvert(page)
     // Le panneau ne doit PAS annoncer la campagne perdue, et son titre doit dire la
     // victoire de campagne : c'est le verdict, calculé là et nulle part ailleurs.
+    await allerA(page, 'bilan')
     await expect(
-      page.locator('.camp-recomp-defaite'),
-      'Le panneau annonce la campagne perdue alors que le Professeur a été sauvé.'
+      page.locator('.pf-alerte'),
+      'Le parcours annonce la campagne perdue alors que le Professeur a été sauvé.'
     ).toHaveCount(0)
-    await expect(page.locator('.camp-recomp-titre')).toContainText(/gagnée/i)
+    await allerA(page, 'suite')
+    await expect(page.locator('.pf-fin-titre')).toContainText(/terminée|complete/i)
 
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     expect(apres.perdue, 'La campagne est marquée perdue sur le serveur.').toBeFalsy()

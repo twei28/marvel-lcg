@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « tableau « reste » : Iron Patriot cartes: 0, Skrull Menace cartes: 0 »). Preuve : `tools/prefixes_fanmade.json` : `ip` 39 cartes « LIVRÉ le 10/09/2026 » ; Skrull Menace : campagne terminée (`b9c7ce3f`, `3bda6c7e`, 111 cas `campagne_cartes`). Le champ `sk` du même JSON dit encore « EN COURS depuis le 15/10, 31 cartes » : à corriger aussi. Reste seulement Galactic Storm (item 15) et « Doctor Doom Alt Arts » … (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°17).
+
 # PLAN — Ordre de création des héros/vilains fan-made du dossier « A créer »
 
 > **Rangement du 05/09/2026.** Les zips ne sont plus a la racine : ceux dont

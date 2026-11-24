@@ -159,6 +159,72 @@ try:
              "table-3" not in corps["preferences"], corps["preferences"])
     appeler(serveur.save_preferences, Requete(cookie, {"changements": {"table-1": None, "table-2": None}}))
 
+    # LES REGLAGES DU PLATEAU (14/11/2026) : des cles du localStorage, liste
+    # fermee, valeur = texte court sans caractere de controle.
+    NOMS = json.dumps({"he": "Mon héros", "ma": "Ma main"}, ensure_ascii=False)
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        "mc_ameliorations_cote": "gauche", "mc_noms_zones_v1": NOMS, "marvel-tel-plateau": "ronds"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("reglages du plateau ecrits et relus",
+             corps["preferences"].get("mc_ameliorations_cote") == "gauche"
+             and corps["preferences"].get("mc_noms_zones_v1") == NOMS
+             and corps["preferences"].get("marvel-tel-plateau") == "ronds", corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        "mc_vue_joueur": "1", "mc_fond_image_v1": "x", "marvel-historique-partie": "[]",
+        "mc_piles_inversees": "x" * 2001, "mc_apercu_zoom": 3, "mc_etiquettes_table": "a\nb",
+        "mc_traits_pastilles": {"a": 1}}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("cles hors liste, valeurs trop longues, non textuelles ou a caractere de controle ignorees",
+             set(corps["preferences"]) == {"mc_ameliorations_cote", "mc_noms_zones_v1", "marvel-tel-plateau"},
+             corps["preferences"])
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": "sobre"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("un autre changement ne perd pas les reglages",
+             corps["preferences"].get("mc_ameliorations_cote") == "gauche"
+             and corps["preferences"].get("affichage") == "sobre", corps["preferences"])
+    statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        c: "1" for c in sorted(serveur.REGLAGES_CLES)}}))
+    verifier("premier versement de tous les reglages en un appel", statut == 200, statut)
+    statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        f"cle-{i}": "1" for i in range(101)}}))
+    verifier("plus de 100 changements refuses (400)", statut == 400, statut)
+    # 2e versement (14/11/2026) : langue, boites, puzzles, brouillons...
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {c: None for c in sorted(serveur.REGLAGES_CLES)}}))
+    GROS = "x" * 60000
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        "mc-deckbuilder-drafts": GROS, "marvel-langue": "en", "marvel-boite-phase-mechant": '{"dx":4,"dy":-2}',
+        "mc-puzzles-crees": "y" * 16384, "mc-campagne-brouillon": "z" * 32769, "mc_apercu_zoom": "w" * 60000}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("cles volumineuses : bornes par cle (drafts 64 Ko, puzzles 16 Ko, brouillon de campagne trop gros refuse)",
+             corps["preferences"].get("mc-deckbuilder-drafts") == GROS
+             and corps["preferences"].get("mc-puzzles-crees") == "y" * 16384
+             and "mc-campagne-brouillon" not in corps["preferences"]
+             and "mc_apercu_zoom" not in corps["preferences"]
+             and corps["preferences"].get("marvel-langue") == "en"
+             and corps["preferences"].get("marvel-boite-phase-mechant") == '{"dx":4,"dy":-2}', list(corps["preferences"]))
+    for cle in ("mc_fond_image_v1", "mc_fond_image_couleurs_v1", "marvel-historique-partie", "marvel-rapport-en-attente",
+                "mc-campagne-partie", "mc-puzzle-courant", "mc_vue_joueur", "mc_affichage_migre"):
+        appeler(serveur.save_preferences, Requete(cookie, {"changements": {cle: "1"}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("hors compte : fond, historique, rapport, pointeurs de partie, vue joueur, migrations",
+             not any(c in corps["preferences"] for c in (
+                 "mc_fond_image_v1", "mc_fond_image_couleurs_v1", "marvel-historique-partie", "marvel-rapport-en-attente",
+                 "mc-campagne-partie", "mc-puzzle-courant", "mc_vue_joueur", "mc_affichage_migre")), list(corps["preferences"]))
+    for i in range(3):
+        appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+            "mc-deckbuilder-drafts": "d" * 60000, "mc-puzzles-crees": "p" * 16384,
+            "mc-campagne-brouillon": "c" * 32768, "mc_prepare_prefs_v1": "q" * 16384,
+            "marvelcdb_favoris": "f" * 16384}}))
+    statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        c: "k" * 2000 for c in sorted(serveur.REGLAGES_CLES)
+        if c not in serveur.REGLAGE_LONGUEUR_PAR_CLE}}))
+    verifier("plus de 256 Ko de reglages sur un compte : refuse (413)", statut == 413, statut)
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {
+        c: None for c in sorted(serveur.REGLAGES_CLES)}}))
+    appeler(serveur.save_preferences, Requete(cookie, {"changements": {"affichage": None}}))
+    _, corps = appeler(serveur.get_preferences, Requete(cookie))
+    verifier("null efface les reglages", corps["preferences"] == {}, corps["preferences"])
+
     statut, _ = appeler(serveur.save_preferences, Requete(cookie, {"changements": ["sobre"]}))
     verifier("corps invalide refuse (400)", statut == 400, statut)
 

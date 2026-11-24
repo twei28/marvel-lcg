@@ -1,5 +1,14 @@
 # Créditer les auteurs des packs fan-made
 
+**CLOS le 21/10/2026** (item 16 du backlog). Décisions de l'utilisateur : la
+liste reconstituée ci-dessous est acceptée telle quelle, affichage dans la
+modale du héros, formulation « Pack créé par X ». Implémenté : `bioDuHeros`
+(`app.js`) lit le champ `custom` déjà posé carte par carte sur la plupart des
+packs (relu par `catalog.js` pour les scénarios, donc déjà une source établie,
+pas un nouveau mécanisme). Seuls Conan et Red Sonja (RyCoRan) en manquaient,
+complétés sur leurs 42 cartes. Vérifié en vrai (Agatha Harkness → Ripper3,
+Conan → RyCoRan, un héros officiel → rien affiché).
+
 **Demande de l'utilisateur, 16/09/2026** : « confirmer chaque personnage
 fan-made avec son auteur, et le créditer, par exemple quand on clique sur le
 personnage ou un truc du style. Mais d'abord je dois confirmer que ta liste est

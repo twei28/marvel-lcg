@@ -13,7 +13,7 @@
 // parametre pour ne pas dupliquer app.js.
 "use strict";
 
-import { doitProposer, lignesDeChoix, picIdAvecArt, STANDARD } from "./arts-cartes-choix.js";
+import { doitProposer, lignesDeChoix, picIdAvecArt, origine, STANDARD } from "./arts-cartes-choix.js";
 import { ecrireChoixCartes, lireChoixCartes, lireNePlusProposer, ecrireNePlusProposer } from "./arts-cartes-stockage.js";
 
 /**
@@ -29,11 +29,15 @@ import { ecrireChoixCartes, lireChoixCartes, lireNePlusProposer, ecrireNePlusPro
  * @param {Function} o.fermerModale
  * @param {Function} o.imageUrl  (picId) -> url de l'image
  * @param {Function} o.nomCarte  (card_id) -> nom affiche
+ * @param {string} [o.seulement]  ouvre directement le choix de CETTE carte (depuis sa pastille) :
+ *                               pas de question, pas de « Ne plus proposer »
+ * @param {Function} [o.apresChoix] appelee a chaque vignette cliquee (la page redessine ses pastilles)
  * @returns {boolean} true si la fenetre a ete ouverte
  */
-export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerModale, imageUrl, nomCarte }) {
-    const ids = (deck && deck.player_deck) || [];
-    if (!doitProposer(ids, lireNePlusProposer())) return false;
+export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerModale, imageUrl, nomCarte, seulement, apresChoix }) {
+    const tous = (deck && deck.player_deck) || [];
+    const ids = seulement ? tous.filter((x) => origine(x) === origine(seulement)) : tous;
+    if (!seulement && !doitProposer(ids, lireNePlusProposer())) return false;
 
     const corps = el("div", { class: "ac-corps" });
     const panneau = el("div", { class: "deck-modal-panel vh-panel ac-panneau", style: { "--sections": "1" } },
@@ -43,7 +47,13 @@ export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerMod
         ),
         corps,
     );
-    const overlay = el("div", { class: "deck-modal ac-modal", onclick: (e) => { if (e.target === overlay) fermer(); } }, panneau);
+    // L'illustration survolee, en grand a droite de la fenetre comme sur la table. Sa place est reservee des l'ouverture (la fenetre ne
+    // bouge pas au survol) ; elle disparait seule sur un ecran trop etroit (voir arts-cartes.css).
+    const grandeImage = el("img", { class: "ac-grand-img", alt: "" });
+    const grand = el("div", { class: "ac-grand", "aria-hidden": "true" }, grandeImage);
+    const montrer = (src) => { grandeImage.src = src; grand.classList.add("on"); };
+    const cacher = () => grand.classList.remove("on");
+    const overlay = el("div", { class: "deck-modal ac-modal", onclick: (e) => { if (e.target === overlay) fermer(); } }, panneau, grand);
     const fermer = () => fermerModale(overlay);
 
     const poserQuestion = () => {
@@ -72,7 +82,11 @@ export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerMod
                 vignettes.append(el("button", {
                     type: "button", class: "ac-vignette" + (code === ligne.affiche ? " on" : ""), "data-code": code,
                     title: code === STANDARD ? t("Illustration officielle") : `${t("Illustration")} ${code.toUpperCase()}`,
-                    onclick: () => { ecrireChoixCartes({ [ligne.id]: code }); marquer(code); },
+                    onclick: () => { ecrireChoixCartes({ [ligne.id]: code }); marquer(code); if (apresChoix) apresChoix(); },
+                    onmouseenter: () => montrer(imageUrl(picIdAvecArt(ligne.id, code))),
+                    onmouseleave: cacher,
+                    onfocus: () => montrer(imageUrl(picIdAvecArt(ligne.id, code))),
+                    onblur: cacher,
                 },
                     el("img", { src: imageUrl(picIdAvecArt(ligne.id, code)), alt: "", loading: "lazy" }),
                     el("span", {}, code === STANDARD ? t("Officielle") : code.toUpperCase()),
@@ -92,7 +106,7 @@ export function proposerArtsCartes({ deck, heros, el, t, ouvrirModale, fermerMod
         );
     };
 
-    poserQuestion();
+    if (seulement) poserCartes(); else poserQuestion();
     ouvrirModale(overlay);
     return true;
 }

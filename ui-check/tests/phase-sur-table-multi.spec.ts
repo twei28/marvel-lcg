@@ -13,7 +13,7 @@ for (const politique of ['concerne', 'tous', 'quiconque'] as const) test(`deux s
   const charge = { campaign_json: JSON.stringify(scenario), campaign_log: {}, challenges: scenario.challenges ?? [], encounter_set_names: [...new Set([...(scenario.encounter_sets ?? []), ...(scenario.modular_sets ?? [])])], hero_json: heros, rules: [...contrat.regles_partie_standard, 'mode_sandbox'], seed: 4321, timeout: 0 }
   expect((await req.get('/new?data=' + encodeURIComponent(JSON.stringify(charge)))).ok()).toBe(true)
   await page.context().addInitScript(() => {
-    localStorage.setItem('mc_phase_presentation', 'bis')
+    localStorage.setItem('mc_phase_presentation', 'tris')
     localStorage.setItem('marvel-langue-choisie', '1')
     localStorage.setItem('marvel-langue', 'fr')
     localStorage.setItem('marvel-board-mode-phase-mechant', 'sur-table')

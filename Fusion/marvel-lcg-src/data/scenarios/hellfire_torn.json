@@ -1,0 +1,25 @@
+{
+  "version": "0.5.8",
+  "name": "Torn",
+  "villain": [
+    "hf501a,hf501b"
+  ],
+  "expert": false,
+  "schemes": [
+    "hf503a,hf503b"
+  ],
+  "set_aside": [
+    "hf504a,hf504b"
+  ],
+  "encounters": [],
+  "encounter_sets": [
+    "hf_torn",
+    "hf_perfection",
+    "standard"
+  ],
+  "modular_sets": [
+    "hf_sebastian_shaw",
+    "hf_negasonic_teenage_warhead",
+    "hf_immensity"
+  ]
+}

@@ -36,7 +36,7 @@ class Controller:
     ################################################################################
     #
     # GetInput
-    def RendreLesRefus(self, by_effect: 'Effect|None') -> List[Any]:
+    def RendreLesRefus(self, by_effect: 'Effect|None', choix: 'Message2|None'=None) -> List[Any]:
         """Les effets ECARTES de la question en cours, au format des options.
 
         POURQUOI (10/09/2026, demande de l'utilisateur : « quand on survole une
@@ -58,13 +58,27 @@ class Controller:
         except Exception:
             pass
         try:
-            derniers = getattr(self.world.render, "derniers_refus", None) or []
+            refus += self._RefusDesActionsEnJeu(by_effect)
+        except Exception:
+            pass
+        try:
+            derniers = list(getattr(self.world.render, "derniers_refus", None) or [])
+            # Les options refusees du CHOIX en cours (bug 129) : leur tampon a elles, `derniers_refus` etant deja
+            # ecrase par `_RefusDesCartesAJouer` juste au-dessus.
+            question, ecartes = getattr(self.world.render, "choix_refuses", (None, []))
+            du_choix: List[Any] = []
+            if choix is not None and question is choix:
+                du_choix = [effect for effect in ecartes if not any(effect is deja for deja in derniers)]
+                derniers += du_choix
             for effect in derniers:
                 try:
                     # Sans `by_effect` : `Render` rendrait le `bind_id` de l'effet qui
                     # POSE la question, et le refus d'une autre carte s'afficherait
                     # « Injouable » sur elle (signalement Rapid Response, 11/10/2026).
-                    descriptor = effect.Render(None, self.player_id)
+                    # Une option du choix, elle, EST portee par la carte qui pose la question (« Nick Fury »),
+                    # comme ses soeurs offertes : sans cela le plateau la signait du nom de l'identite.
+                    porteur = by_effect if any(effect is e for e in du_choix) else None
+                    descriptor = effect.Render(porteur, self.player_id)
                 except Exception:
                     continue
                 if not descriptor.failure_reason:
@@ -82,7 +96,11 @@ class Controller:
         try:
             ids_identites = {j.GetIdentity().card.object_id
                              for j in self.world.players if j.GetIdentity() is not None}
-            refus = [r for r in refus if r.bind_id not in ids_identites]
+            # SAUF les options d'un CHOIX (`ChooseAbilities`, bug 129 du 12/11/2026, Nick Fury 01084 : « retirer 2
+            # menaces » disparaissait sans un mot quand aucun complot n'avait de menace). Un choix est toujours porte
+            # par l'identite : pendant CETTE question seulement (`choix`), ses options refusees partent, marquees
+            # `is_text_choice`, et le plateau les montre grisees dans la liste au lieu de les coller sur le heros.
+            refus = [r for r in refus if r.bind_id not in ids_identites or (choix is not None and r.is_text_choice)]
         except Exception:
             pass
         return refus
@@ -107,6 +125,73 @@ class Controller:
             demande, _, disponible = reste.partition(", but only have ")
             return f"cout_insuffisant|{demande.strip()}|{disponible.strip()}"
         return motif
+
+    def _RefusDesActionsEnJeu(self, by_effect: 'Effect|None') -> List[Any]:
+        """Pourquoi une ACTION d'une carte EN JEU n'est pas offerte (Action, Hero Action, Alter-Ego Action).
+
+        AJOUT (15/11/2026, rapport « Casey's Bag / Mutant Fight Club ne rangent qu'une carte » : l'action n'etait
+        offerte que s'il y avait une arme / un evenement dans la defausse, et RIEN ne le disait). Meme famille que
+        `_RefusDesCartesAJouer` (les cartes de la main) : on rejoue le filtre au moment de construire la question,
+        on ne peut pas ecouter `derniers_refus`.
+
+        On ne parle que des actions qui seraient offertes dans cette FORME : une Hero Action en alter-ego, ou
+        l'inverse, n'est pas « refusee », elle est hors sujet (sinon chaque carte afficherait un refus permanent).
+        Meme garde-fou que le reste : jamais d'exception vers l'appelant (`RendreLesRefus`).
+        """
+        from game.event.manager import EventManager
+        from game.message import Message
+
+        refus: List[Any] = []
+        joueur = None
+        for candidat in self.world.players:
+            if candidat.player_id == self.player_id:
+                joueur = candidat
+                break
+        if joueur is None or joueur.GetIdentity() is None:
+            return refus
+
+        faces: List[Any] = []
+        for face in list(joueur.GetControlCards()):
+            faces.append(face)
+            faces.extend(face.GetInventoryDeck().Get())
+        vus: set = set()
+        for face in faces:
+            if face is None or id(face) in vus:
+                continue
+            vus.add(id(face))
+            effets = [e for e in face.effect.Find(when=Message.WhenPlayerInTurn)
+                      if e.ability.flags.is_action and not e.ability.is_play]
+            if not effets:
+                continue
+            message = Message.WhenPlayerInTurn(joueur, self.world.round_id)
+            disponibles = EventManager.FilterAvailableEffects(message, effets, joueur, self.world, None)
+            for effet in effets:
+                if effet in disponibles:
+                    continue
+                try:
+                    descriptor = effet.Render(None, self.player_id)
+                except Exception:
+                    continue
+                if not descriptor.failure_reason:
+                    continue
+                motif = Controller.NormaliserLeMotif(descriptor.failure_reason)
+                # Hors sujet pour une action en jeu : l'autre forme, la carte deja inclinee, la carte hors jeu.
+                if motif in self._MOTIFS_HORS_SUJET_ACTION:
+                    continue
+                # Une condition ecrite dans le module d'une carte (`une_arme_dans_la_defausse`) n'a pas de phrase au
+                # plateau : sans `SetRaisonRefus`, on dit le minimum honnete plutot que de se taire.
+                from game.effect.effect_failure import EffectFailure
+                if not (motif.startswith("raison|") or motif.startswith("cout_insuffisant|")
+                        or motif in {m.value for m in EffectFailure} or motif.startswith("check_")):
+                    motif = "action_indisponible"
+                descriptor.failure_reason = motif
+                refus.append(descriptor)
+        return refus
+
+    _MOTIFS_HORS_SUJET_ACTION = frozenset({
+        "player_is_hero", "check_hero_form_only", "player_is_alter_ego", "no cost target", "out of play",
+        "is removed", "treat as blank", "already processed in this message", "NoProcess", "no process",
+    })
 
     def _RefusDesCartesAJouer(self, by_effect: 'Effect|None') -> List[Any]:
         """Pourquoi les cartes de la MAIN ne sont pas jouables, une par une.
@@ -409,7 +494,7 @@ class Controller:
                 user_input = self.input.GetInput(
                     AskOptionPayload(
                         options_json=Json.Dumps(effect_descriptors),
-                        refus_json=Json.Dumps(self.RendreLesRefus(by_effect)),
+                        refus_json=Json.Dumps(self.RendreLesRefus(by_effect, choix=message if message_name == "WhenPlayerChooseAbility" else None)),
                         ability_type=priority.name,
                         event_name=message_name,
                         prompt_text=prompt_text,
@@ -419,6 +504,18 @@ class Controller:
                             and controller_manager.undo.ActionEnCours(self.player_id),
                     )
                 )
+
+                # « Annuler » demande par le fil web (`Cheat.do_undo`) : on est ici sur le fil du jeu, avec la pile
+                # d'appels de l'action, la seule que `SignalRestaurer` peut defaire. La demande a pu perimer entre
+                # le clic et ici (l'action a fini, la phase a change) : on la reverifie, sans rejeu de secours.
+                undo = controller_manager.undo
+                if undo.restauration_demandee:
+                    undo.restauration_demandee = False
+                    en_action = undo.debut_action != 0
+                    if undo.pile_instantanes is not None and undo.pile_instantanes.peut_annuler(en_action) \
+                            and not message.world.scene.manuel_commands:
+                        from game.world.instantane import SignalRestaurer
+                        raise SignalRestaurer(en_action)
 
                 if user_input == None:
                     # LES GESTES D'ABORD, LE RENDU ENSUITE (correctif du

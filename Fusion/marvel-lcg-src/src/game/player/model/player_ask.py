@@ -35,14 +35,14 @@ class PlayerAsk:
         name_list = [f"p_{x}" for x in name_list]
         name = self.MayChooseOneText(name_list)
         if name:
-            return name.lstrip('p_')
+            return name[2:]
         else:
             return None
 
     def AskChoosePaper(self, name_list: Sequence[str]|Sequence[None]) -> str:
         name_list = [f"p_{x}" for x in name_list]
         name = self.AskChooseOneText(name_list)
-        return name.lstrip('p_')
+        return name[2:]
 
     T = TypeVar("T")
     def MayChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None) -> T|None:
@@ -52,6 +52,21 @@ class PlayerAsk:
         else:
             text_list2 = None
         return self.AskChooseOneText(item_list2, text_list2)
+
+    # Marque posee devant le nom des options d'un tirage a la main : le plateau y reconnait « des dos de cartes
+    # a melanger » et non une liste de noms (`ui-app/src/board/tirage-cache.ts`, meme constante).
+    PREFIXE_TIRAGE_CACHE = "[tirage-cache] "
+
+    def AskPickHiddenCard(self, faces: Sequence['CardFace']) -> 'CardFace':
+        """Le joueur designe une carte parmi `faces`, presentees FACE CACHEE et melangees (rapport 131 : « Captured
+        by Hydra, tire au hasard »). Le melange sert l'ordre d'affichage seulement : le joueur ne sait pas laquelle
+        est laquelle. Regle de partie `tirage_manuel` ; voir `Rand.RandomCards`."""
+        self.nb_tirages_manuels = getattr(self, "nb_tirages_manuels", 0) + 1  # lu par tools/cas/capture_hydra.py
+        from engine.lib import Random
+        ordre = list(faces)
+        Random.Shuffle(ordre)
+        textes = [f"{self.PREFIXE_TIRAGE_CACHE}{i + 1}" for i in range(len(ordre))]
+        return self.AskChooseOneText(ordre, textes, "Choose a card at random")
 
     def AskChooseOneText(self, item_list: Sequence[T], text_list: Sequence[str]|None=None, titre: str="") -> T:
         from game.card.face.card_face import CardFace
@@ -93,7 +108,9 @@ class PlayerAsk:
         return select
 
     # def NameCardType(self) -> Type[Ally|Attachment|Environment|Event|Identity|Minion|Obligation|Resource|MainScheme|SideScheme|Support|Treachery|Upgrade|Villain]:
-    def DeclareCardType(self) -> Type['Ally|Hero|AlterEgo|Minion|Villain|MainScheme|EncounterSideScheme|PlayerSideScheme|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|Evidence']:
+    def DeclareCardType(self, titre: str = "") -> Type['Ally|Hero|AlterEgo|Minion|Villain|MainScheme|EncounterSideScheme|PlayerSideScheme|Upgrade|Support|Attachment|Environment|Event|Obligation|Treachery|Resource|Evidence']:
+        """`titre` (18/11/2026, additif) : le titre de la question cote client. Sans lui, l'ecran ne nomme que la carte qui porte
+        la question (l'identite du joueur) : « Mantis — choisis une option » pour le Cosmo de Mantis (rapport nicodede62 #149)."""
         from game.card.face.card_type import Ally
         from game.card.face.card_type import Hero
         from game.card.face.card_type import AlterEgo
@@ -118,7 +135,7 @@ class PlayerAsk:
         text_list: List[str] = []
         for item in item_list:
             text_list.append(item.__name__)
-        return self.AskChooseOneText(item_list, text_list)
+        return self.AskChooseOneText(item_list, text_list, titre=titre)
 
     # [min, max]
     def DeclareNumber(self, min: int, max: int) -> int:

@@ -212,7 +212,29 @@ class CardFactory:
                                                     #    REGISTERED) ET une Reponse de heros
                                                     #    (recruter le sbire attaque).
                                                     "ip010",   # Deceptive Guard (iron_patriot)
-                                                    "ip011"]:  # Foreboding Influence (iron_patriot)
+                                                    "ip011",   # Foreboding Influence (iron_patriot)
+                                                    # CORRECTIF (26/10/2026) : pack custom wasp_hank_pym (JackHKP).
+                                                    #  hp003 Gigantification : une Hero Action (attack) ET une Hero Interrupt
+                                                    #    (defense), toutes deux `.SetPlay()`.
+                                                    #  hp005 Self-Shrinking : une Hero Action (thwart) ET une Hero Interrupt
+                                                    #    (defense), toutes deux `.SetPlay()`.
+                                                    # ⚠ Le deck wasp_hank_pym ne montait AUCUNE partie sans cette declaration
+                                                    # (AssertionError au setup) : 43 cas verts, invisible pour `test_cards`,
+                                                    # `test_capacites` et `substituer_pack`. Seul `verifier_tous_les_decks`
+                                                    # (et un vrai lancement) le voit : lecon ls005 relue trop tard.
+                                                    "hp003",   # Gigantification (wasp_hank_pym)
+                                                    "hp005",   # Self-Shrinking (wasp_hank_pym)
+                                                    # CORRECTIF (26/10/2026) : pack custom batman (ES).
+                                                    #  bm005 Intimidate : une Hero Interrupt a la REVELATION d'une carte de dissuasion
+                                                    #    ET une Hero Interrupt a son retournement en BOOST, toutes deux `.SetPlay()`.
+                                                    "bm005",   # Intimidate (batman)
+                                                    # CORRECTIF (26/10/2026) : pack custom sunspot_hellfire (Dipsome).
+                                                    #  so006 Soak Up the Sun : une Alter-Ego Action ET une Hero Action, toutes deux `.SetPlay()`.
+                                                    "so006",   # Soak Up the Sun (sunspot_hellfire)
+                                                    # CORRECTIF (03/11/2026) : pack custom carnage_eddie_brock (Neptune).
+                                                    #  ca011 Vicious Lashing : une Hero Interrupt (attack/defense) ET une Hero Action (attack), toutes deux `.SetPlay()`.
+                                                    # ⚠ Invisible pour `test_capacites` et `substituer_pack` (92 cas verts) : seul `verifier_tous_les_decks` le voit.
+                                                    "ca011"]:  # Vicious Lashing (carnage_eddie_brock)
                             assert play_count == 2, f"{face.paper.card_id=}"
                         elif face.paper.card_id in ["09032", "09033", "09034", "09035", "09036",
                                                     # CORRECTIF : Photographic Reflexes n'a aucune
@@ -270,11 +292,30 @@ class CardFactory:
 
     @staticmethod
     # return like ['01001', '01002']
-    def LoadEncounterSet(encounter_set: str) -> List[str]:
+    def LoadEncounterSet(encounter_set: str, world: 'World|None'=None) -> List[str]:
         from game.scene.replay.encounter_set import EncounterSetDescriptor
         file_path = FileManager.FindJsonPath('EncounterSet', encounter_set)
         if file_path:
-            return Json.LoadAs(file_path, EncounterSetDescriptor).encounters
+            descriptor = Json.LoadAs(file_path, EncounterSetDescriptor)
+            if world is not None and descriptor.random_pick:
+                return CardFactory.RandomPick(descriptor.encounters, descriptor.random_pick, world)
+            return descriptor.encounters
         else:
             return []
+
+    @staticmethod
+    # AJOUT (20/10/2026, Galactic Storm, Imperial Guard, livret p.8) : un set de rencontre peut ne garder qu'une
+    # PARTIE de ses cartes, tirees au hasard au moment de former le deck rencontre. `random_pick` = liste de groupes
+    # `{"from": [card_id...], "count": n}` : n cartes du groupe sont gardees (au hasard, par le hasard de la partie,
+    # donc rejouable), les autres sont ecartees ; les cartes d'aucun groupe sont toujours gardees. L'ordre du set
+    # est conserve.
+    def RandomPick(encounters: List[str], groups: List[Dict[str, Any]], world: 'World') -> List[str]:
+        from game.operate.rand import Rand
+        removed: List[int] = []
+        for group in groups:
+            members = set(group["from"])
+            indexes = [i for i, name in enumerate(encounters) if name in members and i not in removed]
+            Rand.Shuffle(indexes, world)  # type: ignore
+            removed += indexes[int(group["count"]):]
+        return [name for i, name in enumerate(encounters) if i not in removed]
 

@@ -1,0 +1,14 @@
+{
+  "version": "0.5.8",
+  "name": "Hellfire Conclave",
+  "encounters": [
+    "hf311",
+    "hf312",
+    "hf313",
+    "hf313",
+    "hf313",
+    "hf313",
+    "hf317",
+    "hf318"
+  ]
+}

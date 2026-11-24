@@ -1,0 +1,74 @@
+{
+    "version": "0.5.8",
+    "name": "Predator (Dutch)",
+    "metadata": {
+        "url": "",
+        "author": "RyCoRan",
+        "note": "Set nemesis ALTERNATIF fourni par l'auteur (« Predator Alt Nemesis ») : Dutch Schaefer, Colonel Dillon, M134 Minigun, Get To The..., Chopper. Meme deck de heros, meme obligation. Deuxieme deck de depart pour pouvoir choisir ce nemesis (PROCESSUS-HEROS, variantes).",
+        "decklist_ecarts": "L'image de l'auteur numerote « 2 Targeted! » et « 15 Infralocked x3 » : aucune carte « Targeted! » dans le zip, et Infralocked n'existe qu'en 1 exemplaire (1/16). Les scans font foi (question posee a l'auteur).",
+        "collision_note": "HOMONYMES : « * Predator » n'existe pas ailleurs comme heros ; « Energy », « Genius » et « Strength » existent en de nombreuses versions (hc024, ht015...) : aucun module du pack ne cherche par nom.",
+        "variante_nom": "Predator (Dutch et son equipe)",
+        "variante_de": "predator"
+    },
+    "hero": [
+        "pd001a,pd001b"
+    ],
+    "hero_deck": [
+        "pd003",
+        "pd004",
+        "pd004",
+        "pd005",
+        "pd005",
+        "pd006",
+        "pd007",
+        "pd007",
+        "pd008",
+        "pd009",
+        "pd010",
+        "pd011",
+        "pd012",
+        "pd013",
+        "pd014"
+    ],
+    "set_aside": [
+        "pd002"
+    ],
+    "obligations": [
+        "pd015"
+    ],
+    "nemesis_set": [
+        "pd027",
+        "pd028",
+        "pd029",
+        "pd030",
+        "pd026"
+    ],
+    "player_deck": [
+        "10011",
+        "16040",
+        "25014",
+        "46012",
+        "32041",
+        "56013",
+        "45043",
+        "01057",
+        "06019",
+        "54019",
+        "06017",
+        "20026",
+        "20026",
+        "20026",
+        "06015",
+        "06015",
+        "12030",
+        "56017",
+        "56017",
+        "46015",
+        "46015",
+        "46015",
+        "pd021",
+        "pd022",
+        "pd023",
+        "pd024"
+    ]
+}

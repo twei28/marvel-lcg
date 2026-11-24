@@ -338,7 +338,7 @@ CAS += [
 # ========================================================================= sc007 Mizuki
 CAS += [
     _c("sc007 Mizuki : 2 menaces retirees d'une manigance qui n'en avait que 2 (la derniere) -> choix « Cloak » : le HEROS est camoufle",
-       "« Remove 2 threat from a scheme. If this removes the last threat on that scheme, choose: • Cloak a friendly character » : "
+       "« Remove 2 threat from a scheme. Choose: • Cloak a friendly character » (texte du 17/11/2026) : "
        "menace 2 -> 0 sur le complot, Cloaked sur 01001a",
        [HEROS, f"Puzzle.SetThreat('{COMPLOT}', 2)"], [],
        {"menace": [[COMPLOT, 0]], "statuts": [["01001a", "Cloaked"]], "defausse": ["sc007"]},
@@ -350,10 +350,11 @@ CAS += [
        {"menace": [[COMPLOT, 0]], "statuts": [["01001a", "Cloaked"]]},
        main_exclusive=["sc007", "01089"], payer_avec=["01089"], jouer=["sc007"], cibles=[COMPLOT, "01001a"],
        preferer_option="Cloak a friendly"),
-    _c("sc007 Mizuki : TEMOIN, 3 menaces -> 1 : ce n'est PAS la derniere, aucun choix, aucun camouflage",
-       "le complot garde 1 menace : ni Cloak ni retour d'evenement (l'evenement en defausse reste en defausse)",
+    _c("sc007 Mizuki : 3 menaces -> 1 : la manigance N'EST PAS videe, le choix part QUAND MEME (texte du 17/11/2026 : « Choose » inconditionnel)",
+       "le « If this removes the last threat » a disparu du texte imprime : le complot garde 1 menace ET l'evenement de la defausse revient en main "
+       "(avant le 17/11 : rien ne se passait)",
        [HEROS, f"Puzzle.SetThreat('{COMPLOT}', 3)", "Puzzle.EmptyPlayerDiscardPile()", "Puzzle.CreatePlayerDiscardPile('01087')"], [],
-       {"menace": [[COMPLOT, 1]], "statuts_absents": [["01001a", "Cloaked"]], "absent_main": ["01087"], "defausse": ["sc007"]},
+       {"menace": [[COMPLOT, 1]], "statuts_absents": [["01001a", "Cloaked"]], "en_main": ["01087"], "defausse": ["sc007"]},
        main_exclusive=["sc007", "01089"], payer_avec=["01089"], jouer=["sc007"], cibles=[COMPLOT],
        preferer_option="Return an event"),
     _c("sc007 Mizuki : 2e branche, derniere menace -> un EVENEMENT de la defausse revient en MAIN (Haymaker 01087)",

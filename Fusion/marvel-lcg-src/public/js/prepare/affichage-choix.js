@@ -29,7 +29,9 @@ export const PAR_DEFAUT = EPURE;
  * Rend vrai si le passage vient d'avoir lieu (l'appelant doit alors aussi corriger le compte).
  */
 export const CLE_MIGRATION_AFFICHAGE = "mc_affichage_migre";
-export const VERSION_MIGRATION_AFFICHAGE = "2026-10-19";
+// Repasse tout le monde sur Normal une fois de plus (07/11/2026, meme demande que le plateau --
+// voir le commentaire jumeau dans ui-app/src/board/affichage.ts).
+export const VERSION_MIGRATION_AFFICHAGE = "2026-11-07";
 export function migrerAffichage(stockage) {
     try {
         if (!stockage || stockage.getItem(CLE_MIGRATION_AFFICHAGE) === VERSION_MIGRATION_AFFICHAGE) return false;
@@ -84,6 +86,16 @@ function hoteLocal() {
  */
 let epurePourTous = true;
 export function reglerEpurePourTous(valeur) { epurePourTous = !!valeur; }
+
+/**
+ * SEUL « COLORÉ » EST RETIRÉ (07/11/2026, revenu en arrière le même jour sur « un seul affichage » :
+ * « tu peux laisser le mode sobre, juste enlever le mode coloré »). Tant que c'est faux, le bouton de
+ * cycle (`boutonAffichage`) saute l'état Coloré (valeur `normal`) : Normal <-> Sobre seulement. Rien
+ * n'est supprimé (CSS, `data-affichage`, `suivant`/`epurePermis` ci-dessus), juste rendu inaccessible.
+ */
+let coloreActif = false;
+export function reglerColoreActif(valeur) { coloreActif = !!valeur; }
+export function coloreEstActif() { return coloreActif; }
 
 export function epurePermis() {
     return epurePourTous || epurePermisReserve();

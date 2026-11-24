@@ -1,0 +1,49 @@
+{
+ "version": "0.5.8",
+ "name": "Batgirl",
+ "metadata": {
+  "url": "",
+  "author": "ES",
+  "note": "Pack « Batgirl (Sealed - 11.26.2025) » (ES). Pas de decklist d'aspect fournie : player_deck vide (PROCESSUS-HEROS etape 3). Deux faces heros au texte identique (Birds of Prey / Bat Family) : la seconde est declaree dans hero_alts. Nightwing (bg003) est le Multiverse de Black Canary (bg002) : une seule des deux par deck, le deck de depart emporte Black Canary.",
+  "hero_alts": [
+   {
+    "name": "Batgirl (Bat Family)",
+    "hero": [
+     "bg001c,bg001b"
+    ]
+   }
+  ]
+ },
+ "hero": [
+  "bg001a,bg001b"
+ ],
+ "hero_deck": [
+  "bg002",
+  "bg004",
+  "bg004",
+  "bg005",
+  "bg005",
+  "bg006",
+  "bg006",
+  "bg007",
+  "bg007",
+  "bg008",
+  "bg009",
+  "bg010",
+  "bg011",
+  "bg011",
+  "bg012"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "bg013"
+ ],
+ "nemesis_set": [
+  "bg014",
+  "bg015",
+  "bg016",
+  "bg017",
+  "bg018"
+ ],
+ "player_deck": []
+}

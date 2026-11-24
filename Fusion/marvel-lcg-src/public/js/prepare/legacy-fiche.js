@@ -134,6 +134,21 @@ export async function acheter(heroId, t = (x) => x) {
     return ecrit ? { ok: true, fiche } : { ok: false, raison: t("écriture refusée") };
 }
 
+/** Remet la progression Legacy à zéro, sans effacer l'historique.
+ *
+ *  Même chemin que « repartir de zéro » à l'activation : `depuis` passe à
+ *  maintenant, donc les parties passées ne comptent plus, et les jetons
+ *  dépensés sont oubliés. L'historique des parties reste intact.
+ */
+export async function reinitialiser(maintenant = Date.now()) {
+    const fiche = await lire();
+    fiche.depuis = Math.floor(maintenant / 1000);
+    fiche.jetonsDepenses = [];
+    fiche.instantane = null;
+    await ecrire(fiche);
+    return fiche;
+}
+
 /** Refait l'instantané à partir de l'historique, et l'écrit.
  *
  *  L'outil de reconstruction promis par la spec : la fiche peut être perdue,

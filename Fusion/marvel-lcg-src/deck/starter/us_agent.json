@@ -1,0 +1,82 @@
+{
+ "version": "0.5.8",
+ "name": "U.S. Agent",
+ "metadata": {
+  "url": "",
+  "author": "DesignHacker",
+  "note": "Pack « U.S. AGENT (SEALED) » (DesignHacker). Deck de depart : l'auteur FOURNIT sa decklist (« US Agent Starter Deck.png », 34 lignes) : 15 cartes heros, 25 cartes d'aspect OFFICIELLES (recopiees telles quelles dans player_deck), obligation Forced Leave, set nemesis Nuke / Battle of the Patriots / Seeing Red x2 / Spear of Odin. Les doublons de la liste (Bouncing Bulwark x3, Deflection x2, Reckless x2, Roundhouse x2) sont UNE carte chacun en plusieurs impressions numerotees : un seul card_id.",
+  "deck_ecarts": "Homonymes dans la decklist, tranches par le titre officiel d'origine : Determination = 21052 (mts) et non 61022 (reimpression Jessica Jones) ; One Way or Another = 22015 (nebu) et non la reimpression TMNT uj024 ; Go All Out = 29017 (ironheart) et non ul009 (TMNT) ; What Doesn't Kill Me = 27016 (sm) et non up042 (TMNT).",
+  "deckbuilding": {
+   "aspects": {
+    "min": 0,
+    "max": 99,
+    "label": "Master of None : tous les aspects"
+   },
+   "types_interdits": [
+    "Ally"
+   ],
+   "classes_interdites": [
+    "Basic"
+   ]
+  },
+  "deckbuilding_note": "us001b : « Master of None — You may include cards in your deck from any aspect. You cannot include allies or basic cards. » Declare ici (GUIDE-CREATION-CONTENU §5.4) : `aspects` libres, `types_interdits: [Ally]` (tous les allies, y compris Basic) et `classes_interdites: [Basic]` (cle NEUVE du 25/10/2026, `classesInterdites` dans public/js/deckbuilder/regles.js). Regle d'EDITEUR, pas de moteur de partie."
+ },
+ "hero": [
+  "us001a,us001b"
+ ],
+ "hero_deck": [
+  "us002",
+  "us002",
+  "us002",
+  "us003",
+  "us003",
+  "us004",
+  "us004",
+  "us005",
+  "us005",
+  "us006",
+  "us007",
+  "us008",
+  "us009",
+  "us010",
+  "us011"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "us012"
+ ],
+ "nemesis_set": [
+  "us013",
+  "us014",
+  "us015",
+  "us015",
+  "us016"
+ ],
+ "player_deck": [
+  "18012",
+  "18012",
+  "01053",
+  "01053",
+  "21046",
+  "01057",
+  "10018",
+  "01060",
+  "01060",
+  "15013",
+  "15013",
+  "22015",
+  "22015",
+  "21052",
+  "01065",
+  "29017",
+  "29017",
+  "12016",
+  "14014",
+  "14014",
+  "14014",
+  "27016",
+  "21064",
+  "01081",
+  "09020"
+ ]
+}

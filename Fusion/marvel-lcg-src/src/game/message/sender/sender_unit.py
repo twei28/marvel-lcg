@@ -390,6 +390,9 @@ class SenderUnit:
         def __init__(self, unit: 'Unit2', status: 'StatusCard', by_effect: 'Effect') -> None:
             # from game.message import OnEvent
             self.status: Final = status
+            # AJOUT (25/10/2026, Alien vs. Predator ap005b) : l'effet qui a defausse la carte d'etat. C'est l'effet de la carte d'etat
+            # ELLE-MEME quand elle vient de remplacer une activation (Sonne / Desoriente) : 1B y fait passer le compteur actif.
+            self.by_effect: Final = by_effect
             # CORRECTIF (13/09/2026, pack `sentinel`) : « Exposed », quatrieme
             # carte d'etat. La table etait figee a trois entrees et levait un
             # `KeyError` A CHAQUE defausse d'un Exposé. Le harnais ne l'a pas

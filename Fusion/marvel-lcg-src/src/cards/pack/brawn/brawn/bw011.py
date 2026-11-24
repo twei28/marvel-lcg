@@ -35,8 +35,9 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         icones = FacesCounter.GetPrintedResources(defaussees)
-        physiques = icones.r + icones.g
-        mentales = icones.b + icones.g
+        # Un wild IMPRIME n'est que « wild » (RR « Wild Resource », arbitrage du 26/10/2026) : ni [physical] ni [mental].
+        physiques = icones.r
+        mentales = icones.b
 
         if physiques > 0:
             ennemis = list(Worlds.FindCardsOnField(effect, card_type=Enemy))

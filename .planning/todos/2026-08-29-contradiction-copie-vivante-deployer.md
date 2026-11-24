@@ -1,3 +1,5 @@
+> **MISE À JOUR 23/10/2026 : FAIT, l'en-tête ci-dessous est périmé** (ancien état : « « Ouvert, laissé volontairement » »). Preuve : `docs/reference/GUIDE-CREATION-CONTENU.md` §1.1 : « RANGEMENT DU 31/08 : il n'y a plus qu'une copie » ; `ui-app/deployer.sh` n'a plus qu'une cible dans `JEUX` (lignes 17-22, 187) ; l'annotation du 07/10 le dit déjà (tri : `docs/rapports/etat-du-backlog-2026-10-19.md` §3, n°13).
+
 # TODO — Contradiction non résolue : quelle copie alimente vraiment le dev/tests
 
 > **Mise à jour du 07/10/2026 (audit du backlog)** : RÉSOLUE : la copie WSL a été supprimée le 31/08 ; `deployer.sh` ne la cite plus qu'en commentaire ; le bandeau de `serveur-dev.py` est traité (`d0ec2e5e`).

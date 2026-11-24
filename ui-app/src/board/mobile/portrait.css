@@ -527,6 +527,23 @@
     font-variant-numeric: tabular-nums;
     color: var(--menace);
   }
+  /* Piocher au doigt (mode manuel, 17/11/2026) : deux boutons sous la ligne du deck. */
+  .tiroir-pile-pioche {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0 0;
+  }
+  .tiroir-pile-pioche button {
+    flex: 1 1 0;
+    min-height: 44px;
+    padding: 6px 10px;
+    font: inherit;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(63, 134, 224, 0.28);
+    border: 1px solid rgba(63, 134, 224, 0.7);
+    border-radius: 4px;
+  }
   .tiroir-fermer {
     margin-top: auto;
   }
@@ -650,8 +667,8 @@
     font-size: 1.5rem;
     line-height: 1;
     color: #e8e9ee;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(10, 12, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 99px;
     cursor: pointer;
   }
@@ -810,7 +827,10 @@
     box-sizing: border-box;
     max-width: none;
     transform: none;
-    max-height: 50dvh;
+    /* 24/10/2026 : « on doit toujours pouvoir voir la carte en entier pendant la phase du méchant ». A 50dvh, la zone de la carte
+       n'avait que ~55 px sur un telephone avec barre du navigateur (412x745) : la carte etait coupee. Le panneau monte jusqu'a
+       sous l'entete de la table ; la table, assombrie derriere, n'a rien a montrer pendant la scene. */
+    max-height: calc(100dvh - 56px);
     overflow-y: auto;
     border-radius: 0;
     padding-left: 14px;
@@ -843,4 +863,95 @@
     background: rgba(20, 20, 20, 0.45);
     pointer-events: none;
   }
+}
+
+/* LES VOLETS DU BORD DROIT SONT DANS LE MENU « … » SUR TELEPHONE (16/11/2026, demande de l'utilisateur apres le message d'un joueur : la languette
+   « Tchat » recouvrait la main repliee, et Aide / Journal « gachent trop les trucs principaux, c'est-a-dire la main et les piles »).
+   Les languettes Aide, Feuillets, Tchat, Journal (et Ville / Assemblee en campagne) sont masquees tant que leur volet est ferme ; elles restent
+   dans la page, et chaque ligne du menu (EntreesVolets.tsx) les clique. Un volet OUVERT garde sa languette (`.est-ouvert`) : c'est sa poignee de
+   fermeture. Non couche, comme les feuilles des volets ; la tablette garde ses languettes (`data-tablette`). */
+html:not([data-tablette]) body.mode-plateau-portrait :is(.volet-aide-languette, .volet-feuillets-languette, .volet-tchat-languette, .volet-journal-languette, .volet-ville-languette, .volet-assemblee-languette):not(.est-ouvert) {
+  display: none !important;
+}
+/* Les lignes du menu : cachees dans la barre du PC, montrees seulement dans la feuille « … ». */
+.board-actions .bh-volet {
+  display: none;
+}
+.portrait-menu .board-actions .bh-volet {
+  display: flex !important;
+  justify-content: space-between;
+}
+.bh-volet-non-lus {
+  min-width: 20px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-align: center;
+  color: #14161a;
+  background: #f3c623;
+  border-radius: 10px;
+}
+/* Des messages de tchat non lus : un point sur le bouton « … », puisque la languette qui les annoncait est masquee. */
+body.mode-plateau-portrait:has(.volet-tchat-pastille) .portrait-menu-bouton:not(.est-actif) {
+  position: relative;
+}
+body.mode-plateau-portrait:has(.volet-tchat-pastille) .portrait-menu-bouton:not(.est-actif)::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
+  background: #f3c623;
+  border: 1px solid #14161a;
+  border-radius: 50%;
+}
+
+/* Le recap de fin de phase (« Menace », « Heros et allies », « Nouveautes sur la table ») sur un
+   telephone (26/10/2026, signale en partie : « les lettres l'une sous l'autre, c'est illisible »).
+   Le panneau est pleine largeur (412 px moins le retrait) : trois colonnes ne font alors que 40 a
+   60 px chacune, `overflow-wrap: anywhere` casse « Underground Distribution » lettre par lettre et le
+   chiffre « 10 -> 5 / 12 » se colle au nom. Sous 600 px de large, les sections S'EMPILENT, comme la
+   presentation dynamique (cartouche-dynamique.css) le fait deja ; chaque ligne passe a la ligne
+   plutot que de couper un mot. Garde : ui-check/scripts/garde-bilan-telephone.mjs.
+
+   ⚠ HORS de `@layer` : les regles du bilan (cartouche-phase.css, cartouche-essai.css) ne sont dans
+   aucune couche, et une regle sans couche l'emporte TOUJOURS sur une regle en couche, quelle que soit
+   sa specificite (premiere ecriture dans `utilitaires` : sans effet, vue au garde). */
+@media (max-width: 600px) {
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-lignes li {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 0;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-colonne-nom {
+    overflow-wrap: normal;
+  }
+
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-bilan .deroule-nouveautes {
+    gap: 8px;
+  }
+
+  /* Le bilan prend toute la largeur du corps (flex) : un voisin vide ne lui en prend pas la moitie. */
+  .deroule-phase.est-scene:has(~ .plateau-portrait) .deroule-corps > .deroule-bilan {
+    flex: 1 1 100%;
+  }
+}
+
+/* « La phase en bref » du bilan, sur telephone en portrait comme en paysage (915 px de large : deux colonnes de
+   180 px coupaient quand meme « Menace · +1 r »). Meme raison que ci-dessus : hors de `@layer`. */
+.deroule-phase.est-scene:has(~ .plateau-portrait) .essai-bilan-liste ol {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.deroule-phase.est-scene:has(~ .plateau-portrait) .essai-bilan-ligne {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }

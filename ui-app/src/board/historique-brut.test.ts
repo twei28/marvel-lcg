@@ -8,7 +8,7 @@
 // redessine, qui reconstruit un objet neuf : la boucle epuise le tas.
 import { afterEach, describe, expect, it } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useHistoriquePartie } from './HistoriquePartie'
+import { texteSignificatif, useHistoriquePartie } from './HistoriquePartie'
 import type { World } from './world'
 
 const ZONES = {
@@ -67,5 +67,30 @@ describe('les noms de cartes du journal, dans la langue du joueur', () => {
     } finally {
       window.localStorage.removeItem('marvel-board-scans-fr')
     }
+  })
+})
+
+// Rapport n°134 (16/11/2026) : le journal francais disait « reçoit 1 compteur(s) « sound » » et « "Too Good to be True" ».
+describe('texteSignificatif — noms francais dans le journal (cartes fan-made et compteurs)', () => {
+  it('traduit le nom du compteur dans une ligne francaise', () => {
+    expect(texteSignificatif('[(19,dz012) "Too Good to be True"] reçoit 1 compteur(s) « sound » ([(1,dz001a) Dazzler])')).toBe(
+      '"Trop Beau pour Être Vrai" reçoit 1 compteur(s) « son » (Dazzler)'
+    )
+    expect(texteSignificatif('[(9,dz002) Longshot] perd 1 compteur(s) « knife »')).toMatch(/« couteau »|« knife »/)
+  })
+
+  it('laisse une ligne anglaise intacte', () => {
+    expect(texteSignificatif('Longshot loses 1 counter(s) « sound »')).toBe('Longshot loses 1 counter(s) « sound »')
+  })
+})
+
+// Demande du 16/11/2026 : les restes anglais de la narration (etapes de mise en place, piles, statuts) en francais, pour tous les heros.
+describe('texteSignificatif — la mise en place et les piles en francais', () => {
+  it('traduit les etapes et les noms de piles', () => {
+    expect(texteSignificatif('\n--- Resolve Mulligans ---')).toBe('Résolution des mulligans')
+    expect(texteSignificatif("Dazzler's PlayerDeck<39> va être mélangé avec Dazzler's DiscardPile<0>")).toBe(
+      'deck de Dazzler va être mélangé avec défausse de Dazzler'
+    )
+    expect(texteSignificatif('[(9,01001b) Peter Parker] reçoit 1 pion(s) « first_player_token »')).toBe('Peter Parker reçoit 1 pion(s) « premier joueur »')
   })
 })

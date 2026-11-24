@@ -1,0 +1,64 @@
+  // galactic_storm — Supreme Intelligence (Villain, I)
+  'gs195': "<b>Réponse forcée</b> : après qu'un sbire [[KREE]] a été vaincu, soignez 1 dégât du méchant. Si ce sbire a le trait [[ELITE]], donnez au méchant 1 carte de boost face cachée.\n<i>« ... Je suis l'incarnation vivante du pouvoir... car je suis l'Intelligence Suprême de la majestueuse race des Kree ! »</i>",
+  // galactic_storm — Supreme Intelligence (Villain, II)
+  'gs196': "Ténacité.\n<b>Réponse forcée</b> : après qu'un sbire [[KREE]] a été vaincu, soignez 1 dégât du méchant. Si ce sbire a le trait [[ELITE]], donnez au méchant 1 carte de boost face cachée.\n<i>« ... Je suis l'incarnation vivante du pouvoir... car je suis l'Intelligence Suprême de la majestueuse race des Kree ! »</i>",
+  // galactic_storm — Supreme Intelligence (Villain, III)
+  'gs197': "Ténacité.\n<b>Réponse forcée</b> : après qu'un sbire [[KREE]] a été vaincu, soignez 1 dégât du méchant et donnez-lui 1 carte de boost face cachée.\n<i>« ... Je suis l'incarnation vivante du pouvoir... car je suis l'Intelligence Suprême de la majestueuse race des Kree ! »</i>",
+  // galactic_storm — Protectors of the Kree Empire (MainScheme, 1A)
+  'gs198a': "<b>Contenu</b> : Supreme Intelligence (I) et (II) <i>(Supreme Intelligence (II) et (III) en mode expert)</i>. Sets de rencontre Supreme Intelligence, Starforce et Standard. Un set de rencontre modulaire <i>(Seeds of Corruption)</i>.\n<b>Mise en place</b> : mettez de côté chaque sbire [[STARFORCE]] et mettez-en 1 en jeu au hasard, engagé avec le premier joueur. Attachez Holding Tank au méchant.",
+  // galactic_storm — Protectors of the Kree Empire (MainScheme, 1B)
+  'gs198b': "La valeur de menace cible de cette manigance ne peut pas être modifiée.\n[star] <b>Interruption forcée</b> : quand cette manigance est censée être achevée, retirez à la place toute la menace d'ici et mettez en jeu un sbire [[STARFORCE]] mis de côté, au hasard, engagé avec le premier joueur. Ensuite, s'il y a 5 sbires [[STARFORCE]] mis de côté ou moins, passez au stade 2A.",
+  // galactic_storm — The Endless Mind (MainScheme, 2A)
+  'gs199a': "<i>« L'Intelligence Suprême. Elle a tué chaque personne qu'elle admirait ou qui s'opposait à elle, et ajouté leurs esprits, morts et hurlants, au sien. » —Carol Danvers</i>\n<b>Une fois révélée</b> : mélangez chaque sbire [[STARFORCE]] mis de côté dans le deck Rencontre.",
+  // galactic_storm — The Endless Mind (MainScheme, 2B)
+  'gs199b': "<i>L'Intelligence Suprême est le collectif des plus grands esprits kree de l'histoire, prélevés à leur mort et assimilés par le superordinateur selon un procédé appelé « Suprêmorisation ».</i>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+  // galactic_storm — Holding Tank (Attachment)
+  'gs200': "Utilisations (7[per_hero] jetons Intégrité). Victoire 0.\nRéduisez de 2 la quantité de dégâts que le méchant subit de chaque attaque.\n<b>Réponse forcée</b> : après qu'un ennemi a subi n'importe quelle quantité de dégâts, retirez 1 jeton Intégrité d'ici.",
+  // galactic_storm — Genetic Augmentation (Attachment)
+  'gs201': "Attachez cette carte au sbire [[KREE]] qui a le plus de points de vie restants. Sinon, cette carte gagne Renfort.\nLe sbire attaché gagne +2 points de vie et le trait [[ELITE]].\n<i>« J'ai utilisé le pouvoir du cristal sur mes sujets kree... accomplissant d'innombrables millénaires d'évolution en quelques instants. » —Supreme Intelligence</i>",
+  // galactic_storm — Kree Infantry (Minion)
+  'gs202': "Garde. Patrouille.\n<b>Une fois vaincu</b> : placez 2 menaces sur la manigance principale.\n<i>« L'ascension kree, c'est maintenant, et ceux qui se dressent sur son chemin tomberont. » —Minister Marvel</i>",
+  // galactic_storm — Ren-Varr (Minion)
+  'gs203': "Vulnérable.\n<b>Une fois vaincu</b> : donnez au méchant 1 carte d'état Tenace.\n<i>« J'ai le pouvoir d'annuler l'anéantissement de la race kree ! »</i>",
+  // galactic_storm — Supremor (Minion)
+  'gs204': "Vilenie.\n[star] Supremor gagne +1 point de vie pour chaque sbire [[KREE]] dans la pile de victoire.\n<i>« Les Kree effaceront votre race abâtardie de l'existence ! »</i>",
+  // galactic_storm — Loyalty to Supremor (SideScheme)
+  'gs205': "<i>« La vengeance. Oui ! Voilà quelque chose qu'un Kree peut comprendre ! » —Doctor Minerva</i>\nChaque sbire gagne Garde.",
+  // galactic_storm — Selective Breeding (SideScheme)
+  'gs206': "<b>Une fois révélée</b> : mélangez chaque sbire [[KREE]] de la pile de défausse Rencontre dans le deck Rencontre.",
+  // galactic_storm — Supremor Seed (SideScheme)
+  'gs207': "<b>Une fois déjouée</b> : le joueur qui l'a déjouée peut placer 1 sbire [[KREE]] de la pile de victoire dans la pile de défausse Rencontre.",
+  // galactic_storm — Summon Reinforcements (Treachery)
+  'gs208': "<b>Une fois révélée</b> : s'il y a au moins 1 sbire [[STARFORCE]] mis de côté, le méchant manigance. Sinon, défaussez des cartes du dessus du deck Rencontre jusqu'à ce qu'un sbire soit défaussé, et révélez-le.\n<i>« L'Intelligence Suprême des Kree vous appelle. Je sais qui vous êtes. » —Supreme Intelligence</i>",
+  // galactic_storm — Cadmi-M the Pursuer (Minion)
+  'gs209': "Riposte 1. Vilenie. Victoire 1.\nTant que Cadmi-M the Pursuer est dans la pile de victoire, le méchant gagne Riposte 1.\n<i>« Tant pis... l'improvisation marche bien aussi. »</i>",
+  // galactic_storm — Doctor Minerva (Minion)
+  'gs210': "Vilenie. Victoire 1.\nTant que Doctor Minerva est dans la pile de victoire, le méchant gagne +1 MNG.\n<i>« Ne fatiguez pas votre cerveau humain primitif. Laissez-moi faire. »</i>",
+  // galactic_storm — Inndig-O the Accuser (Minion)
+  'gs211': "Vilenie. Victoire 1.\nTant que Inndig-O the Accuser est dans la pile de victoire, le méchant gagne +1 ATQ.\n<i>« ... Je reconnais une accusation quand j'en entends une ! »</i>",
+  // galactic_storm — Korath the Pursuer (Minion)
+  'gs212': "Riposte 1. Vilenie. Victoire 1.\nTant que Korath the Pursuer est dans la pile de victoire, le méchant gagne Riposte 1.\n<i>« Une touche de mon bâton bêta effacera votre sourire narquois de toute existence... »</i>",
+  // galactic_storm — Protector (Minion)
+  'gs213': "Solide. Vilenie. Victoire 1.\nTant que Protector est dans la pile de victoire, le méchant gagne Solide.\n<i>« Chacun de nous dans cette unité a une tâche. »</i>",
+  // galactic_storm — Ronan the Accuser (Minion)
+  'gs214': "Vilenie. Victoire 1.\nTant que Ronan the Accuser est dans la pile de victoire, le méchant gagne +1 ATQ.\n<i>« ... c'est le plus grand des crimes, ne pas être kree... »</i>",
+  // galactic_storm — Shatterax (Minion)
+  'gs215': "Vilenie. Victoire 1.\n[star] Les attaques de Shatterax gagnent Perçant.\nTant que Shatterax est dans la pile de victoire, les attaques du méchant gagnent Perçant.\n<i>« Agent Shatterax au Commandement de Hala. Action contre l'intrusion extraterrestre sur l'avant-poste SIK/SIGMA en cours. »</i>",
+  // galactic_storm — Ultimus (Minion)
+  'gs216': "Vilenie. Victoire 1.\n[star] Les attaques d'Ultimus gagnent Déferlement.\nTant qu'Ultimus est dans la pile de victoire, les attaques du méchant gagnent Déferlement.\n<i>« Un tel imbécile mérite la mort ! »</i>",
+  // galactic_storm — Starformation (Treachery)
+  'gs217': "<b>Une fois révélée</b> : donnez à chaque sbire [[STARFORCE]] 1 carte d'état Tenace et 1 carte de boost face cachée. Sinon, donnez au méchant 1 carte d'état Tenace et 1 carte de boost face cachée.\n<i>« Nous avons été réunis par l'Intelligence Suprême pour une raison, car c'est un tournant de notre histoire, et on a besoin de nous ! » —Ultimus</i>",
+  // galactic_storm — Manipulated Memories (Attachment)
+  'gs218': "Attachez cette carte à votre identité.\nChaque carte Événement de votre main gagne Exigence ([mental]).\n<b>Action de héros</b> : dépensez 2 ressources du même type → défaussez cette carte.\n<hr />\n[star] <b>Boost</b> : si cette activation est une manigance, vous êtes désorienté. Sinon, vous êtes sonné.",
+  // galactic_storm — Psychic Shackles (SideScheme)
+  'gs219': "<i>« Maintenant que vous êtes vraiment sans défense, je vais assimiler votre intellect, conquérant votre esprit aussi bien que votre corps ! » —Supreme Intelligence</i>\nEntrave 1[per_hero].\nLes joueurs ne peuvent pas jouer de cartes ayant une ressource [mental] imprimée.",
+  // galactic_storm — Mental Torture (Treachery)
+  'gs220': "<b>Une fois révélée</b> : défaussez 1 carte au hasard de votre main. Si une ressource [mental] a été défaussée de cette façon, étourdissez votre identité.\n<i>« Pendant que vous vous tordez dans une impuissance abjecte, j'ai sondé vos cerveaux primitifs ! Et maintenant... j'en ai fini ! » —Supreme Intelligence</i>",
+  // galactic_storm — Whisper in the Mind (Treachery)
+  'gs221': "<b>Une fois révélée</b> : trouvez un exemplaire de votre obligation et révélez-le. Si votre obligation n'a pas été révélée de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : si votre obligation est dans la pile de victoire ou si elle a été retirée de la partie, mélangez-la dans le deck Rencontre.",
+  // galactic_storm — Nega-Bomb (SideScheme, A)
+  'gs222a': "<i>« La Nega-Bomb est le plus abominable engin que le peuple shi'ar ait jamais créé. »</i>\nMise en place. Victoire 0.\nEntre en jeu avec 4 jetons Temps.\n<b>Réponse forcée</b> : après la résolution de l'étape 1 de la phase du méchant, retirez 1 jeton Temps d'ici. S'il n'y a plus de jeton Temps ici, retournez cette carte et révélez Detonation.",
+  // galactic_storm — Detonation (Environment, B)
+  'gs222b': "<b>Une fois révélée</b> : infligez X dégâts à chaque personnage allié et à chaque sbire en jeu en ignorant toute carte d'état Tenace, où X est égal à la quantité de menace ici divisée par le nombre total de personnages alliés et de sbires en jeu (arrondi au supérieur). Retirez cette carte de la partie.",
+  // galactic_storm — Green Interference (Treachery)
+  'gs223': "<b>Une fois révélée</b> : retirez 1 jeton polyvalent de chaque carte en jeu. Si aucun jeton n'a été retiré de cette façon, cette carte gagne Renfort.\n<hr />\n[star] <b>Boost</b> : retirez 1 jeton polyvalent d'une carte en jeu.",

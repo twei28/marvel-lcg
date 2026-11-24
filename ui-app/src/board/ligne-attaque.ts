@@ -46,6 +46,31 @@ function detailCaracteristique(
   return [`${t(sigle)} ${actuelle - somme}`, ...nommes.map(morceau), ...autres].join(' ') + suite
 }
 
+/**
+ * Les cartes boost (face cachée) déjà attachées à cet ennemi — attaquant OU
+ * manigançant, la mécanique est la même (un sbire AVEC Villainous en reçoit
+ * aussi, cf. le commentaire en tête de fichier). Exportée pour le trait de
+ * phase (`CoucheTraitPhase`, demande du 07/11/2026 : « idem pour la
+ * manigance »), qui n'a pas d'option « Defense » à qui l'accrocher.
+ */
+export function boostsAttaches(
+  enemyId: number | undefined,
+  cartesParId: Map<number, WorldCard>,
+  horsBoost: ReadonlySet<number> = new Set()
+): number {
+  if (enemyId === undefined) return 0
+  let boosts = 0
+  for (const carte of cartesParId.values()) {
+    if (carte.bind_object_id === enemyId && !carte.is_face_up && !horsBoost.has(carte.id)) boosts += 1
+  }
+  return boosts
+}
+
+/** « + 1 carte boost » / « + 3 cartes boost », ou vide si aucune. */
+export function suffixeBoosts(boosts: number): string {
+  return boosts > 0 ? ` + ${boosts} ${boosts > 1 ? t('cartes boost') : t('carte boost')}` : ''
+}
+
 function attaquantEtBoosts(
   options: Option[],
   cartesParId: Map<number, WorldCard>,
@@ -56,11 +81,7 @@ function attaquantEtBoosts(
   const attaquant = idAttaquant !== undefined ? cartesParId.get(idAttaquant) : undefined
   const atq = attaquant?.info?.attack
   if (!attaquant || typeof atq !== 'number') return undefined
-  let boosts = 0
-  for (const carte of cartesParId.values()) {
-    if (carte.bind_object_id === attaquant.id && !carte.is_face_up && !horsBoost.has(carte.id)) boosts += 1
-  }
-  const suite = boosts > 0 ? ` + ${boosts} ${boosts > 1 ? t('cartes boost') : t('carte boost')}` : ''
+  const suite = suffixeBoosts(boostsAttaches(attaquant.id, cartesParId, horsBoost))
   return { atq, bonus: attaquant.bonus?.ATK ?? [], suite }
 }
 

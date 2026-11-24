@@ -15,6 +15,7 @@
 //
 // ATTENTION : ce test lance de VRAIES parties. Toute partie en cours sur le serveur vise est perdue.
 import { test, expect } from '@playwright/test'
+import { allerA, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   lancer,
@@ -234,7 +235,7 @@ test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les
     expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
 
     // Le panneau de fin de partie montre les champs de la campagne.
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await allerA(page, 'carnet')
     await expect(page.locator('.camp-champ-libelle', { hasText: 'Zone de coopération' })).toBeVisible()
     await expect(page.locator('.camp-champ-libelle', { hasText: 'Tableau de coopération' })).toBeVisible()
     // Le tableau de coopération est une grille de cases : le joueur corrige case par case.
@@ -242,8 +243,8 @@ test.describe.serial('Campagne Skrull Menace : le panneau reporte la zone et les
     await expect(page.locator('.camp-cases button'), 'Le tableau doit avoir ses 34 cases.').toHaveCount(34)
     if ((await antalya.getAttribute('aria-pressed')) !== 'true') await antalya.click()
     await expect(antalya).toHaveAttribute('aria-pressed', 'true')
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     expect(apres.termines, 'Le scenario gagne n est pas marque termine.').toContain('sk_super_skrull')

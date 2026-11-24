@@ -9,6 +9,17 @@ class Statistics {
         this.is_new = resolve === 0 && play === 0 && defeated === 0;
     }
 }
+/** Sans cookie de session ou de version, le serveur répond une page HTML (connexion,
+ *  « Version Mismatch ») à la place du JSON : on le signale (`reponseHtml`) au lieu de
+ *  laisser planter `.json()` sur « Unexpected token < ». */
+async function lireJson(response) {
+    if ((response.headers.get('content-type') || '').includes('text/html')) {
+        const e = new Error('Le serveur a répondu une page HTML au lieu des données.');
+        e.reponseHtml = true;
+        throw e;
+    }
+    return response.json();
+}
 export class CardStatistics {
     constructor() {
         this.const_card_dict = {};
@@ -98,7 +109,7 @@ export class CardStatistics {
             if (!response_set.ok) {
                 throw new Error('Network response was not ok: ' + response_set.statusText);
             }
-            const set_raw_json = await response_set.json();
+            const set_raw_json = await lireJson(response_set);
             for (let key in set_raw_json) {
                 this.sets_json[key] = new SetInfo(set_raw_json[key]);
             }
@@ -107,14 +118,14 @@ export class CardStatistics {
         if (!response_cards.ok) {
             throw new Error('Network response was not ok: ' + response_cards.statusText);
         }
-        const cards_json = await response_cards.json();
+        const cards_json = await lireJson(response_cards);
         this.cards_list_size = this.createCardObjects(cards_json);
         if (load_statistics) {
             const response_statistics = await fetch(`get_statistics?`);
             if (!response_statistics.ok) {
                 throw new Error('Network response was not ok: ' + response_statistics.statusText);
             }
-            const statistics_json_raw = await response_statistics.json();
+            const statistics_json_raw = await lireJson(response_statistics);
             for (const key in statistics_json_raw) {
                 this.statistics_json[key] = new Statistics(statistics_json_raw[key][0], statistics_json_raw[key][1], statistics_json_raw[key][2]);
             }

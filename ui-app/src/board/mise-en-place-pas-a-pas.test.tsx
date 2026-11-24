@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest'
-import { cleanup, fireEvent, render, renderHook } from '@testing-library/react'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, fireEvent, render, renderHook } from '@testing-library/react'
 import {
   attenteSurTable,
   avecFacesDAvant,
@@ -9,7 +9,7 @@ import {
   panneauAvantLaFile,
   type MemoireMiseEnPlace,
 } from './mise-en-place-pas-a-pas'
-import { CoucheMiseEnPlace, PlacesEnAttente, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
+import { CoucheMiseEnPlace, DELAI_MISE_EN_PLACE_MS, PlacesEnAttente, useMiseEnPlacePasAPas } from './CoucheMiseEnPlace'
 import type { World, WorldCard } from './world'
 
 function carte(id: number, card_type: string, extra: Partial<WorldCard> = {}): WorldCard {
@@ -213,6 +213,37 @@ describe('CoucheMiseEnPlace', () => {
     expect(appels).toBe(2)
   })
 
+  // Inventaire des fenêtres du 19/11/2026 (nicodede62, « trop de pop-ups ») : plus de clic obligatoire par carte.
+  it('passe seule à la carte suivante après le délai, sans clic', () => {
+    vi.useFakeTimers()
+    try {
+      let appels = 0
+      render(<CoucheMiseEnPlace etape={etape} restantes={2} suivant={() => appels++} animations={false} />)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS - 100))
+      expect(appels).toBe(0)
+      act(() => vi.advanceTimersByTime(200))
+      expect(appels).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('le survol garde la carte affichée', () => {
+    vi.useFakeTimers()
+    try {
+      let appels = 0
+      const vue = render(<CoucheMiseEnPlace etape={etape} restantes={2} suivant={() => appels++} animations={false} />)
+      fireEvent.mouseEnter(vue.container.querySelector('.mep-contenu')!)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS * 3))
+      expect(appels).toBe(0)
+      fireEvent.mouseLeave(vue.container.querySelector('.mep-contenu')!)
+      act(() => vi.advanceTimersByTime(DELAI_MISE_EN_PLACE_MS + 50))
+      expect(appels).toBe(1)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
   it('ne rend rien sans étape', () => {
     const vue = render(<CoucheMiseEnPlace etape={undefined} restantes={0} suivant={() => {}} animations={false} />)
     expect(vue.container.innerHTML).toBe('')
@@ -300,8 +331,8 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
   it('dessine les pointillés des seules cartes en attente', () => {
     const vue = render(<PlacesEnAttente ids={new Set([20])} />)
     expect(vue.container.innerHTML).toContain('data-card-id="20"')
-    // La pile des stades derrière la carte attend avec elle.
-    expect(vue.container.innerHTML).toContain('.stage-arriere')
+    // La loupe des stades à venir attend avec la carte.
+    expect(vue.container.innerHTML).toContain('.stages-bouton')
     cleanup()
     expect(render(<PlacesEnAttente ids={new Set()} />).container.innerHTML).toBe('')
   })
@@ -322,4 +353,19 @@ describe('la table attend le « Continuer » (13/10/2026)', () => {
     fireEvent.click(vue.getByRole('button'))
     expect(appels).toBe(1)
   })
+})
+
+it('Spectrum : ne rejoue pas les formes Énergie face visible avant leur retournement de setup', () => {
+  const m = monde(1)
+  m.players[0].area_hero = [
+    carte(1, 'AlterEgo', { card_id: '21001b' }),
+    ...['21002', '21003', '21004'].map((code, i) => carte(10 + i, 'Upgrade', { card_id: code })),
+    carte(20, 'Upgrade', { card_id: '21011' }),
+  ]
+  const premiere = etapesNouvelles(new Map(), m, SANS_PANNEAU)
+  expect(premiere.etapes.map(e => e.carteId)).toEqual([20])
+  const finale = { ...m, render_id: 2, players: [{ ...m.players[0], area_hero: m.players[0].area_hero.map(c =>
+    ['21002', '21003', '21004'].includes(c.card_id) ? { ...c, is_face_up: false } : c
+  ) }] }
+  expect(etapesNouvelles(premiere.memoire, finale, SANS_PANNEAU).etapes).toEqual([])
 })

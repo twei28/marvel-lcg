@@ -1,0 +1,13 @@
+{
+  "version": "0.5.8",
+  "name": "Seeds of Corruption",
+  "encounters": [
+    "gs218",
+    "gs218",
+    "gs219",
+    "gs220",
+    "gs220",
+    "gs221",
+    "gs221"
+  ]
+}

@@ -51,3 +51,9 @@ génère `GGG`). Quatre icônes colorées sans wild (RR + YY) ne suffisent PAS. 
 `dt084` Off the Cuff. Pack `casey_jones` : `tc005` Grand Slam (glyphe étoile du scan identique
 à `04010` / `04033`, vérifié par découpe : `.planning/tmnt/pics-casey-icones/wild.png`). Cas :
 `[casey] tc005` (wild + physique accepté, physique + énergie refusé).
+
+**Exigence GAGNEE en cours de partie** (`gs239q` Entropy Ascendant, Galactic Storm, 20/10/2026 : « Each event card
+gains requirement ([energy]) ») : pas de cle `desc`, une capacite constante sur `Message.WhenCalculateEffectCost`
+(`message.is_play` et `Event.IsType(message.check_effect.this)`) qui convertit UNE ressource generique du cout en
+[energy] (`ResRBYGA(a - 1, rbyg + Y)`), comme le moteur encode `desc.Requirement` (has_cost.py). Un evenement a 0
+devient « [energy] » (question Q-GS2-3). Cas `[quasar] gs239q` (RR refuse, YY accepte, amelioration non touchee).

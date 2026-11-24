@@ -57,4 +57,46 @@ finder=CarteShinobi(), range=(1, 1)))`, et le plafond « Max 2 » est une CONDIT
 2`). Preuves : `[se] se005` (Kanpeki, plafond 2 et 1, forme alter-ego, jouable comme en main par `IsLikeInHand()`, témoin sous un
 autre hôte). ⚠ La clé de cas `jouer` AMÈNE en main une carte absente : elle ne prouve pas la permission.
 
+**Galactic Storm (`gs119` Imprisoned on Chandilar, scénario Majestrix's Verdict, 20/10/2026)** : le livret 1.2
+p.4 définit « Tuck » : « place the tucked card FACEUP under the other card. The tucked card is not in play. When a
+card leaves play, any cards tucked under it are discarded. » Trois pièges mesurés :
+- `TuckCardUnderHere` pose FACE CACHÉE (`face_up=False`, modèle officiel Abduct Superhumans `50081`) : pour un
+  glissement face visible, `PlaceCardHere(faces, True, effect)` (helper `Glisser` du set) ;
+- une carte qui ENTRE EN JEU depuis une `PlaceCardArea` n'est pas remise à zéro (`card.py`, « Fix 39035 ») : une
+  carte glissée directement depuis la réserve du scénario n'a jamais calculé ses mots-clés et entrait en jeu
+  avec ATQ 0, Riposte 0, sans Toughness. `face.Reset(False)` avant `PutIntoPlay` (helper `MettreEnJeuSousControle`) ;
+- `Worlds.FindCardOnField` VOIT les cartes glissées (zone sur le terrain mais hors jeu) : une Lilandra glissée
+  passait pour « en jeu ». Filtrer sur `IsInPlay()` (helper `EnJeu`).
+Le plateau dessine les cartes glissées sous une manigance annexe : cas `ui-app/src/board/glisse-sous-manigance.test.ts`.
+
 **Variantes maison** : aucune.
+
+**`gs099q` Maelstrom (Galactic Storm, 20/10/2026)** : « When Revealed: Tuck Quantum Bands under Maelstrom. Forced
+Response: After Maelstrom leaves play, put Quantum Bands into play under the Quasar player's control. » Glisser une
+carte EN JEU (amelioration permanente) : `TuckCardUnderHere` la retourne face cachee ; la reference de la carte est
+gardee sur l'objet carte de Maelstrom (`card.bandes_glissees_par_maelstrom`) pour la remettre en jeu (retournee face
+visible) dans `AfterCardLeavePlay(ForcedResponse, "This", ...)`. Voir aussi permanent.md.
+
+
+## Corsair (`cr001a`, pack `corsair`, 26/10/2026) : un HÉROS dont toute la mécanique est de ranger des cartes sous lui
+
+- « You may play cards tucked under here as if they were in your hand » sur l'IDENTITÉ : `*AbilityFactory.AttachedCardCanPlayLikeInHand()`
+  sur la face héros (zone `identite.GetPlacedCardArea()`, partagée par les deux faces), SANS `also_spend` ni `also_discard`
+  (FAQ : « cards tucked under Corsair can only be played, not spent »). Même recette que `tc013` Casey's Bag.
+- Ranger une carte qui vient d'être DÉPENSÉE en ressource (`AfterCardsBeSpendAsResource`, modèle `65001a` Wave) : on range la
+  carte depuis la zone de ressources, avant `DiscardResourcesArea` ; elle n'est donc jamais « défaussée » pour les autres
+  réactions. Depuis une défausse, `TuckCardUnderHere(face, effect)` (modèle `60037a`) accepte une carte déjà en défausse.
+- Ranger UNE CARTE EN JEU (Pulse Blaster, amélioration) : `identite.TuckCardUnderHere(this, effect)` depuis son propre script, sans
+  clé `Uses` (voir uses.md).
+- Cas : `tools/cas/corsair.py` ([cr]).
+
+**Corsair, Pocket Universe Gems (26/10/2026)** : « after a card in your hand is discarded to pay for a cost, tuck that card » : au paiement en RESSOURCES la carte est
+d'abord DÉFAUSSÉE (zone de ressources -> défausse), puis glissée depuis la défausse (`AfterCardDiscard`, pas `AfterCardsBeSpendAsResource`). Une autre Réponse « after you discard »
+(Corsair's Rapier) voit donc la même défausse ; déclenchées ENSEMBLE, la seconde doit vérifier que la carte attend encore dans la défausse avant de la glisser
+(`ToujoursEnDefausse`, sinon elle était glissée DEUX fois).
+
+**Beast's Lab (`bs002`, pack `beast_proust`, 02/11/2026)** : un SOUTIEN permanent est l'hôte des glissements (jusqu'à 3 améliorations). Trois montages à retenir :
+- « Upgrades tucked under this card may be played as if they were in your hand » = `*AbilityFactory.AttachedCardCanPlayLikeInHand(Upgrade)` SANS `also_spend` ni `also_discard` ; le TYPE passé filtre : un événement glissé dessous n'est pas jouable (cas `jouer_sous_tolerant`).
+- « If there are more than 3 cards tucked under this card, discard cards until only 3 remain » = `AbilityFactory.AfterCardsMoved(ForcedResponse, None, op, conditions=[zone du Lab dans message.related_decks, taille > 3])` : la règle tient pour TOUTE source de glissement (modèle `sf010`) ; le joueur choisit lesquelles défausser.
+- Les cartes glissées par `Glisser(joueur, faces, effect)` (helper du set) le sont avec `peek=True` : face cachée mais visible de tous, comme l'exige un hôte dont on rejoue le contenu. Le plateau les dessine derrière le soutien (`beast-proust-plateau.test.ts`).
+Un sbire peut aussi être hôte (`bs015` Black Beast) : sa capacité `[star]` lit la zone par `ThisGainKeyword(.., change_on_event=[OnEvent.PlacedCard("Here")])`.

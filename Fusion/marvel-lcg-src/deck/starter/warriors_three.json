@@ -1,0 +1,72 @@
+{
+ "version": "0.5.8",
+ "name": "The Warriors Three",
+ "metadata": {
+  "url": "",
+  "author": "Phenexian and Mysteltainn",
+  "note": "Pack « Warriors Three » (Phenexian et Mysteltainn). Identite a QUATRE faces (alter ego + Fandral, Hogun, Volstagg) ; wt002 (titre) et wt003-wt005 (heros inactifs, soutiens PERSONA) sont des cartes Permanent/Setup du hero_deck, mises en jeu au setup. player_deck = decklist imprimee de l'auteur (precon). Cartes ambigues resolues : Mutitasking = 15013 Multitasking, Avenges Mansion = 01091, Bootcamp = 13016 Boot Camp, Mutitalented = 47021 Multitalented, Lay Down the Law 12031, Concussive Blow 05031, Wolfsbane 40051, deux Thor = 13011 et 25013. Precon JUSTICE.",
+  "variante_nom": "Justice (precon)"
+ },
+ "hero": [
+  "wt001a,wt001b,wt001c,wt001d"
+ ],
+ "hero_deck": [
+  "wt002",
+  "wt003",
+  "wt004",
+  "wt005",
+  "wt006",
+  "wt007",
+  "wt008",
+  "wt009",
+  "wt010",
+  "wt011",
+  "wt011",
+  "wt012",
+  "wt012",
+  "wt013",
+  "wt013",
+  "wt014",
+  "wt014",
+  "wt015",
+  "wt015"
+ ],
+ "set_aside": [],
+ "obligations": [
+  "wt016"
+ ],
+ "nemesis_set": [
+  "wt017",
+  "wt018",
+  "wt019",
+  "wt020",
+  "wt021"
+ ],
+ "player_deck": [
+  "15013",
+  "15013",
+  "15013",
+  "12031",
+  "12031",
+  "12031",
+  "05031",
+  "05031",
+  "05031",
+  "47021",
+  "47021",
+  "47021",
+  "01089",
+  "01088",
+  "01090",
+  "40051",
+  "47012",
+  "10029",
+  "10029",
+  "10029",
+  "01091",
+  "04047",
+  "04047",
+  "04047",
+  "01065"
+ ]
+}

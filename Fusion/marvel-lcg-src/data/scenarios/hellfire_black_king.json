@@ -1,0 +1,25 @@
+{
+  "version": "0.5.8",
+  "name": "Black King",
+  "villain": [
+    "hf201",
+    "hf202"
+  ],
+  "expert": false,
+  "schemes": [
+    "hf204a,hf204b",
+    "hf205a,hf205b"
+  ],
+  "set_aside": [
+    "hf207a,hf207b"
+  ],
+  "encounters": [],
+  "encounter_sets": [
+    "hf_black_king",
+    "hf_sebastian_shaw",
+    "standard"
+  ],
+  "modular_sets": [
+    "hf_hellfire_conclave"
+  ]
+}

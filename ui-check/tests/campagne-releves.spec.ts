@@ -24,6 +24,7 @@
 // ATTENTION : ce test lance de VRAIES parties. Toute partie en cours sur le
 // serveur visé est perdue. Meme precaution que lancement-partie.spec.ts.
 import { test, expect } from '@playwright/test'
+import { allerA, parcoursOuvert, validerParcours } from './aide-parcours-fin'
 import {
   acheverLaPartie,
   blesserIdentite,
@@ -123,9 +124,9 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
     const m: Monde = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait etre gagnee (trois vilains en deroute).').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const maraudeurs = liste(apres.carnet?.['Marauders Defeated'])
@@ -174,7 +175,7 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
+    await allerA(page, 'carnet')
     // Le champ n'est plus une case a remplir : il arrive DEJA rempli, et reste
     // corrigeable pour qui joue avec la piste papier.
     const champ = page.locator('.camp-champ', { hasText: /réputation/i }).first()
@@ -184,8 +185,8 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
       PISTE_AVANT
     )
 
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const total = Number(apres.carnet?.['Reputation Track'])
@@ -233,9 +234,9 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const piste = Number(apres.carnet?.['Reputation Track'])
@@ -298,9 +299,9 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const releve = Number(apres.carnet?.['Player 1 Remaining hit points'])
@@ -372,9 +373,9 @@ test.describe.serial('Campagne : ce que le jeu releve tout seul', () => {
     const m = await acheverLaPartie(page, request, tuerLeVilainEnJeu, 90)
     expect(m.players_won, 'La partie devait etre gagnee.').toBe(true)
 
-    await expect(page.locator('.camp-recomp')).toBeVisible({ timeout: 20000 })
-    await page.locator('.camp-recomp-valider').click()
-    await page.waitForURL('**/campagne.html', { timeout: 30000 })
+    await parcoursOuvert(page)
+    await validerParcours(page)
+    await page.waitForURL(/\/campagne\.html/, { timeout: 30000 })
 
     const apres = await relireCampagne(request, identifiant)
     const retires = liste(apres.carnet?.['Allies removed from the campaign'])

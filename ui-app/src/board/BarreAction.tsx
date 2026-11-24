@@ -8,7 +8,9 @@ import type { Demande, Option } from './ask'
 import type { Interaction } from './interaction'
 import { t } from './langue'
 import { avecIcones, coutEnIcones, marquerRessources } from './icones-ressources'
-import { traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
+import { nomActionParlant } from './texte-capacite'
+import { libelleTypeDeCarte } from './types-de-carte'
+import { sansIndexDeCapacite, traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocabulaire-moteur'
 
 /**
  * Les noms d'options arrivent avec des soulignes, et parfois prefixes de "p_"
@@ -22,8 +24,44 @@ import { traduireEffets, traduireMoteur, traduireTitreRepetition } from './vocab
  */
 export function nomLisible(option: Option): string {
   const brut = option.name.startsWith('p_') ? option.name.slice(2) : option.name
-  const lisible = brut.replaceAll('_', ' ').trim()
+  // « Nommez un type de carte » (Cosmo, DeclareCardType) : le moteur envoie le nom de CLASSE (« MainScheme »).
+  const type = option.is_text_choice ? libelleTypeDeCarte(brut) : undefined
+  if (type) return type
+  // « Pay_cost_Discard » (cost_func.py, `prompt=f"Pay cost {self}"`) : choisir CE QUI PAIE le coût d'une capacité. Restait
+  // en anglais brut, « PAY COST DISCARD » (rapport nicodede62 #158, pouvoir de Captain America, 19/11/2026).
+  const cout = /^Pay_cost_(\w+)$/.exec(brut)
+  if (cout) return libellePaiementCout(cout[1]!)
+  const lisible = sansIndexDeCapacite(brut.replaceAll('_', ' ').trim())
   return lisible ? traduireMoteur(lisible) : t('Action')
+}
+
+// Le verbe de chaque coût choisi par le joueur (classes de `cost_func.py`). Un coût absent de la liste garde « Payer le coût ».
+const VERBES_DE_COUT: Record<string, string> = {
+  Discard: 'Défausser pour payer',
+  Exhaust: 'Incliner pour payer',
+  Ready: 'Redresser pour payer',
+  Spend: 'Dépenser pour payer',
+  ReturnToHand: 'Renvoyer en main pour payer',
+  RemoveFromGame: 'Retirer de la partie pour payer',
+  PutIntoPlay: 'Mettre en jeu pour payer',
+  DealDamage: 'Infliger des dégâts pour payer',
+  TakeDamage: 'Subir des dégâts pour payer',
+  Heal: 'Soigner pour payer',
+}
+
+export function libellePaiementCout(cout: string): string {
+  return t(VERBES_DE_COUT[cout] ?? 'Payer le coût')
+}
+
+/**
+ * Le nom d'une option, avec le RESUME de son paragraphe quand la carte offre plusieurs actions du meme type
+ * (« Action de héros : Dépensez [energy] → piochez 1 carte »). Sans texte, ou avec une seule action, c'est `nomLisible`.
+ * Demande du 22/10/2026 : plus jamais « Action » et « Action 1 » sans savoir laquelle fait quoi.
+ */
+export function nomLisibleParlant(option: Option, texteCarte: string | undefined): string {
+  const resume = nomActionParlant(option.name, texteCarte)
+  const nom = nomLisible(option)
+  return resume ? `${nom} : ${resume}` : nom
 }
 
 /**

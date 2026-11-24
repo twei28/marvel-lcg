@@ -96,6 +96,8 @@ const PHRASES: Record<string, () => string> = {
   'check target': () => t('Aucune cible possible en ce moment'),
   'check pay': () => t('Pas assez de ressources'),
   'has cost but no ask player': () => t("Le coût ne peut être payé par personne"),
+  // Une ACTION d'une carte en jeu qui n'est pas offerte, sans phrase propre a la carte (`controller._RefusDesActionsEnJeu`).
+  action_indisponible: () => t("Cette action n'a aucun effet possible en ce moment"),
   'bind face is defeating': () => t('La carte porteuse est en train d’être vaincue'),
 }
 
@@ -124,6 +126,8 @@ function phraseParametree(code: string): string | undefined {
 export function phraseDuRefus(code: string): string | undefined {
   const brut = code.trim()
   if (!brut) return undefined
+  // « raison|<phrase> » : la carte dit elle-meme pourquoi (`SetRaisonRefus`), en francais ; `t()` donne l'anglais.
+  if (brut.startsWith('raison|')) return t(brut.slice('raison|'.length))
   const parametree = phraseParametree(brut)
   if (parametree !== undefined) return parametree
   const phrase = PHRASES[brut]

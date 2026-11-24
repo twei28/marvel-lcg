@@ -3,9 +3,15 @@ from aiohttp import web
 from engine.device.web.server.server_base import GameServerBase
 
 from engine.lib import Json
+from engine.config import ConfigVariables
 # from engine.log import Log
 from game.puzzle.puzzle_data import PuzzleData
 from game.game_run.game_new import NewGameDescriptor
+
+# Kingsfall multi-tables : le nom de cette table et le fichier d'etat commun des assemblees (poses par `tools/config_serveur.py`).
+TABLE_NOM = ConfigVariables.Str('table_nom', 'local')
+ASSEMBLEES_FICHIER = ConfigVariables.Str('assemblees_fichier', '')
+
 
 class GameServerNewGame(GameServerBase):
 
@@ -45,8 +51,46 @@ class GameServerNewGame(GameServerBase):
                 new_game.campaign_log = {**(new_game.campaign_log or {}), **secret}
         except Exception:
             pass
+        # KINGSFALL MULTI-TABLES (22/10/2026). Le client demande `assemblee_creer` (cette table ouvre l'assemblee et en est l'organisatrice) ou
+        # `assemblee_rejoindre_<CODE>` ; le serveur s'inscrit dans le stockage COMMUN AVANT de lancer la partie et remplace la demande par la regle
+        # `assemblee_<CODE>_<TABLE>` que le monde lit. Un refus (code inconnu, assemblee pleine) arrete le lancement avec son message.
+        try:
+            self._inscrire_dans_une_assemblee(new_game)
+        except Exception as erreur:
+            from game.operate.assemblee import ErreurAssemblee
+            if isinstance(erreur, ErreurAssemblee):
+                return web.json_response({'error': str(erreur)}, status=400)
+            raise
         self.game.NewGame(new_game)
         return web.json_response({'result': "New game created"})
+
+    def _inscrire_dans_une_assemblee(self, new_game: 'NewGameDescriptor') -> None:
+        from game.operate.assemblee import Assemblee
+        rules = list(new_game.rules or [])
+        demande = next((r for r in rules if r == 'assemblee_creer' or r.startswith('assemblee_rejoindre_')), None)
+        if demande is None:
+            return
+        table = TABLE_NOM.value or 'local'
+        fichier = ASSEMBLEES_FICHIER.value
+        if fichier:
+            import os
+            os.environ['MCLCG_ASSEMBLEES'] = os.path.abspath(fichier)
+        noms = []
+        for heros in new_game.hero_json or []:
+            try:
+                import json
+                noms.append(str(json.loads(heros).get('name') or '').strip())
+            except Exception:
+                noms.append('')
+        joueurs = max(1, len(new_game.hero_json or []))
+        libelle = ', '.join(n for n in noms if n)
+        if demande == 'assemblee_creer':
+            code = Assemblee.Creer(table, joueurs, libelle)
+        else:
+            code = demande[len('assemblee_rejoindre_'):].strip().upper()
+            Assemblee.Rejoindre(code, table, joueurs, libelle)
+        rules = [r for r in rules if r != demande] + [f'assemblee_{code}_{table}']
+        new_game.rules = rules
 
     async def load_replay(self, request: web.Request) -> web.Response:
         self.table_ordinaire = False
@@ -88,59 +132,18 @@ class GameServerNewGame(GameServerBase):
 
     def play_puzzle(self, puzzle: 'PuzzleData'):
         from game.scene.scene import Scene
+        from game.puzzle.puzzle_scene import BuildPuzzleScene
+        from game.puzzle.puzzle_validation import PUBLISHED_METHODS, validate_puzzle
 
-        def get_cards_text(cards: List[str]) -> str:
-            text = ",".join(f"'{x}'" for x in cards)
-            return text
+        # Un puzzle de format 2 peut venir d'un inconnu (publie sur le site, lu par code) : meme
+        # controle strict qu'au serveur de puzzles, avec la liste blanche de mise en place. Les
+        # fichiers du depot (format 1) sont les notres et restent tels quels.
+        if puzzle.format >= 2:
+            erreurs = validate_puzzle(puzzle, PUBLISHED_METHODS)
+            if erreurs:
+                raise web.HTTPBadRequest(text='Puzzle refusé : ' + ' ; '.join(erreurs[:5]))
 
-        puzzle_pre_command: List[str] = []
-
-        def append_puzzle_command(command: str, cards: List[str]) -> None:
-            text = get_cards_text(cards)
-            if text:
-                puzzle_pre_command.append(f"{command}({text})")
-
-        append_puzzle_command("Puzzle.CreateEncounterDeck", puzzle.encounter_deck)
-        append_puzzle_command("Puzzle.CreateEncounterDiscardPile", puzzle.encounter_discard_pile)
-        append_puzzle_command("Puzzle.CreateHandCards", puzzle.players[0].hand_cards)
-        append_puzzle_command("Puzzle.CreatePlayerDiscardPile", puzzle.players[0].player_discard_pile)
-        append_puzzle_command("Puzzle.CreatePlayerDeck", puzzle.players[0].player_deck)
-        append_puzzle_command("Puzzle.CreatePlayerAdditionalDeck", puzzle.players[0].set_aside)
-
-        puzzle_data = {
-            "version": puzzle.version,
-            "metadata": {
-                "seed": puzzle.seed,
-                "comment": puzzle.comment,
-                "cover": puzzle.cover,
-                "is_puzzle": True
-            },
-            "campaign": {
-                "version": puzzle.version,
-                "name": "Villain",
-                "villain": puzzle.villain,
-                "expert": puzzle.expert,
-                "schemes": puzzle.schemes,
-                "set_aside": puzzle.set_aside,
-                "encounters": [],
-                "encounter_sets": [],
-                "modular_sets": []
-            },
-            "players": [
-                {
-                    "version": puzzle.version,
-                    "name": f"Player {index}",
-                    "hero": puzzle.players[index].identities,
-                    "hero_deck": [],
-                    "obligations": [],
-                    "nemesis_set": [],
-                    "set_aside": puzzle.players[index].set_aside,
-                    "player_deck": []
-                }
-                for index in range(len(puzzle.players))
-            ],
-            "puzzle": puzzle_pre_command + puzzle.puzzle_command,
-        }
+        puzzle_data = BuildPuzzleScene(puzzle)
 
         scene = Json.LoadsAs(Json.Dumps(puzzle_data), Scene)
         scene.UpdateVersion()
@@ -168,6 +171,13 @@ class GameServerNewGame(GameServerBase):
         self.play_puzzle(puzzle)
         return web.json_response({'result': "New game created"})
 
+    async def new_puzzle_post(self, request: web.Request) -> web.Response:
+        """Comme `/new_puzzle`, mais le puzzle est dans le CORPS : une adresse ne porte pas un vrai deck
+        (la ligne de requete est plafonnee a 8 Ko)."""
+        puzzle = Json.LoadsAs(await request.text(), PuzzleData)
+        self.play_puzzle(puzzle)
+        return web.json_response({'result': "New game created"})
+
     async def new_game_online(self, request: web.Request) -> web.Response:
         ip = request.query.get('ip')
         port = int(request.query.get('port', 2345))
@@ -191,6 +201,7 @@ class GameServerNewGame(GameServerBase):
         self.AddAwaitGetSecurity('/load_puzzle', self.load_puzzle)
         self.AddAwaitGetSecurity('/new_puzzle_replay', self.new_puzzle_replay)
         self.AddAwaitGetSecurity('/new_puzzle', self.new_puzzle)
+        self.AddPostSecurity('/new_puzzle', self.new_puzzle_post)
         self.AddAwaitGetSecurity('/new_game_online', self.new_game_online)
         self.AddAwaitGetSecurity('/new_game_lan', self.new_game_lan)
 

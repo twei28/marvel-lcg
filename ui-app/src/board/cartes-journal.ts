@@ -7,6 +7,7 @@
 // nom porte par deux cartes differentes reste du texte simple.
 import type { EntreeHistorique } from './HistoriquePartie'
 import { NOMS_FR } from './noms-fr'
+import { NOMS_FR_FANMADE } from './noms-fr-fanmade'
 import { scansFrActifs } from './scans-fr'
 
 export type RefCarte = { id: number; nom: string }
@@ -20,7 +21,7 @@ export function referencesDeBrut(brut: string | undefined): RefCarte[] {
   const francais = scansFrActifs()
   for (const trouve of brut.matchAll(IDENTIFIANT)) {
     // Le nom tel que la ligne l'affiche : le texte est passe en francais.
-    const nom = ((francais ? NOMS_FR[trouve[2]] : undefined) ?? trouve[3]).trim()
+    const nom = ((francais ? (NOMS_FR[trouve[2]] ?? NOMS_FR_FANMADE[trouve[2]]) : undefined) ?? trouve[3]).trim()
     if (nom) refs.push({ id: Number(trouve[1]), nom })
   }
   return refs

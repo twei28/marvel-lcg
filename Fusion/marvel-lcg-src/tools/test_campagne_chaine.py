@@ -67,13 +67,18 @@ import time
 CATEGORY = "CAMPAGNES"
 DOSSIER_OUTILS = os.path.dirname(os.path.abspath(__file__))
 FICHIER_CAS = os.path.join(DOSSIER_OUTILS, "cas", "campagne_mode.py")
+# Les fichiers qui portent des CHAINES, dans l'ordre : l'indice d'une chaine est sa position dans la liste concatenee (donc son port).
+FICHIERS_CAS = [FICHIER_CAS, os.path.join(DOSSIER_OUTILS, "cas", "campagne_hellfire.py")]
 
 
 def charger_chaines():
-    spec = importlib.util.spec_from_file_location("cas_campagne_mode_chaines", FICHIER_CAS)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module.CHAINES
+    chaines = []
+    for chemin in FICHIERS_CAS:
+        spec = importlib.util.spec_from_file_location("cas_" + os.path.basename(chemin)[:-3] + "_chaines", chemin)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        chaines.extend(module.CHAINES)
+    return chaines
 
 
 def cles_reportees(definition, etape_id, expert, total, elimines=()):

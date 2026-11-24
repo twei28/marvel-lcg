@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Spider-Man Noir",
     "metadata": {
+        "author": "Rainy",
         "url": "",
         "deck_note": "⚠ `player_deck` VIDE DEPUIS LE 12/09/2026. Consigne utilisateur du 06/09/2026, appliquee retroactivement le 12/09/2026 a tous les decks fan-made : on n'invente pas de deck d'aspect pour un heros homebrew, on ne recopie que ce que l'auteur fournit, et cet auteur ne fournit aucune decklist. Ce fichier ne contient donc que de l'IMPRIME : l'identite, les cartes signature, l'obligation et le set nemesis. Le joueur choisit un paquet d'aspect conseille ou construit son deck au lancement. Ancienne moitie retiree : 25 cartes Justice (construite par le portage, aspect arbitre le 05/09/2026).",
         "pile_note": "⚠ TOUT LE PACK REPOSE SUR LA PILE GLISSEE SOUS L'IDENTITE. Le heros a ATQ 0 et CTR 0 IMPRIMEES et gagne +X aux deux, X = nombre de cartes glissees (plafond 3). Sans pile il ne frappe ni ne contre. Onze des seize cartes la lisent ou l'alimentent. La zone est portee par la CARTE et non par la face (card_face.py:1017) : les deux faces la partagent, ce que le texte imprime suppose en ecrivant tantot « under him », tantot « here », tantot « under your hero », tantot « under your identity ».",

@@ -68,7 +68,18 @@ class CanTeamwork(HasTeamwork):
 
             has_teamwork = False
             minions = Worlds.GetOnFieldMinions(self.card.game_area)
-            for minion in minions:
+            # AJOUT (22/10/2026, « La ville ne dort jamais », FAQ : « le mot-cle Collaboration verifie la presence d'autres sbires "en jeu" [...]
+            # Si un sbire correspondant se trouve sur un autre territoire, le sbire qui vient d'etre revele s'activera tout de meme ») : avec la
+            # ville, on regarde TOUTES les zones, et les sbires ATTACHES a un lieu (glisses sous lui, mais « en jeu »).
+            ville = getattr(self.card.world, 'ville', None)
+            autres_zones: List['CardFace'] = []
+            if ville is not None:
+                for zone in self.card.world.game_areas:
+                    autres_zones += [m for m in Worlds.GetOnFieldMinions(zone) if m not in minions and m not in autres_zones]
+                from game.operate.ville import Ville
+                for lieu in Ville.Lieux(self.card.world):
+                    autres_zones += Ville.SbiresAttaches(lieu)
+            for minion in minions + autres_zones:
                 if minion != self and minion.HasTrait(*self.teamwork):
                     has_teamwork = True
                     break

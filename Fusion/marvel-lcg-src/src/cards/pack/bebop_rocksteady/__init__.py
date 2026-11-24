@@ -49,6 +49,22 @@ def AutreVilain(effect: 'Effect', villain: 'CardFace') -> 'Villain|None':
     return None
 
 
+def AttaqueHorsPhase(villain: 'CardFace', joueur: 'Player', effect: 'Effect') -> bool:
+    """Une attaque donnee par une CARTE (traitrise « That villain attacks… », Trample,
+    Demolition Crew) n'est pas une activation pour le moteur : elle ne passe pas par
+    `DoActivate`, donc la face K.O. de Bebop / Rocksteady ne l'interceptait jamais
+    (rapport joueur, 12/11/2026 : attaque avec boost au lieu de retirer un compteur).
+    Pour ces deux vilains, on annonce donc l'activation avant l'attaque, comme la phase
+    du mechant : si leur interruption la remplace, l'attaque ne part pas.
+    Renvoie True si l'attaque doit avoir lieu. Les autres vilains : toujours True."""
+    if not NomDuVilain(villain):
+        return True
+    from game.message import Message
+    would = Message.WhenEnemyWouldActivate(villain.CastTo(Enemy), joueur)
+    would.Send()
+    return not would.is_be_instead
+
+
 def EstKO(villain: 'CardFace') -> bool:
     return villain.HasTrait(KO)
 
@@ -369,7 +385,8 @@ def BumblingBuffoons() -> List['Ability']:
                     AbilityType.Temp0, joueur.GetIdentity(), redirige, is_from_attack=atk),
                 unregister_after_exec=True, until_event_end=atk)
 
-        attaquant.CastTo(Enemy).DoAttackYou(joueur, effect, operation=sur_l_attaque)
+        if AttaqueHorsPhase(attaquant, joueur, effect):
+            attaquant.CastTo(Enemy).DoAttackYou(joueur, effect, operation=sur_l_attaque)
 
     return [
         Dodgy(),

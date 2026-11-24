@@ -44,3 +44,8 @@ carte isolé.
 **Cas `tc013` Casey's Bag (pack `casey_jones`)** : amélioration Permanente SANS coût imprimé, mise en jeu par
 le Setup de `tc001b`. Un `Puzzle.Discard('tc013')` (règle de débogage d'un autre set) la laisse en jeu ;
 un effet du MÊME set « Casey Jones » peut la déplacer (le test du moteur compare les `set_name`).
+
+**Cas `gs099q` Maelstrom / `gs301` Quantum Bands (Galactic Storm, 20/10/2026)** : le sbire nemesis de Quasar
+(set « Quasar Nemesis ») GLISSE nommement les Quantum Bands (Permanent, set « Quasar ») sous lui. Le test de
+set de `has_permanent.py` l'aurait refuse : exception ajoutee au meme endroit que « Milano » (nom de la carte
+permanente + nom et set de la carte qui agit). Cas `[quasar] gs099q` (Bandes glissees puis revenues).

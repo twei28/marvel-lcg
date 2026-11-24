@@ -1,6 +1,7 @@
 // catalog.js — construit les modèles de haut niveau (héros, scénarios, extensions,
 // sets de rencontre) à partir des données brutes + métadonnées de cartes.
 "use strict";
+import { sansVariantesDeCampagne } from "/public/js/prepare/underlings.js";
 import { api, fileName } from "/public/js/prepare/api.js";
 import { regrouperVariantes, cleIdentite } from "/public/js/prepare/variantes.js";
 import { cards } from "/public/js/prepare/cards.js";
@@ -19,6 +20,14 @@ const NOMS_SETS_RENCONTRE = {
     ts_chunin: "Chunin",
     ts_foot_goon_squad: "Foot Goon Squad",
     ts_shadow_of_the_foot: "Shadow of the Foot",
+    // Scénario Mephisto (Neptune) : le fichier garde le préfixe `mp_`, le nom des cartes (`set_name`) non.
+    mp_mephisto: "Mephisto",
+    mp_blackheart: "Blackheart",
+    mp_corruptive_offers: "Corruptive Offers",
+    mp_damned: "Damned",
+    mp_mother_of_demons: "Mother of Demons",
+    mp_standard: "Mephisto Standard",
+    mp_expert: "Mephisto Expert",
 };
 const nomSetRencontre = (n) => NOMS_SETS_RENCONTRE[String(n)] || titleize(n);
 const cleanName = (s) => String(s || "").replace(/^\*\s*/, "").trim();
@@ -176,8 +185,13 @@ const BORNES_VAGUES = [
     { depuis: 45, vague: 8 },    // Age of Apocalypse
     { depuis: 50, vague: 9 },    // Agents of S.H.I.E.L.D.
     { depuis: 56, vague: 10 },   // Civil War
-    { depuis: 60, vague: 11 },   // Fear No Evil
-    { depuis: 61, vague: null }, // au-dela : hors vague (modulaires, defis)
+    { depuis: 60, vague: 11 },   // Fear No Evil, et ses hero packs Defenders
+                                 // (61 Jessica Jones, 62 Luke Cage, 63 Elektra,
+                                 // 64 Iron Fist) : ils sortent AVEC cette boite.
+                                 // Sans eux ici, officiels mais « hors vague »,
+                                 // le mode Legacy les prenait pour du fan-made
+                                 // achetable au jeton (signale le 28/10/2026).
+    { depuis: 65, vague: null }, // au-dela : hors vague (modulaires, defis)
 ];
 
 /* Le NOM d'une vague est celui de la grande boite qui l'ouvre — c'est la meme
@@ -334,6 +348,9 @@ export const catalog = {
             // Fear No Evil (18/09/2026) : manigances a vilain interchangeable,
             // repliees en une tuile par manigance (underlings.js).
             underlings: v.underlings || [], manigances: v.manigances || [],
+            tuileManigance: !!v.tuile_manigance, tuileManiganceScenarios: v.tuile_manigance_scenarios || [], tuileSbireScenarios: v.tuile_sbire_scenarios || {},
+            // MC×DC 2026 : les variantes de CAMPAGNE (combats 2 et 3), retirees de la liste libre (underlings.js `sansVariantesDeCampagne`).
+            scenariosCampagne: v.scenarios_campagne || [],
         })).sort((a, b) => num(a.key) - num(b.key));
         // Onglet synthétique « Défis » : les défis mensuels de data/challenges
         // sont des scénarios complets (méchant fixe + carte Défi via
@@ -427,6 +444,11 @@ export const catalog = {
                 extension,
                 vague: vagueDeLExtension(extension),
                 homebrew: isHomebrew(extension),
+                // Pack officiel publié partiellement (ex. Iron Fist MC64EN,
+                // novembre 2026 : Obligation et set Nemesis pas encore sortis).
+                // Flag générique dans `metadata.incomplet` du deck de départ,
+                // réutilisable pour un futur héros dans le même cas.
+                incomplet: !!(d.metadata && d.metadata.incomplet),
                 // Créateur du pack fan-made (champ `custom` de la face héros,
                 // GUIDE §14) : affiché entre parenthèses derrière le nom.
                 auteur,
@@ -462,23 +484,48 @@ export const catalog = {
     /** Decks jouables pour un héros donné : base (s'il en a un) + sauvegardés + paquets d'aspect. */
     async decksForHero(hero) {
         await cards.load();
-        const out = aDeckDeBase(hero)
-            ? [{ id: hero.baseDeckId, name: hero.deck.name || hero.name, source: "base", deck: hero.deck, aspects: hero.aspects }]
-            : [];
+        // TOUS les decks de depart fournis par l'auteur sont listes (Aggression, Protection, Justice, Leadership...),
+        // pas seulement le premier (04/11/2026). `hero.versions` les porte quand un heros a plusieurs decks ; sinon
+        // on retombe sur l'unique deck de base. Un « deck » de 15 cartes sans aspect (player_deck vide) n'est pas un
+        // deck de depart jouable et n'est pas liste ici. Voir la memoire versions-decks-selection.
+        const versionsDeBase = (hero && hero.versions && hero.versions.length)
+            ? hero.versions
+            : (hero && hero.deck ? [{ id: hero.baseDeckId, deck: hero.deck }] : []);
+        const out = versionsDeBase
+            .filter((v) => v.deck && (v.deck.player_deck || []).length)
+            .map((v) => ({ id: v.id, name: v.deck.name || hero.name, source: "base", deck: v.deck, aspects: aspectsOfDeck(v.deck) }));
         try {
-            const savedIds = (await api.listSavedDecks()).map(fileName);
-            for (const id of savedIds) {
-                try {
-                    const d = await api.deck(id);
-                    if (d && d.hero && d.hero[0] && d.hero[0].split(",")[0] === hero.heroCardId) {
-                        // Les decks par heros du tableur « Universal Prebuilt Decks »
-                        // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
-                        // par le joueur : ils portent leur propre origine.
-                        const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
-                        out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
-                    }
-                } catch (e) {}
-            }
+            // UN DECK NE SE LISTE QU'UNE FOIS. `list_deck` rend les chemins de
+            // tous les dossiers ; `fileName` en retire le dossier, donc un meme
+            // fichier present dans deux dossiers (commun + place du joueur)
+            // sortait deux fois, et le serveur rendait chaque fois le meme.
+            const savedIds = [...new Set((await api.listSavedDecks()).map(fileName))];
+            const dejaVus = new Set();
+            // EN PARALLELE (24/10/2026, « pourquoi les decks mettent du temps a s'afficher ? ») : un fichier apres l'autre,
+            // c'etait des centaines d'allers-retours a la file. Par groupes de 12 ; l'ordre de la liste est conserve.
+            const lus = new Array(savedIds.length).fill(null);
+            let suivant = 0;
+            const travailleur = async () => {
+                while (suivant < savedIds.length) {
+                    const k = suivant++;
+                    try { lus[k] = await api.deck(savedIds[k]); } catch (e) { lus[k] = null; }
+                }
+            };
+            await Promise.all(Array.from({ length: Math.min(12, savedIds.length) }, travailleur));
+            savedIds.forEach((id, k) => {
+                const d = lus[k];
+                if (d && d.hero && d.hero[0] && d.hero[0].split(",")[0] === hero.heroCardId) {
+                    // Les decks par heros du tableur « Universal Prebuilt Decks »
+                    // (deck/custom/prebuilt_*) ne sont PAS des decks sauvegardes
+                    // par le joueur : ils portent leur propre origine.
+                    const duTableur = String((d.metadata || {}).source || "").startsWith("Universal Prebuilt Decks");
+                    // Deux fichiers au meme nom ET au meme contenu = le meme deck.
+                    const signature = (d.name || "") + "|" + [...(d.player_deck || [])].sort().join(",");
+                    if (dejaVus.has(signature)) return;
+                    dejaVus.add(signature);
+                    out.push({ id, name: d.name || id, source: duTableur ? "tableur" : "saved", deck: d, aspects: aspectsOfDeck(d) });
+                }
+            });
         } catch (e) {}
         out.push(...await this.packagesAspect(hero));
         return out;
@@ -630,7 +677,14 @@ export const catalog = {
         };
     },
 
-    async scenariosForExtension(extKey) {
+    async scenariosForExtension(extKey, options = {}) {
+        // `options.campagne` : l'ecran de campagne veut TOUS les scenarios de la boite (les variantes de campagne comprises) ; la partie libre ne les voit pas.
+        const cacheComplet = await this._scenariosComplets(extKey);
+        const ext = (await this.extensions()).find((e) => e.key === extKey);
+        return sansVariantesDeCampagne(cacheComplet, ext, options);
+    },
+
+    async _scenariosComplets(extKey) {
         if (_scenariosByExt.has(extKey)) return _scenariosByExt.get(extKey);
         await cards.load();
         const exts = await this.extensions();

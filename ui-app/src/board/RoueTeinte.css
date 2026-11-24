@@ -59,14 +59,59 @@
     cursor: default;
   }
 
+  /* Meme boite que .ligne-option (board.css) : SANS cette boite, ce reglage n'a ni fond ni
+     bordure propres et se lit comme un simple intertitre au-dessus de ce qui suit, au lieu
+     d'une ligne de reglage comme les autres (retour de l'utilisateur, 05/11/2026 : « je vois
+     pas pourquoi Animations a l'air de faire partie de Couleur de la table »). */
   .reglage-teinte {
     display: grid;
     gap: 8px;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 9px 11px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
   }
 
   .reglage-teinte-titre {
     font-weight: 700;
+    color: #dbe3ec;
+  }
+
+  /* Repliable (05/11/2026) : le titre sert de poignee, une fleche dit l'etat. */
+  .reglage-repliable {
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .reglage-repliable:hover {
+    background: rgba(255, 255, 255, 0.09);
+  }
+
+  .reglage-repliable > .reglage-teinte-titre {
+    padding: 9px 11px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .reglage-repliable > .reglage-teinte-titre::-webkit-details-marker {
+    display: none;
+  }
+
+  .reglage-repliable > .reglage-teinte-titre::before {
+    content: '▸';
+    font-size: 0.75em;
+    opacity: 0.7;
+    transition: transform 120ms ease-out;
+  }
+
+  .reglage-repliable[open] > .reglage-teinte-titre::before {
+    transform: rotate(90deg);
+  }
+
+  .reglage-repliable > .roue-teinte {
+    padding: 0 11px 11px;
   }
 }

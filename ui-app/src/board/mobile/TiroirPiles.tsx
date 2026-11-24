@@ -24,6 +24,12 @@ const LIBELLES: Record<string, string> = {
   'soutien-defausse': 'Défausse spéciale',
 }
 
+/** Les piles ORDONNÉES où l'on peut piocher : clé du tiroir -> zone du moteur (mode manuel). */
+const ZONE_PIOCHABLE: Record<string, 'PlayerDeck' | 'EncounterDeck' | undefined> = {
+  'joueur-deck': 'PlayerDeck',
+  'rencontre-encounter-deck': 'EncounterDeck',
+}
+
 export function libelleDePile(pile: PileAffichee): string {
   const connu = LIBELLES[pile.cle]
   return connu ? t(connu) : pile.titre
@@ -34,12 +40,21 @@ export function TiroirPiles({
   ouvert,
   onFermer,
   onOuvrirPile,
+  choisissables,
+  onChoisir,
+  onPiocher,
 }: {
   piles: PileAffichee[]
   ouvert: boolean
   onFermer: () => void
   /** Étaler une pile publique pour la consulter. */
   onOuvrirPile: (titre: string, cartes: ScanCardProps[], groupes?: GroupeDePile[]) => void
+  /** Un choix attend (fenetre fermee sans annuler) : cle de pile -> nombre de cartes qu'on peut y choisir. */
+  choisissables?: ReadonlyMap<string, number>
+  /** Un tap sur une pile choisissable rouvre le choix au lieu d'etaler la pile. */
+  onChoisir?: () => void
+  /** Mode manuel : piocher au doigt (le deck du joueur, le deck rencontre). `nombre` absent = le nombre est demandé. */
+  onPiocher?: (zone: 'PlayerDeck' | 'EncounterDeck', nombre?: number) => void
 }): ReactElement | null {
   if (!ouvert) return null
   return (
@@ -55,14 +70,20 @@ export function TiroirPiles({
               contenu !== undefined &&
               (contenu.length > 0 || pile.unite.pileGroupes?.some((groupe) => groupe.masque !== undefined) === true)
             const libelle = libelleDePile(pile)
+            const aChoisir = choisissables?.get(pile.cle)
             return (
               <li key={pile.cle}>
                 <button
                   type="button"
-                  className="tiroir-pile"
+                  className={`tiroir-pile${aChoisir !== undefined ? ' est-choisissable' : ''}`}
                   data-tactile="pile"
-                  disabled={!consultable}
+                  disabled={!consultable && aChoisir === undefined}
                   onClick={() => {
+                    if (aChoisir !== undefined && onChoisir) {
+                      onChoisir()
+                      onFermer()
+                      return
+                    }
                     if (!consultable) return
                     onOuvrirPile(pile.unite.pileTitre ?? libelle, contenu, pile.unite.pileGroupes)
                     onFermer()
@@ -72,8 +93,35 @@ export function TiroirPiles({
                     <ScanCard {...pile.unite.carte} onSelect={undefined} highlight={false} pileCount={undefined} masquerType />
                   </span>
                   <span className="tiroir-pile-nom">{libelle}</span>
+                  {aChoisir !== undefined ? (
+                    <span className="tiroir-pile-choisir">
+                      {aChoisir} {t('à choisir')}
+                    </span>
+                  ) : null}
                   {pile.compte !== undefined ? <span className="tiroir-pile-compte">{pile.compte}</span> : null}
                 </button>
+                {onPiocher && ZONE_PIOCHABLE[pile.cle] && (pile.compte ?? 1) > 0 ? (
+                  <div className="tiroir-pile-pioche">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onPiocher(ZONE_PIOCHABLE[pile.cle]!, 1)
+                        onFermer()
+                      }}
+                    >
+                      {pile.cle === 'joueur-deck' ? t('Piocher') : t('Sortir en résolution')}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onPiocher(ZONE_PIOCHABLE[pile.cle]!)
+                        onFermer()
+                      }}
+                    >
+                      {pile.cle === 'joueur-deck' ? t('Piocher plusieurs…') : t('Sortir plusieurs…')}
+                    </button>
+                  </div>
+                ) : null}
               </li>
             )
           })}

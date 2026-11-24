@@ -1,0 +1,50 @@
+{
+    "version": "0.5.8",
+    "name": "Hepzibah",
+    "metadata": {
+        "url": "",
+        "author": "Phenexian and Mysteltainn",
+        "note": "Pack « Hepzibah » (Starjammers, Phenexian et Mysteltainn). Pas de decklist imprimee dans le zip (le dossier ne contient ni Insert ni liste) : player_deck vide (PROCESSUS-HEROS etape 3). Regle d'identite hz001b : jusqu'a 3 [[WEAPON]] d'autres aspects (metadata.deckbuilding.hors_aspect).",
+        "deckbuilding": {
+            "hors_aspect": {
+                "max": 3,
+                "traits": [
+                    "WEAPON"
+                ],
+                "label": "3 cartes WEAPON d’autres aspects (Hepzibah)"
+            }
+        }
+    },
+    "hero": [
+        "hz001a,hz001b"
+    ],
+    "hero_deck": [
+        "hz002",
+        "hz003",
+        "hz004",
+        "hz005",
+        "hz006",
+        "hz007",
+        "hz007",
+        "hz007",
+        "hz008",
+        "hz008",
+        "hz008",
+        "hz009",
+        "hz009",
+        "hz010",
+        "hz010"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "hz011"
+    ],
+    "nemesis_set": [
+        "hz012",
+        "hz013",
+        "hz014",
+        "hz015",
+        "hz015"
+    ],
+    "player_deck": []
+}

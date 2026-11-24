@@ -15,6 +15,9 @@ from . import *
 #
 # Le compteur `sound` pose sur Dazzler n'a aucun consommateur dans la version
 # de la carte heros retenue — voir la note de dz018.
+#
+# « Choose: » est OBLIGATOIRE : `ChooseAbilities`, sans option Cancel
+# (CORRECTIF du 20/10/2026, backlog 12 : `MayChooseOneAbility` offrait Cancel).
 
 
 def GetAbilities() -> Sequence['Ability']:
@@ -33,7 +36,7 @@ def GetAbilities() -> Sequence['Ability']:
         def etourdir(targets: Sequence['CardFace']) -> None:
             Faces.GiveStatus(targets, "Stunned", effect)
 
-        joueur.MayChooseOneAbility(
+        joueur.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility("Confuse an enemy", confondre)
             .SetTarget(Enemy, canbe_confused=True),

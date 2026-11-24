@@ -4,8 +4,18 @@ from . import *
 # Cout 1, [physical], traits SKILL + SUPERPOWER. Deux exemplaires physiques :
 # ma009 et ma010, meme texte, meme code.
 #
-# Hero Action: Choose THW or ATK and ready your identity → double all
-#   modifiers applied to the chosen power on its next use this turn.
+# Hero Action: Choose THW or ATK and ready your identity → apply all basic power
+#   modifiers to the chosen power for your next basic thwart or attack this turn.
+#
+# ⚠ TEXTE CHANGE LE 17/11/2026 (version jakxin du 07/09/2026, image du Drive) :
+# l'ancien texte disait « double all modifiers applied to the chosen power on its
+# next use this turn ». LECTURE CHOISIE PAR L'UTILISATEUR le 17/11/2026 : « SOMME
+# DES DEUX » : le pouvoir choisi recoit TOUS les modificateurs de base, ceux du
+# CTR ET ceux de l'ATQ, additionnes, pour sa prochaine utilisation ce tour-ci.
+# Comme le pouvoir choisi porte DEJA ses propres modificateurs, le supplement est
+# le modificateur de l'AUTRE pouvoir : valeur finale = imprime + modif(CTR) + modif(ATQ).
+# Ex. : Star Flight (+1 CTR) en jeu, on choisit ATQ -> la prochaine attaque de base
+# vaut base + 1. Sans aucun modificateur sur l'autre pouvoir, le supplement est nul.
 #
 # ---------------------------------------------------------------------------
 # ⚠ LA FLECHE EST UN COUT — ARBITRAGE EXPLICITE DE L'UTILISATEUR (30/08/2026)
@@ -32,16 +42,16 @@ from . import *
 # partie. Aucune `CostFunc` du moteur ne sait « choisir un mot ».
 #
 # ---------------------------------------------------------------------------
-# « DOUBLE ALL MODIFIERS APPLIED TO THE CHOSEN POWER »
+# « APPLY ALL BASIC POWER MODIFIERS TO THE CHOSEN POWER » (depuis le 17/11/2026)
 #
-# On double les MODIFICATEURS, PAS la valeur de base. CTR 1 imprimee + Star
-# Flight (+1) = 1 + (1 x 2) = 3, jamais 4. Concretement on AJOUTE une seconde
-# fois le total des modificateurs, puisque la valeur courante en contient
-# deja un exemplaire :
-#     valeur_finale = courant + (courant - imprime)
 # Les modificateurs se lisent `identite.thwart - identite.printed_thwart`
-# (attributs officiels, can_thwart.py:17 et can_attack.py:42).
-# Sans le moindre modificateur, la carte ne fait RIEN : c'est le texte.
+# (attributs officiels, can_thwart.py:17 et can_attack.py:42). Le pouvoir choisi
+# a deja les siens ; la carte lui AJOUTE ceux de l'autre pouvoir :
+#     supplement = modificateur(autre pouvoir)
+# (ancienne lecture « doubler » : supplement = modificateur(pouvoir choisi)).
+# Sans modificateur sur l'autre pouvoir, la carte ne fait RIEN. Un modificateur
+# NEGATIF de l'autre pouvoir (Edges Syndrome : -1 a chaque pouvoir de base) est
+# applique lui aussi : « ALL basic power modifiers », le signe n'est pas filtre.
 #
 # « ON ITS NEXT USE THIS TURN » -> une capacite TEMPORAIRE enregistree sur
 # l'identite, `RegisterTemp(..., unregister_after_exec=True,
@@ -76,17 +86,19 @@ def GetAbilities() -> Sequence['Ability']:
             return
 
         def armer(pouvoir: str):
-            def doubler(effect2: 'Effect',
-                        message2: 'Message.WhenUnitUseBasicPower') -> None:
-                bonus = _pouvoir(identite, pouvoir)
-                if bonus > 0:
-                    message2.GainValue(bonus, effect2)
+            autre = "ATK" if pouvoir == "THW" else "THW"
+
+            def appliquer_les_deux(effect2: 'Effect',
+                                   message2: 'Message.WhenUnitUseBasicPower') -> None:
+                supplement = _pouvoir(identite, autre)
+                if supplement != 0:
+                    message2.GainValue(supplement, effect2)
 
             identite.effect.RegisterTemp(
                 AbilityFactory.WhenUnitUseBasicPower(
                     AbilityType.Temp2,
                     "You",
-                    doubler,
+                    appliquer_les_deux,
                     powers=[pouvoir],
                 ),
                 unregister_after_exec=True,
@@ -96,11 +108,11 @@ def GetAbilities() -> Sequence['Ability']:
         player.ChooseAbilities(
             effect,
             AbilityFactory.ForChoiceAbility(
-                "Double all modifiers applied to your THW on its next use",
+                "Apply all basic power modifiers to your THW on its next use",
                 lambda targets: armer("THW"),
             ).SetHasNoTargetEffect(),
             AbilityFactory.ForChoiceAbility(
-                "Double all modifiers applied to your ATK on its next use",
+                "Apply all basic power modifiers to your ATK on its next use",
                 lambda targets: armer("ATK"),
             ).SetHasNoTargetEffect(),
         )

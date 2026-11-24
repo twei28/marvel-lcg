@@ -1,0 +1,244 @@
+[
+ {
+  "id_scan": "65001A",
+  "texte_fr": "<b>Contenu</b> : les sets de rencontre Shadows in the Night, Dark Protégé et Standard. Un set de rencontre modulaire <i>(Ninja Swarm)</i>.\n<b>Mise en place</b> : mettez en jeu chaque environnement The Streets Below. Mettez de côté le set de rencontre Dark Protégé. Choisissez 1 méchant au hasard dans ce set et révélez sa face A, puis mélangez chaque carte liée à ce méchant dans le deck Rencontre.",
+  "citation_fr": null,
+  "notes": [
+   "Noms de sets de rencontre (Shadows in the Night, Dark Protégé, Ninja Swarm) laisses en anglais comme noms propres ; le corpus officiel traduit parfois les noms de sets (ex. Le Siège des Morlocks), a trancher : propositions Ombres dans la Nuit / Protégé Obscur / Nuée de Ninjas.",
+   "terme nouveau : Dark Protégé (set) -> conserve en anglais (nom propre de set) ; alternative « Protégé Obscur »",
+   "« carte liée à ce méchant » = card linked to that villain (mot-cle Linked), formulation de ma part.",
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65001B",
+  "texte_fr": "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté face A, retournez-le plutôt sur sa face B, réinitialisez ses points de vie et changez la position du méchant. Attribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Si le méchant est vaincu côté face B, les joueurs gagnent la partie.</b>",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)",
+   "« côté face A » : le corpus dit « face A/face B » ; « retournez-le plutôt » = « instead flip it » (le corpus utilise « à la place »). Ordre des clauses conserve."
+  ]
+ },
+ {
+  "id_scan": "65002A",
+  "texte_fr": "<i>Alors que les forces à l'extérieur retiennent les héros, les ninjas à l'intérieur verrouillent chaque porte et chaque fenêtre.</i>\nEn mode expert, le méchant gagne +3[per_hero] points de vie.\n<b>Une fois révélée</b> : changez la position du méchant. Chaque joueur cherche un sbire dans le deck Rencontre et la pile de défausse et le révèle. <i>(Mélangez.)</i>",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65002B",
+  "texte_fr": "En mode expert, le méchant gagne +1 MNG et +3[per_hero] points de vie.\n<b>Interruption forcée</b> : quand le méchant est censé être vaincu côté face A, retournez-le plutôt sur sa face B, réinitialisez ses points de vie et changez la position du méchant. Attribuez 1 carte Rencontre face cachée à chaque joueur.\n<b>Si le méchant est vaincu côté face B, les joueurs gagnent la partie.</b>\n<b>Si ce stade est achevé, les joueurs perdent la partie.</b>",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65003A",
+  "texte_fr": "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Diminuez de 1 la quantité de dégâts subis par chaque personnage lors de chaque attaque.\n• Les menaces ne peuvent pas être retirées de la manigance principale.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : VILLAIN POSITION -> « POSITION DU MÉCHANT » ; « both positions are the same » rendu par « les deux positions sont identiques » (position du méchant et position du héros)."
+  ]
+ },
+ {
+  "id_scan": "65003B",
+  "texte_fr": "<b><i>POSITION DU MÉCHANT.</i></b>\nSi les deux positions sont identiques :\n• Chaque personnage gagne +1 ATQ.\nSi les positions sont différentes :\n• Diminuez de 1 la quantité de dégâts subis par chaque personnage lors de chaque attaque.\n• Les menaces ne peuvent pas être retirées de la manigance principale.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : VILLAIN POSITION -> « POSITION DU MÉCHANT » ; « both positions are the same » rendu par « les deux positions sont identiques » (position du méchant et position du héros)."
+  ]
+ },
+ {
+  "id_scan": "65004A",
+  "texte_fr": "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Placez 3 menaces sur la manigance principale et sonnez votre identité.\n• Dépensez les ressources suivantes : [physical] [physical].\n• Dépensez 1 ressource de n'importe quel type et inclinez un personnage <b><i>AERIAL</i></b> que vous contrôlez.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : HERO POSITION -> « POSITION DU HÉROS »",
+   "Le trait <b><i>AERIAL</i></b> est recopie tel quel (balises et anglais conserves) comme dans la source."
+  ]
+ },
+ {
+  "id_scan": "65004B",
+  "texte_fr": "<b><i>POSITION DU HÉROS.</i></b>\n<b>Action de premier joueur</b> : résolvez l'un des effets ci-dessous, puis retournez cette carte :\n• Infligez 3 dégâts à votre identité.\n• Dépensez les ressources suivantes : [energy] [energy].\n• Défaussez un allié ou une amélioration que vous contrôlez.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : HERO POSITION -> « POSITION DU HÉROS »"
+  ]
+ },
+ {
+  "id_scan": "65005",
+  "texte_fr": "Garde.\n<b>Une fois révélé</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, Black Tarantula vous attaque ; sinon, donnez une carte d'état Tenace au méchant et à Black Tarantula.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)",
+   "« Une fois révélé » (masculin) pour un sbire, comme le corpus (ex. 03027) ; le glossaire donne « révélée » par defaut."
+  ]
+ },
+ {
+  "id_scan": "65006",
+  "texte_fr": "<b>Une fois vaincu</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, défaussez 1 carte que vous contrôlez ; sinon, subissez 2 dégâts indirects.\n<b>[star] Boost</b>: si un allié défend contre cette attaque, révélez ce sbire.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65007",
+  "texte_fr": "Assaut. <i>(Les contres de base contre cette manigance utilisent l'ATQ à la place de la CTR.)</i>\n<b>Une fois déjouée</b> : changez la position du méchant si elle n'a pas changé durant cette phase.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)",
+   "When Defeated sur une manigance annexe rendu par « Une fois déjouée » (VF officielle pour les manigances) et non « Une fois vaincu »."
+  ]
+ },
+ {
+  "id_scan": "65008",
+  "texte_fr": "<i>Sous Shadowland, la Main règne sur les rues.</i>\nTant que la position du méchant est The Streets Below, cette manigance gagne 1 icône d'accélération ([acceleration]).\nTant que la position du méchant est Atop the Tenshu, cette manigance gagne 1 icône d'aléa ([hazard]).",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)",
+   "« la Main » (Hand) traduit en prose, comme dans la VF des comics ; le trait [[Hand]] reste anglais.",
+   "Shadowland laisse en anglais (nom propre d'evenement)."
+  ]
+ },
+ {
+  "id_scan": "65009",
+  "texte_fr": "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 1[per_hero] menace sur la manigance principale ; sinon, placez 1[per_hero] menace sur cette manigance.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)",
+   "« here » rendu par « sur cette manigance »."
+  ]
+ },
+ {
+  "id_scan": "65010",
+  "texte_fr": "<b>Une fois révélée</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Si la position du méchant est Atop the Tenshu, placez 2 menaces sur la manigance principale ; sinon, subissez 2 dégâts.\n<b>[star] Boost</b>: résolvez la capacité « <b>Une fois révélée</b> » de cette carte.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65011",
+  "texte_fr": "<b>Une fois révélée (alter ego)</b> : changez la position du méchant si elle n'a pas changé durant cette phase. Vous êtes désorienté.\n<b>Une fois révélée (héros)</b> : si la position du méchant est Atop the Tenshu, le méchant manigance ; sinon, le méchant vous attaque.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : villain's position / change the villain's position -> « position du méchant » / « changez la position du méchant » (calque simple ; noms de position The Streets Below / Atop the Tenshu laisses en anglais car noms de cartes)"
+  ]
+ },
+ {
+  "id_scan": "65012A",
+  "texte_fr": "[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée ainsi, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé ainsi en tant que carte Rencontre face cachée.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65012B",
+  "texte_fr": "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après qu'Archpriestess vous a attaqué, donnez une carte d'état Tenace à un sbire. Si aucune carte d'état Tenace n'a été placée ainsi, défaussez les 3 cartes du dessus du deck Rencontre, puis attribuez-vous 1 sbire défaussé ainsi en tant que carte Rencontre face cachée.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65013A",
+  "texte_fr": "<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez a attaqué Daredevil, choisissez : soit vous défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round par joueur.)",
+  "citation_fr": "« Hell's Kitchen est désormais sous la protection de la Main ! »",
+  "notes": [
+   "Hell's Kitchen laisse en anglais (nom propre) ; « la Main » comme en 65008."
+  ]
+ },
+ {
+  "id_scan": "65013B",
+  "texte_fr": "Solide. Ténacité.\n<b>Réponse forcée</b> : après que vous ou un allié que vous contrôlez a attaqué Daredevil, choisissez : soit vous défaussez 1 carte prise au hasard dans votre main, soit Daredevil vous attaque. (Limite d'une fois par round par joueur.)",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65014A",
+  "texte_fr": "[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+  "citation_fr": "« La Main me guide, et la mort me suit. »",
+  "notes": []
+ },
+ {
+  "id_scan": "65014B",
+  "texte_fr": "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Elektra vous attaque, défaussez la carte du dessus de votre deck. Si le coût imprimé de cette carte est un nombre impair, Elektra gagne +1 ATQ pour cette attaque ; sinon, cette attaque gagne Déferlement et Perçant.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65015A",
+  "texte_fr": "[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+  "citation_fr": "« J'ai connu la mort et la renaissance. Il n'y a rien que je craigne. »",
+  "notes": []
+ },
+ {
+  "id_scan": "65015B",
+  "texte_fr": "Solide. Ténacité.\n[star] <b>Interruption forcée</b> : quand Gorgon vous attaque, choisissez :\n• Dépensez une ressource [physical].\n• Sonnez votre identité.\n• Subissez 2 dégâts indirects.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65016A",
+  "texte_fr": "[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+  "citation_fr": "« Je compte prendre mon temps avec toi. »",
+  "notes": [
+   "Citation : tutoiement « toi » choisi (menace face a face) ; vouvoiement possible."
+  ]
+ },
+ {
+  "id_scan": "65016B",
+  "texte_fr": "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que Lady Bullseye vous a attaqué, si cette attaque n'a pas été défendue, subissez 1 dégât indirect ; sinon, placez 1 menace sur la manigance principale.",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65017A",
+  "texte_fr": "[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque de nouveau avec +1 ATQ. (Limite d'une fois par round par joueur.)",
+  "citation_fr": "« La civilisation sombrera dans le chaos et les ténèbres, et nous qui suivons la voie de la main gauche nous agenouillerons devant la Bête ! »",
+  "notes": [
+   "Citation : « left-hand path » rendu par « voie de la main gauche » (expression consacree)."
+  ]
+ },
+ {
+  "id_scan": "65017B",
+  "texte_fr": "Solide. Ténacité.\n[star] <b>Réponse forcée</b> : après que White Tiger vous a attaqué, elle vous attaque de nouveau. (Limite d'une fois par round par joueur.)",
+  "citation_fr": null,
+  "notes": []
+ },
+ {
+  "id_scan": "65018",
+  "texte_fr": "Lié (Elektra, Lady Bullseye ou White Tiger).\nAttachez cette carte à votre identité.\n<b>Interruption forcée</b> : quand un ennemi vous attaque, il gagne +1 ATQ pour cette attaque. Si cette attaque vainc un personnage, placez 1 menace sur la manigance principale.\n<b>Action d'alter ego</b> : dépensez les ressources suivantes : [energy] [mental] [physical] → défaussez cette carte.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Linked (nom de villains/cartes) -> « Lié (Elektra, Lady Bullseye ou White Tiger) » : masculin car attachement (le corpus a « Liée » pour des ameliorations, feminin) ; les deux accords sont plausibles, a trancher.",
+   "« Si cette attaque vainc un personnage » : formulation de ma part (corpus : « est vaincu par cette attaque »)."
+  ]
+ },
+ {
+  "id_scan": "65019",
+  "texte_fr": "Lié (Archpriestess, Daredevil ou Gorgon).\nAttachez cette carte au méchant.\n<b>Interruption forcée</b> : quand le méchant attaché est censé subir une quantité quelconque de dégâts infligés par un personnage, diminuez cette quantité de 3. Le méchant attaché attaque ce personnage. Défaussez cette carte.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Linked -> « Lié (...) » (attachement, masculin), voir 65018."
+  ]
+ },
+ {
+  "id_scan": "65020",
+  "texte_fr": "Lié (Gorgon, Lady Bullseye ou White Tiger).\nVilenie.\n<b>Une fois révélé</b> : chaque autre sbire engagé avec vous vous attaque. Si aucune attaque n'a été effectuée ainsi, défaussez les 3 cartes du dessus du deck Rencontre.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Linked sur un sbire -> « Lié (...) » (masculin).",
+   "« Une fois révélé » masculin pour un sbire."
+  ]
+ },
+ {
+  "id_scan": "65021",
+  "texte_fr": "Lié (Daredevil, Elektra ou Lady Bullseye).\nGarde. Vilenie.\n<b>Réponse forcée</b> : après qu'un personnage a attaqué Gorgon et lui a infligé des dégâts, sonnez ce personnage.",
+  "citation_fr": null,
+  "notes": [
+   "terme nouveau : Linked sur un sbire -> « Lié (...) » (masculin)."
+  ]
+ }
+]

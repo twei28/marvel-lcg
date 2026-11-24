@@ -695,9 +695,27 @@ class CostFunc:
             super().__init__(selector, on_call)
 
     class RemoveFromCampaignLog(Base):
+        # CORRECTIF DU 14/11/2026 : ce cout ne faisait RIEN (il rendait toujours vrai). Le carnet gardait donc la carte, et le
+        # mode campagne la remettait au scenario suivant (Tactical Scanner 04155-04158 : « Discard this card and remove it
+        # from the campaign log »). Il efface maintenant la cle du carnet du joueur qui porte cette carte, dans le monde, et la
+        # note dans `Campaign Log Keys Removed` : le descripteur la transmet au panneau de fin de scenario (campagne_retraits).
         def __init__(self, target: 'Literal["This"]',
                     ) -> None:
             def on_call(targets: Sequence['CardFace'], effect: 'Effect', player: 'Player|None') -> bool:
+                from game.operate.campaign_logs import CampaignLog
+                world = effect.world
+                removed = [x for x in CampaignLog.GetListInternal('Campaign Log Keys Removed', effect) if x]
+                for face in targets:
+                    card_id = face.paper.card_id
+                    owner = face.GetOwnerPlayer()
+                    for name in ("Tech Upgrade", "Basic Upgrade", "Support / Upgrade #1", "Support / Upgrade #2"):
+                        for key in (f"Player {owner.player_id + 1} {name}", f"{name} P{owner.player_id + 1}"):
+                            if CampaignLog.GetStrInternal(key, effect) == card_id:
+                                CampaignLog.SetStr(key, "", world)
+                                if key not in removed:
+                                    removed.append(key)
+                if removed:
+                    CampaignLog.SetStr('Campaign Log Keys Removed', ';'.join(removed), world)
                 return True
 
             selector = Select.From(

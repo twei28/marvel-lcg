@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><body>
+<script type="module">
+import { chargerImage } from '../rendu.js'
+import { chargerPolices } from '../polices.js'
+import { dessinerCarte, CHAMPS_VIDES } from '../carte.js'
+const types = await (await fetch('../donnees/types.json')).json()
+await chargerPolices('../polices/')
+const TYPES_TXT = { ally: 'ALLY', event: 'EVENT', upgrade: 'UPGRADE', support: 'SUPPORT', resource: 'RESOURCE', villain: 'VILLAIN', minion: 'MINION', treachery: 'TREACHERY', environment: 'ENVIRONMENT', attachment: 'ATTACHMENT', sidescheme: 'SIDE SCHEME', main_scheme_a: 'MAIN SCHEME', main_scheme_b: 'MAIN SCHEME', 'alter-ego': 'ALTER-EGO', identity: 'HERO', obligation: 'OBLIGATION' }
+window.rendre = async (id, extra = {}, opts = {}) => {
+  const spec = types[id]
+  const c = document.createElement('canvas')
+  const art = { image: await chargerImage(spec.paysage ? 'valkyrie-photo-paysage.png' : 'valkyrie-photo.png') }
+  const contenu = { ...CHAMPS_VIDES, titre: 'Valkyrie', unique: true, typeTexte: '', traits: 'Asgard. Avenger.',
+    regles: '<i>Death Perception</i> &mdash; <b>Hero Action</b>: Play the set-aside Death-Glow upgrade as if it were in your hand.',
+    citation: '"I am the chooser of the slain."', ligneEnsemble: 'hand size 5 / hit points 12', createur: 'Marvel Champions custom content by:', pv: '10', rec: '5', ...extra }
+  const tete = opts.tete ? { image: await chargerImage('valkyrie-head.png'), ...opts.tete } : null
+  await dessinerCarte(c, spec, contenu, { couleurs: opts.couleurs ?? {}, art, artDevant: null, tete, fissures: opts.fissures }, '../img/')
+  return c.toDataURL('image/png')
+}
+window.prete = true
+</script>

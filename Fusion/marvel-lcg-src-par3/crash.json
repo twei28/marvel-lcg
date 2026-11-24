@@ -1,0 +1,160 @@
+{
+    "version": "0.5.9.200",
+    "metadata": {
+        "sign": "456c77cdff47017fc5dd6bc7e399641a",
+        "seed": 42,
+        "time": "2026-10-22 11-43",
+        "playtime": "1.2"
+    },
+    "rules": [],
+    "campaign": {
+        "version": "0.5.8",
+        "name": "Rhino",
+        "villain": [
+            "01094",
+            "01095"
+        ],
+        "expert": false,
+        "challenges": [],
+        "schemes": [
+            "01097a,01097b"
+        ],
+        "set_aside": [],
+        "encounters": [
+            "01098",
+            "01099",
+            "01099",
+            "01100",
+            "01101",
+            "01101",
+            "01102",
+            "01103",
+            "01104",
+            "01104",
+            "01105",
+            "01105",
+            "01106",
+            "01106",
+            "01106",
+            "01107",
+            "01108"
+        ],
+        "encounter_sets": [
+            "standard",
+            "bomb_scare"
+        ],
+        "campaign_log": {}
+    },
+    "campaign_2": {
+        "version": "",
+        "name": "",
+        "villain": [],
+        "expert": false,
+        "challenges": [],
+        "schemes": [],
+        "set_aside": [],
+        "encounters": [],
+        "encounter_sets": [],
+        "modular_sets": [],
+        "campaign_log": {}
+    },
+    "players": [
+        {
+            "version": "0.5.8",
+            "name": "Jessica Jones (custom)",
+            "hero": [
+                "jj001a,jj001b"
+            ],
+            "hero_deck": [
+                "jj002",
+                "jj003",
+                "jj003",
+                "jj004",
+                "jj004",
+                "jj005",
+                "jj005",
+                "jj006",
+                "jj006",
+                "jj007",
+                "jj007",
+                "jj008",
+                "jj009",
+                "jj010",
+                "jj011"
+            ],
+            "obligations": [
+                "jj017"
+            ],
+            "nemesis_set": [
+                "jj018",
+                "jj019",
+                "jj020",
+                "jj020",
+                "jj021"
+            ],
+            "player_deck": [
+                "04045",
+                "04049",
+                "04049",
+                "04049",
+                "15013",
+                "15013",
+                "22015",
+                "22015",
+                "22015",
+                "40053",
+                "40053",
+                "41015",
+                "41015",
+                "41015",
+                "01065",
+                "41017",
+                "14030",
+                "04047",
+                "06031",
+                "01084",
+                "jj022",
+                "01088",
+                "01089",
+                "01090",
+                "08023"
+            ],
+            "linked_identity": {},
+            "team": 0
+        }
+    ],
+    "puzzle": [],
+    "manuel_commands": [],
+    "manuel_commands_step": [],
+    "corrigee_a_la_main": false,
+    "pause_par": "",
+    "pause_a": "",
+    "pause_epoch": 0.0,
+    "reprise_auto": "",
+    "inputs": [
+        {
+            "step": 0,
+            "event": "m121 WhenPlayerChooseAbility",
+            "effect": {
+                "id": "e1 Choose c1 jj001b",
+                "targets": [],
+                "resources": []
+            },
+            "crc": "{1:41,15:-2,22:-2,26:-2,27:-4,28:-2,30:-3,36:-2,46:-2,48:9,49:34,59:-3,66:-4}"
+        },
+        {
+            "step": 1,
+            "event": "m329 WhenPlayerLikeInTurn",
+            "effect": {
+                "id": "e61 Play c43 jj022",
+                "targets": [],
+                "resources": [
+                    "e2 Discard c9 jj003",
+                    "e7 Discard c14 jj005"
+                ]
+            },
+            "crc": "{1:43,8:20,9:-2,14:-2,26:-3,27:-4,30:-3,43:-2,46:-4,48:9,49:34,59:-3,66:-4,86:1}"
+        }
+    ],
+    "checksum": "24b41eac4ad622fccc276fc5f078e29bad836aa6033f27a5fcab1a7c89bb9cef"
+}

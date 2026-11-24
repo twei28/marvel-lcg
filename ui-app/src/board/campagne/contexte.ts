@@ -43,6 +43,8 @@ export type ScenarioCampagne = {
   defaite_continue?: boolean
   pages?: { intro?: string[]; regles?: string[]; epilogue?: string[] }
   victoire?: ChampVictoire[]
+  /** Scénario joué en assemblée (Kingsfall) : le lancement demande un choix sur l'écran des campagnes. */
+  assemblee?: unknown
 }
 
 export type DefinitionCampagne = {
@@ -54,6 +56,8 @@ export type DefinitionCampagne = {
   /** Champs présentés à CHAQUE victoire, sauf le scénario final. */
   victoire_commune?: ChampVictoire[]
   victoire_commune_expert?: ChampVictoire[]
+  /** Campagne à ordre libre : le joueur choisit le prochain scénario sur l'écran des campagnes. */
+  ordre_libre?: unknown
   expert?: { pv_persistants?: boolean; obligations?: string[] }
 }
 

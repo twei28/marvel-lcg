@@ -1,0 +1,14 @@
+{
+  "version": "0.5.8",
+  "name": "Negasonic Teenage Warhead",
+  "encounters": [
+    "hf341",
+    "hf342",
+    "hf343",
+    "hf344",
+    "hf345",
+    "hf346",
+    "hf347",
+    "hf348"
+  ]
+}

@@ -46,6 +46,9 @@ Fusion/marvel-lcg-src/assets/cache/
 Fusion/marvel-lcg-src/assets/vignettes/
 # Les scans HD telecharges (tools/telecharger_scans_hd.py) : derives, jamais versionnes.
 Fusion/marvel-lcg-src/assets/pics-hd/
+# L'export ZIP des images de cartes (tools/exporter_images_cartes.py) : le ZIP,
+# le cache des rendus du voile FR et l'etat de la generation. Derives, lourds.
+Fusion/marvel-lcg-src/assets/export-cartes/
 
 # Livrets de regles et carnets de campagne : 169 Mo de PDF officiels, meme
 # nature que les scans ci-dessus. Ils montent au serveur par l'etape
@@ -152,6 +155,7 @@ deploiement/_a_supprimer/
 
 # Journal du dernier deploiement (DEPLOYER.bat)
 deploiement/dernier-deploiement.log
+deploiement/dernier-deploiement-reel.log
 deploiement/construction-plateau.log
 
 # Espace de travail des chantiers pilotes par sous-agents (journal, briefs,
@@ -164,6 +168,7 @@ navigateur/.cache/
 
 # Environnement Python du lanceur Linux (LANCEUR-LINUX.sh), propre a la machine.
 .venv-linux/
+.venv-mac/
 
 # Sauvegarde GitHub (15/10/2026) : fichiers lourds ou personnels de la racine
 /*.zip
@@ -177,3 +182,24 @@ parties-joueurs/
 ui-check/captures-tmp/
 .planning/hunting-season/reference/*.pdf
 ui-check/*.png
+
+# Sources MC/DC 2026 (fichiers de l equipe MC/DC, pas redistribues ici ; liens Drive dans SOURCES.md)
+docs/packs/mcdc-2026-punisher/sources/
+
+# Galactic Storm (GS-0) : images et livrets extraits des zips Kajislav, hors depot.
+docs/packs/galactic-storm/sources/
+deploiement/dernier-deploiement.log
+
+# Kit de creation de campagne (20/10/2026) : le zip et les tomes de code se RECONSTRUISENT
+# (outils/construire-kit-campagne.py, outils/construire-kit-heros.py, outils/construire-tomes-code.py), on ne les suit pas.
+kit-campagne-ia.zip
+kit-heros-ia.zip
+kit-code-tomes/
+
+# Createur de cartes : captures de reference (regenerables, voir tools/createur-cartes/PROGRESSION.md) et banc d'essai temporaire
+Fusion/marvel-lcg-src/tools/createur-cartes/reference/
+Fusion/marvel-lcg-src/public/createur-cartes/_essai/
+donnees-createur/
+
+# Rangement de la racine (04/11/2026) : zips et fichiers en vrac, hors depot (voir archives/LISEZ-MOI.md)
+/archives/*/

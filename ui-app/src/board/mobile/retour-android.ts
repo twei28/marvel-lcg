@@ -72,6 +72,16 @@ export function fermerLaFeuille(selecteur: string): boolean {
  * A monter une fois, sur le rendu portrait. `actif` = false ne fait rien : un
  * etat enregistre (`?etat=`) ne se joue pas, on n'y touche pas a l'historique.
  */
+let enDepart = false
+
+/**
+ * On QUITTE la page (retour au menu, fermeture de la table) : la feuille qui se referme ne doit plus rejouer un
+ * `history.back()`, qui annulait la navigation en cours sur un vrai telephone (« Retour au menu » ne faisait rien).
+ */
+export function signalerDepart(): void {
+  enDepart = true
+}
+
 export function useRetourAndroid(actif: boolean): void {
   useEffect(() => {
     if (!actif) return
@@ -86,6 +96,7 @@ export function useRetourAndroid(actif: boolean): void {
     // poussee un tour de rendu plus tard laissait un Retour tres rapide (le
     // filet Playwright, un pouce prompt) quitter la page avant qu'elle existe.
     const synchroniser = () => {
+      if (enDepart) return
       const maintenant = feuillesOuvertes()
       for (const s of maintenant) {
         if (!ouvertes.includes(s)) {

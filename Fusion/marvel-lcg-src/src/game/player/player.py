@@ -70,6 +70,9 @@ class Player(User, PlayerAsk, PlayerCards, PlayerGet, PlayerAction, ):
         # Reserve ci-dessus (meme correctif, meme raison) — une zone vide ne
         # change rien pour les autres heros, et le descripteur la rend vide.
         self.rising_tide = Deck2(self, DeckType.RisingTideArea, CardFace)
+        # AJOUT (pack mephisto) : la Damnation, toujours creee comme les deux
+        # zones ci-dessus (une zone vide ne change rien aux autres scenarios).
+        self.damnation = Deck2(self, DeckType.DamnationArea, CardFace)
         self.player_deck = Deck2(self, DeckType.PlayerDeck, CardFace)
         self.discard_pile = Deck2(self, DeckType.DiscardPile, CardFace)
         def process_after_shuffle(deck: 'Deck', by_effect: 'Effect') -> None:

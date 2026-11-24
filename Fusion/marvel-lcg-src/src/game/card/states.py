@@ -13,6 +13,8 @@ class CardIsStates:
         self.is_face_up         = True
         self.is_ready           = True
         self.is_attached        = False
+        # Defausse redirigee ailleurs (Collector -> La Collection) : la carte garde ses compteurs, comme en defausse (01018)
+        self.discard_redirected = False
 
 class CardCanStates:
 

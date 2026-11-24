@@ -47,6 +47,11 @@ def GetAbilities() -> Sequence['Ability']:
         this = effect.this.CastTo(Upgrade)
         Unused(message)
 
+        # Depart voulu par le joueur (Sifflez en Travaillant, Investissement, ...) :
+        # la fleche n'est deja plus « attachee a l'ennemi qui tombe » (rapport #164).
+        if getattr(this, 'depart_volontaire', False):
+            return
+
         joueur = JoueurDeCetteCarte(effect)
         if joueur is None:
             return

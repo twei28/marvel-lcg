@@ -13,17 +13,20 @@
 // - la taille du texte (reglage a trois niveaux, `html[data-taille-texte]`) ;
 // - l'installation en application (manifeste, service worker), pas en vue d'etat.
 import type { BoardProps } from '../Board'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { PlateauPortrait } from './PlateauPortrait'
 import { preparerInstallation } from './installation'
 import { demanderPleinEcran } from './plein-ecran'
 import { useReglagesTelephone } from './reglages-telephone'
 import { useRetourAndroid } from './retour-android'
+import { ChoixPlateau, useChoixPlateau } from './ronds/ChoixPlateau'
 import './menus-mobile.css'
 import './v2-mobile.css'
 
 export function PlateauMobile(props: BoardProps) {
-  useEffect(() => {
+  // useLayoutEffect : la classe est posee AVANT le premier affichage. Avec useEffect, un telephone lent pouvait montrer une
+  // image de la table sans sa mise en page (25/10/2026).
+  useLayoutEffect(() => {
     document.body.classList.add('mode-plateau-portrait')
     return () => document.body.classList.remove('mode-plateau-portrait')
   }, [])
@@ -37,11 +40,18 @@ export function PlateauMobile(props: BoardProps) {
   }, [])
   // La taille du texte se pose sur <html> : tout le plateau est ecrit en rem.
   const { tailleTexte } = useReglagesTelephone()
-  useEffect(() => {
+  useLayoutEffect(() => {
     const racine = document.documentElement
     if (tailleTexte === 'normal') racine.removeAttribute('data-taille-texte')
     else racine.setAttribute('data-taille-texte', tailleTexte)
     return () => racine.removeAttribute('data-taille-texte')
   }, [tailleTexte])
-  return <PlateauPortrait {...props} />
+  // Le choix du plateau (cartes ou ronds), repose a chaque debut de partie (24/10/2026) ; pas en vue d'etat.
+  const { demander, repondre } = useChoixPlateau(props.world?.round_id, new URLSearchParams(window.location.search).has('etat'))
+  return (
+    <>
+      <PlateauPortrait {...props} />
+      {demander ? <ChoixPlateau repondre={repondre} /> : null}
+    </>
+  )
 }

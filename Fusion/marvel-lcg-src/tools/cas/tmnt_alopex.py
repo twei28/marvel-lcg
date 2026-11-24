@@ -141,7 +141,7 @@ CAS = [
        {"accroche_a": [["ta011", "01094"]], "taille_mis_de_cote": 0}, main_exclusive=["01090"], cibles=["01094"]),
     # ===================================================================== ta002 Nobody
     _c("ta002 Nobody : apres avoir attaque un ennemi portant Prey, cet ennemi est Dazed",
-       "« [star] Response: After Nobody attacks an enemy with Prey attached, daze that enemy » ; Rhino (PV 14) survit",
+       "« [star] Response: After Nobody takes consequential damage, if she attacked an enemy with Prey attached, daze that enemy » (texte du 17/11/2026, lecture « meme action ») : ATQ 1* -> 1 degat consecutif, puis la Reponse hebete Rhino (PV 14, il survit)",
        [HEROS, PREY_SUR_RHINO, "Puzzle.PutIntoPlay('ta002', under_control=True)"], ["Puzzle.Attack('ta002')"],
        {"statuts": [["01094", "Dazed"]]}, main_exclusive=["01090"], cibles=["01094"]),
     _c("ta002 Nobody : TEMOIN sans Prey, l'ennemi attaque n'est pas Dazed",
@@ -154,14 +154,14 @@ CAS = [
        ["Puzzle.Attack('ta002')"],
        {"statuts_absents": [["01101", "Dazed"], ["01094", "Dazed"]]}, main_exclusive=["01090"], cibles=["01101"]),
     _c("ta002 Nobody : apres avoir contre une manigance portant Prey, Nobody est Cloaked",
-       "« [star] Response: After Nobody thwarts a scheme with Prey attached, cloak her » : la Reponse part AVANT les degats consecutifs "
-       "(1*) de Nobody ; la carte Cloaked les absorbe (-2) et part : Nobody a 0 degat, l'identite n'est pas Cloaked",
+       "« After Nobody takes consequential damage, if she thwarted a scheme with Prey attached, cloak her » (texte du 17/11/2026) : la Reponse part "
+       "APRES les degats consecutifs (CTR 1*) : Nobody a DEJA 1 degat et la carte Cloaked reste sur elle (avant le 17/11 : elle absorbait le degat)",
        [HEROS, "Puzzle.SetThreat('01097b', 5)", PREY_SUR_COMPLOT, "Puzzle.PutIntoPlay('ta002', under_control=True)"],
        ["Puzzle.Thwart('ta002')"],
-       {"degats": [["ta002", 0]], "statuts_absents": [["ta002", "Cloaked"], ["ta001a", "Cloaked"]]},
+       {"degats": [["ta002", 1]], "statuts": [["ta002", "Cloaked"]], "statuts_absents": [["ta001a", "Cloaked"]]},
        main_exclusive=["01090"]),
     _c("ta002 Nobody : TEMOIN sans Prey, Nobody n'est pas Cloaked apres un contre",
-       "contre-cas de la seconde Reponse : sans Cloaked, le degat consecutif (1*) frappe Nobody (1 degat)",
+       "contre-cas de la branche « thwarted » : sans Prey, le degat consecutif (1*) frappe Nobody (1 degat) et rien ne suit",
        [HEROS, "Puzzle.SetThreat('01097b', 5)", "Puzzle.PutIntoPlay('ta002', under_control=True)"], ["Puzzle.Thwart('ta002')"],
        {"degats": [["ta002", 1]], "statuts_absents": [["ta002", "Cloaked"]]}, main_exclusive=["01090"]),
     _c("ta002 Nobody : le contre qui VIDE la manigance portant Prey cloake quand meme Nobody (Q2)",
@@ -169,8 +169,8 @@ CAS = [
        [HEROS, "Puzzle.PutIntoPlay('01107')", "Puzzle.SetThreat('01107', 1)", "Puzzle.AttachReel('ta011', '01107')",
         "Puzzle.PutIntoPlay('ta002', under_control=True)"],
        ["Puzzle.Thwart('ta002')"],
-       {"hors_jeu": ["01107", "ta011"], "mis_de_cote": ["ta011"], "degats": [["ta002", 0]],
-        "statuts_absents": [["ta002", "Cloaked"]]},
+       {"hors_jeu": ["01107", "ta011"], "mis_de_cote": ["ta011"], "degats": [["ta002", 1]],
+        "statuts": [["ta002", "Cloaked"]]},
        main_exclusive=["01090"], cibles=["01107"]),
     # ===================================================================== ta003 Bold Strategy
     _c("ta003 Bold Strategy : 0 ressource depensee -> Alopex Cloaked, AUCUN ennemi Dazed",

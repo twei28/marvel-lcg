@@ -14,6 +14,12 @@
 
 export const CLE_MODE_PHASE = "marvel-board-mode-phase-mechant";
 export const CLE_PHASE_MODE_VU = "mc_phase_mode_vu_v1";
+// REAFFICHAGE UNIQUE (decision de l'utilisateur, 20/10/2026) : la fenetre est posee une fois de plus a TOUS les joueurs,
+// y compris ceux qui avaient deja vu l'ancienne (cle `mc_phase_mode_vu_v1` a « 1 », qui ne compte plus). Meme mecanisme
+// que la migration datee : la cle porte la VERSION du choix ; valeur a jour = jamais plus. Aucune migration des choix
+// ici (les choix deja ranges sont gardes et preselectionnes).
+export const CLE_PHASE_CHOIX_VU = "mc_phase_choix_vu";
+export const VERSION_CHOIX_PHASE = "2026-10-20";
 
 export const DETAILLE = "detaille";
 export const SUR_TABLE = "sur-table";
@@ -62,9 +68,18 @@ export function normaliser(valeur) {
     return MODES.includes(valeur) ? valeur : DETAILLE;
 }
 
-/** Faut-il montrer la fenêtre ? Seulement à qui ne l'a jamais vue. */
+/** Faut-il montrer la fenêtre ? Seulement si la version vue n'est pas la version courante (`CLE_PHASE_CHOIX_VU`). */
 export function doitProposerLeChoix(vu) {
-    return vu !== "1";
+    return vu !== VERSION_CHOIX_PHASE;
+}
+
+/**
+ * SUR TÉLÉPHONE LA PHASE DU MÉCHANT EST D'OFFICE « GUIDÉE » (26/10/2026, demande de l'utilisateur : « pas d'autres
+ * choix ») : la fenêtre n'y est jamais montrée. Le plateau force alors le mode `detaille` + la présentation `tris`
+ * à la lecture (ui-app/src/board/moteur.ts, phase-presentation.ts), sans toucher à la préférence rangée.
+ */
+export function doitProposerLeChoixSurAppareil(vu, telephone) {
+    return !telephone && doitProposerLeChoix(vu);
 }
 
 /**
@@ -75,7 +90,26 @@ export function doitProposerLeChoix(vu) {
  * porte une valeur du nouveau schéma. Écrire « detaille » pour quelqu'un qui n'a
  * rien touché lui ferait perdre cette migration.
  */
-export function modeAEcrire(brutAvant, choisi) {
+export function modeAEcrire(brutAvant, choisi, tablette = false) {
+    // Tablette sans reglage : le plateau demarrerait sur « Plateau anime » (moteur.ts), le choix s'ecrit donc toujours.
+    if (tablette && brutAvant === null) return MODES.includes(choisi) ? choisi : null;
     if (choisi === normaliser(brutAvant)) return null;
     return MODES.includes(choisi) ? choisi : null;
+}
+
+/**
+ * LA TABLETTE (24/10/2026, decisions 8 et 11) : un joueur qui n'a encore rien choisi part de « Plateau anime »
+ * (la table reste entiere au doigt). Meme regle que ui-app/src/board/tablette/tablette.ts : tactile sans souris,
+ * 768 px de large et plus de 500 px de haut, ou le reglage « Jeu au doigt ».
+ */
+export const CLE_JEU_AU_DOIGT = "marvel-jeu-au-doigt";
+export const REQUETE_TABLETTE = "(pointer: coarse) and (hover: none) and (min-width: 768px) and (min-height: 501px)";
+export function estTablette(reglage, appareil) {
+    if (reglage === "oui") return true;
+    if (reglage === "non") return false;
+    return appareil === true;
+}
+export function choixInitial(brutAvant, tablette) {
+    if (tablette && brutAvant === null) return SUR_TABLE;
+    return normaliser(brutAvant);
 }

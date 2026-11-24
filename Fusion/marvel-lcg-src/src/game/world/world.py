@@ -68,6 +68,9 @@ class World(WorldAction, WorldFind):
         scenario = self.GetScenario()
 
         self.game_areas: List['GameArea'] = [GameArea(self)]
+        # AJOUT (21/10/2026, PU-5, spec-ville-m1-m2 G1) : zone COMMUNE a toutes les zones (manigances, environnements : « The City Never
+        # Sleeps », livret p.2). None hors scenario de ville : le moteur se comporte exactement comme avant.
+        self.game_area_commune: 'GameArea|None' = None
 
         self.players: List['Player'] = []
         # Add separate game area
@@ -112,6 +115,8 @@ class World(WorldAction, WorldFind):
         self.scene = scene
 
         self.game_over = GameOverReason(self)
+        from game.puzzle.puzzle_objectives import PuzzleObjectives
+        self.puzzle_objectives = PuzzleObjectives(self)
         # Fin de partie a deux camps. Inerte hors mode competitif : rien ne
         # l'interroge, et aucune condition ne s'y enregistre.
         self.competitive = Competitive(self)
@@ -180,6 +185,19 @@ class World(WorldAction, WorldFind):
 
     def GetFirstGameArea(self) -> 'GameArea':
         return self.game_areas[0]
+
+    def MovePlayerToGameArea(self, player: 'Player', game_area: 'GameArea') -> None:
+        """Un joueur change de territoire (PU-5, spec G4) : lui et tout ce qu'il possede (sbires engages compris) passent dans la
+        zone, SANS emporter les manigances (communes). Peut etre appele autant de fois que voulu (contrairement a Kang)."""
+        if player.GetIdentity().card.game_area is game_area:
+            return
+        game_area.AddPlayer(player, avec_manigances=False)
+
+    def CreateCommonGameArea(self) -> 'GameArea':
+        """Cree la zone commune (une seule) : les cartes qu'elle contient sont vues, et reagissent, depuis TOUTES les zones."""
+        assert self.game_area_commune is None
+        self.game_area_commune = self.CreateGameArea()
+        return self.game_area_commune
 
     def CreateGameArea(self) -> 'GameArea':
         self.game_areas.append(GameArea(self))
@@ -367,7 +385,7 @@ class World(WorldAction, WorldFind):
         if not message.skip_create_encounter_deck:
             encounters: List[str] = campaign.encounters[:]
             for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
-                encounters += CardFactory.LoadEncounterSet(encounter_set)
+                encounters += CardFactory.LoadEncounterSet(encounter_set, self)
             CardFactory.GenerateCards(encounters, deck, self)
             Message.WhenDeckCreated_Text(deck)
 
@@ -508,7 +526,7 @@ class World(WorldAction, WorldFind):
             encounters: List[str] = campaign.encounters[:]
             from game.card.factory import CardFactory
             for encounter_set in self.CompetitiveEncounterSets(message.encounter_set_names):
-                encounters += CardFactory.LoadEncounterSet(encounter_set)
+                encounters += CardFactory.LoadEncounterSet(encounter_set, self)
 
             CardFactory.GenerateCards(encounters, scenario.encounter_deck, self)
             Message.WhenDeckCreated_Text(scenario.encounter_deck)
@@ -700,6 +718,27 @@ class World(WorldAction, WorldFind):
             player.has_finished_turn_this_round = True
             turn_end()
 
+            # CORRECTIF (26/10/2026, pack Rachel Summers `rm`, rm007 Temporal Reversal) : « Take an additional turn after
+            # this one. At the end of this turn, perform each of the following in order : [...] ». Le moteur ne joue
+            # qu'UN tour par joueur et par phase : la carte pose le drapeau `RM_TOUR_SUPPLEMENTAIRE` (nombre de tours
+            # en plus), et c'est ICI qu'on les joue, juste apres le tour qui vient de finir (donc avant le joueur suivant).
+            # Rien ne change tant que le drapeau est a zero (tous les autres heros).
+            while player.flag.Get("RM_TOUR_SUPPLEMENTAIRE") > 0 and not player.is_eliminated and not self.is_game_over:
+                player.flag.Update("RM_TOUR_SUPPLEMENTAIRE", -1)
+                player.phase.FinDeTourSupplementaire()
+                if self.is_game_over:
+                    return
+                Message.TextRender("\n--- Additional turn ---", self)
+                player.has_finished_turn_this_round = False
+                turn_begin()
+                player.phase.BeginTurn()
+                player.phase.PlayerTurn()
+                if self.is_game_over:
+                    return
+                player.phase.EndTurn()
+                player.has_finished_turn_this_round = True
+                turn_end()
+
         self.phase.SetState(Phase.State.PlayerTurnEnd)
 
     def PlayersEndPhase(self, team: 'int|None'=None) -> None:
@@ -773,6 +812,16 @@ class World(WorldAction, WorldFind):
             end_message.Send()
 
         def enemy_activation() -> None:
+            # AJOUT (25/10/2026, The Vault) : plusieurs vilains a « Activation Order » ; regle posee par le
+            # complot principal (`Villains.Rule(activation_order=True)`). Sans regle : boucle historique.
+            from game.operate.villains import Villains
+            regle = Villains.GetRule(self)
+            if regle is not None and regle.activation_order:
+                joueurs = [p for p in phase_players if not p.is_eliminated]
+                if joueurs:
+                    self.current_player = joueurs[0]
+                    Worlds.Enemies.ActivationVillainsParOrdre(GameRule(joueurs[0].GetIdentity()), phase_players)
+                return
             for player in phase_players:
                 # RR 1.8 p.34 : un joueur elimine ne participe plus. `phase_players`
                 # vient de `const_players`, qui garde les elimines.
@@ -1101,6 +1150,9 @@ class World(WorldAction, WorldFind):
                 self.current_player = None
                 round_message = Message.WhenRoundEnd(self)
                 round_message.Send()
+                self.puzzle_objectives.OnRoundEnd()
+                if self.is_game_over:
+                    return
                 self.stat.OnRoundEnd()
                 self.buff_manager.OnRoundEnd()
 
@@ -1244,6 +1296,17 @@ class World(WorldAction, WorldFind):
                 self.reprise_demandee = None
                 self.manuel_actif = False
                 self.render.PresentForceNoWait()
+        elif self.scene.is_puzzle and self.scene.reprise_auto in ("mechant", "tour"):
+            # PUZZLE QUI DEMARRE APRES LA PHASE HEROS (22/10/2026, format v2,
+            # `start_phase`) : meme convention que la reprise d'une partie
+            # manuelle, dont on reprend le depart. "mechant" saute la phase
+            # heros et ouvre la phase du mechant ; "tour" clot d'abord le round
+            # puis en ouvre un neuf. Un puzzle ordinaire (reprise_auto vide) ne
+            # passe pas ici : son deroule est celui d'avant.
+            if self.round_id == 0:
+                self.round_id = 1
+            reprise = True
+            depart = self.scene.reprise_auto
 
         if self.is_game_over:
             return
@@ -1409,6 +1472,10 @@ class World(WorldAction, WorldFind):
             # Fix "32127b"
             if not prev_scheme.card.area.flags.is_victory_display:
                 Faces.RemoveAllFromGame([prev_scheme], GameRule(prev_scheme))
+            # AJOUT (22/10/2026, Punisher MC×DC 2026) : avec une zone COMMUNE (La ville), le nouveau stade vit dans cette zone, sinon ses
+            # capacites (When Revealed...) ne repondent pas aux messages de la partie. Sans zone commune, rien ne change.
+            if self.game_area_commune is not None:
+                self.game_area_commune.AddCard(scheme.card)
             scheme.PlaceAccelerationToken(acceleration_token, GameRule(scheme))
             scheme.Reveal(None, by_effect)
             nouvelle = scheme

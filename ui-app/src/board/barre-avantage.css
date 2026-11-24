@@ -1,0 +1,80 @@
+/* La barre d'avantage : fine, collee au bord gauche, sur toute la hauteur (maquette docs/maquettes/barre-avantage.html). */
+.barre-avantage {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  z-index: 20;
+  background: #0f1522;
+  border-right: 1px solid #4a5a7c;
+  cursor: help;
+  outline: none;
+}
+.barre-avantage-haut {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: linear-gradient(180deg, #5aa0f0, #3f86e0);
+  transition: height 0.6s;
+}
+.barre-avantage-bas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, #b51c20, #e62429);
+  transition: height 0.6s;
+}
+.barre-avantage-milieu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px dashed rgba(255, 255, 255, 0.55);
+}
+.barre-avantage.est-indisponible .barre-avantage-haut,
+.barre-avantage.est-indisponible .barre-avantage-bas {
+  opacity: 0.25;
+}
+.barre-avantage-detail {
+  display: none;
+  position: absolute;
+  left: 14px;
+  top: 30vh;
+  width: 250px;
+  padding: 8px 12px;
+  background: linear-gradient(160deg, #2b3a58, #1f2a40 55%, #171e2e);
+  border: 2px solid #3d5a8c;
+  border-top-color: #7fa9e6;
+  border-bottom-color: #0f1522;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.barre-avantage:hover .barre-avantage-detail,
+.barre-avantage:focus .barre-avantage-detail {
+  display: block;
+}
+.barre-avantage-detail strong {
+  display: block;
+  font: 400 19px Bangers, Impact, sans-serif;
+  letter-spacing: 0.05em;
+  color: #7fa9e6;
+  margin-bottom: 2px;
+}
+.barre-avantage-detail ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+.barre-avantage-detail small {
+  color: #b8c6e0;
+}
+/* Le projet ne travaille que sur PC : pas de barre sur un petit ecran. */
+@media (max-width: 900px) {
+  .barre-avantage {
+    display: none;
+  }
+}

@@ -207,6 +207,30 @@ def main():
         reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
         echecs += cas("le drapeau retombe : la route redit la campagne",
                       json.loads(reponse.body.decode("utf-8")).get("id"), "ma_camp")
+
+        # --- LOBBY DE CAMPAGNE : inviter AVANT le lancement -------------------
+        # get_liens_sieges_campagne_salon sert les memes cles mais NE marque PAS
+        # la table « ordinaire » (sinon le salon tairait la campagne) et N'exige
+        # PAS une partie deja lancee (le monde n'existe pas encore en lobby).
+        server_base.SEAT_PASSWORDS.value = ["a", "b"]
+        Serveur.tient_le_siege = lambda self, requete, siege: True
+        try:
+            # a) en lobby (aucune partie montee) : la route donne quand meme les cles.
+            serveur.game = None
+            reponse = boucle.run_until_complete(serveur.get_liens_sieges_campagne_salon(None))
+            echecs += cas("lobby de campagne : l'hote obtient ses liens avant lancement",
+                          json.loads(reponse.body.decode("utf-8")).get("multi"), True)
+            # b) elle ne declare JAMAIS la table ordinaire.
+            serveur.game = jeu_de(True)
+            serveur.table_ordinaire = False
+            boucle.run_until_complete(serveur.get_liens_sieges_campagne_salon(None))
+            echecs += cas("la route de lobby campagne ne marque pas la table ordinaire",
+                          getattr(serveur, "table_ordinaire", False), False)
+            reponse = boucle.run_until_complete(serveur.get_campagne_en_cours(None))
+            echecs += cas("apres des liens de lobby campagne : la campagne reste annoncee",
+                          json.loads(reponse.body.decode("utf-8")).get("id"), "ma_camp")
+        finally:
+            server_base.SEAT_PASSWORDS.value, Serveur.tient_le_siege = ancien
     boucle.close()
 
     # --- /new : le secret ne va que dans une partie de CAMPAGNE -------------

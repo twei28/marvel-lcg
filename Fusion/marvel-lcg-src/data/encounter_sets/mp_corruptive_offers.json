@@ -1,0 +1,12 @@
+{
+  "version": "0.5.8",
+  "name": "Corruptive Offers",
+  "encounters": [
+    "mp111",
+    "mp112",
+    "mp113",
+    "mp114",
+    "mp115",
+    "mp116"
+  ]
+}

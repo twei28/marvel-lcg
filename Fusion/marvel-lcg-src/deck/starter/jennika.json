@@ -2,6 +2,7 @@
     "version": "0.5.8",
     "name": "Jennika",
     "metadata": {
+        "author": "Inkwire",
         "url": "",
         "deckbuilding": {
             "path": {

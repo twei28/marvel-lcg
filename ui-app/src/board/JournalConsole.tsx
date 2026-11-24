@@ -147,7 +147,7 @@ export function JournalConsole({
             ) : (
               <li
                 key={ligne.cle}
-                className={`jc-fait type-${ligne.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}`}
+                className={`jc-fait type-${ligne.type}${ligne.famille ? ` phase-${ligne.famille}` : ''}${ligne.annule ? ' est-annule' : ''}${ligne.annulation ? ' est-annulation' : ''}`}
                 title={ligne.detail}
               >
                 <TexteAvecCartes texte={ligne.texte} cartes={ligne.cartes} />

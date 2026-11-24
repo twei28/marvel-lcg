@@ -1,0 +1,47 @@
+{
+    "version": "0.5.8",
+    "name": "Shadows in the Night",
+    "villain": [],
+    "expert": false,
+    "schemes": [
+        "sl001a,sl001b",
+        "sl002a,sl002b"
+    ],
+    "set_aside": [
+        "sl003a,sl003b",
+        "sl004a,sl004b",
+        "sl012a,sl012b",
+        "sl013a,sl013b",
+        "sl014a,sl014b",
+        "sl015a,sl015b",
+        "sl016a,sl016b",
+        "sl017a,sl017b",
+        "sl018",
+        "sl019",
+        "sl020",
+        "sl021",
+        "sl022",
+        "sl023",
+        "sl024",
+        "sl025",
+        "sl026",
+        "sl027"
+    ],
+    "encounters": [
+        "sl005",
+        "sl006",
+        "sl007",
+        "sl008",
+        "sl009",
+        "sl010",
+        "sl010",
+        "sl011",
+        "sl011"
+    ],
+    "encounter_sets": [
+        "standard"
+    ],
+    "modular_sets": [
+        "ninja_swarm"
+    ]
+}

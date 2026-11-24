@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maquette : choix du deck</title>
+<style>
+:root{--bg:#14161c;--card:#1e2230;--line:#2f3550;--txt:#e8eaf2;--mut:#98a0b8;--jaune:#f2c230;--ok:#3ec27a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:15px system-ui,sans-serif;padding:24px}
+h1{font-size:18px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 20px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;max-width:1100px}
+.panel{background:#181b26;border:1px solid var(--line);border-radius:12px;padding:16px}
+.entete{display:flex;align-items:center;gap:10px;margin-bottom:12px}.entete b{font-size:18px;letter-spacing:.04em;text-transform:uppercase}
+.sect{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin:16px 0 8px}
+.deck{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;color:inherit;margin-bottom:8px}
+.deck.depart{border-color:var(--jaune);box-shadow:0 0 0 1px var(--jaune) inset;padding:16px}
+.deck.chosen{border-color:var(--ok)}.nom{font-weight:700}.tags{margin:6px 0;display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11px;background:#2b3150;border-radius:6px;padding:2px 7px}.tag.a{background:#2a6fb5}.tag.b{background:#b5412a}
+.foot{color:var(--mut);font-size:12px}
+.vide{color:var(--mut);font-style:italic;padding:10px;border:1px dashed var(--line);border-radius:10px}
+.btn-prop{margin-top:12px;background:none;border:1px solid var(--line);color:var(--mut);border-radius:20px;padding:6px 14px;font-size:13px}
+.arts{display:flex;gap:10px;flex-wrap:wrap}
+.carte{position:relative;width:86px;height:120px;border-radius:8px;background:linear-gradient(135deg,#3a4270,#232842);border:1px solid var(--line);display:flex;align-items:flex-end;padding:6px;font-size:11px}
+.pastille{position:absolute;top:-7px;right:-7px;background:var(--jaune);color:#111;font-weight:700;font-size:11px;border-radius:12px;padding:2px 7px;box-shadow:0 1px 4px #0008}
+.res{display:flex;gap:10px;margin-top:8px}
+.ress{width:70px;text-align:center;font-size:11px;color:var(--mut)}
+.ress .carte{width:70px;height:98px;margin-bottom:4px}
+.modal{background:#0b0d12;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:20px;max-width:560px}
+.note{max-width:1100px;margin:24px 0 0;color:var(--mut);font-size:13px}
+@media(max-width:800px){.cols{grid-template-columns:1fr}}
+</style></head><body>
+<h1>Choix du deck : proposition</h1>
+<p class="sub">Maquette statique (rien n'est branché). À gauche la scène du héros reste comme aujourd'hui ; ici, la colonne de droite et le panneau d'arts.</p>
+<div class="cols">
+<div>
+ <div class="panel">
+  <div class="entete"><b>Decks</b><span class="foot">Spider-Man</span></div>
+
+  <div class="sect">Deck de départ</div>
+  <button class="deck depart chosen"><div class="nom">Spider-Man : deck de départ</div>
+   <div class="tags"><span class="tag">Deck de départ</span><span class="tag a">Justice</span></div>
+   <div class="foot">40 cartes · Voir les cartes</div></button>
+
+  <div class="sect">Decks de la communauté (2)</div>
+  <button class="deck"><div class="nom">Spidey Agression v2</div>
+   <div class="tags"><span class="tag">Sauvegardé</span><span class="tag b">Agression</span></div><div class="foot">42 cartes · Voir les cartes · Supprimer</div></button>
+  <button class="deck"><div class="nom">Web de protection</div>
+   <div class="tags"><span class="tag">Sauvegardé</span><span class="tag a">Protection</span></div><div class="foot">40 cartes · Voir les cartes · Supprimer</div></button>
+  <div class="vide" style="display:none">Aucun deck partagé pour l'instant. Importe-en un depuis marvelcdb.</div>
+
+  <button class="btn-prop">✨ Proposition de deck…</button>
+ </div>
+
+ <div class="modal">
+  <b>Propositions de deck</b> <span class="foot">(fenêtre ouverte par le bouton)</span>
+  <div class="sect">Decks du tableur</div>
+  <div class="deck"><div class="nom">Spider-Man : Version tableur</div><div class="foot">Aggression · 40 cartes · Choisir</div></div>
+  <div class="sect">Paquets d'aspect</div>
+  <div class="deck"><div class="nom">Paquet Leadership <span class="tag">Conseillé</span></div><div class="foot">Choisir</div></div>
+ </div>
+</div>
+
+<div class="panel">
+ <b>Cartes du deck</b> <span class="foot">(après le choix)</span>
+ <div class="sect">Cartes</div>
+ <div class="arts">
+  <div class="carte">Webbing<span class="pastille">🖼 3</span></div>
+  <div class="carte">Swinging Web-Kick</div>
+  <div class="carte">Spider-Tracer<span class="pastille">🖼 2</span></div>
+ </div>
+ <div class="sect">Ressources</div>
+ <div class="res">
+  <div class="ress"><div class="carte">Énergie<span class="pastille">🖼 4</span></div>Énergie</div>
+  <div class="ress"><div class="carte">Mental<span class="pastille">🖼 4</span></div>Mental</div>
+  <div class="ress"><div class="carte">Physique<span class="pastille">🖼 4</span></div>Physique</div>
+  <div class="ress"><div class="carte">Joker<span class="pastille">🖼 2</span></div>Joker</div>
+ </div>
+ <p class="foot">Pastille jaune = « il existe d'autres arts ». Un clic ouvre le sélecteur de cette carte.</p>
+</div>
+</div>
+<p class="note">Hypothèses à valider : (1) les « paquets d'aspect » vont aussi dans la fenêtre Proposition de deck ; (2) si aucun deck de la communauté, un message vide l'explique ; (3) le panneau d'arts reste visible à côté de la scène, pas seulement dans la fenêtre post-choix actuelle.</p>
+</body></html>

@@ -25,8 +25,9 @@
   // justement de réduire le bavardage de cet écran avec le serveur.
   const PERIODE_MS = 300000;
 
+  // La langue passe par langue-classique.js (window.MarvelLangue : choix dans le jeu > cookie du site > navigateur > français).
   const EN = (function () {
-    try { return localStorage.getItem('marvel-langue') === 'en'; }
+    try { return window.MarvelLangue ? window.MarvelLangue.actuelle() === 'en' : localStorage.getItem('marvel-langue') === 'en'; }
     catch (e) { return false; }
   })();
   const T = {

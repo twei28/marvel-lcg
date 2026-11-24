@@ -7,28 +7,25 @@ from cards.pack import *
 # ajoute a n'importe quel scenario (modele `necroverse`, `intergalactic_hazards`).
 # Six cartes distinctes, sept exemplaires (Obsession en double).
 #
-# ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET, decision utilisateur du 13/09/2026.
+# ⚠ L'ARBITRAGE QUI TIENT TOUT LE SET, decision utilisateur du 13/09/2026,
+# REVU le 08/11/2026.
 #
 # QUATRE cartes sur six parlent d'« une carte avec l'image de votre identite
 # dessus » (mu001, mu003, mu004, mu006). Le moteur lit du texte et des
 # mots-cles ; il ne voit AUCUNE illustration.
 #
-# ⚠ C'EST BIEN L'IMAGE QUI FAIT FOI, PAS LA CLASSE DE LA CARTE. Arbitrage
-# tranche par l'utilisateur apres un premier choix inverse, le meme jour : « les
-# cartes signature » (`card_class="IdentitySpecific"`) etait commode mais faux.
-# Une amelioration d'aspect qui dessine le heros compte ; une carte signature
-# qui ne montre que son equipement ne compte pas.
-#
-# On ne peut pas le deviner : on le RELEVE. `data/images_cartes.json` dit qui
-# est dessine sur chaque illustration, rempli a la main depuis la page
-# `/releve-images.html` reservee a l'administrateur. Voir `cards/images_cartes.py`
-# et `.planning/todos/2026-09-13-releve-des-images-de-cartes.md`.
-#
-# ⚠ LE RELEVE EST LONG (5746 illustrations) ET NE BLOQUE RIEN. Une carte pas
-# encore regardee garde l'ancienne approximation, les cartes signature. Muse
-# reste donc jouable des le premier jour, et gagne en justesse a mesure que le
-# releve avance. Les deux cas sont distincts et le restent : voir
-# l'avertissement en tete de `cards/images_cartes.py`.
+# ⚠ HISTORIQUE, POUR NE PAS REESSAYER LA MEME IMPASSE. Le plan du 13/09/2026
+# etait de RELEVER les illustrations a la main (`data/images_cartes.json`,
+# page d'admin `/releve-images.html`, voir `cards/images_cartes.py` et
+# `PorteLImageDe`/`CartesAvecLImageDe` ci-dessous) : 5746 images, en attendant
+# repli sur « carte signature ». Constat le 08/11/2026 : le releve n'a JAMAIS
+# ete rempli (`cartes: {}`), donc Muse n'a jamais tourne sur la vraie regle,
+# seulement sur son repli — et le set etait de toute facon ecarte de la
+# production (`data/sets_info.json`, cle `indisponible`) depuis le premier
+# jour. Remplace par la solution de `spider_man_rainy/sr009` J. Jonah Jameson :
+# le moteur pose la question au joueur, qui REGARDE la carte et repond
+# lui-meme. `PorteLImageDe` et `CartesAvecLImageDe` ne sont donc plus appeles
+# par aucune carte de ce set ; gardees pour memoire, pas supprimees.
 
 NOM_MUSE = "Muse"
 

@@ -94,7 +94,8 @@ export function CoucheRevelation({
           paysage: TYPES_PAYSAGE.includes(carte.card_type),
           codeCarte: carte.card_id,
           type: carte.card_type,
-          traits: Object.keys(carte.traits ?? {}),
+          // Les clés du monde sont préfixées `t_` : sans ce retrait le voile affichait « T_HELLMOUTH. » (31/10/2026).
+          traits: Object.keys(carte.traits ?? {}).map((cle) => (cle.startsWith('t_') ? cle.slice(2).replace(/_/g, ' ') : cle)),
         })
       }
     }

@@ -3,10 +3,13 @@
 // centre (révélations, mise en place, scène de la phase du méchant).
 import { useEffect, useState, type ReactNode } from 'react'
 import { codeCarteConnu } from './marvelcdb'
-import { aScanFr, scansFrActifs } from './scans-fr'
+import { aScanFr, SCANS_FR_SEULS, scanDejaFrancais, scansFrActifs } from './scans-fr'
+import { TEXTES_EN_SCAN_FR } from './textes-en-scan-fr'
 import { TEXTES_FR } from './textes-fr'
 import { TEXTES_FR_FANMADE } from './textes-fr-fanmade'
 import { TraductionPosee, type CotePaysage } from './TraductionPosee'
+import { erratumDeCarte, texteErratum, type ErratumRrg } from './errata-rrg'
+import { PastilleErrata } from './PastilleErrata'
 import { ScanCard, type ScanCardProps } from '../components/ScanCard'
 
 /** Texte officiel FR de la carte, de trois sources qui ne se marchent pas dessus.
@@ -30,7 +33,9 @@ export function useTraductionFr(codeCarte?: string, artAlternatif = false): stri
   // Un ART ALTERNATIF est un scan anglais, meme sur une carte qui a son scan
   // francais : il faut alors le texte francais de TOUTES les cartes
   // (textes-fr-complets.ts, 700 Ko), charge une fois a la demande.
-  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || !aScanFr(code))
+  // L'inverse : scan FRANCAIS seul, interface en anglais -> le texte anglais se pose sur le scan voile (TraductionPosee, langue 'en').
+  if (code !== undefined && !artAlternatif && SCANS_FR_SEULS.has(code) && !scansFrActifs()) return TEXTES_EN_SCAN_FR[code]
+  const scanAnglais = code !== undefined && scansFrActifs() && (artAlternatif || (!aScanFr(code) && !scanDejaFrancais(code)))
   const [textesComplets, setTextesComplets] = useState<Readonly<Record<string, string | undefined>>>()
   useEffect(() => {
     if (!scanAnglais || !artAlternatif || textesComplets) return
@@ -52,10 +57,29 @@ export function useTraductionFr(codeCarte?: string, artAlternatif = false): stri
 }
 
 
+/**
+ * Le texte à poser sur une carte agrandie, et sa langue : l'ERRATA officiel s'il y en a un (dans la langue des scans actifs,
+ * posé sur n'importe quel scan : l'ancien texte imprimé est sous le voile), sinon la traduction. `langue` absente = le
+ * comportement historique de TraductionPosee. Un errata sans texte (titre, icône, classification) ne donne que la pastille.
+ */
+export function useTexteSurCarte(
+  codeCarte?: string,
+  artAlternatif = false
+): { texte: string; langue?: 'fr' | 'en'; erratum?: ErratumRrg } | undefined {
+  const traduction = useTraductionFr(codeCarte, artAlternatif)
+  const erratum = erratumDeCarte(codeCarte)
+  const langue: 'fr' | 'en' = scansFrActifs() ? 'fr' : 'en'
+  const texteErrata = erratum ? texteErratum(erratum, langue) : undefined
+  if (erratum && texteErrata) return { texte: texteErrata, langue, erratum }
+  return traduction ? { texte: traduction } : undefined
+}
+
 /** Côté de la boîte de texte d'une carte paysage, selon son type. */
 export function coteDuTexte(type: string | undefined): CotePaysage | undefined {
   if (type === 'MainScheme') return 'gauche'
-  if (type === 'SideScheme') return 'droite'
+  // La manigance annexe de JOUEUR est imprimée comme celle des méchants : boîte de texte à droite (audit du 25/10/2026 : sans cela,
+  // ses 21 cartes fan-made gardaient leur anglais).
+  if (type === 'SideScheme' || type === 'PlayerSideScheme') return 'droite'
   return undefined
 }
 
@@ -73,10 +97,21 @@ export function useSurcoucheTraduction(carte: {
   paysage?: boolean
   facedown?: boolean
 }): ReactNode | undefined {
-  const traduction = useTraductionFr(carte.facedown ? undefined : carte.codeCarte, carte.artAlternatif)
+  const codeCarte = carte.facedown ? undefined : carte.codeCarte
+  const surcouche = useTexteSurCarte(codeCarte, carte.artAlternatif)
+  const erratum = erratumDeCarte(codeCarte)
   const cote = carte.paysage ? coteDuTexte(carte.type) : undefined
-  if (!traduction || !carte.imageUrl || (carte.paysage && !cote)) return undefined
-  return <TraductionPosee url={carte.imageUrl} texte={traduction} traits={carte.traits} paysage={cote} />
+  const voile =
+    surcouche && carte.imageUrl && !(carte.paysage && !cote) ? (
+      <TraductionPosee url={carte.imageUrl} texte={surcouche.texte} traits={carte.traits} paysage={cote} langue={surcouche.langue} />
+    ) : undefined
+  if (!voile && !erratum) return undefined
+  return (
+    <>
+      {voile}
+      {erratum ? <PastilleErrata erratum={erratum} cote={cote} /> : null}
+    </>
+  )
 }
 
 /** Le type de carte du moteur ramené à celui qui place la boîte de texte paysage. */

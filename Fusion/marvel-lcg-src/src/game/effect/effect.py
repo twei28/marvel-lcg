@@ -591,12 +591,18 @@ class Effect(Object):
                     payment=[],
                     rule=cost_rule,
                     warning=get_warning(effect, target),
+                    reserves={},
                 )
                 if effect.context.ignore_resource_cost:
                     continue
                 for effect_res in effect.checker.cost_for_different_target.target_cost[target].payments:
                     for pay_effect in effect_res:
                         payinfo_dict[target_id].payment.append({pay_effect.object_id: effect_res[pay_effect]})
+                        reserve = getattr(pay_effect.ability, 'reserve_partagee', None)
+                        if reserve is not None:
+                            pay_effect.context.initiator = effect.GetInitiator()
+                            cle, cartes_fn = reserve
+                            payinfo_dict[target_id].reserves[pay_effect.object_id] = [cle, len(cartes_fn(pay_effect))]
             return payinfo_dict
 
         the_effect = self
@@ -654,5 +660,6 @@ class Effect(Object):
             failure_reason=failure_reason,
             is_search=is_search,
             au_maximum=self.context.au_maximum,
+            is_text_choice=self.ability.flags.is_choose_ability,
         )
 

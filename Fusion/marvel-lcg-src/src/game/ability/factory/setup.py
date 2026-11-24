@@ -202,6 +202,85 @@ class AbilityFactorySetup:
         )
 
     @staticmethod
+    def AfterPlayerResolveFlow(ability_type: 'AbilityType',
+                               operation: OperationType[Message.AfterPlayerResolveFlow],
+                               *,
+                               conditions: ConditionsType[Message.AfterPlayerResolveFlow]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom shang_chi, 24/10/2026) : « After you resolve a "Flow" ability ».
+
+        Filtre sur le joueur de CETTE carte : le Flow d'un autre joueur ne declenche rien.
+        Message envoye par `ResoudreFlow` (set Shang-Chi), fiche mots-cles/flow.md.
+        """
+        def check_is_your_flow(effect: 'Effect', message: 'Message.AfterPlayerResolveFlow') -> bool:
+            return effect.GetInitiator() == message.GetToPlayer()
+
+        return Ability(
+            ability_type,
+            Message.AfterPlayerResolveFlow,
+            [
+                check_is_your_flow,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
+    def AfterCharacterArrivePlanet(ability_type: 'AbilityType',
+                               which_character: 'Literal["This"]|CardFace',
+                               operation: OperationType[Message.AfterCharacterArrivePlanet],
+                               *,
+                               conditions: ConditionsType[Message.AfterCharacterArrivePlanet]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom silver_surfer_power_cosmic, 04/11/2026) : « After <X> arrives at a PLANET ».
+
+        `which_character` = "This" pour une carte qui reagit a sa PROPRE arrivee (ex. Silver Surfer
+        lui-meme), ou une CardFace precise pour une carte qui reagit a l'arrivee d'un AUTRE personnage.
+        Filtre toujours la carte qui ARRIVE, jamais celle qui l'envoie. Fiche
+        docs/reference/mots-cles/environnement-joueur.md.
+        """
+        def check_who(effect: 'Effect', message: 'Message.AfterCharacterArrivePlanet') -> bool:
+            if which_character == "This":
+                return effect.this == message.character_face
+            return which_character == message.character_face
+
+        return Ability(
+            ability_type,
+            Message.AfterCharacterArrivePlanet,
+            [
+                check_who,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
+    def AfterCharacterDepartPlanet(ability_type: 'AbilityType',
+                               which_character: 'Literal["This"]|CardFace',
+                               operation: OperationType[Message.AfterCharacterDepartPlanet],
+                               *,
+                               conditions: ConditionsType[Message.AfterCharacterDepartPlanet]=[],
+                               ) -> 'Ability':
+        """AJOUT (pack custom silver_surfer_power_cosmic, 04/11/2026) : « After <X> departs a PLANET ».
+
+        Symetrique de `AfterCharacterArrivePlanet` ci-dessus.
+        """
+        def check_who(effect: 'Effect', message: 'Message.AfterCharacterDepartPlanet') -> bool:
+            if which_character == "This":
+                return effect.this == message.character_face
+            return which_character == message.character_face
+
+        return Ability(
+            ability_type,
+            Message.AfterCharacterDepartPlanet,
+            [
+                check_who,
+                *conditions
+            ],
+            operation,
+        )
+
+    @staticmethod
     def WhenCardSetup(which_card: 'Literal["This"]|CardFace',
                       operation: OperationType[Message.WhenCardSetup]) -> 'Ability':
 

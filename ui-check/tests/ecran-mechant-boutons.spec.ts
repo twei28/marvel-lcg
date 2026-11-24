@@ -81,7 +81,6 @@ for (const ecran of ECRANS) {
             largeur: Math.round(t[0].width),
             hauteur: Math.round(t[0].height),
             defile: g.scrollHeight > g.clientHeight + 1,
-            menaceVisible: !!document.querySelector('#tb-menace')?.getBoundingClientRect().height,
           };
         });
         console.log(suffixe, 'core', JSON.stringify(grille));
@@ -92,7 +91,7 @@ for (const ecran of ECRANS) {
         // l'ancien plafond de 2 x 148 px (406 px à 1920, 18/10/2026) ; elles ne défilent toujours pas pour 3 méchants.
         expect.soft(grille.largeur).toBeLessThanOrEqual(440);
         expect.soft(grille.defile).toBe(false);
-        expect.soft(grille.menaceVisible).toBe(true);
+        // Le niveau et les sets modulaires ne sont plus sous la grille : ils ont leur etape (30/10/2026).
         // L'en-tête dit le méchant choisi, plus « Méchant inconnu ».
         await expect.soft(page.locator('.tb-mode').first()).toContainText('Klaw');
         const klaw = await chevauchements(page);

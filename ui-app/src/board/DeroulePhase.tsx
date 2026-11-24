@@ -31,7 +31,7 @@ import { questionDuRecit } from './table-calee'
 import { calculCoupTable } from './calcul-coup-table'
 import { reglesCachees } from './regles-cachees'
 import { createPortal } from 'react-dom'
-import { estSpectateur } from './moteur'
+import { estSpectateur, lireDelaiAutoPhase, suivreDelaiAutoPhase } from './moteur'
 import { indexSpectateur, publierExtrasEtape, useSuiviDuJoueur } from './etape-partagee'
 import {
   choisirPolitique,
@@ -209,6 +209,7 @@ export function DeroulePhase({
   carteScene,
   dosRencontre,
   nomFr,
+  compterBoosts,
   question,
   herosLocauxIds,
   herosDesAutresIds,
@@ -366,6 +367,13 @@ export function DeroulePhase({
    * « Le Boulet » et « Envoyer Bouler ». Absent, ou muet : le nom du fait.
    */
   nomFr?: (id: number) => string | undefined
+  /**
+   * Le nombre de cartes boost (face cachée) déjà attachées à cet ennemi, pour
+   * le trait de phase (demande du 07/11/2026) : la seconde ligne « + N carte(s)
+   * boost » sous « 2 dégâts »/« 2 menaces » tant que le coup n'est pas résolu.
+   * Même mécanique attaque ET manigance (CoucheTraitPhase.tsx, trait-phase.ts).
+   */
+  compterBoosts?: (enemyId: number) => number
   /**
    * LA QUESTION DU MOTEUR, RENDUE PAR LE PLATEAU (board.tsx : le panneau
    * `DemandeCentrale` en mode scene). Quand elle est donnee, la scene reste
@@ -826,11 +834,11 @@ export function DeroulePhase({
   // `arreterSurDefaite` vient EN DERNIER, et l'ordre tranche la question : un
   // heros tombe coupe le deroule a son etape, bilan compris. Le bilan de fin de
   // phase ne s'affiche donc jamais derriere une defaite.
-  // Les TEMPS VIDES ont leur etape courte (« Aucune menace posée »), avec son
-  // « Suivant » (decision du 03/10/2026) : `avecTempsVides`, frise-phase.ts.
-  const etapesConnues = phaseRaconteeEnCours
-    ? avecTempsVides(etapesDeLaPhase, false)
-    : avecBilan(avecTempsVides(etapesDeLaPhase, true), pvMaxParNom)
+  // Les TEMPS VIDES (« Aucun sbire engagé ») n'ont PLUS d'etape pendant la phase : choix de l'utilisateur, inventaire des
+  // fenetres du 19/11/2026 (nicodede62, « trop de pop-ups »), qui remplace la decision du 03/10/2026. Il fallait cliquer
+  // « Étape suivante » sur une etape ou rien ne se passe. Le temps saute tout seul ; son onglet reste visible, grise
+  // (`est-vide` ci-dessous). La relecture depuis le journal (`RelectureJournal`, `RevuePhase`) les dit toujours.
+  const etapesConnues = phaseRaconteeEnCours ? etapesDeLaPhase : avecBilan(etapesDeLaPhase, pvMaxParNom)
   const etapesAffichees = arreterSurDefaite(etapesConnues, herosLocauxIds)
   // La coupe a-t-elle vraiment emporte quelque chose ? C'est ce qui distingue
   // « la liste a change d'ordre » de « un heros vient de tomber », et le repli
@@ -913,6 +921,23 @@ export function DeroulePhase({
     document.documentElement.classList.toggle('essai-peril-autre', perilDUnAutre)
     return () => document.documentElement.classList.remove('essai-peril-autre')
   }, [perilDUnAutre])
+  // Plateau du telephone en ronds (Q68, 24/10/2026) : QUEL joueur resout la carte a Peril, pour dire « seul J1 peut reagir »
+  // et verrouiller les onglets des autres. Pose sur <html>, comme `essai-peril-autre`, que lit le plateau portrait.
+  const perilJoueur =
+    essai &&
+    etape?.titre === 'revelation' &&
+    etape.joueur !== undefined &&
+    etape.carteId !== undefined &&
+    (infoRevelee?.(etape.carteId)?.texteImprime ?? []).some((ligne) => /\bp[ée]ril\b/i.test(ligne))
+      ? etape.joueur
+      : undefined
+  useEffect(() => {
+    if (perilJoueur === undefined) return
+    document.documentElement.dataset.perilJoueur = String(perilJoueur)
+    return () => {
+      delete document.documentElement.dataset.perilJoueur
+    }
+  }, [perilJoueur])
   /**
    * LE COUP FATAL SE VOIT SUR LA TABLE AVANT SON PANNEAU.
    *
@@ -1002,8 +1027,9 @@ export function DeroulePhase({
         // Le moteur journalise parfois DEUX entrees pour la meme carte : des la premiere, elle est a l'ecran.
         .filter((id) => !etapesAffichees.slice(0, index + 1).some((e) => e.titre === 'entree' && e.carteId === id))
     : []
+  // 25/10/2026 : plus seulement sur la table. Au telephone (et dans le cartouche du PC), « Étape suivante » sautait de meme
+  // l'attaque de Klaw et son boost Weapons Runner pour aller droit a l'entree du sbire.
   const suiteDifferee =
-    surTable &&
     phaseRaconteeEnCours &&
     etape !== undefined &&
     (etape.titre === 'attaque' || etape.titre === 'manigance') &&
@@ -1679,7 +1705,12 @@ export function DeroulePhase({
   // fin de phase (le joueur reprend la main, il doit le voir) et la chute
   // d'un heros (le moment le plus important d'une partie ne defile pas). Le
   // bilan se reconnait a son temps : `avecBilan` est le seul a le produire.
-  const etapeAttendUnClic = etape?.temps === 'bilan' || Boolean(etape?.defaite)
+  // ⚠ 19/11/2026 (inventaire des fenetres, nicodede62 « trop de pop-ups ») : avec le DEFILEMENT AUTOMATIQUE allume, le bilan
+  // se ferme seul apres le delai choisi (choix de l'utilisateur). Sans defilement, il attend toujours « Terminer ». La chute
+  // d'un heros attend toujours le clic.
+  const [delaiAuto, setDelaiAuto] = useState(lireDelaiAutoPhase)
+  useEffect(() => suivreDelaiAutoPhase(setDelaiAuto), [])
+  const etapeAttendUnClic = (etape?.temps === 'bilan' && delaiAuto <= 0) || Boolean(etape?.defaite)
 
   // Le delai avant que l'etape courante ne se valide seule, ou `undefined`
   // quand elle attend un clic.
@@ -1688,7 +1719,20 @@ export function DeroulePhase({
   // NOTRE clic, le temps de voir le coup.
   // L'avance auto est retiree (pas a pas strict, 03/10/2026) : ce minuteur ne
   // sert plus qu'a cela.
-  const delaiAvant = surTable && viseUnAutreJoueur ? DELAI_ETAPE_D_UN_AUTRE_MS : undefined
+  // « Phase du mechant automatique » (reglage des options, 23/10/2026) : chaque etape se valide seule apres 2 s ou 5 s, pour les deux
+  // presentations a cartouche (le mode « Accelere » n'en a pas). Le delai ne court qu'une fois la lecture des cartes finie
+  // (`avantResultat`) : on ne passe pas une attaque dont les boosts sont encore en train d'arriver.
+  // ⚠ 18/11/2026 (nicodede62 : « pendant le tour du méchant, il attend toujours que je valide avec espace ») : en Guidé, les
+  // boosts d'une attaque ou d'une manigance se retournent UN PAR UN, au clic (« Révéler le boost suivant »). Le minuteur était
+  // coupé tant qu'il en restait (`avantResultat`) : personne ne les retournait et l'étape attendait Espace pour toujours. En
+  // défilement automatique, il retourne donc aussi le boost suivant après le délai (le temps de le lire), comme Espace.
+  const boostsARetourner = Boolean(essai && etape && !relecture && boostsMontres < etape.boosts.length)
+  const delaiAvant =
+    delaiAuto > 0 && (!avantResultat || (boostsARetourner && !lectureEnCours && !enVolDeJeton))
+      ? delaiAuto
+      : surTable && viseUnAutreJoueur
+        ? DELAI_ETAPE_D_UN_AUTRE_MS
+        : undefined
 
   // L'HORLOGE du cartouche, la seule de toute la phase. Elle passe seule, sur
   // la table, l'etape qui vise un autre joueur (delai de lecture).
@@ -1719,12 +1763,21 @@ export function DeroulePhase({
     if (delaiAvant === undefined) return
     if (!visible || suspendu || enAttente || questionAuJoueur || etapeEstAnnonce) return
     if (etapeAttendUnClic) return
-    const minuteur = window.setTimeout(() => avancerRef.current(), delaiAvant)
+    // Comme Espace : tourner la page du cartouche s'il en reste une (le boost suivant), sinon valider l'étape.
+    const minuteur = window.setTimeout(() => {
+      const page = nouvelleScene ? boutonPageSuivante(document.querySelector('.deroule-phase.est-scene')) : undefined
+      if (page) page.click()
+      else avancerRef.current()
+    }, delaiAvant)
     return () => window.clearTimeout(minuteur)
   }, [
     delaiAvant,
     etape?.cle,
     etape?.etat,
+    // Réarmé à chaque page tournée : chaque boost retourné, la carte rencontre retournée (« Révéler la carte »), puis un
+    // dernier pour valider l'étape. Sans ça, le minuteur qui venait de tourner la page ne repartait jamais.
+    boostsMontres,
+    cartesRetournees,
     visible,
     suspendu,
     enAttente,
@@ -1985,6 +2038,7 @@ export function DeroulePhase({
           // Pendant une question, le trait d'une étape déjà RÉSOLUE (la riposte) n'a plus rien à montrer.
           actif={!enVolDeJeton && !(questionAuJoueur && etape?.etat === 'resolu')}
           sansEtiquette={Boolean(essai && etape && !animationsCoupees() && coupsDeLEtape(etape).some((c) => c.montant > 0))}
+          compterBoosts={compterBoosts}
         />
         <EffetsSurTable
           etape={etape}

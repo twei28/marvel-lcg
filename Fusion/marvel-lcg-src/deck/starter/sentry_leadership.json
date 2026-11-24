@@ -1,0 +1,70 @@
+{
+    "version": "0.5.8",
+    "name": "Sentry (Leadership)",
+    "metadata": {
+        "author": "Neptune",
+        "url": "",
+        "note": "Pack « Sentry » (Neptune, Sentry.zip, version New). Deck de heros = les 16 cartes du set (rr002-rr014). Obligation Fractured Psyche (rr015), set nemesis Sentry Nemesis (rr016-rr019), modulaire Merged Sentry (rr020-rr023). player_deck = decklist imprimee de l'auteur (Leadership), recopiee telle quelle ; les cartes d'aspect sont les reskins rr024-rr092 (art de Sentry, valeurs officielles). La decklist de l'auteur ecrit « Universal Might » pour Unrivaled Might.",
+        "variante_nom": "Leadership (precon)",
+        "variante_de": "sentry"
+    },
+    "hero": [
+        "rr001a,rr001b"
+    ],
+    "hero_deck": [
+        "rr002",
+        "rr003",
+        "rr004",
+        "rr005",
+        "rr006",
+        "rr007",
+        "rr008",
+        "rr009",
+        "rr010",
+        "rr011",
+        "rr011",
+        "rr012",
+        "rr012",
+        "rr013",
+        "rr014",
+        "rr014"
+    ],
+    "set_aside": [],
+    "obligations": [
+        "rr015"
+    ],
+    "nemesis_set": [
+        "rr016",
+        "rr017",
+        "rr018",
+        "rr019",
+        "rr019"
+    ],
+    "player_deck": [
+        "12011",
+        "12014",
+        "21014",
+        "03013",
+        "rr057",
+        "rr057",
+        "rr069",
+        "rr069",
+        "rr070",
+        "rr070",
+        "rr070",
+        "rr061",
+        "rr061",
+        "rr061",
+        "rr067",
+        "rr068",
+        "rr064",
+        "rr059",
+        "rr091",
+        "rr091",
+        "rr091",
+        "rr089",
+        "rr090",
+        "rr092",
+        "01092"
+    ]
+}

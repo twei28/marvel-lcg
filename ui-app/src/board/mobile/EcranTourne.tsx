@@ -6,14 +6,16 @@ import type { ReactElement } from 'react'
 import { t } from '../langue'
 import './telephone.css'
 
-export function EcranTourne(): ReactElement {
+// La tablette s'en sert aussi, dans l'autre sens (24/10/2026, decision 0) :
+// le plateau PC se joue en paysage, la tablette debout est couverte.
+export function EcranTourne({ tablette = false }: { tablette?: boolean }): ReactElement {
   return (
     <div className="ecran-tourne" role="alert">
       <span className="ecran-tourne-icone" aria-hidden="true">
         ⟲
       </span>
-      <strong>{t('Remets ton téléphone droit')}</strong>
-      <span>{t('Le verrou portrait est actif (Réglages, Apparence).')}</span>
+      <strong>{tablette ? t('Tourne ta tablette') : t('Remets ton téléphone droit')}</strong>
+      <span>{tablette ? t('Le plateau se joue en paysage.') : t('Le verrou portrait est actif (Réglages, Apparence).')}</span>
     </div>
   )
 }

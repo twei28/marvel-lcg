@@ -53,6 +53,7 @@ const TRADUCTIONS: Readonly<Record<string, string>> = {
   forced: 'forcée',
   interrupt: 'interruption',
   response: 'réponse',
+  resource: 'ressource',
   hero: 'de héros',
   'alter-ego': "d'alter-ego",
   alterego: "d'alter-ego",
@@ -99,11 +100,22 @@ export function extraireCapacite(
   const type = normaliser(typeDemande ?? '')
   if (type) {
     const debuts = [type, ...traductionsDuType(type)]
-    const parType = paras.find((p) => {
-      const debut = normaliser(p.replace(/^.*?—\s*/, ''))
-      return debuts.some((d) => debut.startsWith(d))
-    })
+    // L'en-tete se separe du type par un tiret long (« "Objection !" — Interruption ») OU, dans le francais
+    // officiel de certains heros (Venom, Vision, Magneto...), par un tiret simple (« Lien Symbiotique - Ressource »).
+    const debutsDuParagraphe = (p: string): string[] => [
+      normaliser(p.replace(/^.*?(?:\s[—–]\s*|[—–]\s*|\s-\s)/, '')),
+      normaliser(p),
+    ]
+    const parType = paras.find((p) => debutsDuParagraphe(p).some((debut) => debuts.some((d) => debut.startsWith(d))))
     if (parType) return parType
+    // Le francais officiel n'ecrit pas toujours « de héros » (« Action : ... » pour une « Hero Action ») :
+    // sans ce mot, un seul paragraphe doit convenir, sinon on ne devine pas.
+    const sansPrefixe = type.replace(/^((forced|hero|alter-?ego) )+/, '')
+    if (sansPrefixe !== type) {
+      const debutsNus = [sansPrefixe, ...traductionsDuType(sansPrefixe)]
+      const candidats = paras.filter((p) => debutsDuParagraphe(p).some((debut) => debutsNus.some((d) => debut.startsWith(d))))
+      if (candidats.length === 1) return candidats[0]
+    }
   }
   return paras.join(' ')
 }
@@ -139,4 +151,46 @@ export function extraireEffetRevele(texte: string | undefined): string[] {
     .filter((ligne) => ligne !== '')
     .filter((ligne) => !/^(?:★\s*)?Boost\s*:/i.test(ligne))
     .filter((ligne) => !/^(?:Surge|Renfort)\s*\.?(?:\s*\(.*\))?$/i.test(ligne))
+}
+
+/**
+ * LE NOM D'UNE ACTION quand une carte en offre PLUSIEURS du meme type (demande du 22/10/2026 : plus jamais « Action »
+ * et « Action 1 » sans savoir laquelle fait quoi). Le moteur numerote les doublons (« Action », « Action_1 »...) ; les
+ * cartes n'ont pas de nom pour leurs actions. On rend donc le RESUME du paragraphe imprime : l'index lu dans le nom de
+ * l'option designe le N-ieme paragraphe de ce type dans le texte de la carte.
+ *
+ * `undefined` quand il n'y a rien a dire : pas une action, une seule action de ce type, texte absent, ou moins de
+ * paragraphes de ce type que l'index ne l'exige (on garde alors le nom du moteur).
+ */
+const LIBELLES_ACTION: Readonly<Record<string, string[]>> = {
+  action: ['Action'],
+  'hero action': ['Hero Action', 'Action de héros', 'Action de heros'],
+  'alter ego action': ['Alter-Ego Action', 'Alter Ego Action', 'Action d’alter-ego', "Action d'alter-ego", 'Action d’alter ego', "Action d'alter ego"],
+  'first player action': ['First Player Action', 'Action du premier joueur'],
+  'forced action': ['Forced Action', 'Action forcée'],
+}
+
+function echapper(valeur: string): string {
+  return valeur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export function nomActionParlant(nomOption: string, texte: string | undefined): string | undefined {
+  if (!texte) return undefined
+  const brut = (nomOption.startsWith('p_') ? nomOption.slice(2) : nomOption).replaceAll('_', ' ').trim()
+  const trouve = /^(.+?)(?: (\d+))?$/.exec(brut)
+  if (!trouve) return undefined
+  const base = normaliser(trouve[1]!)
+  const libelles = LIBELLES_ACTION[base]
+  if (!libelles) return undefined
+  const index = trouve[2] ? Number(trouve[2]) : 0
+  const motif = new RegExp(`^(?:★\\s*)?(?:[^:—]+—\\s*)?(?:${libelles.map(echapper).join('|')})\\s*:\\s*(.+)$`, 'i')
+  const lignes = paragraphes(texte)
+    .map(nettoyerTexteCarte)
+    .map((p) => motif.exec(p)?.[1])
+    .filter((p): p is string => Boolean(p))
+  if (lignes.length < 2 || index >= lignes.length) return undefined
+  const ligne = lignes[index]!.replace(/\s*\(Limit[^)]*\)\.?$/i, '').trim()
+  if (ligne.length <= 64) return ligne
+  const coupe = ligne.slice(0, 64)
+  return `${coupe.slice(0, Math.max(coupe.lastIndexOf(' '), 32))}…`
 }

@@ -1,5 +1,8 @@
 # Revoir les couleurs du halo des héros — À REPRENDRE (les palettes actuelles sont gardées en l'état)
 
+**RETIRÉ du backlog le 21/10/2026** (item 30), décision de l'utilisateur. La passe de validation des
+couleurs encore fausses ne sera pas faite pour l'instant.
+
 **Décision de l'utilisateur, 14/09/2026** : « ce qu'on va faire, c'est que tu
 vas utiliser ce que tu as fait maintenant et mets dans le backlog, on va revoir
 les couleurs ». Le halo part donc avec les palettes mesurées ce jour-là ; la

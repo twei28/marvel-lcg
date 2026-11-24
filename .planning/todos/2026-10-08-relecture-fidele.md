@@ -1,5 +1,7 @@
 # Relecture et spectateur : voir 100 % de ce que le joueur a vu
 
+**RETIRÉ du backlog le 21/10/2026** (item 5), décision de l'utilisateur.
+
 Demande du 08/10/2026 : « le but, c'est vraiment de voir 100 % ce que le
 joueur a vu quand il jouait ». Constaté : en relecture, les fenêtres (jouer
 une carte, payer...) ne s'affichent pas, et la barre de lecture cache la main.

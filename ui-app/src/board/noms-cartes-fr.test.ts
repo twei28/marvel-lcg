@@ -40,6 +40,34 @@ describe('nomAffiche', () => {
     expect(nomAffiche(carte('wd002a', 'Shock Party'))).toBe('Shock Party')
   })
 
+  it('rend le nom francais fan-made pour une carte avec un vrai scan FR (pack Blade)', () => {
+    // Signalement mobile du 05/11/2026 : titre de boite de choix en anglais
+    // (« Vampire Bite ») alors que le scan deposee le 04/11/2026 dit
+    // « Morsure de Vampire ». NOMS_FR_FANMADE comble ce que NOMS_FR (genere,
+    // marvelcdb ignore le fan-made) ne peut pas savoir.
+    expect(nomAffiche(carte('bl005', 'Vampire Bite'))).toBe('Morsure de Vampire')
+  })
+
+  it('rend le nom francais des cartes du pack Dazzler (signalement n°134)', () => {
+    expect(nomAffiche(carte('dz012', '"Too Good to be True"'))).toBe('"Trop Beau pour Être Vrai"')
+    expect(nomAffiche(carte('dz017a', 'Live Concert'))).toBe('Concert en Direct')
+    expect(nomAffiche(carte('dz022', 'Stealing Sound'))).toBe('Vol de Son')
+    // identique a l'anglais : rien dans le dictionnaire
+    expect(nomAffiche(carte('dz002', '* Longshot'))).toBe('* Longshot')
+  })
+
+  it('rend les noms francais de Blade deposes apres coup (bl010 a bl017), et laisse bl013 identique', () => {
+    expect(nomAffiche(carte('bl010', 'Predatory Instincts'))).toBe('Instincts de Prédateur')
+    expect(nomAffiche(carte('bl016', 'Embraced'))).toBe('Étreinte')
+    expect(nomAffiche(carte('bl017', 'Turned'))).toBe('Transformé')
+    expect(nomAffiche(carte('bl013', '* Dracula'))).toBe('* Dracula')
+  })
+
+  it('retombe sur l\'anglais pour une carte fan-made SANS scan FR depose (Dazzler dz024)', () => {
+    // Contre-cas : dz024 (Song of Aggression) n'a pas de scan dans assets/pics-fr/ : pas d'entree, pas de nom francais.
+    expect(nomAffiche(carte('dz024', 'Song of Aggression'))).toBe('Song of Aggression')
+  })
+
   it('retombe sur le nom du moteur quand la VF est identique a la VO', () => {
     // « Rhino » ne figure pas dans NOMS_FR, justement parce qu'il n'y a rien
     // a traduire : le dictionnaire ne garde que les noms qui DIFFERENT.

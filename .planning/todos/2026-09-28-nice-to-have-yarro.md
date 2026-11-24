@@ -19,3 +19,10 @@ ailleurs, pas ici :
 - Le glisser-déposer pour permuter les cartes à ordonner (vu sur Felt Table,
   Flesh and Blood) → décision utilisateur du 28/09 : à développer EN PLUS des
   badges numérotés déjà posés pour le signalement n°28, pas à leur place.
+
+## Statut au 20/10/2026 (décisions de l'utilisateur)
+
+- (a) Écarter pour voir dessous : CLOS. Les fenêtres se déplacent à la poignée depuis le 28/09 (et le panneau de manigance se réduit) ; rien à coder.
+- (b) Assigner tous les dégâts d'un coup : CLOS. Couvert par `assignerReste` (`interaction.ts`, `ScanCard`), présent depuis le 04/10.
+- (c) Raccourcis clavier des phases : FAIT, option A. Aucune nouvelle touche ; l'aide du plateau (`VoletAideAuto.tsx`) liste maintenant toutes les touches existantes (E, Espace, U, B, 1 à 9, Échap), FR et dico-en, avec un cas dans `VoletAideAuto.test.tsx`.
+- (d) Glisser-déposer pour permuter les cartes à ordonner : FAIT (`ordre-glisser.ts`, spec `ordre-glisser-selection.spec.ts`).

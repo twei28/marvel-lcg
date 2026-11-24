@@ -30,6 +30,18 @@ class UndoModule:
         # choix de la carte, quel que soit le nombre de sous-questions passees.
         self.debut_action: int = 0
         self.joueur_action: int = -1
+        # AJOUT LOCAL (29/10/2026) : la pile d'instantanes du tour en cours, ou rien. Ici et pas dans le monde : le
+        # monde est lui-meme memorise par les instantanes, il ne doit pas les contenir.
+        self.pile_instantanes = None
+        # « Annuler » demande par le fil web, a consommer par le fil du jeu (voir `Cheat.do_undo`).
+        self.restauration_demandee = False
+        # AJOUT 16/11/2026 (« il faut que l'animation de l'annulation soit hyper propre ») : COMBIEN de fois un instantane a ete restaure, et
+        # le `render_id` de la question vers laquelle on est revenu. Publies dans le descripteur du monde : le `render_id` ne recule PAS
+        # apres une annulation par instantane (le rendu est exclu de l'instantane), le plateau ne pouvait donc pas savoir qu'un retour en
+        # arriere avait eu lieu et rejouait les changements comme des evenements (toasts « perd 3 jetons », badges, vols de cartes).
+        # Ici, hors du graphe memorise : ces deux compteurs ne se restaurent pas, ils ne font qu'avancer.
+        self.restaurations = 0
+        self.restaure_depuis_render_id = 0
         self.manager: Final = manager
 
         # message_id, [card_ids]
@@ -50,6 +62,7 @@ class UndoModule:
         self.next_step = 0
         self.debut_action = 0
         self.joueur_action = -1
+        self.restauration_demandee = False
 
         if not by_undo:
             self.undo_effect_card_cache = {}

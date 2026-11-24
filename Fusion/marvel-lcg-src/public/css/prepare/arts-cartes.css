@@ -23,3 +23,12 @@
 .ac-vignette.on { opacity: 1; border-color: #ec1d24; }
 .ac-vignette:focus-visible { outline: 2px solid #ec1d24; outline-offset: 2px; }
 html.tel .ac-grille { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); max-height: 50vh; }
+
+/* L'illustration survolee en grand, a droite de la fenetre (comme l'apercu de la table). La fenetre et l'apercu sont centres ENSEMBLE ;
+   la place de l'apercu est reservee meme vide, pour que rien ne bouge au survol. Sous 1180 px de large, pas d'apercu. */
+.deck-modal.ac-modal { display: flex; align-items: center; justify-content: center; gap: 20px; }
+.ac-grand { flex: 0 0 min(340px, 28vw); display: flex; align-items: center; visibility: hidden; pointer-events: none; }
+.ac-grand.on { visibility: visible; }
+.ac-grand-img { width: 100%; max-height: 82vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 34px rgba(0, 0, 0, .6); }
+@media (max-width: 1180px) { .ac-grand { display: none; } }
+html.tel .ac-grand { display: none; }

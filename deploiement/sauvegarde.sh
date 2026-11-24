@@ -68,6 +68,7 @@ if [ "${1:-}" = "--verifier" ]; then
   echo "  fiches du mode Legacy        : $(compter '*legacy-serveur-*.json')"
   echo "  arts alternatifs de heros    : $(compter '*arts-heros-serveur-*.json')"
   echo "  preferences des comptes      : $(compter '*preferences-serveur-*.json')"
+  echo "  projets du createur de cartes: $(compter '*/donnees-createur/*/*/courant.json')"
 
   base="$(find "$tmp" -name 'narwhal.db' -print -quit)"
   if [ -n "$base" ]; then
@@ -128,6 +129,17 @@ PYBACKUP
       ;;
   esac
 done
+
+# ⚠ AJOUTÉ LE 28/10/2026 : les PROJETS DU CRÉATEUR DE CARTES (donnees-createur/
+# <compte>/<projet>/courant.json + versions/). Ce sont des fichiers, pas des
+# lignes de narwhal.db : sans cette ligne, un compte créateur perdait tout à la
+# restauration. Ils portent des images (quota 500 Mo par compte) : l'archive
+# peut grossir, d'où la rotation à surveiller. Même dossier que
+# `DOSSIER_CREATEUR` dans orchestrateur.py (par défaut à la racine du projet).
+if [ -d "$RACINE/donnees-createur" ]; then
+  mkdir -p "$stage/donnees-createur"
+  cp -a "$RACINE/donnees-createur/." "$stage/donnees-createur/"
+fi
 
 # Données des joueurs sous Fusion/marvel-lcg-src/ : jamais sauvegardées avant
 # le 06/09/2026, alors que purge.sh efface les replays et logs après 30 jours

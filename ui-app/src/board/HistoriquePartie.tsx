@@ -15,7 +15,9 @@ import { avecIcones } from './icones-ressources'
 import { BoutonsRapportBug, type OutilsRapport } from './RapportBug'
 import type { World, WorldCard } from './world'
 import { nomAffiche } from './noms-cartes-fr'
+import { nomDeCompteur } from './compteurs-fr'
 import { libellePhase } from './etat-partie'
+import type { Restauration } from './annulation'
 import { estModeManuel, leMoteurSeTait } from './manuel/mode'
 
 // I4 (revue finale, 20/09/2026) : `'manuel'` EST DISTINCT DE `'triche'`. Les
@@ -30,6 +32,10 @@ type TypeHistorique = 'phase' | 'text' | 'card' | 'damage' | 'heal' | 'threat' |
 
 export type EntreeHistorique = {
   cle: string
+  /** Cette ligne racontait une action que le joueur a ANNULÉE depuis (16/11/2026) : elle reste lisible, barrée. */
+  annule?: boolean
+  /** La ligne « Action annulée » elle-même, posée au moment du retour en arrière. */
+  annulation?: boolean
   type: TypeHistorique
   renderId: number
   round: number
@@ -134,8 +140,20 @@ function nombreInfo(carte: WorldCard, cle: string): number | undefined {
   return typeof valeur === 'number' ? valeur : undefined
 }
 
+/**
+ * Le nom d'un compteur dans une ligne FRANCAISE du moteur : « reçoit 1 compteur(s) « sound » » devient « « son » »
+ * (rapport n°134 : le jeton de Dazzler s'appelait « sound » dans le journal). Seules les lignes deja francaises passent
+ * ici (le motif est « compteur(s) / jeton(s) / pion(s) ») ; la liste des noms est celle du plateau (compteurs-fr.ts).
+ */
+function compteursEnFrancais(texte: string): string {
+  return texte.replace(
+    /\b(compteur|jeton|pion)\(s\) « ([A-Za-z_ ]+) »/g,
+    (_, mot: string, cle: string) => `${mot}(s) « ${nomDeCompteur(cle.trim())} »`
+  )
+}
+
 function nettoyerTexte(texte: string | undefined): string {
-  return remplacerSymboles(sansIdentifiantsEnFrancais(texte ?? ''))
+  return remplacerSymboles(compteursEnFrancais(sansIdentifiantsEnFrancais(texte ?? '')))
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/^---\s*/, '')
@@ -410,7 +428,9 @@ function persisterHistorique(entrees: EntreeHistorique[], partieId?: string): vo
 export function useHistoriquePartie(
   monde: World | undefined,
   demande: Demande | undefined,
-  partieId?: string
+  partieId?: string,
+  /** Ce rendu est-il un retour en arrière (annulation) ? Calculé UNE fois par la page (`useRestauration`) et partagé avec les autres couches. */
+  restauration: Restauration = { restauree: false, n: 0 }
 ) {
   // Lu UNE fois : la partie a laquelle appartient le journal restaure.
   const restaure = useRef(lireHistoriquePersiste())
@@ -418,6 +438,8 @@ export function useHistoriquePartie(
   const precedent = useRef<World | undefined>(undefined)
   const causes = useRef<MemoireCauses>(creerMemoireCauses())
   const partieNotee = useRef<string | undefined>(undefined)
+  // ANNULATION (16/11/2026) : un retour en arrière n'est pas une suite d'événements. Le journal ne raconte pas « subit 2 dégâts » pour
+  // des dégâts qui viennent d'être défaits : il barre ce que l'action annulée avait écrit et pose UNE ligne « Action annulée ».
 
   // Remise à zéro sur NOUVELLE PARTIE seulement.
   //
@@ -453,6 +475,25 @@ export function useHistoriquePartie(
   useEffect(() => {
     if (!monde) return
 
+    if (restauration.restauree) {
+      const depuis = restauration.depuisRenderId ?? monde.render_id
+      setEntrees((courantes) => {
+        const barrees = courantes.map((e) => (e.renderId > depuis && !e.annule && !e.annulation ? { ...e, annule: true } : e))
+        // La CLE ne porte pas le render_id : un rejeu envoie plusieurs rendus d'affilee pour UNE annulation, une seule ligne doit en rester.
+        const marque: EntreeHistorique = {
+          ...entree(monde, 'text', t('Action annulée'), undefined, `annulation:${restauration.episode ?? restauration.n}`),
+          cle: `annulation:${restauration.episode ?? restauration.n}`,
+          annulation: true,
+        }
+        const suivantes = ajouterNouvellesEntrees(barrees, [marque])
+        persisterHistorique(suivantes, partieNotee.current)
+        return suivantes
+      })
+      // Le monde d'avant devient la base du prochain diff : ni les degats « defaits » ni la question re-posee ne s'ecrivent.
+      precedent.current = monde
+      return
+    }
+
     // Les causes sont relevees AVANT le diff : une attaque se narre au rendu
     // precedent (« would deal 2 damage to X »), le total de PV ne bouge qu'ici.
     const narrations = narrationsDuRendu(monde, demande)
@@ -473,7 +514,7 @@ export function useHistoriquePartie(
       return suivantes
     })
     precedent.current = monde
-  }, [monde, monde?.render_id, demande?.event_name, demande?.prompt_text, demande?.ability_type])
+  }, [monde, monde?.render_id, demande?.event_name, demande?.prompt_text, demande?.ability_type, restauration.restauree])
 
   const effacer = useCallback(() => {
     setEntrees([])
